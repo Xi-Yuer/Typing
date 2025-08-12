@@ -1,0 +1,23 @@
+{
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none",
+    "printWidth": 80,
+    "bracketSpacing": true,
+    "arrowParens": "avoid",
+    "endOfLine": "auto",
+    "jsxSingleQuote": true,
+    "jsxBracketSameLine": true,
+    "plugins": [
+        "prettier-plugin-ember-template-tag"
+    ],
+    "overrides": [
+        {
+            "files": "*.{js,jsx,ts,tsx}",
+            "options": {
+                "singleQuote": true
+            }
+        }
+    ]
+}
