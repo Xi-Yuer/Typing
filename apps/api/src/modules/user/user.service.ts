@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ConfigService } from '@nestjs/config';
@@ -12,14 +12,13 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all user`;
+     throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
   }
 
   findOne(id: number) {
     return this.ConfigService.get('DATABASE_URL');
   }
 
-  // development
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.ConfigService.get('REDIS_URL');
   }
