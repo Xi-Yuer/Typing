@@ -4,7 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npx only-allow pnpm"
+    "preinstall": "npx only-allow pnpm",
+    "api:dev": "pnpm --filter api start:dev",
+    "api:build": "pnpm --filter api build",
+    "api:start": "pnpm --filter api start",
+    "client:dev": "pnpm --filter client dev",
+    "client:build": "pnpm --filter client build",
+    "client:start": "pnpm --filter client start",
+    "dev": "pnpm --parallel --filter api --filter client run dev",
+    "build": "pnpm --filter api build && pnpm --filter client build",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "lint": "pnpm --filter api lint && pnpm --filter client lint"
   },
   "keywords": [],
   "author": "",

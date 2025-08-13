@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Headers,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,6 +30,14 @@ export class UserController {
   @ApiResponse({ status: 200, description: '返回所有用户', type: [User] })
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('me')
+  @ApiOperation({ summary: '查询当前用户' })
+  @ApiResponse({ status: 200, description: '返回当前用户', type: User })
+  @ApiResponse({ status: 404, description: '用户不存在' })
+  findMe(@Headers('Authorization') auth: string) {
+    return this.userService.findMe(auth);
   }
 
   @Get(':id')

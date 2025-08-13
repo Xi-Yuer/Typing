@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,6 +11,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -71,5 +73,21 @@ export class UserService {
     return await this.userRepository.findOne({
       where: { name, isActive: true },
     });
+  }
+
+  async findMe(authHeader: string): Promise<User> {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('无效的授权头');
+    }
+
+    const token = authHeader.substring(7); // 移除 'Bearer ' 前缀
+    
+    try {
+      const payload = this.jwtService.verify(token);
+      const user = await this.findOne(payload.sub);
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException('无效的令牌');
+    }
   }
 }
