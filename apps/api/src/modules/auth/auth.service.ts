@@ -111,6 +111,13 @@ export class AuthService {
   }
 
   /**
+   * QQ OAuth登录
+   */
+  async qqLogin(profile: OAuthProfile): Promise<AuthResult> {
+    return this.oauthLogin(OAuthProvider.QQ, profile);
+  }
+
+  /**
    * 通用OAuth登录处理
    */
   private async oauthLogin(provider: OAuthProvider, profile: OAuthProfile): Promise<AuthResult> {

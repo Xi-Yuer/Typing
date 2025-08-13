@@ -8,6 +8,9 @@ export interface EnvironmentVariables {
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;
   GITHUB_CALLBACK_URL: string;
+  QQ_CLIENT_ID: string;
+  QQ_CLIENT_SECRET: string;
+  QQ_CALLBACK_URL: string;
   FRONTEND_URL: string;
   ENABLE_SWAGGER: boolean;
   ENABLE_CORS: boolean;

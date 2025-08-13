@@ -100,6 +100,64 @@ export class AuthController {
     }
   }
 
+  @Get('qq')
+  @UseGuards(AuthGuard('qq'))
+  @ApiOperation({ summary: 'QQ OAuth 登录' })
+  @ApiResponse({ status: 302, description: '重定向到QQ授权页面' })
+  async qqAuth() {
+    // 这个方法不会被执行，因为会被重定向到QQ
+  }
+
+  @Get('qq/callback')
+  @UseGuards(AuthGuard('qq'))
+  @ApiOperation({ summary: 'QQ OAuth 回调' })
+  @ApiResponse({ status: 302, description: '登录成功或绑定成功，重定向到前端' })
+  async qqCallback(@Req() req: any, @Res() res: Response) {
+    const user = req.user as User;
+    const state = req.query.state as string;
+    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
+
+    try {
+      // 检查是否是绑定流程
+      if (state) {
+        const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
+        
+        if (stateData.action === 'bind' && stateData.userId) {
+          // 绑定流程：将QQ账户绑定到现有用户
+          const oauthProfile = {
+            id: user.id.toString(),
+            username: user.name,
+            email: user.email,
+          };
+          
+          await this.authService.bindOAuthAccount(
+            stateData.userId,
+            OAuthProvider.QQ,
+            oauthProfile
+          );
+          
+          // 重定向到前端绑定成功页面
+          res.redirect(`${frontendUrl}/settings/account?bind=success&provider=qq`);
+          return;
+        }
+      }
+      
+      // 正常登录流程
+      const result = await this.authService.qqLogin({
+        id: user.id.toString(),
+        username: user.name,
+        email: user.email,
+      });
+
+      // 重定向到前端，携带token
+      res.redirect(`${frontendUrl}/auth/callback?token=${result.accessToken}`);
+    } catch (error) {
+      // 处理错误，重定向到错误页面
+      const errorMessage = error.message || '操作失败';
+      res.redirect(`${frontendUrl}/auth/error?message=${encodeURIComponent(errorMessage)}`);
+    }
+  }
+
   @Get('profile')
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
@@ -176,6 +234,74 @@ export class AuthController {
     const user = req.user as User;
     await this.authService.unbindOAuthAccount(user.id, OAuthProvider.GITHUB);
     return { message: 'GitHub账户解绑成功' };
+  }
+
+  @Get('bind/qq')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '绑定QQ账户 - 重定向到QQ授权页面' })
+  @ApiResponse({ status: 302, description: '重定向到QQ授权页面' })
+  async bindQQ(@Req() req: any, @Res() res: Response) {
+    const user = req.user as User;
+    // 在session或临时存储中保存用户ID，用于绑定流程
+    const state = Buffer.from(JSON.stringify({ userId: user.id, action: 'bind' })).toString('base64');
+    
+    const qqClientId = this.configService.get('QQ_CLIENT_ID');
+    const callbackUrl = this.configService.get('QQ_CALLBACK_URL');
+    
+    const qqAuthUrl = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=${qqClientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=get_user_info&state=${state}`;
+    
+    res.redirect(qqAuthUrl);
+  }
+
+  @Post('bind/qq/manual')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '手动绑定QQ账户' })
+  @ApiResponse({ status: 200, description: '绑定成功' })
+  @ApiResponse({ status: 401, description: '未授权' })
+  @ApiResponse({ status: 409, description: '账户已绑定' })
+  async bindQQManual(
+    @Req() req: any,
+    @Body() bindData: { qqId: string; username: string; email?: string; avatarUrl?: string }
+  ) {
+    const user = req.user as User;
+    
+    const oauthProfile = {
+      id: bindData.qqId,
+      username: bindData.username,
+      email: bindData.email,
+      avatarUrl: bindData.avatarUrl,
+    };
+    
+    const binding = await this.authService.bindOAuthAccount(
+      user.id,
+      OAuthProvider.QQ,
+      oauthProfile
+    );
+    
+    return {
+      message: 'QQ账户绑定成功',
+      binding: {
+        provider: binding.provider,
+        providerUsername: binding.providerUsername,
+        providerEmail: binding.providerEmail,
+        avatarUrl: binding.avatarUrl,
+        createdAt: binding.createdAt,
+      },
+    };
+  }
+
+  @Post('unbind/qq')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '解绑QQ账户' })
+  @ApiResponse({ status: 200, description: '解绑成功' })
+  @ApiResponse({ status: 401, description: '未授权' })
+  async unbindQQ(@Req() req: any) {
+    const user = req.user as User;
+    await this.authService.unbindOAuthAccount(user.id, OAuthProvider.QQ);
+    return { message: 'QQ账户解绑成功' };
   }
 
   @Get('bindings')
