@@ -3,8 +3,8 @@ import type { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 @Module({})
-export class SwaggerSetupModule {
-  private static readonly logger = new Logger(SwaggerSetupModule.name);
+export class SetupModule {
+  private static readonly logger = new Logger(SetupModule.name);
 
   static forRoot(app: INestApplication): void {
    {
@@ -25,6 +25,7 @@ export class SwaggerSetupModule {
 
       const document = SwaggerModule.createDocument(app, config);
       SwaggerModule.setup('doc', app, document);
+      this.logger.log('Swagger文档已启用，访问地址: http://localhost:3000/doc');
    }
 
    {
@@ -35,7 +36,14 @@ export class SwaggerSetupModule {
       transform: true,
     }))
    }
-      
-      this.logger.log('Swagger文档已启用，访问地址: http://localhost:3000/doc');
+
+   {
+    // 跨域
+    app.enableCors({
+      origin: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+    });
+   }
   }
 }

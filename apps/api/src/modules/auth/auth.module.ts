@@ -20,7 +20,7 @@ import { EnvironmentVariables } from '../config/env.interface';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<EnvironmentVariables>) => ({
         secret: configService.get('JWT_SECRET', ''),
-        signOptions: { expiresIn: '7d' },
+        signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN', '7d') },
       }),
       inject: [ConfigService],
     }),
