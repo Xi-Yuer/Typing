@@ -75,17 +75,14 @@ export class UserService {
     });
   }
 
-  async findMe(authHeader: string): Promise<User> {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  async findMe(user: User): Promise<User> {
+    if (!user) {
       throw new UnauthorizedException('无效的授权头');
     }
 
-    const token = authHeader.substring(7); // 移除 'Bearer ' 前缀
-    
     try {
-      const payload = this.jwtService.verify(token);
-      const user = await this.findOne(payload.sub);
-      return user;
+      const userInfo = await this.findOne(user.id);
+      return userInfo;
     } catch (error) {
       throw new UnauthorizedException('无效的令牌');
     }

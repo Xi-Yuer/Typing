@@ -23,10 +23,11 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
   }
 
   async validate(
+    req: any,
     accessToken: string,
     refreshToken: string,
     profile: any,
-  ): Promise<User> {
+  ): Promise<User | null> {
     const oauthProfile = {
       id: profile.id,
       username: profile.username,
@@ -35,6 +36,22 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
       rawData: profile._json,
     };
 
+    // 检查是否是绑定流程
+    if (req.query.state) {
+      try {
+        const stateData = JSON.parse(Buffer.from(req.query.state, 'base64').toString());
+        if (stateData.action === 'bind') {
+          // 绑定流程：将OAuth信息附加到req对象，由controller处理
+          req.oauthProfile = oauthProfile;
+          req.bindingUserId = stateData.userId;
+          return null; // 返回null，让controller处理绑定逻辑
+        }
+      } catch (error) {
+        console.error('Failed to parse state:', error);
+      }
+    }
+
+    // 正常登录流程
     const result = await this.authService.githubLogin(oauthProfile);
     return result.user;
   }

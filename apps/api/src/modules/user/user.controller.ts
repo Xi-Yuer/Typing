@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Headers,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -33,11 +36,12 @@ export class UserController {
   }
 
   @Get('me')
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: '查询当前用户' })
   @ApiResponse({ status: 200, description: '返回当前用户', type: User })
   @ApiResponse({ status: 404, description: '用户不存在' })
-  findMe(@Headers('Authorization') auth: string) {
-    return this.userService.findMe(auth);
+  findMe(@Req() req: any) {
+    return this.userService.findMe(req.user);
   }
 
   @Get(':id')
