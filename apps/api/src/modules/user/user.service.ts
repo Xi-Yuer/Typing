@@ -82,7 +82,7 @@ export class UserService {
   async findByEmail(email: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email, isActive: true },
-      select: ['id', 'name', 'email', 'password','isActive','createTime','updateTime','deleteTime'],
+      select: ['id', 'name', 'email','role','status', 'password','isActive','createTime','updateTime','deleteTime'],
     });
   }
 

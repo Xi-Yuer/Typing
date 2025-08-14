@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService, JwtPayload } from '../auth.service';
 import { User } from '../../user/entities/user.entity';
 import { EnvironmentVariables } from 'src/modules/config/env.interface';
+import { Role, UserStatus } from '@/common/enums/role.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

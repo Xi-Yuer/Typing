@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,11 +11,14 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { Role, UserStatus } from '@/common/enums/role.enum';
 
 export interface JwtPayload {
   sub: number;
   email: string;
   name: string;
+  role: Role;
+  status: UserStatus;
 }
 
 export interface AuthResult {
@@ -38,12 +41,15 @@ export interface OAuthProfile {
 
 @Injectable()
 export class AuthService {
+  private readonly logger: Logger;
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     @InjectRepository(UserOAuth)
     private readonly userOAuthRepository: Repository<UserOAuth>,
-  ) {}
+  ) {
+    this.logger = new Logger(AuthService.name);
+  }
 
   /**
    * 用户注册
@@ -269,7 +275,11 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       name: user.name,
+      role: user.role,
+      status: user.status,
     };
+
+    this.logger.log('生成JWT令牌:', { payload });
     return this.jwtService.sign(payload);
   }
 }

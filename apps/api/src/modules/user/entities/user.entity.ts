@@ -7,6 +7,7 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Role, UserStatus } from '@/common/enums/role.enum';
 
 @Entity('users')
 export class User {
@@ -29,6 +30,30 @@ export class User {
   @Column({ default: true })
   @ApiProperty({ description: '是否激活', default: true })
   isActive: boolean;
+
+  @Column({ 
+    type: 'enum', 
+    enum: Role, 
+    default: Role.USER 
+  })
+  @ApiProperty({ 
+    description: '用户角色', 
+    enum: Role, 
+    default: Role.USER 
+  })
+  role: Role;
+
+  @Column({ 
+    type: 'enum', 
+    enum: UserStatus, 
+    default: UserStatus.ACTIVE 
+  })
+  @ApiProperty({ 
+    description: '用户状态', 
+    enum: UserStatus, 
+    default: UserStatus.ACTIVE 
+  })
+  status: UserStatus;
 
   @CreateDateColumn()
   @ApiProperty({ description: '创建时间' })
