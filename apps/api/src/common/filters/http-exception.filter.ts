@@ -48,10 +48,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     // 记录错误日志
-    this.logger.error(
-      `HTTP Exception: ${status} - ${message}`,
-      exception instanceof Error ? exception.stack : exception,
-    );
+    this.logger.error(`HTTP Exception: ${status} - ${message}`);
 
     // 构造错误响应
     const errorResponse = {

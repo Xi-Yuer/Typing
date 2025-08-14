@@ -41,6 +41,6 @@ export class SelfOrAdminGuard implements CanActivate {
       return true;
     }
 
-    throw new ForbiddenException('您只能修改自己的信息');
+    throw new ForbiddenException('非法操作');
   }
 }
