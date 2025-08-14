@@ -5,6 +5,8 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
+import { PaginationResponseDto } from '@/common/dto/api-response.dto';
 
 @Injectable()
 export class UserService {
@@ -31,6 +33,20 @@ export class UserService {
       where: { isActive: true },
       order: { createTime: 'DESC' },
     });
+  }
+
+  async findPaginated(query: PaginationQueryDto): Promise<PaginationResponseDto<User>> {
+    const { page = 1, pageSize = 10 } = query;
+    const skip = (page - 1) * pageSize;
+    
+    const [list, total] = await this.userRepository.findAndCount({
+      where: { isActive: true },
+      skip,
+      take: pageSize,
+      order: { createTime: 'DESC' },
+    });
+    
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   async findOne(id: number): Promise<User> {

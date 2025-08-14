@@ -1,6 +1,9 @@
 import { Logger, Module, ValidationPipe } from '@nestjs/common';
 import type { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ResponseInterceptor } from '../../common/interceptors/response.interceptor';
+import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { Reflector } from '@nestjs/core';
 
 @Module({})
 export class SetupModule {
@@ -34,7 +37,17 @@ export class SetupModule {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }))
+    }));
+   }
+
+   {
+    // 全局响应拦截器
+    app.useGlobalInterceptors(new ResponseInterceptor(app.get(Reflector)));
+   }
+
+   {
+    // 全局异常过滤器
+    app.useGlobalFilters(new HttpExceptionFilter());
    }
 
    {
