@@ -39,7 +39,7 @@
   "code": 200,
   "message": "查询成功",
   "data": {
-    "items": [
+    "list": [
       // 数据列表
     ],
     "total": 100,
@@ -176,14 +176,14 @@ async findPaginated(query: PaginationQueryDto): Promise<PaginationResponseDto<Us
   const { page = 1, pageSize = 10 } = query;
   const skip = (page - 1) * pageSize;
   
-  const [items, total] = await this.userRepository.findAndCount({
+  const [list, total] = await this.userRepository.findAndCount({
     where: { isActive: true },
     skip,
     take: pageSize,
     order: { createTime: 'DESC' },
   });
   
-  return new PaginationResponseDto(items, total, page, pageSize);
+  return new PaginationResponseDto(list, total, page, pageSize);
 }
 ```
 

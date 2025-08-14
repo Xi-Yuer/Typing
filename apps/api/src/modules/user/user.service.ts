@@ -46,7 +46,7 @@ export class UserService {
       order: { createTime: 'DESC' },
     });
     
-    return new PaginationResponseDto(list, total, page, pageSize);
+    return new PaginationResponseDto<User>(list, total, page, pageSize);
   }
 
   async findOne(id: number): Promise<User> {

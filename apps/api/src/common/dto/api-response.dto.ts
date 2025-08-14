@@ -61,8 +61,8 @@ export class PaginationDto<T = any> {
   @ApiProperty({ description: '总页数', example: 10 })
   totalPages: number;
 
-  constructor(items: T[], total: number, page: number, pageSize: number) {
-    this.list = items;
+  constructor(list: T[], total: number, page: number, pageSize: number) {
+    this.list = list;
     this.total = total;
     this.page = page;
     this.pageSize = pageSize;
