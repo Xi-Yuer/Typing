@@ -9,6 +9,8 @@ import { User } from '../user/entities/user.entity';
 import { UserOAuth, OAuthProvider } from '../user/entities/user-oauth.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { UserResponseDto } from './dto/user-response.dto';
+import { AuthResponseDto } from './dto/auth-response.dto';
 
 export interface JwtPayload {
   sub: number;
@@ -18,6 +20,11 @@ export interface JwtPayload {
 
 export interface AuthResult {
   user: User;
+  accessToken: string;
+}
+
+export interface AuthResponseResult {
+  user: UserResponseDto;
   accessToken: string;
 }
 
@@ -41,7 +48,7 @@ export class AuthService {
   /**
    * 用户注册
    */
-  async register(registerDto: RegisterDto): Promise<AuthResult> {
+  async register(registerDto: RegisterDto): Promise<AuthResponseResult> {
     // 检查用户是否已存在
     const existingUser = await this.userService.findByEmail(registerDto.email);
     if (existingUser) {
@@ -65,20 +72,26 @@ export class AuthService {
     // 生成JWT令牌
     const accessToken = await this.generateToken(user);
 
-    return { user, accessToken };
+    return { 
+      user: UserResponseDto.fromUser(user), 
+      accessToken 
+    };
   }
 
   /**
    * 用户登录
    */
-  async login(loginDto: LoginDto): Promise<AuthResult> {
+  async login(loginDto: LoginDto): Promise<AuthResponseResult> {
     const user = await this.validateUser(loginDto.email, loginDto.password);
     if (!user) {
       throw new UnauthorizedException('邮箱或密码错误');
     }
 
     const accessToken = await this.generateToken(user);
-    return { user, accessToken };
+    return { 
+      user: UserResponseDto.fromUser(user), 
+      accessToken 
+    };
   }
 
   /**
@@ -251,7 +264,7 @@ export class AuthService {
   /**
    * 生成JWT令牌
    */
-  private async generateToken(user: User): Promise<string> {
+  async generateToken(user: User): Promise<string> {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,

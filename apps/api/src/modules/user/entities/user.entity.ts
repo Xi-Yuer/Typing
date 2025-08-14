@@ -22,7 +22,7 @@ export class User {
   @ApiProperty({ description: '邮箱' })
   email: string;
 
-  @Column({ length: 255 })
+  @Column({ length: 255, select: false })
   @ApiProperty({ description: '密码' })
   password: string;
 

@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GitHubStrategy } from './strategies/github.strategy';
 import { QQStrategy } from './strategies/qq.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { UserModule } from '../user/user.module';
 import { UserOAuth } from '../user/entities/user-oauth.entity';
 import { EnvironmentVariables } from '../config/env.interface';
@@ -27,8 +28,8 @@ import { EnvironmentVariables } from '../config/env.interface';
     TypeOrmModule.forFeature([UserOAuth]),
     UserModule,
   ],
-  providers: [AuthService, JwtStrategy, GitHubStrategy, QQStrategy],
+  providers: [AuthService, JwtStrategy, GitHubStrategy, QQStrategy, LocalStrategy],
   controllers: [AuthController],
-  exports: [AuthService, JwtStrategy, GitHubStrategy, QQStrategy],
+  exports: [AuthService, JwtStrategy, GitHubStrategy, QQStrategy, LocalStrategy],
 })
 export class AuthModule {}

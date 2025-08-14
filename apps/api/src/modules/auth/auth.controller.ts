@@ -11,12 +11,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { User } from '../user/entities/user.entity';
 import { OAuthProvider } from '../user/entities/user-oauth.entity';
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from '../config/env.interface';
+import { AuthResponseDto } from './dto/auth-response.dto';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @ApiTags('认证')
 @Controller('auth')
@@ -28,18 +29,23 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: '用户注册' })
-  @ApiResponse({ status: 201, description: '注册成功' })
+  @ApiResponse({ status: 201, description: '注册成功', type: AuthResponseDto })
   @ApiResponse({ status: 409, description: '用户已存在' })
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
+    const result = await this.authService.register(registerDto);
+    return new AuthResponseDto(result.user, result.accessToken);
   }
 
   @Post('login')
+  @UseGuards(AuthGuard('local'))
   @ApiOperation({ summary: '用户登录' })
-  @ApiResponse({ status: 200, description: '登录成功' })
+  @ApiResponse({ status: 200, description: '登录成功', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: '用户名或密码错误' })
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(@Req() req: any): Promise<AuthResponseDto> {
+    const user = req.user as User;
+    const accessToken = await this.authService.generateToken(user);
+    const userResponse = UserResponseDto.fromUser(user);
+    return new AuthResponseDto(userResponse, accessToken);
   }
 
   @Get('github')
