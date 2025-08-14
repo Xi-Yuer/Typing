@@ -7,7 +7,7 @@ import {
   DeleteDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role, UserStatus } from '@/common/enums/role.enum';
+import { Role, UserStatus } from 'common';
 
 @Entity('users')
 export class User {

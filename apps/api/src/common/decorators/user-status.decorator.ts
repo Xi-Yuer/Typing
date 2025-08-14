@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { UserStatus } from '../enums/role.enum';
+import { UserStatus } from 'common';
 
 /**
  * 用户状态装饰器的元数据键

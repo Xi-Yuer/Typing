@@ -8,7 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '@/common/decorators/roles.decorator';
 import { USER_STATUS_KEY } from '@/common/decorators/user-status.decorator';
-import { Role, UserStatus } from '@/common/enums/role.enum';
+import { Role, UserStatus } from 'common';
 import { User } from '@/modules/user/entities/user.entity';
 
 /**

@@ -4,17 +4,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
+import { UserService } from '../user/user.service';
 import { UserOAuth, OAuthProvider } from '../user/entities/user-oauth.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { AuthResponseDto } from './dto/auth-response.dto';
-import { Role, UserStatus } from '@/common/enums/role.enum';
+import { Role, UserStatus } from 'common';
 
 export interface JwtPayload {
-  sub: number;
+  id: number;
   email: string;
   name: string;
   role: Role;
@@ -115,7 +114,7 @@ export class AuthService {
    * 根据JWT payload验证用户
    */
   async validateUserByJwt(payload: JwtPayload): Promise<User> {
-    const user = await this.userService.findOne(payload.sub);
+    const user = await this.userService.findOne(payload.id);
     if (!user) {
       throw new UnauthorizedException('用户不存在');
     }
@@ -272,14 +271,13 @@ export class AuthService {
    */
   async generateToken(user: User): Promise<string> {
     const payload: JwtPayload = {
-      sub: user.id,
+      id: user.id,
       email: user.email,
       name: user.name,
       role: user.role,
       status: user.status,
     };
 
-    this.logger.log('生成JWT令牌:', { payload });
     return this.jwtService.sign(payload);
   }
 }

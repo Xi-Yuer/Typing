@@ -1,7 +1,7 @@
 {
-  "name": "utils",
+  "name": "common",
   "version": "1.0.0",
-  "description": "Utility functions for the typing project",
+  "description": "Common types and enums for the typing project",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -18,8 +18,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c --watch",
-    "clean": "rm -rf dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf dist"
   },
   "keywords": [],
   "author": "",
