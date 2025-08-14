@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto, AdminUpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
 import { PaginationResponseDto } from '@/common/dto/api-response.dto';
@@ -66,6 +66,20 @@ export class UserService {
     
     try {
       Object.assign(user, updateUserDto);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new HttpException('用户名或邮箱已存在', HttpStatus.CONFLICT);
+      }
+      throw new HttpException('更新用户失败', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async adminUpdate(id: number, adminUpdateUserDto: AdminUpdateUserDto): Promise<User> {
+    const user = await this.findOne(id);
+    
+    try {
+      Object.assign(user, adminUpdateUserDto);
       return await this.userRepository.save(user);
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {

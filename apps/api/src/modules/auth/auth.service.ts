@@ -16,7 +16,7 @@ export interface JwtPayload {
   id: number;
   email: string;
   name: string;
-  role: Role;
+  role?: Role;
   status: UserStatus;
 }
 

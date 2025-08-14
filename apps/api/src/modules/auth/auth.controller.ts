@@ -8,7 +8,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -18,6 +18,7 @@ import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from '../config/env.interface';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from './dto/user-response.dto';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('认证')
 @Controller('auth')
@@ -39,6 +40,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(AuthGuard('local'))
   @ApiOperation({ summary: '用户登录' })
+  @ApiBody({ type: LoginDto })
   @ApiResponse({ status: 200, description: '登录成功', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: '用户名或密码错误' })
   async login(@Req() req: any): Promise<AuthResponseDto> {

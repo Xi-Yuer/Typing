@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiParam, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateUserDto, AdminUpdateUserDto } from './dto/update-user.dto';
+import { ApiOperation, ApiParam, ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -26,17 +26,18 @@ import { Roles } from '@/common/decorators/roles.decorator';
 import { RequireUserStatus } from '@/common/decorators/user-status.decorator';
 import { RolesGuard } from '@/common/guards/roles.guard';
 import { Role, UserStatus } from 'common';
+import { SelfOrAdminGuard } from '@/common/guards/self-or-admin.guard';
 
-@ApiTags('用户管理')
 @Controller('user')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
+@RequireUserStatus(UserStatus.ACTIVE)
 @ApiBearerAuth()
+@ApiTags('用户管理')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @RequireUserStatus(UserStatus.ACTIVE)
   @ApiOperation({ summary: '创建用户（仅管理员）' })
   @ApiCreatedResponse(User, { description: '创建用户成功' })
   create(@Body() createUserDto: CreateUserDto) {
@@ -45,34 +46,21 @@ export class UserController {
 
   @Get('paginated')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @RequireUserStatus(UserStatus.ACTIVE)
   @ApiOperation({ summary: '分页查询用户（仅管理员）' })
   @ApiPaginationResponse(User, { description: '分页查询用户成功' })
   findPaginated(@Query() query: PaginationQueryDto) {
     return this.userService.findPaginated(query);
   }
 
-  @Get()
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @RequireUserStatus(UserStatus.ACTIVE)
-  @ApiOperation({ summary: '查询所有用户（已废弃，请使用分页查询，仅管理员）' })
-  @ApiSuccessResponse([User], { description: '返回所有用户' })
-  findAll() {
-    return this.userService.findAll();
-  }
-
   @Get('me')
-  @RequireUserStatus(UserStatus.ACTIVE)
-  @ApiOperation({ summary: '查询当前用户' })
-  @ApiSuccessResponse(User, { description: '返回当前用户' })
+  @ApiOperation({ summary: '根据用户 Token 查询当前用户' })
+  @ApiSuccessResponse(User, { description: '根据用户 Token 查询当前用户成功' })
   findMe(@Req() req: any) {
     return this.userService.findMe(req.user);
   }
 
   @Get(':id')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @RequireUserStatus(UserStatus.ACTIVE)
-  @ApiOperation({ summary: '根据ID查询用户（仅管理员）' })
+  @ApiOperation({ summary: '根据ID查询用户' })
   @ApiParam({ name: 'id', description: '用户ID', type: Number })
   @ApiSuccessResponse(User, { description: '返回用户' })
   findOne(@Param('id') id: string) {
@@ -80,18 +68,27 @@ export class UserController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @RequireUserStatus(UserStatus.ACTIVE)
-  @ApiOperation({ summary: '根据ID更新用户（仅管理员）' })
+  @UseGuards(SelfOrAdminGuard)
+  @ApiOperation({ summary: '根据ID更新用户（用户可修改自己，管理员可修改任何用户）' })
   @ApiParam({ name: 'id', description: '用户ID', type: Number })
   @ApiSuccessResponse(User, { description: '更新用户成功' })
+  @ApiBody({ type: UpdateUserDto })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @Patch(':id/admin')
+  @Roles(Role.SUPER_ADMIN)
+  @ApiOperation({ summary: '根据ID更新用户（仅管理员）' })
+  @ApiParam({ name: 'id', description: '用户ID', type: Number })
+  @ApiSuccessResponse(User, { description: '更新用户成功' })
+  @ApiBody({ type: AdminUpdateUserDto })
+  adminUpdate(@Param('id') id: string, @Body() adminUpdateUserDto: AdminUpdateUserDto) {
+    return this.userService.adminUpdate(+id, adminUpdateUserDto);
+  }
+
   @Delete(':id')
   @Roles(Role.SUPER_ADMIN)
-  @RequireUserStatus(UserStatus.ACTIVE)
   @ApiOperation({ summary: '根据ID删除用户（仅超级管理员）' })
   @ApiParam({ name: 'id', description: '用户ID', type: Number })
   @ApiSuccessResponse(undefined, { description: '删除用户成功' })

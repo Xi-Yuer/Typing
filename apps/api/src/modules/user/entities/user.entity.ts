@@ -34,14 +34,16 @@ export class User {
   @Column({ 
     type: 'enum', 
     enum: Role, 
-    default: Role.USER 
+    default: Role.USER,
+    nullable: true,
   })
   @ApiProperty({ 
     description: '用户角色', 
     enum: Role, 
-    default: Role.USER 
+    default: Role.USER,
+    nullable: true,
   })
-  role: Role;
+  role?: Role;
 
   @Column({ 
     type: 'enum', 
