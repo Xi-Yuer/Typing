@@ -15,7 +15,6 @@ export class SetupModule {
         .setTitle('Typing API')
         .setDescription('Typing应用的API文档')
         .setVersion('1.0')
-        .addTag('typing')
         .addBearerAuth({
           type: 'http',
           scheme: 'bearer',
@@ -34,9 +33,9 @@ export class SetupModule {
    {
     // 全局管道
     app.useGlobalPipes(new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
+      whitelist: true, // 自动删除非白名单属性
+      forbidNonWhitelisted: true, // 禁止非白名单属性
+      transform: true, // 自动转换为DTO类型
     }));
    }
 

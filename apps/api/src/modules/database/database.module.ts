@@ -26,7 +26,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
           database: url.pathname.slice(1), // 移除开头的 '/'
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
           synchronize: configService.get('NODE_ENV') === 'development',
-          logging: configService.get('NODE_ENV') === 'development' ? ['error','warn'] : false,
+          logging: configService.get('NODE_ENV') === 'development' ? ['error','warn','query'] : false,
           timezone: '+08:00',
           charset: 'utf8mb4',
         };

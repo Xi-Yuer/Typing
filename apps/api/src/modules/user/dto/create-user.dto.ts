@@ -16,6 +16,7 @@ export class CreateUserDto {
   @ApiProperty({
     description: '邮箱',
     example: 'user@example.com',
+    format: 'email', // 指定为邮箱格式，Swagger会识别为email类型
   })
   email: string;
 
@@ -40,6 +41,7 @@ export class CreateUserDto {
     description: '用户角色',
     example: 'USER',
     required: false,
+    enum: Role,
   })
   role?: Role;
 }
