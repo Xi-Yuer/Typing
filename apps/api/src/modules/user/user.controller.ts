@@ -22,8 +22,8 @@ import {
   ApiPaginationResponse,
 } from '@/common/decorators/api-response.decorator';
 import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
-import { Roles } from '@/common/decorators/roles.decorator';
-import { RequireUserStatus } from '@/common/decorators/user-status.decorator';
+import { Roles } from '@/common/decorators/premission.decorator';
+import { RequireUserStatus } from '@/common/decorators/premission.decorator';
 import { RolesGuard } from '@/common/guards/roles.guard';
 import { Role, UserStatus } from 'common';
 import { SelfOrAdminGuard } from '@/common/guards/self-or-admin.guard';

@@ -6,8 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from '@/common/decorators/roles.decorator';
-import { USER_STATUS_KEY } from '@/common/decorators/user-status.decorator';
+import { ROLES_KEY,USER_STATUS_KEY } from '@/common/decorators/premission.decorator';
 import { Role, UserStatus } from 'common';
 import { User } from '@/modules/user/entities/user.entity';
 
