@@ -46,13 +46,6 @@ export class WordsController {
     return this.wordsService.create(createWordDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: '获取所有单词列表' })
-  @ApiSuccessResponse([Word], { description: '获取单词列表成功' })
-  findAll() {
-    return this.wordsService.findAll();
-  }
-
   @Get('paginated')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '分页查询单词（仅管理员）' })
@@ -72,21 +65,22 @@ export class WordsController {
   @Get('category/:categoryId')
   @ApiOperation({ summary: '根据分类 ID 查询单词' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
-  @ApiSuccessResponse([Word], { description: '根据分类 ID 查询单词成功' })
-  findByCategoryId(@Param('categoryId') categoryId: string) {
-    return this.wordsService.findByCategoryId(categoryId);
+  @ApiPaginationResponse(Word, { description: '根据分类 ID 查询单词成功' })
+  findByCategoryId(@Param('categoryId') categoryId: string, @Query() paginationQuery: PaginationQueryDto) {
+    return this.wordsService.findByCategoryId(categoryId, paginationQuery);
   }
 
   @Get('language/:languageId/category/:categoryId')
   @ApiOperation({ summary: '根据语言和分类查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
-  @ApiSuccessResponse([Word], { description: '根据语言和分类查询单词成功' })
+  @ApiPaginationResponse(Word, { description: '根据语言和分类查询单词成功' })
   findByLanguageAndCategory(
     @Param('languageId') languageId: string,
     @Param('categoryId') categoryId: string,
+    @Query() paginationQuery: PaginationQueryDto,
   ) {
-    return this.wordsService.findByLanguageAndCategory(languageId, categoryId);
+    return this.wordsService.findByLanguageAndCategory(languageId, categoryId, paginationQuery);
   }
 
   @Get('search')
@@ -97,10 +91,11 @@ export class WordsController {
   @ApiSuccessResponse([Word], { description: '搜索单词成功' })
   searchWords(
     @Query('keyword') keyword: string,
+    @Query() paginationQuery: PaginationQueryDto,
     @Query('languageId') languageId?: string,
     @Query('categoryId') categoryId?: string,
   ) {
-    return this.wordsService.searchWords(keyword, languageId, categoryId);
+    return this.wordsService.searchWords(keyword, paginationQuery, languageId, categoryId);
   }
 
   @Get('search/paginated')

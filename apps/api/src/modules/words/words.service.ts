@@ -41,17 +41,6 @@ export class WordsService {
     const word = this.wordRepository.create(createWordDto);
     return await this.wordRepository.save(word);
   }
-
-  /**
-   * 获取所有单词
-   */
-  async findAll(): Promise<Word[]> {
-    return await this.wordRepository.find({
-      relations: ['language', 'category'],
-      order: { createdAt: 'DESC' },
-    });
-  }
-
   /**
    * 分页查询单词
    */
@@ -85,12 +74,22 @@ export class WordsService {
   /**
    * 根据分类 ID 查询单词
    */
-  async findByCategoryId(categoryId: string): Promise<Word[]> {
-    return await this.wordRepository.find({
+  async findByCategoryId(
+    categoryId: string,
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Word>> {
+    const { page = 1, pageSize = 10 } = paginationQuery;
+    const skip = (page - 1) * pageSize;
+
+    const [list, total] = await this.wordRepository.findAndCount({
       where: { categoryId },
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: pageSize,
     });
+
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   /**
@@ -99,12 +98,20 @@ export class WordsService {
   async findByLanguageAndCategory(
     languageId: string,
     categoryId: string,
-  ): Promise<Word[]> {
-    return await this.wordRepository.find({
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Word>> {
+    const { page = 1, pageSize = 10 } = paginationQuery;
+    const skip = (page - 1) * pageSize;
+
+    const [list, total] = await this.wordRepository.findAndCount({
       where: { languageId, categoryId },
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: pageSize,
     });
+
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   /**
@@ -112,9 +119,13 @@ export class WordsService {
    */
   async searchWords(
     keyword: string,
+    paginationQuery: PaginationQueryDto,
     languageId?: string,
     categoryId?: string,
-  ): Promise<Word[]> {
+  ): Promise<PaginationResponseDto<Word>> {
+    const { page = 1, pageSize = 10 } = paginationQuery;
+    const skip = (page - 1) * pageSize;
+
     if (!keyword || keyword.trim().length === 0) {
       throw new BadRequestException('搜索关键词不能为空');
     }
@@ -138,11 +149,13 @@ export class WordsService {
       });
     }
 
-    return await this.wordRepository.find({
+    const [list, total] = await this.wordRepository.findAndCount({
       where: whereConditions,
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
     });
+
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   /**

@@ -43,16 +43,6 @@ export class SentencesService {
   }
 
   /**
-   * 获取所有句子
-   */
-  async findAll(): Promise<Sentence[]> {
-    return await this.sentenceRepository.find({
-      relations: ['language', 'category'],
-      order: { createdAt: 'DESC' },
-    });
-  }
-
-  /**
    * 分页查询句子
    */
   async findAllPaginated(
@@ -74,23 +64,43 @@ export class SentencesService {
   /**
    * 根据语言 ID 查询句子
    */
-  async findByLanguageId(languageId: string): Promise<Sentence[]> {
-    return await this.sentenceRepository.find({
+  async findByLanguageId(
+    languageId: string,
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Sentence>> {
+    const { page = 1, pageSize = 10 } = paginationQuery;
+    const skip = (page - 1) * pageSize;
+
+    const [list, total] = await this.sentenceRepository.findAndCount({
       where: { languageId },
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: pageSize,
     });
+
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   /**
    * 根据分类 ID 查询句子
    */
-  async findByCategoryId(categoryId: string): Promise<Sentence[]> {
-    return await this.sentenceRepository.find({
+  async findByCategoryId(
+    categoryId: string,
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Sentence>> {
+    const { page = 1, pageSize = 10 } = paginationQuery;
+    const skip = (page - 1) * pageSize;
+
+    const [list, total] = await this.sentenceRepository.findAndCount({
       where: { categoryId },
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: pageSize,
     });
+
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   /**
@@ -99,12 +109,20 @@ export class SentencesService {
   async findByLanguageAndCategory(
     languageId: string,
     categoryId: string,
-  ): Promise<Sentence[]> {
-    return await this.sentenceRepository.find({
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Sentence>> {
+    const { page = 1, pageSize = 10 } = paginationQuery;
+    const skip = (page - 1) * pageSize;
+
+    const [list, total] = await this.sentenceRepository.findAndCount({
       where: { languageId, categoryId },
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: pageSize,
     });
+
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   /**

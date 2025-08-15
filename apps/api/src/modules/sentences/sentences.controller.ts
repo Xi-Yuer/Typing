@@ -46,13 +46,6 @@ export class SentencesController {
     return this.sentencesService.create(createSentenceDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: '获取所有句子' })
-  @ApiSuccessResponse([Sentence], { description: '获取所有句子成功' })
-  findAll() {
-    return this.sentencesService.findAll();
-  }
-
   @Get('paginated')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '分页查询句子（仅管理员）' })
@@ -64,29 +57,30 @@ export class SentencesController {
   @Get('language/:languageId')
   @ApiOperation({ summary: '根据语言 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
-  @ApiSuccessResponse([Sentence], { description: '根据语言 ID 查询句子成功' })
-  findByLanguageId(@Param('languageId') languageId: string) {
-    return this.sentencesService.findByLanguageId(languageId);
+  @ApiPaginationResponse(Sentence, { description: '根据语言 ID 查询句子成功' })
+  findByLanguageId(@Param('languageId') languageId: string, @Query() paginationQuery: PaginationQueryDto) {
+    return this.sentencesService.findByLanguageId(languageId, paginationQuery);
   }
 
   @Get('category/:categoryId')
   @ApiOperation({ summary: '根据分类 ID 查询句子' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
-  @ApiSuccessResponse([Sentence], { description: '根据分类 ID 查询句子成功' })
-  findByCategoryId(@Param('categoryId') categoryId: string) {
-    return this.sentencesService.findByCategoryId(categoryId);
+  @ApiPaginationResponse(Sentence, { description: '根据分类 ID 查询句子成功' })
+  findByCategoryId(@Param('categoryId') categoryId: string, @Query() paginationQuery: PaginationQueryDto) {
+    return this.sentencesService.findByCategoryId(categoryId, paginationQuery);
   }
 
   @Get('language/:languageId/category/:categoryId')
   @ApiOperation({ summary: '根据语言 ID 和分类 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
-  @ApiSuccessResponse([Sentence], { description: '根据语言和分类查询句子成功' })
+  @ApiPaginationResponse(Sentence, { description: '根据语言和分类查询句子成功' })
   findByLanguageAndCategory(
     @Param('languageId') languageId: string,
     @Param('categoryId') categoryId: string,
+    @Query() paginationQuery: PaginationQueryDto,
   ) {
-    return this.sentencesService.findByLanguageAndCategory(languageId, categoryId);
+    return this.sentencesService.findByLanguageAndCategory(languageId, categoryId, paginationQuery);
   }
 
   @Get('search')
