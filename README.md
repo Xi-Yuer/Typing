@@ -81,4 +81,3 @@
 | 语音功能   | Web Speech API（浏览器端 TTS & STT） / 第三方 TTS（Google Cloud TTS） |
 | 部署       | Vercel（前端） + Docker + 云服务器（后端）                   |
 | 数据可视化 | Chart.js / ECharts                                           |
-
