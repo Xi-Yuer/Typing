@@ -1,0 +1,44 @@
+.sentence-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.words-wrapper {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  position: relative;
+}
+
+.word-box {
+  font-size: 2em;
+  border-bottom: 2px solid gray;
+  min-height: 2.5em;
+  text-align: center;
+}
+
+.word-box.active {
+  color: #a855f7;
+  border-bottom-color: #a855f7;
+}
+
+.word-box.error {
+  color: red;
+  border-bottom-color: red;
+}
+
+.word-box.correct {
+  color: green;
+  border-bottom-color: green;
+}
+
+.word-static {
+  font-size: 2em;
+}
+
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
