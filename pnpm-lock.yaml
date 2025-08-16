@@ -80,6 +80,9 @@ importers:
       cache-manager:
         specifier: ^7.1.1
         version: 7.1.1
+      cacheable:
+        specifier: ^1.10.3
+        version: 1.10.3
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -2112,6 +2115,9 @@ packages:
 
   cache-manager@7.1.1:
     resolution: {integrity: sha512-YZ5CXZ4cNOcVH5bokYE1Bo5NARvJhOkYAAwImGf7DozC0uyrT5Jqd5AWfPnSRavlHTPiHp2yZL3Q3ZEWBfkQvQ==}
+
+  cacheable@1.10.3:
+    resolution: {integrity: sha512-M6p10iJ/VT0wT7TLIGUnm958oVrU2cUK8pQAVU21Zu7h8rbk/PeRtRWrvHJBql97Bhzk3g1N6+2VKC+Rjxna9Q==}
 
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
@@ -6779,6 +6785,11 @@ snapshots:
 
   cache-manager@7.1.1:
     dependencies:
+      keyv: 5.5.0
+
+  cacheable@1.10.3:
+    dependencies:
+      hookified: 1.11.0
       keyv: 5.5.0
 
   call-bind-apply-helpers@1.0.2:

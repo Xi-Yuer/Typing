@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
-import { createKeyv } from '@keyv/redis';
+import { createKeyv, Keyv } from '@keyv/redis';
+import { CacheableMemory } from 'cacheable';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from './modules/config/config.module';
 import { DatabaseModule } from './modules/database/database.module';
@@ -24,9 +25,12 @@ import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categ
     CacheModule.registerAsync({
       useFactory: async () => {
         return {
-          stores: [createKeyv(process.env.REDIS_URL)],
+          stores: [
+            new Keyv({
+              store: new CacheableMemory({ ttl: 60000, lruSize: 5000 }),
+            }),
+            createKeyv(process.env.REDIS_URL)],
           ttl: 1000 * 60 * 60 * 24,
-          max: 1000,
         };
       },
       isGlobal: true,

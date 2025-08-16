@@ -9,13 +9,11 @@ import {
   UseGuards,
   Req,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, AdminUpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiParam, ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 import { User } from './entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -31,7 +29,6 @@ import { Role, UserStatus } from 'common';
 import { SelfOrAdminGuard } from '@/common/guards/self-or-admin.guard';
 
 @Controller('user')
-@UseInterceptors(CacheInterceptor)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @RequireUserStatus(UserStatus.ACTIVE)
 @ApiBearerAuth()
