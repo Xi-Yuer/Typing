@@ -57,9 +57,9 @@ export class WordsController {
   @Get('language/:languageId')
   @ApiOperation({ summary: '根据语言 ID 查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
-  @ApiSuccessResponse([Word], { description: '根据语言 ID 查询单词成功' })
-  findByLanguageId(@Param('languageId') languageId: string) {
-    return this.wordsService.findByLanguageId(languageId);
+  @ApiPaginationResponse(Word, { description: '根据语言 ID 查询单词成功' })
+  findByLanguageId(@Param('languageId') languageId: string, @Query() paginationQuery: PaginationQueryDto) {
+    return this.wordsService.findByLanguageId(languageId, paginationQuery);
   }
 
   @Get('category/:categoryId')

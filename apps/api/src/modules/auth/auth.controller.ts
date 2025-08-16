@@ -6,6 +6,7 @@ import {
   UseGuards,
   Req,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
@@ -19,6 +20,7 @@ import { EnvironmentVariables } from '../config/env.interface';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('认证')
 @Controller('auth')

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, Logger, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,7 +11,8 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { Role, UserStatus } from 'common';
-
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 export interface JwtPayload {
   id: number;
   email: string;
@@ -46,6 +47,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(UserOAuth)
     private readonly userOAuthRepository: Repository<UserOAuth>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     this.logger = new Logger(AuthService.name);
   }
@@ -114,10 +116,16 @@ export class AuthService {
    * 根据JWT payload验证用户
    */
   async validateUserByJwt(payload: JwtPayload): Promise<User> {
+    const cacheKey = `user:${payload.id}`;
+    const cachedUser = await this.cacheManager.get<User>(cacheKey);
+    if (cachedUser) {
+      return cachedUser;
+    }
     const user = await this.userService.findOne(payload.id);
     if (!user) {
       throw new UnauthorizedException('用户不存在');
     }
+    await this.cacheManager.set(cacheKey, user, 1000 * 60 * 60 * 24);
     return user;
   }
 

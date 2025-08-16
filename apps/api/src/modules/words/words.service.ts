@@ -63,12 +63,22 @@ export class WordsService {
   /**
    * 根据语言 ID 查询单词
    */
-  async findByLanguageId(languageId: string): Promise<Word[]> {
-    return await this.wordRepository.find({
+  async findByLanguageId(
+    languageId: string,
+    paginationQuery: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Word>> {
+    const { page = 1, pageSize = 10 } = paginationQuery;
+    const skip = (page - 1) * pageSize;
+
+    const [list, total] = await this.wordRepository.findAndCount({
       where: { languageId },
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
+      skip,
+      take: pageSize,
     });
+
+    return new PaginationResponseDto(list, total, page, pageSize);
   }
 
   /**
