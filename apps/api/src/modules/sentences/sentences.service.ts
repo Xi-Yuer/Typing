@@ -213,7 +213,7 @@ export class SentencesService {
       .createQueryBuilder('sentence')
       .leftJoinAndSelect('sentence.language', 'language')
       .leftJoinAndSelect('sentence.category', 'category')
-      .orderBy('RANDOM()')
+      .orderBy('RAND()')
       .limit(count);
 
     if (languageId) {

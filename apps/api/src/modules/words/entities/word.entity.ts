@@ -26,7 +26,7 @@ export class Word {
   @ApiProperty({ description: '所属分类 ID', example: '1' })
   categoryId: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255})
   @ApiProperty({ description: '单词原文', example: 'hello' })
   word: string;
 
@@ -46,9 +46,9 @@ export class Word {
   @ApiProperty({ description: '中文释义', example: '你好；问候' })
   meaning: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   @ApiProperty({ description: '例句', example: 'Hello, how are you?' })
-  example: string;
+  example?: string;
 
   @Column({ name: 'audio_url', type: 'varchar', length: 255, nullable: true })
   @ApiProperty({ description: '发音音频链接', example: 'https://example.com/audio/hello.mp3', required: false })
