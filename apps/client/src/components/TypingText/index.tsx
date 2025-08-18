@@ -36,6 +36,7 @@ export default function TypingText({
   const [isComposing, setIsComposing] = useState(false);
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isAllCorrect, setIsAllCorrect] = useState(false);
 
   // 预加载音频对象，避免每次创建
   const typingAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -166,6 +167,7 @@ export default function TypingText({
         playSuccessSound();
         setInputValue('');
         onComplete?.(true);
+        setIsAllCorrect(true);
       } else {
         // 寻找下一个未完成的单词
         let nextIndex = -1;
@@ -443,49 +445,67 @@ export default function TypingText({
   }, []);
 
   return (
-    <div className='max-w-7xl mx-auto px-4 flex-1 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center text-white relative z-50'>
-      <div className='flex flex-col justify-center items-center gap-y-8'>
-        {/* 中文翻译 */}
-        <div className='text-2xl text-center mb-4'>{wordPair.mean}</div>
+    <div className='w-full h-full flex items-center justify-center text-white relative z-50 overflow-hidden'>
+      {isAllCorrect ? (
+        <></>
+      ) : (
+        <>
+          <div className='flex flex-col justify-center items-center gap-y-8'>
+            {/* 中文翻译 */}
+            <div className='text-5xl text-center mb-4'>{wordPair.mean}</div>
 
-        {/* 单词显示区域 */}
-        <div className='text-center'>
-          <div className='relative flex flex-wrap justify-center gap-2 transition-all'>
-            {words.map((word, index) =>
-              isWord(word.text) ? (
-                <div
-                  key={index}
-                  className={`h-16 rounded-sm border-b-2 border-solid text-5xl leading-none transition-all ${getWordsClassNames(
-                    word
-                  )}`}
-                  style={{ minWidth: `${getWordWidth(word.text)}ch` }}>
-                  {word.userInput || (showAnswerTip ? word.text : '')}
-                </div>
-              ) : (
-                <div
-                  key={index}
-                  className='h-16 rounded-sm text-5xl leading-none transition-all text-white'>
-                  {word.text}
-                </div>
-              )
-            )}
+            {/* 单词显示区域 */}
+            <div className='text-center'>
+              <div className='relative flex flex-wrap justify-center gap-2 transition-all'>
+                {words.map((word, index) =>
+                  isWord(word.text) ? (
+                    <div
+                      key={index}
+                      className={`h-16 rounded-sm border-b-2 border-solid text-5xl leading-none transition-all ${getWordsClassNames(
+                        word
+                      )}
+                  `}
+                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}>
+                      <span
+                        className={
+                          word.incorrect ? 'text-red-500' : 'text-white'
+                        }>
+                        {word.userInput}
+                      </span>
+                      {showAnswerTip &&
+                        word.userInput.length < word.text.length && (
+                          <span className='text-gray-400 opacity-50'>
+                            {word.text.slice(word.userInput.length)}
+                          </span>
+                        )}
+                    </div>
+                  ) : (
+                    <div
+                      key={index}
+                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'>
+                      {word.text}
+                    </div>
+                  )
+                )}
 
-            {/* 隐藏的输入框 */}
-            <input
-              ref={inputRef}
-              className='absolute h-full w-full opacity-0'
-              type='text'
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              onMouseDown={preventCursorMove}
-              onCompositionStart={handleCompositionStart}
-              onCompositionEnd={handleCompositionEnd}
-              autoFocus
-            />
+                {/* 隐藏的输入框 */}
+                <input
+                  ref={inputRef}
+                  className='absolute h-full w-full opacity-0'
+                  type='text'
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  onMouseDown={preventCursorMove}
+                  onCompositionStart={handleCompositionStart}
+                  onCompositionEnd={handleCompositionEnd}
+                  autoFocus
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
