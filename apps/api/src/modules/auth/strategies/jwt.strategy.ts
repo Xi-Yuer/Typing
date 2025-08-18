@@ -9,7 +9,7 @@ import { EnvironmentVariables } from 'src/modules/config/env.interface';
 import { UserStatus } from 'common';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService<EnvironmentVariables>
@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_SECRET',''),
+      secretOrKey: configService.get('JWT_SECRET', '')
     });
   }
 
@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy,'jwt') {
       if (user.status === UserStatus.DISABLED) {
         throw new UnauthorizedException('账户已被禁用');
       }
-      
+
       // 2. 用户被删除
       if (user.status === UserStatus.DELETED) {
         throw new UnauthorizedException('账户不存在');

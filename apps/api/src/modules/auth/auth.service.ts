@@ -1,4 +1,10 @@
-import { Injectable, UnauthorizedException, ConflictException, Logger, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  Logger,
+  Inject
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -47,7 +53,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @InjectRepository(UserOAuth)
     private readonly userOAuthRepository: Repository<UserOAuth>,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {
     this.logger = new Logger(AuthService.name);
   }
@@ -62,7 +68,9 @@ export class AuthService {
       throw new ConflictException('邮箱已被注册');
     }
 
-    const existingUserByName = await this.userService.findByName(registerDto.name);
+    const existingUserByName = await this.userService.findByName(
+      registerDto.name
+    );
     if (existingUserByName) {
       throw new ConflictException('用户名已被使用');
     }
@@ -73,15 +81,15 @@ export class AuthService {
     // 创建用户
     const user = await this.userService.create({
       ...registerDto,
-      password: hashedPassword,
+      password: hashedPassword
     });
 
     // 生成JWT令牌
     const accessToken = await this.generateToken(user);
 
-    return { 
-      user: UserResponseDto.fromUser(user), 
-      accessToken 
+    return {
+      user: UserResponseDto.fromUser(user),
+      accessToken
     };
   }
 
@@ -95,9 +103,9 @@ export class AuthService {
     }
 
     const accessToken = await this.generateToken(user);
-    return { 
-      user: UserResponseDto.fromUser(user), 
-      accessToken 
+    return {
+      user: UserResponseDto.fromUser(user),
+      accessToken
     };
   }
 
@@ -106,7 +114,7 @@ export class AuthService {
    */
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.userService.findByEmail(email);
-    if (user && await bcrypt.compare(password, user.password)) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
     return null;
@@ -146,14 +154,17 @@ export class AuthService {
   /**
    * 通用OAuth登录处理
    */
-  private async oauthLogin(provider: OAuthProvider, profile: OAuthProfile): Promise<AuthResult> {
+  private async oauthLogin(
+    provider: OAuthProvider,
+    profile: OAuthProfile
+  ): Promise<AuthResult> {
     // 查找是否已有OAuth绑定记录
     let oauthRecord = await this.userOAuthRepository.findOne({
       where: {
         provider,
-        providerId: profile.id,
+        providerId: profile.id
       },
-      relations: ['user'],
+      relations: ['user']
     });
 
     let user: User;
@@ -161,7 +172,7 @@ export class AuthService {
     if (oauthRecord) {
       // 已有绑定记录，直接登录
       user = oauthRecord.user;
-      
+
       // 更新OAuth信息
       oauthRecord.providerUsername = profile.username;
       oauthRecord.providerEmail = profile.email;
@@ -181,7 +192,7 @@ export class AuthService {
           name: profile.username,
           email: profile.email || `${profile.username}@${provider}.oauth`,
           password: await bcrypt.hash(Math.random().toString(36), 10), // 随机密码
-          isActive: true,
+          isActive: true
         });
       } else {
         user = existingUser;
@@ -195,7 +206,7 @@ export class AuthService {
         providerUsername: profile.username,
         providerEmail: profile.email,
         avatarUrl: profile.avatarUrl,
-        rawData: profile.rawData,
+        rawData: profile.rawData
       });
       await this.userOAuthRepository.save(oauthRecord);
     }
@@ -210,14 +221,14 @@ export class AuthService {
   async bindOAuthAccount(
     userId: number,
     provider: OAuthProvider,
-    profile: OAuthProfile,
+    profile: OAuthProfile
   ): Promise<UserOAuth> {
     // 检查是否已绑定
     const existingBinding = await this.userOAuthRepository.findOne({
       where: {
         userId,
-        provider,
-      },
+        provider
+      }
     });
 
     if (existingBinding) {
@@ -228,8 +239,8 @@ export class AuthService {
     const existingOAuth = await this.userOAuthRepository.findOne({
       where: {
         provider,
-        providerId: profile.id,
-      },
+        providerId: profile.id
+      }
     });
 
     if (existingOAuth) {
@@ -244,7 +255,7 @@ export class AuthService {
       providerUsername: profile.username,
       providerEmail: profile.email,
       avatarUrl: profile.avatarUrl,
-      rawData: profile.rawData,
+      rawData: profile.rawData
     });
 
     return await this.userOAuthRepository.save(oauthRecord);
@@ -253,10 +264,13 @@ export class AuthService {
   /**
    * 解绑第三方账户
    */
-  async unbindOAuthAccount(userId: number, provider: OAuthProvider): Promise<void> {
+  async unbindOAuthAccount(
+    userId: number,
+    provider: OAuthProvider
+  ): Promise<void> {
     const result = await this.userOAuthRepository.delete({
       userId,
-      provider,
+      provider
     });
 
     if (result.affected === 0) {
@@ -270,7 +284,14 @@ export class AuthService {
   async getUserOAuthBindings(userId: number): Promise<UserOAuth[]> {
     return await this.userOAuthRepository.find({
       where: { userId },
-      select: ['id', 'provider', 'providerUsername', 'providerEmail', 'avatarUrl', 'createdAt'],
+      select: [
+        'id',
+        'provider',
+        'providerUsername',
+        'providerEmail',
+        'avatarUrl',
+        'createdAt'
+      ]
     });
   }
 
@@ -283,7 +304,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
       role: user.role,
-      status: user.status,
+      status: user.status
     };
 
     return this.jwtService.sign(payload);

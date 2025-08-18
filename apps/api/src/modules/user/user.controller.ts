@@ -8,18 +8,24 @@ import {
   Delete,
   UseGuards,
   Req,
-  Query,
+  Query
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto, AdminUpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiParam, ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiBearerAuth,
+  ApiBody
+} from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiSuccessResponse,
   ApiCreatedResponse,
-  ApiPaginationResponse,
+  ApiPaginationResponse
 } from '@/common/decorators/api-response.decorator';
 import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
 import { Roles } from '@/common/decorators/premission.decorator';
@@ -69,7 +75,9 @@ export class UserController {
 
   @Patch(':id')
   @UseGuards(SelfOrAdminGuard)
-  @ApiOperation({ summary: '根据ID更新用户（用户可修改自己，管理员可修改任何用户）' })
+  @ApiOperation({
+    summary: '根据ID更新用户（用户可修改自己，管理员可修改任何用户）'
+  })
   @ApiParam({ name: 'id', description: '用户ID', type: Number })
   @ApiSuccessResponse(User, { description: '更新用户成功' })
   @ApiBody({ type: UpdateUserDto })
@@ -83,7 +91,10 @@ export class UserController {
   @ApiParam({ name: 'id', description: '用户ID', type: Number })
   @ApiSuccessResponse(User, { description: '更新用户成功' })
   @ApiBody({ type: AdminUpdateUserDto })
-  adminUpdate(@Param('id') id: string, @Body() adminUpdateUserDto: AdminUpdateUserDto) {
+  adminUpdate(
+    @Param('id') id: string,
+    @Body() adminUpdateUserDto: AdminUpdateUserDto
+  ) {
     return this.userService.adminUpdate(+id, adminUpdateUserDto);
   }
 

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsOptional, IsBoolean, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsBoolean,
+  MaxLength
+} from 'class-validator';
 
 export class CreateLanguageDto {
   @IsString()
@@ -8,7 +14,7 @@ export class CreateLanguageDto {
   @ApiProperty({
     description: '语言名称',
     example: 'English',
-    maxLength: 50,
+    maxLength: 50
   })
   name: string;
 
@@ -18,7 +24,7 @@ export class CreateLanguageDto {
   @ApiProperty({
     description: '语言代码',
     example: 'en',
-    maxLength: 10,
+    maxLength: 10
   })
   code: string;
 
@@ -28,7 +34,7 @@ export class CreateLanguageDto {
   @ApiProperty({
     description: '文字体系',
     example: 'Latin',
-    maxLength: 50,
+    maxLength: 50
   })
   script: string;
 
@@ -38,7 +44,7 @@ export class CreateLanguageDto {
     description: '是否启用',
     example: true,
     default: true,
-    required: false,
+    required: false
   })
   isActive?: boolean;
 }

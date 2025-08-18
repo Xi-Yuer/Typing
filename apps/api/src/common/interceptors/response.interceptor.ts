@@ -2,7 +2,7 @@ import {
   Injectable,
   NestInterceptor,
   ExecutionContext,
-  CallHandler,
+  CallHandler
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,26 +15,29 @@ import { SetMetadata } from '@nestjs/common';
  * 跳过响应包装的装饰器
  */
 export const SKIP_RESPONSE_WRAPPER = 'skipResponseWrapper';
-export const SkipResponseWrapper = () => SetMetadata(SKIP_RESPONSE_WRAPPER, true);
+export const SkipResponseWrapper = () =>
+  SetMetadata(SKIP_RESPONSE_WRAPPER, true);
 
 /**
  * 响应拦截器 - 统一包装响应格式
  */
 @Injectable()
-export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponseDto<T>> {
+export class ResponseInterceptor<T>
+  implements NestInterceptor<T, ApiResponseDto<T>>
+{
   constructor(private reflector: Reflector) {}
 
   intercept(
     context: ExecutionContext,
-    next: CallHandler,
+    next: CallHandler
   ): Observable<ApiResponseDto<T>> {
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
-    
+
     // 检查是否跳过响应包装
     const skipWrapper = this.reflector.getAllAndOverride<boolean>(
       SKIP_RESPONSE_WRAPPER,
-      [context.getHandler(), context.getClass()],
+      [context.getHandler(), context.getClass()]
     );
 
     if (skipWrapper) {
@@ -42,7 +45,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponseDto
     }
 
     return next.handle().pipe(
-      map((data) => {
+      map(data => {
         // 如果数据已经是 ApiResponseDto 格式，直接返回
         if (data instanceof ApiResponseDto) {
           return data;
@@ -50,7 +53,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponseDto
 
         // 获取响应状态码
         const statusCode = response.statusCode || 200;
-        
+
         // 根据状态码设置默认消息
         let message = '操作成功';
         if (statusCode === 201) {
@@ -60,12 +63,8 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, ApiResponseDto
         }
 
         // 包装响应数据
-        return ApiResponseDto.success(
-          data,
-          message,
-          request.url
-        );
-      }),
+        return ApiResponseDto.success(data, message, request.url);
+      })
     );
   }
 }

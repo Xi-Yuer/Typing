@@ -1,5 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiBody,
+  ApiBearerAuth
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { LanguagesService } from './languages.service';
 import { CreateLanguageDto } from './dto/create-language.dto';
@@ -9,7 +25,7 @@ import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
 import {
   ApiSuccessResponse,
   ApiCreatedResponse,
-  ApiPaginationResponse,
+  ApiPaginationResponse
 } from '@/common/decorators/api-response.decorator';
 import { Roles } from '@/common/decorators/premission.decorator';
 import { RolesGuard } from '@/common/guards/roles.guard';
@@ -75,7 +91,10 @@ export class LanguagesController {
   @ApiParam({ name: 'id', description: '语言ID', type: Number })
   @ApiBody({ type: UpdateLanguageDto })
   @ApiSuccessResponse(Language, { description: '更新语言成功' })
-  update(@Param('id') id: string, @Body() updateLanguageDto: UpdateLanguageDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateLanguageDto: UpdateLanguageDto
+  ) {
     return this.languagesService.update(+id, updateLanguageDto);
   }
 

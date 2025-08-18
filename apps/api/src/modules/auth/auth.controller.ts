@@ -5,10 +5,16 @@ import {
   Get,
   UseGuards,
   Req,
-  Res,
+  Res
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiBody
+} from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -66,38 +72,41 @@ export class AuthController {
   async githubCallback(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
     const state = req.query.state as string;
-    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
+    const frontendUrl =
+      this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
 
     try {
       // 检查是否是绑定流程
       if (state) {
         const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
-        
+
         if (stateData.action === 'bind' && stateData.userId) {
           // 绑定流程：将GitHub账户绑定到现有用户
           const oauthProfile = {
             id: user.id.toString(),
             username: user.name,
-            email: user.email,
+            email: user.email
           };
-          
+
           await this.authService.bindOAuthAccount(
             stateData.userId,
             OAuthProvider.GITHUB,
             oauthProfile
           );
-          
+
           // 重定向到前端绑定成功页面
-          res.redirect(`${frontendUrl}/settings/account?bind=success&provider=github`);
+          res.redirect(
+            `${frontendUrl}/settings/account?bind=success&provider=github`
+          );
           return;
         }
       }
-      
+
       // 正常登录流程
       const result = await this.authService.githubLogin({
         id: user.id.toString(),
         username: user.name,
-        email: user.email,
+        email: user.email
       });
 
       // 重定向到前端，携带token
@@ -105,7 +114,9 @@ export class AuthController {
     } catch (error) {
       // 处理错误，重定向到错误页面
       const errorMessage = error.message || '操作失败';
-      res.redirect(`${frontendUrl}/auth/error?message=${encodeURIComponent(errorMessage)}`);
+      res.redirect(
+        `${frontendUrl}/auth/error?message=${encodeURIComponent(errorMessage)}`
+      );
     }
   }
 
@@ -124,38 +135,41 @@ export class AuthController {
   async qqCallback(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
     const state = req.query.state as string;
-    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
+    const frontendUrl =
+      this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
 
     try {
       // 检查是否是绑定流程
       if (state) {
         const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
-        
+
         if (stateData.action === 'bind' && stateData.userId) {
           // 绑定流程：将QQ账户绑定到现有用户
           const oauthProfile = {
             id: user.id.toString(),
             username: user.name,
-            email: user.email,
+            email: user.email
           };
-          
+
           await this.authService.bindOAuthAccount(
             stateData.userId,
             OAuthProvider.QQ,
             oauthProfile
           );
-          
+
           // 重定向到前端绑定成功页面
-          res.redirect(`${frontendUrl}/settings/account?bind=success&provider=qq`);
+          res.redirect(
+            `${frontendUrl}/settings/account?bind=success&provider=qq`
+          );
           return;
         }
       }
-      
+
       // 正常登录流程
       const result = await this.authService.qqLogin({
         id: user.id.toString(),
         username: user.name,
-        email: user.email,
+        email: user.email
       });
 
       // 重定向到前端，携带token
@@ -163,7 +177,9 @@ export class AuthController {
     } catch (error) {
       // 处理错误，重定向到错误页面
       const errorMessage = error.message || '操作失败';
-      res.redirect(`${frontendUrl}/auth/error?message=${encodeURIComponent(errorMessage)}`);
+      res.redirect(
+        `${frontendUrl}/auth/error?message=${encodeURIComponent(errorMessage)}`
+      );
     }
   }
 
@@ -185,13 +201,15 @@ export class AuthController {
   async bindGithub(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
     // 在session或临时存储中保存用户ID，用于绑定流程
-    const state = Buffer.from(JSON.stringify({ userId: user.id, action: 'bind' })).toString('base64');
-    
+    const state = Buffer.from(
+      JSON.stringify({ userId: user.id, action: 'bind' })
+    ).toString('base64');
+
     const githubClientId = this.configService.get('GITHUB_CLIENT_ID');
     const callbackUrl = this.configService.get('GITHUB_CALLBACK_URL');
-    
+
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=user:email&state=${state}`;
-    
+
     res.redirect(githubAuthUrl);
   }
 
@@ -204,23 +222,29 @@ export class AuthController {
   @ApiResponse({ status: 409, description: '账户已绑定' })
   async bindGithubManual(
     @Req() req: any,
-    @Body() bindData: { githubId: string; username: string; email?: string; avatarUrl?: string }
+    @Body()
+    bindData: {
+      githubId: string;
+      username: string;
+      email?: string;
+      avatarUrl?: string;
+    }
   ) {
     const user = req.user as User;
-    
+
     const oauthProfile = {
       id: bindData.githubId,
       username: bindData.username,
       email: bindData.email,
-      avatarUrl: bindData.avatarUrl,
+      avatarUrl: bindData.avatarUrl
     };
-    
+
     const binding = await this.authService.bindOAuthAccount(
       user.id,
       OAuthProvider.GITHUB,
       oauthProfile
     );
-    
+
     return {
       message: 'GitHub账户绑定成功',
       binding: {
@@ -228,8 +252,8 @@ export class AuthController {
         providerUsername: binding.providerUsername,
         providerEmail: binding.providerEmail,
         avatarUrl: binding.avatarUrl,
-        createdAt: binding.createdAt,
-      },
+        createdAt: binding.createdAt
+      }
     };
   }
 
@@ -253,13 +277,15 @@ export class AuthController {
   async bindQQ(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
     // 在session或临时存储中保存用户ID，用于绑定流程
-    const state = Buffer.from(JSON.stringify({ userId: user.id, action: 'bind' })).toString('base64');
-    
+    const state = Buffer.from(
+      JSON.stringify({ userId: user.id, action: 'bind' })
+    ).toString('base64');
+
     const qqClientId = this.configService.get('QQ_CLIENT_ID');
     const callbackUrl = this.configService.get('QQ_CALLBACK_URL');
-    
+
     const qqAuthUrl = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=${qqClientId}&redirect_uri=${encodeURIComponent(callbackUrl)}&scope=get_user_info&state=${state}`;
-    
+
     res.redirect(qqAuthUrl);
   }
 
@@ -272,23 +298,29 @@ export class AuthController {
   @ApiResponse({ status: 409, description: '账户已绑定' })
   async bindQQManual(
     @Req() req: any,
-    @Body() bindData: { qqId: string; username: string; email?: string; avatarUrl?: string }
+    @Body()
+    bindData: {
+      qqId: string;
+      username: string;
+      email?: string;
+      avatarUrl?: string;
+    }
   ) {
     const user = req.user as User;
-    
+
     const oauthProfile = {
       id: bindData.qqId,
       username: bindData.username,
       email: bindData.email,
-      avatarUrl: bindData.avatarUrl,
+      avatarUrl: bindData.avatarUrl
     };
-    
+
     const binding = await this.authService.bindOAuthAccount(
       user.id,
       OAuthProvider.QQ,
       oauthProfile
     );
-    
+
     return {
       message: 'QQ账户绑定成功',
       binding: {
@@ -296,8 +328,8 @@ export class AuthController {
         providerUsername: binding.providerUsername,
         providerEmail: binding.providerEmail,
         avatarUrl: binding.avatarUrl,
-        createdAt: binding.createdAt,
-      },
+        createdAt: binding.createdAt
+      }
     };
   }
 

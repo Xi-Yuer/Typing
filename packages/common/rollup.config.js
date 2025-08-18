@@ -11,13 +11,13 @@ const config = [
       {
         file: 'dist/index.js',
         format: 'es',
-        sourcemap: true,
+        sourcemap: true
       },
       {
         file: 'dist/index.cjs',
         format: 'cjs',
-        sourcemap: true,
-      },
+        sourcemap: true
+      }
     ],
     plugins: [
       resolve(),
@@ -25,20 +25,20 @@ const config = [
       typescript({
         tsconfig: './tsconfig.json',
         declaration: false,
-        declarationMap: false,
-      }),
+        declarationMap: false
+      })
     ],
-    external: [],
+    external: []
   },
   // TypeScript declarations
   {
     input: 'index.ts',
     output: {
       file: 'dist/index.d.ts',
-      format: 'es',
+      format: 'es'
     },
-    plugins: [dts()],
-  },
+    plugins: [dts()]
+  }
 ];
 
 export default config;

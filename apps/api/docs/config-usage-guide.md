@@ -14,11 +14,11 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config';
   imports: [
     NestConfigModule.forRoot({
       envFilePath: ['.env', '.env.dev', '.env.prod'],
-      isGlobal: true, // 设置为全局模块
+      isGlobal: true // 设置为全局模块
     })
   ],
   providers: [],
-  exports: [],
+  exports: []
 })
 export class ConfigModule {}
 ```
@@ -57,14 +57,16 @@ import { EnvironmentVariables } from '../config/env.interface';
 
 @Injectable()
 export class SomeService {
-  constructor(private readonly configService: ConfigService<EnvironmentVariables>) {}
+  constructor(
+    private readonly configService: ConfigService<EnvironmentVariables>
+  ) {}
 
   someMethod() {
     // 获取环境变量
     const jwtSecret = this.configService.get<string>('JWT_SECRET');
     const port = this.configService.get<number>('PORT', 3000); // 带默认值
     const nodeEnv = this.configService.get<string>('NODE_ENV');
-    
+
     // 使用环境变量
     console.log(`JWT Secret: ${jwtSecret}`);
     console.log(`Port: ${port}`);
@@ -88,13 +90,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule], // 如果不是全局模块需要导入
       useFactory: async (configService: ConfigService) => {
         const databaseUrl = configService.get<string>('DATABASE_URL');
-        
+
         if (!databaseUrl) {
           throw new Error('DATABASE_URL environment variable is not set');
         }
 
         const url = new URL(databaseUrl);
-        
+
         return {
           type: 'mysql',
           host: url.hostname,
@@ -104,12 +106,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           database: url.pathname.slice(1),
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
           synchronize: configService.get<string>('NODE_ENV') === 'development',
-          logging: configService.get<string>('NODE_ENV') === 'development',
+          logging: configService.get<string>('NODE_ENV') === 'development'
         };
       },
-      inject: [ConfigService], // 注入 ConfigService
-    }),
-  ],
+      inject: [ConfigService] // 注入 ConfigService
+    })
+  ]
 })
 export class DatabaseModule {}
 ```
@@ -127,13 +129,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET', 'your-secret-key'),
-        signOptions: { 
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '7d') 
-        },
+        signOptions: {
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '7d')
+        }
       }),
-      inject: [ConfigService],
-    }),
-  ],
+      inject: [ConfigService]
+    })
+  ]
 })
 export class AuthModule {}
 ```
@@ -152,12 +154,12 @@ import { ConfigService } from '@nestjs/config';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET', 'your-secret-key'),
+      secretOrKey: configService.get<string>('JWT_SECRET', 'your-secret-key')
     });
   }
 
@@ -179,16 +181,16 @@ import { ConfigService } from '@nestjs/config';
 export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {
     super({
       clientID: configService.get<string>('GITHUB_CLIENT_ID') || '',
       clientSecret: configService.get<string>('GITHUB_CLIENT_SECRET') || '',
       callbackURL: configService.get<string>(
-        'GITHUB_CALLBACK_URL', 
+        'GITHUB_CALLBACK_URL',
         'http://localhost:3000/auth/github/callback'
       ),
-      scope: ['user:email'],
+      scope: ['user:email']
     });
   }
 
@@ -213,7 +215,7 @@ export class ConfigController {
     return {
       environment: this.configService.get<string>('NODE_ENV'),
       port: this.configService.get<number>('PORT'),
-      frontendUrl: this.configService.get<string>('FRONTEND_URL'),
+      frontendUrl: this.configService.get<string>('FRONTEND_URL')
       // 注意：不要暴露敏感信息如密钥
     };
   }
@@ -229,7 +231,8 @@ export class ConfigController {
 ```typescript
 // 推荐
 const port = this.configService.get<number>('PORT', 3000);
-const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+const isProduction =
+  this.configService.get<string>('NODE_ENV') === 'production';
 
 // 不推荐
 const port = this.configService.get('PORT'); // 返回 any 类型
@@ -279,7 +282,7 @@ export class AppConfigService {
   get jwtConfig() {
     return {
       secret: this.configService.get<string>('JWT_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_EXPIRES_IN', '7d'),
+      expiresIn: this.configService.get<string>('JWT_EXPIRES_IN', '7d')
     };
   }
 
@@ -287,7 +290,7 @@ export class AppConfigService {
     return {
       clientId: this.configService.get<string>('GITHUB_CLIENT_ID'),
       clientSecret: this.configService.get<string>('GITHUB_CLIENT_SECRET'),
-      callbackUrl: this.configService.get<string>('GITHUB_CALLBACK_URL'),
+      callbackUrl: this.configService.get<string>('GITHUB_CALLBACK_URL')
     };
   }
 }

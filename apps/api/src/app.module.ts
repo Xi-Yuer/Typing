@@ -14,34 +14,35 @@ import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categ
 
 @Module({
   imports: [
-    ConfigModule, 
-    DatabaseModule, 
-    UserModule, 
-    AuthModule, 
-    LanguagesModule, 
-    CorpusCategoriesModule, 
-    WordsModule, 
+    ConfigModule,
+    DatabaseModule,
+    UserModule,
+    AuthModule,
+    LanguagesModule,
+    CorpusCategoriesModule,
+    WordsModule,
     SentencesModule,
     CacheModule.registerAsync({
       useFactory: async () => {
         return {
           stores: [
             new Keyv({
-              store: new CacheableMemory({ ttl: 60000, lruSize: 5000 }),
+              store: new CacheableMemory({ ttl: 60000, lruSize: 5000 })
             }),
-            createKeyv(process.env.REDIS_URL)],
-          ttl: 1000 * 60 * 60 * 24,
+            createKeyv(process.env.REDIS_URL)
+          ],
+          ttl: 1000 * 60 * 60 * 24
         };
       },
-      isGlobal: true,
-    }),
+      isGlobal: true
+    })
   ],
   controllers: [],
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
-  ],
+      useClass: CacheInterceptor
+    }
+  ]
 })
 export class AppModule {}

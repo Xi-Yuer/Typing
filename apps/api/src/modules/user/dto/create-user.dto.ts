@@ -7,7 +7,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '用户名',
-    example: '张三',
+    example: '张三'
   })
   name: string;
 
@@ -16,7 +16,7 @@ export class CreateUserDto {
   @ApiProperty({
     description: '邮箱',
     example: 'user@example.com',
-    format: 'email', // 指定为邮箱格式，Swagger会识别为email类型
+    format: 'email' // 指定为邮箱格式，Swagger会识别为email类型
   })
   email: string;
 
@@ -24,7 +24,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty({
     description: '密码',
-    example: '123456',
+    example: '123456'
   })
   password: string;
 
@@ -32,7 +32,7 @@ export class CreateUserDto {
   @ApiProperty({
     description: '是否激活',
     example: true,
-    required: false,
+    required: false
   })
   isActive?: boolean;
 
@@ -41,7 +41,7 @@ export class CreateUserDto {
     description: '用户角色',
     example: 'USER',
     required: false,
-    enum: Role,
+    enum: Role
   })
   role?: Role;
 }

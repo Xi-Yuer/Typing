@@ -9,7 +9,7 @@ export enum Role {
   /** 普通用户 */
   USER = 'user',
   /** 访客 */
-  GUEST = 'guest',
+  GUEST = 'guest'
 }
 
 /**
@@ -23,5 +23,5 @@ export enum UserStatus {
   /** 待激活 */
   PENDING = 'pending',
   /** 已删除 */
-  DELETED = 'deleted',
+  DELETED = 'deleted'
 }

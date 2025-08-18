@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
-  JoinColumn,
+  JoinColumn
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Language } from '../../languages/entities/language.entity';
@@ -27,7 +27,10 @@ export class Sentence {
   categoryId: string;
 
   @Column({ type: 'text' })
-  @ApiProperty({ description: '句子原文', example: 'Hello, how are you today?' })
+  @ApiProperty({
+    description: '句子原文',
+    example: 'Hello, how are you today?'
+  })
   sentence: string;
 
   @Column({ type: 'text' })
@@ -35,7 +38,11 @@ export class Sentence {
   meaning: string;
 
   @Column({ name: 'audio_url', type: 'varchar', length: 255, nullable: true })
-  @ApiProperty({ description: '句子音频 URL', example: 'https://example.com/audio/sentence1.mp3', required: false })
+  @ApiProperty({
+    description: '句子音频 URL',
+    example: 'https://example.com/audio/sentence1.mp3',
+    required: false
+  })
   audioUrl?: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
@@ -47,7 +54,11 @@ export class Sentence {
   updatedAt: Date;
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
-  @ApiProperty({ description: '删除时间', example: '2024-01-01T00:00:00Z', required: false })
+  @ApiProperty({
+    description: '删除时间',
+    example: '2024-01-01T00:00:00Z',
+    required: false
+  })
   deletedAt?: Date;
 
   // 关联关系

@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   UnauthorizedException,
-  BadRequestException,
+  BadRequestException
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from 'common';

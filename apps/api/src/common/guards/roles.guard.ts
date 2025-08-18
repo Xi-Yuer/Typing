@@ -3,10 +3,13 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ROLES_KEY,USER_STATUS_KEY } from '@/common/decorators/premission.decorator';
+import {
+  ROLES_KEY,
+  USER_STATUS_KEY
+} from '@/common/decorators/premission.decorator';
 import { Role, UserStatus } from 'common';
 import { User } from '@/modules/user/entities/user.entity';
 
@@ -21,13 +24,13 @@ export class RolesGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
-      context.getClass(),
+      context.getClass()
     ]);
-    
-    const requiredStatuses = this.reflector.getAllAndOverride<UserStatus[]>(USER_STATUS_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+
+    const requiredStatuses = this.reflector.getAllAndOverride<UserStatus[]>(
+      USER_STATUS_KEY,
+      [context.getHandler(), context.getClass()]
+    );
 
     // 如果没有设置角色或状态要求，则允许访问
     if (!requiredRoles && !requiredStatuses) {

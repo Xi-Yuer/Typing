@@ -1,6 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { Role,UserStatus } from 'common';
-
+import { Role, UserStatus } from 'common';
 
 /**
  * 角色权限装饰器的元数据键
@@ -15,7 +14,7 @@ export const USER_STATUS_KEY = 'userStatus';
 /**
  * 角色权限装饰器
  * 用于标记接口所需的角色权限
- * 
+ *
  * @param roles 允许访问的角色列表
  * @example
  * ```typescript
@@ -31,7 +30,7 @@ export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
 /**
  * 用户状态装饰器
  * 用于标记接口所需的用户状态
- * 
+ *
  * @param statuses 允许访问的用户状态列表
  * @example
  * ```typescript
@@ -42,5 +41,5 @@ export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
  * }
  * ```
  */
-export const RequireUserStatus = (...statuses: UserStatus[]) => 
+export const RequireUserStatus = (...statuses: UserStatus[]) =>
   SetMetadata(USER_STATUS_KEY, statuses);

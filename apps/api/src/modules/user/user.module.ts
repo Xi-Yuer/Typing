@@ -13,15 +13,17 @@ import { EnvironmentVariables } from '../config/env.interface';
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService<EnvironmentVariables>) => ({
+      useFactory: async (
+        configService: ConfigService<EnvironmentVariables>
+      ) => ({
         secret: configService.get('JWT_SECRET', ''),
-        signOptions: { expiresIn: '7d' },
+        signOptions: { expiresIn: '7d' }
       }),
-      inject: [ConfigService],
-    }),
+      inject: [ConfigService]
+    })
   ],
   controllers: [UserController],
   providers: [UserService],
-  exports: [UserService],
+  exports: [UserService]
 })
 export class UserModule {}

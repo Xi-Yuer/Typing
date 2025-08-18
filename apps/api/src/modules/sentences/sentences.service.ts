@@ -2,7 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException,
+  BadRequestException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
@@ -16,7 +16,7 @@ import { PaginationResponseDto } from '../../common/dto/api-response.dto';
 export class SentencesService {
   constructor(
     @InjectRepository(Sentence)
-    private readonly sentenceRepository: Repository<Sentence>,
+    private readonly sentenceRepository: Repository<Sentence>
   ) {}
 
   /**
@@ -28,13 +28,13 @@ export class SentencesService {
       where: {
         sentence: createSentenceDto.sentence,
         languageId: createSentenceDto.languageId,
-        categoryId: createSentenceDto.categoryId,
-      },
+        categoryId: createSentenceDto.categoryId
+      }
     });
 
     if (existingSentence) {
       throw new ConflictException(
-        `句子 "${createSentenceDto.sentence}" 在该语言和分类下已存在`,
+        `句子 "${createSentenceDto.sentence}" 在该语言和分类下已存在`
       );
     }
 
@@ -46,7 +46,7 @@ export class SentencesService {
    * 分页查询句子
    */
   async findAllPaginated(
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<Sentence>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -55,7 +55,7 @@ export class SentencesService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -66,7 +66,7 @@ export class SentencesService {
    */
   async findByLanguageId(
     languageId: string,
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<Sentence>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -76,7 +76,7 @@ export class SentencesService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -87,7 +87,7 @@ export class SentencesService {
    */
   async findByCategoryId(
     categoryId: string,
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<Sentence>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -97,7 +97,7 @@ export class SentencesService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -109,7 +109,7 @@ export class SentencesService {
   async findByLanguageAndCategory(
     languageId: string,
     categoryId: string,
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<Sentence>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -119,7 +119,7 @@ export class SentencesService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -131,7 +131,7 @@ export class SentencesService {
   async searchSentences(
     keyword: string,
     languageId?: string,
-    categoryId?: string,
+    categoryId?: string
   ): Promise<Sentence[]> {
     if (!keyword || keyword.trim().length === 0) {
       throw new BadRequestException('搜索关键词不能为空');
@@ -139,7 +139,7 @@ export class SentencesService {
 
     const whereConditions: any = [
       { sentence: Like(`%${keyword}%`) },
-      { meaning: Like(`%${keyword}%`) },
+      { meaning: Like(`%${keyword}%`) }
     ];
 
     // 如果指定了语言或分类，添加到搜索条件
@@ -153,7 +153,7 @@ export class SentencesService {
     return await this.sentenceRepository.find({
       where: whereConditions,
       relations: ['language', 'category'],
-      order: { createdAt: 'DESC' },
+      order: { createdAt: 'DESC' }
     });
   }
 
@@ -164,7 +164,7 @@ export class SentencesService {
     keyword: string,
     paginationQuery: PaginationQueryDto,
     languageId?: string,
-    categoryId?: string,
+    categoryId?: string
   ): Promise<PaginationResponseDto<Sentence>> {
     if (!keyword || keyword.trim().length === 0) {
       throw new BadRequestException('搜索关键词不能为空');
@@ -175,7 +175,7 @@ export class SentencesService {
 
     const whereConditions: any = [
       { sentence: Like(`%${keyword}%`) },
-      { meaning: Like(`%${keyword}%`) },
+      { meaning: Like(`%${keyword}%`) }
     ];
 
     // 如果指定了语言或分类，添加到搜索条件
@@ -191,7 +191,7 @@ export class SentencesService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -203,7 +203,7 @@ export class SentencesService {
   async getRandomSentences(
     count: number = 10,
     languageId?: string,
-    categoryId?: string,
+    categoryId?: string
   ): Promise<Sentence[]> {
     if (count <= 0 || count > 100) {
       throw new BadRequestException('数量必须在 1-100 之间');
@@ -218,13 +218,13 @@ export class SentencesService {
 
     if (languageId) {
       queryBuilder.andWhere('sentence.languageId = :languageId', {
-        languageId,
+        languageId
       });
     }
 
     if (categoryId) {
       queryBuilder.andWhere('sentence.categoryId = :categoryId', {
-        categoryId,
+        categoryId
       });
     }
 
@@ -237,7 +237,7 @@ export class SentencesService {
   async findOne(id: string): Promise<Sentence> {
     const sentence = await this.sentenceRepository.findOne({
       where: { id },
-      relations: ['language', 'category'],
+      relations: ['language', 'category']
     });
 
     if (!sentence) {
@@ -250,22 +250,28 @@ export class SentencesService {
   /**
    * 更新句子
    */
-  async update(id: string, updateSentenceDto: UpdateSentenceDto): Promise<Sentence> {
+  async update(
+    id: string,
+    updateSentenceDto: UpdateSentenceDto
+  ): Promise<Sentence> {
     const sentence = await this.findOne(id);
 
     // 如果更新了句子内容，检查是否与其他句子冲突
-    if (updateSentenceDto.sentence && updateSentenceDto.sentence !== sentence.sentence) {
+    if (
+      updateSentenceDto.sentence &&
+      updateSentenceDto.sentence !== sentence.sentence
+    ) {
       const existingSentence = await this.sentenceRepository.findOne({
         where: {
           sentence: updateSentenceDto.sentence,
           languageId: updateSentenceDto.languageId || sentence.languageId,
-          categoryId: updateSentenceDto.categoryId || sentence.categoryId,
-        },
+          categoryId: updateSentenceDto.categoryId || sentence.categoryId
+        }
       });
 
       if (existingSentence && existingSentence.id !== id) {
         throw new ConflictException(
-          `句子 "${updateSentenceDto.sentence}" 在该语言和分类下已存在`,
+          `句子 "${updateSentenceDto.sentence}" 在该语言和分类下已存在`
         );
       }
     }

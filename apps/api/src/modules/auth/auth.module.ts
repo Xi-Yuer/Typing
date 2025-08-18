@@ -19,17 +19,25 @@ import { EnvironmentVariables } from '../config/env.interface';
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService<EnvironmentVariables>) => ({
+      useFactory: async (
+        configService: ConfigService<EnvironmentVariables>
+      ) => ({
         secret: configService.get('JWT_SECRET', ''),
-        signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN', '7d') },
+        signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN', '7d') }
       }),
-      inject: [ConfigService],
+      inject: [ConfigService]
     }),
     TypeOrmModule.forFeature([UserOAuth]),
-    UserModule,
+    UserModule
   ],
-  providers: [AuthService, JwtStrategy, GitHubStrategy, QQStrategy, LocalStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    GitHubStrategy,
+    QQStrategy,
+    LocalStrategy
+  ],
   controllers: [AuthController],
-  exports: [AuthService, JwtStrategy, GitHubStrategy, QQStrategy, LocalStrategy],
+  exports: [AuthService, JwtStrategy, GitHubStrategy, QQStrategy, LocalStrategy]
 })
 export class AuthModule {}

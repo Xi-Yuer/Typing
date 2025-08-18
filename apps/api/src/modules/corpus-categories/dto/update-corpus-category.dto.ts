@@ -1,9 +1,18 @@
 import { PartialType } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength, IsInt, Min, Max } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  MaxLength,
+  IsInt,
+  Min,
+  Max
+} from 'class-validator';
 import { CreateCorpusCategoryDto } from './create-corpus-category.dto';
 
-export class UpdateCorpusCategoryDto extends PartialType(CreateCorpusCategoryDto) {
+export class UpdateCorpusCategoryDto extends PartialType(
+  CreateCorpusCategoryDto
+) {
   @IsOptional()
   @IsString()
   @MaxLength(100, { message: '分类名称长度不能超过100个字符' })
@@ -11,7 +20,7 @@ export class UpdateCorpusCategoryDto extends PartialType(CreateCorpusCategoryDto
     description: '分类名称',
     example: '商务英语',
     maxLength: 100,
-    required: false,
+    required: false
   })
   name?: string;
 
@@ -20,7 +29,7 @@ export class UpdateCorpusCategoryDto extends PartialType(CreateCorpusCategoryDto
   @ApiProperty({
     description: '分类描述',
     example: '适合商务场景的英语学习内容',
-    required: false,
+    required: false
   })
   description?: string;
 
@@ -33,7 +42,7 @@ export class UpdateCorpusCategoryDto extends PartialType(CreateCorpusCategoryDto
     example: 3,
     minimum: 1,
     maximum: 5,
-    required: false,
+    required: false
   })
   difficulty?: number;
 }

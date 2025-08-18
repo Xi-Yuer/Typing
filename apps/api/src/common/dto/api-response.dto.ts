@@ -30,14 +30,22 @@ export class ApiResponseDto<T> {
   /**
    * 创建成功响应
    */
-  static success<T>(data: T, message = '操作成功', path = ''): ApiResponseDto<T> {
+  static success<T>(
+    data: T,
+    message = '操作成功',
+    path = ''
+  ): ApiResponseDto<T> {
     return new ApiResponseDto(data, message, 200, path);
   }
 
   /**
    * 创建错误响应
    */
-  static error(message = '操作失败', code = 500, path = ''): ApiResponseDto<null> {
+  static error(
+    message = '操作失败',
+    code = 500,
+    path = ''
+  ): ApiResponseDto<null> {
     return new ApiResponseDto(null, message, code, path);
   }
 }
@@ -73,8 +81,17 @@ export class PaginationDto<T = any> {
 /**
  * 分页响应格式
  */
-export class PaginationResponseDto<T = any> extends ApiResponseDto<PaginationDto<T>> {
-  constructor(list: T[], total: number, page: number, pageSize: number, message = '查询成功', path = '') {
+export class PaginationResponseDto<T = any> extends ApiResponseDto<
+  PaginationDto<T>
+> {
+  constructor(
+    list: T[],
+    total: number,
+    page: number,
+    pageSize: number,
+    message = '查询成功',
+    path = ''
+  ) {
     const paginationData = new PaginationDto(list, total, page, pageSize);
     super(paginationData, message, 200, path);
   }

@@ -11,14 +11,14 @@ import { EnvironmentVariables } from 'src/modules/config/env.interface';
 export class QQStrategy extends PassportStrategy(Strategy, 'qq') {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService<EnvironmentVariables>,
+    private readonly configService: ConfigService<EnvironmentVariables>
   ) {
     super({
       clientID: configService.get('QQ_CLIENT_ID', ''),
       clientSecret: configService.get('QQ_CLIENT_SECRET', ''),
       callbackURL: configService.get('QQ_CALLBACK_URL', ''),
       scope: ['get_user_info'],
-      passReqToCallback: true,
+      passReqToCallback: true
     });
   }
 
@@ -26,20 +26,22 @@ export class QQStrategy extends PassportStrategy(Strategy, 'qq') {
     req: any,
     accessToken: string,
     refreshToken: string,
-    profile: any,
+    profile: any
   ): Promise<User> {
     const oauthProfile = {
       id: profile.id,
       username: profile.nickname || profile.displayName,
       email: profile.email,
       avatarUrl: profile.figureurl_qq_1 || profile.figureurl_1,
-      rawData: profile._json,
+      rawData: profile._json
     };
 
     // 检查是否是绑定流程
     if (req.query.state) {
       try {
-        const state = JSON.parse(Buffer.from(req.query.state, 'base64').toString());
+        const state = JSON.parse(
+          Buffer.from(req.query.state, 'base64').toString()
+        );
         if (state.action === 'bind') {
           const result = await this.authService.qqLogin(oauthProfile);
           return result.user;

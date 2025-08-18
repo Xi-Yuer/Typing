@@ -8,7 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
-  ParseIntPipe,
+  ParseIntPipe
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,7 +16,7 @@ import {
   ApiParam,
   ApiBody,
   ApiBearerAuth,
-  ApiQuery,
+  ApiQuery
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -25,7 +25,7 @@ import { Role } from 'common';
 import {
   ApiSuccessResponse,
   ApiCreatedResponse,
-  ApiPaginationResponse,
+  ApiPaginationResponse
 } from '../../common/decorators/api-response.decorator';
 import { CorpusCategoriesService } from './corpus-categories.service';
 import { CreateCorpusCategoryDto } from './dto/create-corpus-category.dto';
@@ -38,7 +38,9 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 export class CorpusCategoriesController {
-  constructor(private readonly corpusCategoriesService: CorpusCategoriesService) {}
+  constructor(
+    private readonly corpusCategoriesService: CorpusCategoriesService
+  ) {}
 
   @Post()
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
@@ -51,7 +53,9 @@ export class CorpusCategoriesController {
 
   @Get()
   @ApiOperation({ summary: '获取所有语料库分类' })
-  @ApiSuccessResponse([CorpusCategory], { description: '获取所有语料库分类成功' })
+  @ApiSuccessResponse([CorpusCategory], {
+    description: '获取所有语料库分类成功'
+  })
   findAll() {
     return this.corpusCategoriesService.findAll();
   }
@@ -59,7 +63,9 @@ export class CorpusCategoriesController {
   @Get('paginated')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '分页查询语料库分类（仅管理员）' })
-  @ApiPaginationResponse(CorpusCategory, { description: '分页查询语料库分类成功' })
+  @ApiPaginationResponse(CorpusCategory, {
+    description: '分页查询语料库分类成功'
+  })
   findAllPaginated(@Query() paginationQuery: PaginationQueryDto) {
     return this.corpusCategoriesService.findAllPaginated(paginationQuery);
   }
@@ -67,15 +73,23 @@ export class CorpusCategoriesController {
   @Get('language/:languageId')
   @ApiOperation({ summary: '根据语言 ID 查询分类' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
-  @ApiSuccessResponse([CorpusCategory], { description: '根据语言 ID 查询分类成功' })
+  @ApiSuccessResponse([CorpusCategory], {
+    description: '根据语言 ID 查询分类成功'
+  })
   findByLanguageId(@Param('languageId') languageId: string) {
     return this.corpusCategoriesService.findByLanguageId(languageId);
   }
 
   @Get('difficulty/:difficulty')
   @ApiOperation({ summary: '根据难度等级查询分类' })
-  @ApiParam({ name: 'difficulty', description: '难度等级（1-5）', type: Number })
-  @ApiSuccessResponse([CorpusCategory], { description: '根据难度等级查询分类成功' })
+  @ApiParam({
+    name: 'difficulty',
+    description: '难度等级（1-5）',
+    type: Number
+  })
+  @ApiSuccessResponse([CorpusCategory], {
+    description: '根据难度等级查询分类成功'
+  })
   findByDifficulty(@Param('difficulty', ParseIntPipe) difficulty: number) {
     return this.corpusCategoriesService.findByDifficulty(difficulty);
   }
@@ -83,13 +97,22 @@ export class CorpusCategoriesController {
   @Get('language/:languageId/difficulty/:difficulty')
   @ApiOperation({ summary: '根据语言 ID 和难度等级查询分类' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
-  @ApiParam({ name: 'difficulty', description: '难度等级（1-5）', type: Number })
-  @ApiSuccessResponse([CorpusCategory], { description: '根据语言 ID 和难度等级查询分类成功' })
+  @ApiParam({
+    name: 'difficulty',
+    description: '难度等级（1-5）',
+    type: Number
+  })
+  @ApiSuccessResponse([CorpusCategory], {
+    description: '根据语言 ID 和难度等级查询分类成功'
+  })
   findByLanguageAndDifficulty(
     @Param('languageId') languageId: string,
-    @Param('difficulty', ParseIntPipe) difficulty: number,
+    @Param('difficulty', ParseIntPipe) difficulty: number
   ) {
-    return this.corpusCategoriesService.findByLanguageAndDifficulty(languageId, difficulty);
+    return this.corpusCategoriesService.findByLanguageAndDifficulty(
+      languageId,
+      difficulty
+    );
   }
 
   @Get('stats/difficulty')
@@ -122,7 +145,10 @@ export class CorpusCategoriesController {
   @ApiParam({ name: 'id', description: '分类 ID', type: String })
   @ApiBody({ type: UpdateCorpusCategoryDto })
   @ApiSuccessResponse(CorpusCategory, { description: '更新语料库分类成功' })
-  update(@Param('id') id: string, @Body() updateCorpusCategoryDto: UpdateCorpusCategoryDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCorpusCategoryDto: UpdateCorpusCategoryDto
+  ) {
     return this.corpusCategoriesService.update(id, updateCorpusCategoryDto);
   }
 

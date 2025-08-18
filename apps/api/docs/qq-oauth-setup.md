@@ -16,6 +16,7 @@
 ## 2. 获取应用凭据
 
 创建应用后，你将获得：
+
 - **APP ID**：应用的唯一标识符
 - **APP Key**：应用的密钥
 
@@ -53,18 +54,20 @@ QQ_CALLBACK_URL=http://localhost:3000/auth/qq/callback
 ## 6. 前端集成示例
 
 ### 登录
+
 ```javascript
 // 重定向到 QQ 登录
 window.location.href = '/api/auth/qq';
 ```
 
 ### 绑定账户
+
 ```javascript
 // 绑定 QQ 账户（需要用户已登录）
 const response = await fetch('/api/auth/bind/qq', {
   method: 'GET',
   headers: {
-    'Authorization': `Bearer ${token}`
+    Authorization: `Bearer ${token}`
   }
 });
 
@@ -73,7 +76,7 @@ const response = await fetch('/api/auth/bind/qq/manual', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    Authorization: `Bearer ${token}`
   },
   body: JSON.stringify({
     qqId: 'user-qq-id',
@@ -85,11 +88,12 @@ const response = await fetch('/api/auth/bind/qq/manual', {
 ```
 
 ### 解绑账户
+
 ```javascript
 const response = await fetch('/api/auth/unbind/qq', {
   method: 'POST',
   headers: {
-    'Authorization': `Bearer ${token}`
+    Authorization: `Bearer ${token}`
   }
 });
 ```

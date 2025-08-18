@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
+  DeleteDateColumn
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 

@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
-  JoinColumn,
+  JoinColumn
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Language } from '../../languages/entities/language.entity';

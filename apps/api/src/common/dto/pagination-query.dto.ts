@@ -3,9 +3,9 @@ import { Type } from 'class-transformer';
 import { IsOptional, IsPositive, Min, Max } from 'class-validator';
 
 export class PaginationQueryDto {
-  @ApiProperty({ 
-    description: '页码', 
-    example: 1, 
+  @ApiProperty({
+    description: '页码',
+    example: 1,
     required: false,
     minimum: 1
   })
@@ -15,9 +15,9 @@ export class PaginationQueryDto {
   @Min(1, { message: '页码不能小于1' })
   page?: number = 1;
 
-  @ApiProperty({ 
-    description: '每页数量', 
-    example: 10, 
+  @ApiProperty({
+    description: '每页数量',
+    example: 10,
     required: false,
     minimum: 1,
     maximum: 100

@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  Index,
+  Index
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.entity';
@@ -16,7 +16,7 @@ export enum OAuthProvider {
   GITHUB = 'github',
   GOOGLE = 'google',
   WECHAT = 'wechat',
-  QQ = 'qq',
+  QQ = 'qq'
 }
 
 @Entity('user_oauth')
@@ -32,7 +32,7 @@ export class UserOAuth {
 
   @Column({
     type: 'enum',
-    enum: OAuthProvider,
+    enum: OAuthProvider
   })
   @ApiProperty({ description: '第三方平台', enum: OAuthProvider })
   provider: OAuthProvider;

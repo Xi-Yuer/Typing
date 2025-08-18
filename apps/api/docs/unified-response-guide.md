@@ -71,14 +71,13 @@ import {
   ApiSuccessResponse,
   ApiCreatedResponse,
   ApiPaginationResponse,
-  ApiCommonErrorResponses,
+  ApiCommonErrorResponses
 } from '../../common/decorators/api-response.decorator';
 
 @ApiTags('用户管理')
 @Controller('user')
 @ApiCommonErrorResponses() // 自动添加常用错误响应文档
 export class UserController {
-  
   @Get()
   @ApiOperation({ summary: '查询所有用户' })
   @ApiSuccessResponse([User], { description: '返回所有用户' })
@@ -175,14 +174,14 @@ import { PaginationResponseDto } from '../../common/dto/api-response.dto';
 async findPaginated(query: PaginationQueryDto): Promise<PaginationResponseDto<User>> {
   const { page = 1, pageSize = 10 } = query;
   const skip = (page - 1) * pageSize;
-  
+
   const [list, total] = await this.userRepository.findAndCount({
     where: { isActive: true },
     skip,
     take: pageSize,
     order: { createTime: 'DESC' },
   });
-  
+
   return new PaginationResponseDto(list, total, page, pageSize);
 }
 ```
@@ -196,11 +195,11 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 async findOne(id: number): Promise<User> {
   const user = await this.userRepository.findOne({ where: { id } });
-  
+
   if (!user) {
     throw new NotFoundException(`用户 ID ${id} 不存在`);
   }
-  
+
   return user;
 }
 ```

@@ -1,5 +1,10 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiResponse, ApiResponseOptions, ApiExtraModels, getSchemaPath } from '@nestjs/swagger';
+import {
+  ApiResponse,
+  ApiResponseOptions,
+  ApiExtraModels,
+  getSchemaPath
+} from '@nestjs/swagger';
 import { ApiResponseDto, PaginationResponseDto } from '../dto/api-response.dto';
 
 /**
@@ -15,7 +20,7 @@ export function ApiSuccessResponse<T>(
         status: 200,
         description: options?.description || '操作成功',
         type: ApiResponseDto,
-        ...options,
+        ...options
       })
     );
   }
@@ -34,13 +39,13 @@ export function ApiSuccessResponse<T>(
               properties: {
                 data: {
                   type: 'array',
-                  items: { $ref: getSchemaPath(itemType) },
-                },
-              },
-            },
-          ],
+                  items: { $ref: getSchemaPath(itemType) }
+                }
+              }
+            }
+          ]
         },
-        ...options,
+        ...options
       })
     );
   }
@@ -55,12 +60,12 @@ export function ApiSuccessResponse<T>(
           { $ref: getSchemaPath(ApiResponseDto) },
           {
             properties: {
-              data: { $ref: getSchemaPath(dataType as Type<T>) },
-            },
-          },
-        ],
+              data: { $ref: getSchemaPath(dataType as Type<T>) }
+            }
+          }
+        ]
       },
-      ...options,
+      ...options
     })
   );
 }
@@ -78,7 +83,7 @@ export function ApiCreatedResponse<T>(
         status: 201,
         description: options?.description || '创建成功',
         type: ApiResponseDto,
-        ...options,
+        ...options
       })
     );
   }
@@ -93,12 +98,12 @@ export function ApiCreatedResponse<T>(
           { $ref: getSchemaPath(ApiResponseDto) },
           {
             properties: {
-              data: { $ref: getSchemaPath(dataType as Type<T>) },
-            },
-          },
-        ],
+              data: { $ref: getSchemaPath(dataType as Type<T>) }
+            }
+          }
+        ]
       },
-      ...options,
+      ...options
     })
   );
 }
@@ -124,15 +129,15 @@ export function ApiPaginationResponse<T>(
                 properties: {
                   list: {
                     type: 'array',
-                    items: { $ref: getSchemaPath(dataType as Type<T>) },
-                  },
-                },
-              },
-            },
-          },
-        ],
+                    items: { $ref: getSchemaPath(dataType as Type<T>) }
+                  }
+                }
+              }
+            }
+          }
+        ]
       },
-      ...options,
+      ...options
     })
   );
 }
@@ -150,7 +155,7 @@ export function ApiErrorResponse(
       status,
       description,
       type: ApiResponseDto,
-      ...options,
+      ...options
     })
   );
 }

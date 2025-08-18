@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -16,17 +23,17 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       const user = this.userRepository.create(createUserDto);
       const savedUser = await this.userRepository.save(user);
-      
+
       // 清除用户列表相关缓存
       await this.clearUserListCache();
-      
+
       return savedUser;
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
@@ -39,46 +46,48 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
       where: { isActive: true },
-      order: { createTime: 'DESC' },
+      order: { createTime: 'DESC' }
     });
   }
 
-  async findPaginated(query: PaginationQueryDto): Promise<PaginationResponseDto<User>> {
+  async findPaginated(
+    query: PaginationQueryDto
+  ): Promise<PaginationResponseDto<User>> {
     const { page = 1, pageSize = 10 } = query;
     const skip = (page - 1) * pageSize;
-    
+
     const [list, total] = await this.userRepository.findAndCount({
       where: { isActive: true },
       skip,
       take: pageSize,
-      order: { createTime: 'DESC' },
+      order: { createTime: 'DESC' }
     });
-    
+
     return new PaginationResponseDto<User>(list, total, page, pageSize);
   }
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { id, isActive: true },
+      where: { id, isActive: true }
     });
-    
+
     if (!user) {
       throw new NotFoundException(`用户 ID ${id} 不存在`);
     }
-    
+
     return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
-    
+
     try {
       Object.assign(user, updateUserDto);
       const updatedUser = await this.userRepository.save(user);
-      
+
       // 清除相关缓存
       await this.clearUserCache(id);
-      
+
       return updatedUser;
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
@@ -88,16 +97,19 @@ export class UserService {
     }
   }
 
-  async adminUpdate(id: number, adminUpdateUserDto: AdminUpdateUserDto): Promise<User> {
+  async adminUpdate(
+    id: number,
+    adminUpdateUserDto: AdminUpdateUserDto
+  ): Promise<User> {
     const user = await this.findOne(id);
-    
+
     try {
       Object.assign(user, adminUpdateUserDto);
       const updatedUser = await this.userRepository.save(user);
-      
+
       // 清除相关缓存
       await this.clearUserCache(id);
-      
+
       return updatedUser;
     } catch (error) {
       if (error.code === 'ER_DUP_ENTRY') {
@@ -109,7 +121,7 @@ export class UserService {
 
   async remove(id: number): Promise<void> {
     await this.userRepository.softDelete(id);
-    
+
     // 清除相关缓存
     await this.clearUserCache(id);
   }
@@ -117,13 +129,24 @@ export class UserService {
   async findByEmail(email: string): Promise<User | null> {
     return await this.userRepository.findOne({
       where: { email, isActive: true },
-      select: ['id', 'name', 'email','role','status', 'password','isActive','createTime','updateTime','deleteTime'],
+      select: [
+        'id',
+        'name',
+        'email',
+        'role',
+        'status',
+        'password',
+        'isActive',
+        'createTime',
+        'updateTime',
+        'deleteTime'
+      ]
     });
   }
 
   async findByName(name: string): Promise<User | null> {
     return await this.userRepository.findOne({
-      where: { name, isActive: true },
+      where: { name, isActive: true }
     });
   }
 

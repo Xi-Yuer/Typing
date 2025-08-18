@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiBearerAuth,
+  ApiBearerAuth
 } from '@nestjs/swagger';
 import { SentencesService } from './sentences.service';
 import { CreateSentenceDto } from './dto/create-sentence.dto';
@@ -28,7 +28,7 @@ import { Role } from 'common';
 import {
   ApiSuccessResponse,
   ApiCreatedResponse,
-  ApiPaginationResponse,
+  ApiPaginationResponse
 } from '../../common/decorators/api-response.decorator';
 import { CacheTTL } from '@nestjs/cache-manager';
 
@@ -59,7 +59,10 @@ export class SentencesController {
   @ApiOperation({ summary: '根据语言 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiPaginationResponse(Sentence, { description: '根据语言 ID 查询句子成功' })
-  findByLanguageId(@Param('languageId') languageId: string, @Query() paginationQuery: PaginationQueryDto) {
+  findByLanguageId(
+    @Param('languageId') languageId: string,
+    @Query() paginationQuery: PaginationQueryDto
+  ) {
     return this.sentencesService.findByLanguageId(languageId, paginationQuery);
   }
 
@@ -67,7 +70,10 @@ export class SentencesController {
   @ApiOperation({ summary: '根据分类 ID 查询句子' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
   @ApiPaginationResponse(Sentence, { description: '根据分类 ID 查询句子成功' })
-  findByCategoryId(@Param('categoryId') categoryId: string, @Query() paginationQuery: PaginationQueryDto) {
+  findByCategoryId(
+    @Param('categoryId') categoryId: string,
+    @Query() paginationQuery: PaginationQueryDto
+  ) {
     return this.sentencesService.findByCategoryId(categoryId, paginationQuery);
   }
 
@@ -75,62 +81,111 @@ export class SentencesController {
   @ApiOperation({ summary: '根据语言 ID 和分类 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
-  @ApiPaginationResponse(Sentence, { description: '根据语言和分类查询句子成功' })
+  @ApiPaginationResponse(Sentence, {
+    description: '根据语言和分类查询句子成功'
+  })
   findByLanguageAndCategory(
     @Param('languageId') languageId: string,
     @Param('categoryId') categoryId: string,
-    @Query() paginationQuery: PaginationQueryDto,
+    @Query() paginationQuery: PaginationQueryDto
   ) {
-    return this.sentencesService.findByLanguageAndCategory(languageId, categoryId, paginationQuery);
+    return this.sentencesService.findByLanguageAndCategory(
+      languageId,
+      categoryId,
+      paginationQuery
+    );
   }
 
   @Get('search')
   @ApiOperation({ summary: '搜索句子' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
-  @ApiQuery({ name: 'languageId', description: '语言 ID', type: String, required: false })
-  @ApiQuery({ name: 'categoryId', description: '分类 ID', type: String, required: false })
+  @ApiQuery({
+    name: 'languageId',
+    description: '语言 ID',
+    type: String,
+    required: false
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    description: '分类 ID',
+    type: String,
+    required: false
+  })
   @ApiSuccessResponse([Sentence], { description: '搜索句子成功' })
   searchSentences(
     @Query('keyword') keyword: string,
     @Query('languageId') languageId?: string,
-    @Query('categoryId') categoryId?: string,
+    @Query('categoryId') categoryId?: string
   ) {
-    return this.sentencesService.searchSentences(keyword, languageId, categoryId);
+    return this.sentencesService.searchSentences(
+      keyword,
+      languageId,
+      categoryId
+    );
   }
 
   @Get('search/paginated')
   @ApiOperation({ summary: '分页搜索句子' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
-  @ApiQuery({ name: 'languageId', description: '语言 ID', type: String, required: false })
-  @ApiQuery({ name: 'categoryId', description: '分类 ID', type: String, required: false })
+  @ApiQuery({
+    name: 'languageId',
+    description: '语言 ID',
+    type: String,
+    required: false
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    description: '分类 ID',
+    type: String,
+    required: false
+  })
   @ApiPaginationResponse(Sentence, { description: '分页搜索句子成功' })
   searchSentencesPaginated(
     @Query('keyword') keyword: string,
     @Query() paginationQuery: PaginationQueryDto,
     @Query('languageId') languageId?: string,
-    @Query('categoryId') categoryId?: string,
+    @Query('categoryId') categoryId?: string
   ) {
     return this.sentencesService.searchSentencesPaginated(
       keyword,
       paginationQuery,
       languageId,
-      categoryId,
+      categoryId
     );
   }
 
   @Get('random')
   @CacheTTL(1)
   @ApiOperation({ summary: '获取随机句子' })
-  @ApiQuery({ name: 'count', description: '数量', type: Number, required: false })
-  @ApiQuery({ name: 'languageId', description: '语言 ID', type: String, required: false })
-  @ApiQuery({ name: 'categoryId', description: '分类 ID', type: String, required: false })
+  @ApiQuery({
+    name: 'count',
+    description: '数量',
+    type: Number,
+    required: false
+  })
+  @ApiQuery({
+    name: 'languageId',
+    description: '语言 ID',
+    type: String,
+    required: false
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    description: '分类 ID',
+    type: String,
+    required: false
+  })
   @ApiSuccessResponse([Sentence], { description: '获取随机句子成功' })
   getRandomSentences(
     @Query('count') count?: number,
     @Query('languageId') languageId?: string,
-    @Query('categoryId') categoryId?: string,
+    @Query('categoryId') categoryId?: string
   ) {
-    return this.sentencesService.getRandomSentences(count, languageId, categoryId);
+    return this.sentencesService.getRandomSentences(
+      count,
+      languageId,
+      categoryId
+    );
   }
 
   @Get('stats/language')
@@ -162,7 +217,10 @@ export class SentencesController {
   @ApiOperation({ summary: '更新句子（仅管理员）' })
   @ApiParam({ name: 'id', description: '句子 ID', type: String })
   @ApiSuccessResponse(Sentence, { description: '更新句子成功' })
-  update(@Param('id') id: string, @Body() updateSentenceDto: UpdateSentenceDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSentenceDto: UpdateSentenceDto
+  ) {
     return this.sentencesService.update(id, updateSentenceDto);
   }
 

@@ -9,14 +9,14 @@ import { DataSource, DataSourceOptions } from 'typeorm';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const databaseUrl = configService.get<string>('DATABASE_URL');
-        
+
         if (!databaseUrl) {
           throw new Error('DATABASE_URL environment variable is not set');
         }
 
         // 解析数据库 URL
         const url = new URL(databaseUrl);
-        
+
         return {
           type: 'mysql',
           host: url.hostname,
@@ -26,17 +26,20 @@ import { DataSource, DataSourceOptions } from 'typeorm';
           database: url.pathname.slice(1), // 移除开头的 '/'
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
           synchronize: configService.get('NODE_ENV') === 'development',
-          logging: configService.get('NODE_ENV') === 'development' ? ['error','warn','query'] : false,
+          logging:
+            configService.get('NODE_ENV') === 'development'
+              ? ['error', 'warn', 'query']
+              : false,
           timezone: '+08:00',
-          charset: 'utf8mb4',
+          charset: 'utf8mb4'
         };
       },
       inject: [ConfigService],
       dataSourceFactory: async (options: DataSourceOptions) => {
         const dataSource = new DataSource(options);
         return dataSource.initialize();
-      },
-    }),
-  ],
+      }
+    })
+  ]
 })
 export class DatabaseModule {}

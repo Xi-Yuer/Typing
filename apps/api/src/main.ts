@@ -6,4 +6,4 @@ import { SetupModule } from './modules/setup/setup.module';
   const app = await NestFactory.create(AppModule);
   SetupModule.forRoot(app);
   await app.listen(process.env.PORT ?? 3000);
-})()
+})();

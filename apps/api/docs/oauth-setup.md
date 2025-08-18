@@ -14,6 +14,7 @@
 ## 数据库设计
 
 ### User 实体
+
 - `id`: 主键
 - `name`: 用户名
 - `email`: 邮箱
@@ -24,6 +25,7 @@
 - `deleteTime`: 删除时间（软删除）
 
 ### UserOAuth 实体
+
 - `id`: 主键
 - `userId`: 关联用户ID
 - `provider`: OAuth提供商（github）
@@ -71,6 +73,7 @@ FRONTEND_URL=http://localhost:3000
 ### 认证相关
 
 #### 用户注册
+
 ```http
 POST /auth/register
 Content-Type: application/json
@@ -83,6 +86,7 @@ Content-Type: application/json
 ```
 
 #### 用户登录
+
 ```http
 POST /auth/login
 Content-Type: application/json
@@ -94,24 +98,29 @@ Content-Type: application/json
 ```
 
 #### GitHub OAuth 登录
+
 ```http
 GET /auth/github
 ```
+
 重定向到 GitHub 授权页面
 
 #### 获取用户信息
+
 ```http
 GET /auth/profile
 Authorization: Bearer <jwt-token>
 ```
 
 #### 获取绑定的第三方账户
+
 ```http
 GET /auth/bindings
 Authorization: Bearer <jwt-token>
 ```
 
 #### 解绑 GitHub 账户
+
 ```http
 POST /auth/unbind/github
 Authorization: Bearer <jwt-token>
@@ -120,6 +129,7 @@ Authorization: Bearer <jwt-token>
 ## 使用流程
 
 ### 1. 新用户 GitHub 登录
+
 1. 用户点击 "GitHub 登录" 按钮
 2. 重定向到 `/auth/github`
 3. 系统重定向到 GitHub 授权页面
@@ -128,12 +138,14 @@ Authorization: Bearer <jwt-token>
 6. 返回 JWT 令牌
 
 ### 2. 已有用户绑定 GitHub
+
 1. 用户先通过邮箱密码登录
 2. 在设置页面点击 "绑定 GitHub"
 3. 完成 OAuth 流程
 4. 系统将 GitHub 账户绑定到现有用户
 
 ### 3. 已绑定用户 GitHub 登录
+
 1. 用户点击 "GitHub 登录"
 2. 系统识别已绑定的 GitHub 账户
 3. 直接登录对应的用户账户

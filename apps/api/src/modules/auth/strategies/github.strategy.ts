@@ -11,14 +11,14 @@ import { EnvironmentVariables } from 'src/modules/config/env.interface';
 export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(
     private readonly authService: AuthService,
-    private readonly configService: ConfigService<EnvironmentVariables>,
+    private readonly configService: ConfigService<EnvironmentVariables>
   ) {
     super({
       clientID: configService.get('GITHUB_CLIENT_ID', ''),
       clientSecret: configService.get('GITHUB_CLIENT_SECRET', ''),
       callbackURL: configService.get('GITHUB_CALLBACK_URL', ''),
       scope: ['user:email'],
-      passReqToCallback: true,
+      passReqToCallback: true
     });
   }
 
@@ -26,20 +26,22 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
     req: any,
     accessToken: string,
     refreshToken: string,
-    profile: any,
+    profile: any
   ): Promise<User | null> {
     const oauthProfile = {
       id: profile.id,
       username: profile.username,
       email: profile.emails?.[0]?.value,
       avatarUrl: profile.photos?.[0]?.value,
-      rawData: profile._json,
+      rawData: profile._json
     };
 
     // 检查是否是绑定流程
     if (req.query.state) {
       try {
-        const stateData = JSON.parse(Buffer.from(req.query.state, 'base64').toString());
+        const stateData = JSON.parse(
+          Buffer.from(req.query.state, 'base64').toString()
+        );
         if (stateData.action === 'bind') {
           // 绑定流程：将OAuth信息附加到req对象，由controller处理
           req.oauthProfile = oauthProfile;

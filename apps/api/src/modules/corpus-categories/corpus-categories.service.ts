@@ -2,7 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException,
+  BadRequestException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,28 +16,32 @@ import { PaginationResponseDto } from '../../common/dto/api-response.dto';
 export class CorpusCategoriesService {
   constructor(
     @InjectRepository(CorpusCategory)
-    private readonly corpusCategoryRepository: Repository<CorpusCategory>,
+    private readonly corpusCategoryRepository: Repository<CorpusCategory>
   ) {}
 
   /**
    * 创建语料库分类
    */
-  async create(createCorpusCategoryDto: CreateCorpusCategoryDto): Promise<CorpusCategory> {
+  async create(
+    createCorpusCategoryDto: CreateCorpusCategoryDto
+  ): Promise<CorpusCategory> {
     // 检查同一语言下是否已存在相同名称的分类
     const existingCategory = await this.corpusCategoryRepository.findOne({
       where: {
         languageId: createCorpusCategoryDto.languageId,
-        name: createCorpusCategoryDto.name,
-      },
+        name: createCorpusCategoryDto.name
+      }
     });
 
     if (existingCategory) {
       throw new ConflictException(
-        `该语言下已存在名为 "${createCorpusCategoryDto.name}" 的分类`,
+        `该语言下已存在名为 "${createCorpusCategoryDto.name}" 的分类`
       );
     }
 
-    const corpusCategory = this.corpusCategoryRepository.create(createCorpusCategoryDto);
+    const corpusCategory = this.corpusCategoryRepository.create(
+      createCorpusCategoryDto
+    );
     return await this.corpusCategoryRepository.save(corpusCategory);
   }
 
@@ -47,7 +51,7 @@ export class CorpusCategoriesService {
   async findAll(): Promise<CorpusCategory[]> {
     return await this.corpusCategoryRepository.find({
       relations: ['language'],
-      order: { createTime: 'DESC' },
+      order: { createTime: 'DESC' }
     });
   }
 
@@ -55,7 +59,7 @@ export class CorpusCategoriesService {
    * 分页查询语料库分类
    */
   async findAllPaginated(
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<CorpusCategory>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -64,7 +68,7 @@ export class CorpusCategoriesService {
       relations: ['language'],
       order: { createTime: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -77,7 +81,7 @@ export class CorpusCategoriesService {
     return await this.corpusCategoryRepository.find({
       where: { languageId },
       relations: ['language'],
-      order: { difficulty: 'ASC', createTime: 'DESC' },
+      order: { difficulty: 'ASC', createTime: 'DESC' }
     });
   }
 
@@ -92,7 +96,7 @@ export class CorpusCategoriesService {
     return await this.corpusCategoryRepository.find({
       where: { difficulty },
       relations: ['language'],
-      order: { createTime: 'DESC' },
+      order: { createTime: 'DESC' }
     });
   }
 
@@ -101,7 +105,7 @@ export class CorpusCategoriesService {
    */
   async findByLanguageAndDifficulty(
     languageId: string,
-    difficulty: number,
+    difficulty: number
   ): Promise<CorpusCategory[]> {
     if (difficulty < 1 || difficulty > 5) {
       throw new BadRequestException('难度等级必须在 1-5 之间');
@@ -110,7 +114,7 @@ export class CorpusCategoriesService {
     return await this.corpusCategoryRepository.find({
       where: { languageId, difficulty },
       relations: ['language'],
-      order: { createTime: 'DESC' },
+      order: { createTime: 'DESC' }
     });
   }
 
@@ -120,7 +124,7 @@ export class CorpusCategoriesService {
   async findOne(id: string): Promise<CorpusCategory> {
     const corpusCategory = await this.corpusCategoryRepository.findOne({
       where: { id },
-      relations: ['language'],
+      relations: ['language']
     });
 
     if (!corpusCategory) {
@@ -135,22 +139,25 @@ export class CorpusCategoriesService {
    */
   async update(
     id: string,
-    updateCorpusCategoryDto: UpdateCorpusCategoryDto,
+    updateCorpusCategoryDto: UpdateCorpusCategoryDto
   ): Promise<CorpusCategory> {
     const corpusCategory = await this.findOne(id);
 
     // 如果更新了名称，检查是否与同语言下其他分类重名
-    if (updateCorpusCategoryDto.name && updateCorpusCategoryDto.name !== corpusCategory.name) {
+    if (
+      updateCorpusCategoryDto.name &&
+      updateCorpusCategoryDto.name !== corpusCategory.name
+    ) {
       const existingCategory = await this.corpusCategoryRepository.findOne({
         where: {
           languageId: corpusCategory.languageId,
-          name: updateCorpusCategoryDto.name,
-        },
+          name: updateCorpusCategoryDto.name
+        }
       });
 
       if (existingCategory && existingCategory.id !== id) {
         throw new ConflictException(
-          `该语言下已存在名为 "${updateCorpusCategoryDto.name}" 的分类`,
+          `该语言下已存在名为 "${updateCorpusCategoryDto.name}" 的分类`
         );
       }
     }
@@ -158,7 +165,8 @@ export class CorpusCategoriesService {
     // 验证难度等级
     if (
       updateCorpusCategoryDto.difficulty &&
-      (updateCorpusCategoryDto.difficulty < 1 || updateCorpusCategoryDto.difficulty > 5)
+      (updateCorpusCategoryDto.difficulty < 1 ||
+        updateCorpusCategoryDto.difficulty > 5)
     ) {
       throw new BadRequestException('难度等级必须在 1-5 之间');
     }
@@ -189,14 +197,16 @@ export class CorpusCategoriesService {
 
     return result.map(item => ({
       difficulty: parseInt(item.difficulty),
-      count: parseInt(item.count),
+      count: parseInt(item.count)
     }));
   }
 
   /**
    * 获取语言分类数量统计
    */
-  async getLanguageStats(): Promise<{ languageId: string; languageName: string; count: number }[]> {
+  async getLanguageStats(): Promise<
+    { languageId: string; languageName: string; count: number }[]
+  > {
     const result = await this.corpusCategoryRepository
       .createQueryBuilder('category')
       .leftJoin('category.language', 'language')
@@ -211,7 +221,7 @@ export class CorpusCategoriesService {
     return result.map(item => ({
       languageId: item.languageId,
       languageName: item.languageName || '未知语言',
-      count: parseInt(item.count),
+      count: parseInt(item.count)
     }));
   }
 }

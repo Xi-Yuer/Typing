@@ -7,13 +7,13 @@ import {
   IsInt,
   Min,
   Max,
-  IsNumberString,
+  IsNumberString
 } from 'class-validator';
 
 export class CreateCorpusCategoryDto {
   @ApiProperty({
     description: '对应语言 ID',
-    example: '1',
+    example: '1'
   })
   @IsNotEmpty({ message: '语言 ID 不能为空' })
   @IsNumberString({}, { message: '语言 ID 必须是数字字符串' })
@@ -22,7 +22,7 @@ export class CreateCorpusCategoryDto {
   @ApiProperty({
     description: '分类名称（旅游、商务、日常会话）',
     example: '日常会话',
-    maxLength: 100,
+    maxLength: 100
   })
   @IsNotEmpty({ message: '分类名称不能为空' })
   @IsString({ message: '分类名称必须是字符串' })
@@ -32,7 +32,7 @@ export class CreateCorpusCategoryDto {
   @ApiProperty({
     description: '分类描述',
     example: '包含日常生活中的基本对话场景',
-    required: false,
+    required: false
   })
   @IsOptional()
   @IsString({ message: '分类描述必须是字符串' })
@@ -42,7 +42,7 @@ export class CreateCorpusCategoryDto {
     description: '难度等级（1-5）',
     example: 3,
     minimum: 1,
-    maximum: 5,
+    maximum: 5
   })
   @IsNotEmpty({ message: '难度等级不能为空' })
   @IsInt({ message: '难度等级必须是整数' })

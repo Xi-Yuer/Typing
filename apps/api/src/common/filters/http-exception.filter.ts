@@ -4,7 +4,7 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
-  Logger,
+  Logger
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ApiResponseDto } from '../dto/api-response.dto';
@@ -28,14 +28,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
+
       if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
-      } else if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+      } else if (
+        typeof exceptionResponse === 'object' &&
+        exceptionResponse !== null
+      ) {
         const responseObj = exceptionResponse as any;
         message = responseObj.message || responseObj.error || message;
         details = responseObj.details || responseObj.message;
-        
+
         // 处理验证错误
         if (Array.isArray(responseObj.message)) {
           message = '请求参数验证失败';
@@ -56,7 +59,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message,
       data: details,
       timestamp: Date.now(),
-      path: request.url,
+      path: request.url
     };
 
     response.status(status).json(errorResponse);
