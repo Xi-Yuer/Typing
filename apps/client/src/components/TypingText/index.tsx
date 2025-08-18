@@ -111,7 +111,11 @@ export default function TypingText({
         word.isActive
           ? {
               ...word,
-              userInput: value
+              userInput: value,
+              // 如果输入完全匹配，标记为完成；如果不匹配且有输入，清除完成状态
+              completed: value.trim() === word.text,
+              // 清除错误状态（如果有输入的话）
+              incorrect: false
             }
           : word
       )
@@ -145,28 +149,54 @@ export default function TypingText({
             ? {
                 ...word,
                 completed: true,
-                isActive: false,
-                userInput: word.text
+                userInput: word.text,
+                incorrect: false
               }
             : word
         )
       );
 
-      // 移动到下一个单词
-      if (currentWordIndex < words.length - 1) {
-        const nextIndex = currentWordIndex + 1;
-        setCurrentWordIndex(nextIndex);
-        setWords(prevWords =>
-          prevWords.map((word, index) =>
-            index === nextIndex ? { ...word, isActive: true } : word
-          )
-        );
-        setInputValue('');
-      } else {
+      // 检查是否所有单词都已完成
+      const allCompleted = words.every(
+        (word, index) => index === currentWordIndex || word.completed
+      );
+
+      if (allCompleted) {
         // 所有单词完成
         playSuccessSound();
         setInputValue('');
         onComplete?.(true);
+      } else {
+        // 寻找下一个未完成的单词
+        let nextIndex = -1;
+        for (let i = currentWordIndex + 1; i < words.length; i++) {
+          if (!words[i].completed) {
+            nextIndex = i;
+            break;
+          }
+        }
+
+        // 如果右边没有未完成的单词，从左边找
+        if (nextIndex === -1) {
+          for (let i = 0; i < currentWordIndex; i++) {
+            if (!words[i].completed) {
+              nextIndex = i;
+              break;
+            }
+          }
+        }
+
+        // 移动到下一个未完成的单词
+        if (nextIndex !== -1) {
+          setCurrentWordIndex(nextIndex);
+          setWords(prevWords =>
+            prevWords.map((word, index) => ({
+              ...word,
+              isActive: index === nextIndex
+            }))
+          );
+          setInputValue(words[nextIndex].userInput);
+        }
       }
     } else {
       // 播放错误音效
@@ -190,13 +220,118 @@ export default function TypingText({
 
   // 处理键盘事件
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    playTypingSound();
-    // 处理退格键删除整个单词（Ctrl+Backspace）
-    if (e.key === 'Backspace' && e.ctrlKey) {
+    // 左右键切换单词，不播放打字音效
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();
-      setInputValue('');
+
+      if (e.key === 'ArrowLeft' && currentWordIndex > 0) {
+        // 切换到上一个单词
+        const prevIndex = currentWordIndex - 1;
+        setCurrentWordIndex(prevIndex);
+
+        // 更新单词状态
+        setWords(prevWords =>
+          prevWords.map((word, index) => ({
+            ...word,
+            isActive: index === prevIndex
+          }))
+        );
+
+        // 设置输入框的值为目标单词的当前输入
+        const targetWord = words[prevIndex];
+        setInputValue(targetWord.userInput);
+
+        // 清除错误状态
+        setHasError(false);
+      } else if (
+        e.key === 'ArrowRight' &&
+        currentWordIndex < words.length - 1
+      ) {
+        // 切换到下一个单词
+        const nextIndex = currentWordIndex + 1;
+        setCurrentWordIndex(nextIndex);
+
+        // 更新单词状态
+        setWords(prevWords =>
+          prevWords.map((word, index) => ({
+            ...word,
+            isActive: index === nextIndex
+          }))
+        );
+
+        // 设置输入框的值为目标单词的当前输入
+        const targetWord = words[nextIndex];
+        setInputValue(targetWord.userInput);
+
+        // 清除错误状态
+        setHasError(false);
+      }
       return;
     }
+
+    // 处理退格键
+    if (e.key === 'Backspace') {
+      // Ctrl+Backspace：删除整个单词
+      if (e.ctrlKey) {
+        e.preventDefault();
+        setInputValue('');
+        // 清除当前单词的用户输入
+        setWords(prevWords =>
+          prevWords.map(word =>
+            word.isActive
+              ? { ...word, userInput: '', incorrect: false, completed: false }
+              : word
+          )
+        );
+        return;
+      }
+
+      // 普通退格键：如果当前输入为空且不是第一个单词，则切换到前一个单词并删除其最后一个字符
+      if (inputValue === '' && currentWordIndex > 0) {
+        e.preventDefault();
+
+        const prevIndex = currentWordIndex - 1;
+        const prevWord = words[prevIndex];
+
+        // 切换到前一个单词
+        setCurrentWordIndex(prevIndex);
+
+        // 更新单词状态
+        setWords(prevWords =>
+          prevWords.map((word, index) => {
+            if (index === prevIndex) {
+              // 删除前一个单词的最后一个字符
+              const newUserInput = word.userInput.slice(0, -1);
+              return {
+                ...word,
+                isActive: true,
+                userInput: newUserInput,
+                completed: newUserInput.trim() === word.text,
+                incorrect: false
+              };
+            } else if (index === currentWordIndex) {
+              // 当前单词变为非激活状态
+              return {
+                ...word,
+                isActive: false
+              };
+            }
+            return word;
+          })
+        );
+
+        // 设置输入框的值为前一个单词删除最后一个字符后的内容
+        const newInputValue = prevWord.userInput.slice(0, -1);
+        setInputValue(newInputValue);
+
+        // 清除错误状态
+        setHasError(false);
+        return;
+      }
+    }
+
+    // 其他按键播放打字音效
+    playTypingSound();
 
     // Enter 键 空格键 处理
     if ((e.key === 'Enter' || e.key === ' ') && !isComposing) {
@@ -234,18 +369,6 @@ export default function TypingText({
   // 防止鼠标移动光标
   const preventCursorMove = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  };
-
-  // 重置游戏
-  const resetGame = () => {
-    setWords(initializeWords());
-    setCurrentWordIndex(0);
-    setInputValue('');
-    setShowAnswerTip(false);
-    setHasError(false); // 重置错误状态
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -320,7 +443,7 @@ export default function TypingText({
   }, []);
 
   return (
-    <div className='max-w-7xl mx-auto px-4 flex-1 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center text-white'>
+    <div className='max-w-7xl mx-auto px-4 flex-1 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center text-white relative z-50'>
       <div className='flex flex-col justify-center items-center gap-y-8'>
         {/* 中文翻译 */}
         <div className='text-2xl text-center mb-4'>{wordPair.mean}</div>
