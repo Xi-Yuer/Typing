@@ -47,7 +47,7 @@ const DisplayHeader = ({ activeItem }: { activeItem: string }) => {
   }, [stars]);
 
   return (
-    <header className='fixed top-0 left-0 right-0 z-50 h-[80px] pt-12'>
+    <header className='h-[80px] pt-12 z-50 relative'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
         <Link
           href='/'
@@ -89,8 +89,8 @@ const DisplayHeader = ({ activeItem }: { activeItem: string }) => {
             <span>Star On GitHub</span>
             <div
               ref={starCountRef}
-              style={{ opacity: 0 }}
-              className='flex items-center justify-center space-x-2 bg-black py-3 rounded-4xl'
+              style={{ opacity: 1 }}
+              className='flex items-center justify-center space-x-2 bg-black py-3 px-5 rounded-4xl'
             >
               <Image src={star} alt='Star Icon' width={16} height={16} />
               <span>{stars}</span>
