@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "5.x",
     "alova": "^3.3.4",
+    "antd": "^5.27.0",
     "gsap": "^3.13.0",
     "next": "15.4.6",
     "ogl": "^1.0.11",

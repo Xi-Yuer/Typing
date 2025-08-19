@@ -1,11 +1,7 @@
 'use client';
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  forwardRef,
-  useImperativeHandle
-} from 'react';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface WordPair {
   word: string;
@@ -643,7 +639,6 @@ const TypingText = function ({
         .catch(e => console.log('播放错误音效失败:', e));
     }
   };
-
   // 自动聚焦
   useEffect(() => {
     if (inputRef.current) {
@@ -730,8 +725,12 @@ const TypingText = function ({
 
       {/* 快捷键提示 */}
       <div className='mt-4 flex items-center justify-between bottom-10 absolute w-full select-none px-8'>
-        <div className='flex items-center text-white/70 pl-20'>
-          <span className='text-xs text-fuchsia-300'>←</span>
+        <div
+          className='flex items-center text-white/70 pl-20 cursor-pointer'
+          onClick={onPrev}>
+          <Tooltip title='Shift + ←' color='purple'>
+            <LeftOutlined className='text-3xl' />
+          </Tooltip>
         </div>
         <div className='flex items-center justify-center space-x-6 text-sm text-white/70'>
           {[
@@ -755,8 +754,12 @@ const TypingText = function ({
             </div>
           ))}
         </div>
-        <div className='flex items-center text-white/70 pr-20'>
-          <span className='text-xs text-fuchsia-300'>→</span>
+        <div
+          className='flex items-center text-white/70 pr-20 cursor-pointer'
+          onClick={onNext}>
+          <Tooltip title='Shift + →' color='purple'>
+            <RightOutlined className='text-3xl' />
+          </Tooltip>
         </div>
       </div>
     </div>
