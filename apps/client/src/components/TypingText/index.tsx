@@ -1,4 +1,5 @@
 'use client';
+import useSpeech from '@/hooks/useSpeech';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
@@ -43,6 +44,7 @@ const TypingText = function ({
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
+  const { speak, speaking, cancel } = useSpeech(wordPair.word);
 
   // 预加载音频对象，避免每次创建
   const typingAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -99,6 +101,22 @@ const TypingText = function ({
   // 处理输入变化
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
+
+    // 获取当前活跃单词
+    const currentWord = words.find(word => word.isActive);
+
+    // 如果输入长度超过当前单词长度，显示错误并阻止输入
+    if (currentWord && value.length > currentWord.text.length) {
+      setHasError(true);
+      setWords(prevWords =>
+        prevWords.map(word =>
+          word.isActive ? { ...word, incorrect: true } : word
+        )
+      );
+      playErrorSound();
+      return; // 阻止继续处理
+    }
+
     setInputValue(value);
 
     // 如果用户开始输入，清除错误状态
@@ -226,8 +244,48 @@ const TypingText = function ({
     }
   };
 
+  // 声明一个数组，表示哪些按键不播放打字音效
+  const specialKeys = [
+    'ARROWLEFT',
+    'ARROWRIGHT',
+    'HOME',
+    'END',
+    'ESCAPE',
+    'TAB',
+    'ENTER',
+    'A',
+    'S',
+    'D',
+    'F',
+    'G',
+    'H',
+    'J',
+    'K',
+    'L',
+    'Q',
+    'W',
+    'E',
+    'R',
+    'T',
+    'Y',
+    'U',
+    'I',
+    'O',
+    'P',
+    'Z',
+    'X',
+    'C',
+    'V',
+    'B',
+    'N',
+    'M'
+  ];
   // 处理键盘事件
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // 按键播放打字音效
+    if (specialKeys.includes(e.key.toUpperCase()) && !hasError) {
+      playTypingSound();
+    }
     // Ctrl + R: 重置整个练习
     if (e.ctrlKey && e.key === 'r') {
       e.preventDefault();
@@ -239,20 +297,9 @@ const TypingText = function ({
     if (e.ctrlKey && e.key === 'h') {
       e.preventDefault();
       setShowAnswerTip(!showAnswerTip);
-      return;
-    }
-
-    // Ctrl + N: 跳过当前单词
-    if (e.ctrlKey && e.key === 'n') {
-      e.preventDefault();
-      skipCurrentWord();
-      return;
-    }
-
-    // Ctrl + A: 自动填充当前单词
-    if (e.ctrlKey && e.key === 'a') {
-      e.preventDefault();
-      autoFillCurrentWord();
+      setTimeout(() => {
+        setShowAnswerTip(false);
+      }, 1500);
       return;
     }
 
@@ -277,7 +324,7 @@ const TypingText = function ({
       return;
     }
 
-    // 左右键切换单词，不播放打字音效
+    // 左右键切换单词
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();
 
@@ -387,9 +434,6 @@ const TypingText = function ({
       }
     }
 
-    // 其他按键播放打字音效
-    playTypingSound();
-
     // Enter 键 空格键 处理
     if ((e.key === 'Enter' || e.key === ' ') && !isComposing) {
       e.preventDefault();
@@ -410,6 +454,27 @@ const TypingText = function ({
 
       // 正常提交答案
       submitAnswer();
+      return;
+    }
+
+    // Shift 键 左键
+    if (e.shiftKey && e.key === 'ArrowLeft') {
+      e.preventDefault();
+      onNext && onNext();
+      return;
+    }
+
+    // Shift 键 右键
+    if (e.shiftKey && e.key === 'ArrowRight') {
+      e.preventDefault();
+      onPrev && onPrev();
+      return;
+    }
+
+    // 朗读当前单词
+    if (e.ctrlKey && e.key === 'p') {
+      e.preventDefault();
+      speak();
       return;
     }
   };
@@ -459,94 +524,6 @@ const TypingText = function ({
     setHasError(false);
     setShowAnswerTip(false);
     setIsAllCorrect(false);
-  };
-
-  // 跳过当前单词
-  const skipCurrentWord = () => {
-    // 寻找下一个未完成的单词
-    let nextIndex = -1;
-    for (let i = currentWordIndex + 1; i < words.length; i++) {
-      if (!words[i].completed && isWord(words[i].text)) {
-        nextIndex = i;
-        break;
-      }
-    }
-
-    // 如果右边没有未完成的单词，从左边找
-    if (nextIndex === -1) {
-      for (let i = 0; i < currentWordIndex; i++) {
-        if (!words[i].completed && isWord(words[i].text)) {
-          nextIndex = i;
-          break;
-        }
-      }
-    }
-
-    // 标记当前单词为跳过状态并移动到下一个单词
-    if (nextIndex !== -1) {
-      setWords(prevWords =>
-        prevWords.map((word, index) => {
-          if (index === currentWordIndex) {
-            return {
-              ...word,
-              userInput: '[跳过]',
-              completed: true,
-              isActive: false
-            };
-          } else if (index === nextIndex) {
-            return { ...word, isActive: true };
-          }
-          return word;
-        })
-      );
-
-      setCurrentWordIndex(nextIndex);
-      setInputValue(words[nextIndex]?.userInput || '');
-      setHasError(false);
-    }
-  };
-
-  // 自动填充当前单词
-  const autoFillCurrentWord = () => {
-    const currentWord = words[currentWordIndex];
-    if (currentWord && !currentWord.completed && isWord(currentWord.text)) {
-      setInputValue(currentWord.text);
-
-      setWords(prevWords =>
-        prevWords.map((word, index) =>
-          index === currentWordIndex
-            ? { ...word, userInput: word.text, completed: true }
-            : word
-        )
-      );
-
-      setHasError(false);
-
-      // 自动跳转到下一个单词
-      setTimeout(() => {
-        // 寻找下一个未完成的单词
-        let nextIndex = -1;
-        for (let i = currentWordIndex + 1; i < words.length; i++) {
-          if (!words[i].completed && isWord(words[i].text)) {
-            nextIndex = i;
-            break;
-          }
-        }
-
-        if (nextIndex !== -1) {
-          setCurrentWordIndex(nextIndex);
-
-          setWords(prevWords =>
-            prevWords.map((word, index) => ({
-              ...word,
-              isActive: index === nextIndex
-            }))
-          );
-
-          setInputValue(words[nextIndex]?.userInput || '');
-        }
-      }, 100);
-    }
   };
 
   // 跳转到第一个未完成的单词
@@ -736,8 +713,8 @@ const TypingText = function ({
           {[
             { keys: ['Ctrl', 'R'], label: '重置练习' },
             { keys: ['Ctrl', 'P'], label: '发音' },
-            { keys: ['Ctrl', 'H'], label: '切换提示' },
-            { keys: ['Enter | Space'], label: '提交' }
+            { keys: ['Ctrl', 'H'], label: '提示' },
+            { keys: ['Space  | Enter'], label: '提交' }
           ].map((shortcut, index) => (
             <div key={index} className='flex items-center space-x-1'>
               {shortcut.keys.map((key, keyIndex) => (
