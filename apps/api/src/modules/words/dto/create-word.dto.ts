@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsString,
-  IsNotEmpty,
-  MaxLength,
-  IsOptional,
-  IsUrl,
-  IsNumberString,
-} from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsOptional, IsUrl, IsNumberString } from 'class-validator';
 
 export class CreateWordDto {
   @ApiProperty({ description: '所属语言 ID', example: '1' })

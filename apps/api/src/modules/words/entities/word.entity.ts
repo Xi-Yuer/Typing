@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
-  JoinColumn,
+  JoinColumn
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Language } from '../../languages/entities/language.entity';
@@ -26,7 +26,7 @@ export class Word {
   @ApiProperty({ description: '所属分类 ID', example: '1' })
   categoryId: string;
 
-  @Column({ type: 'varchar', length: 255})
+  @Column({ type: 'varchar', length: 255 })
   @ApiProperty({ description: '单词原文', example: 'hello' })
   word: string;
 

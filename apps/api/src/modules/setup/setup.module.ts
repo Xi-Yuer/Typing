@@ -27,7 +27,9 @@ export class SetupModule {
 
       const document = SwaggerModule.createDocument(app, config);
       SwaggerModule.setup('doc', app, document);
-      this.logger.log('Swagger文档已启用，访问地址: http://localhost:3000/doc');
+      this.logger.log(
+        `Swagger文档已启用，访问地址: http://localhost:${process.env.PORT}/doc`
+      );
     }
 
     {

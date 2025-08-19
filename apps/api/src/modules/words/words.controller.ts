@@ -1,21 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/premission.decorator';
@@ -23,7 +7,7 @@ import { Role } from 'common';
 import {
   ApiSuccessResponse,
   ApiCreatedResponse,
-  ApiPaginationResponse,
+  ApiPaginationResponse
 } from '../../common/decorators/api-response.decorator';
 import { WordsService } from './words.service';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -79,7 +63,7 @@ export class WordsController {
   findByLanguageAndCategory(
     @Param('languageId') languageId: string,
     @Param('categoryId') categoryId: string,
-    @Query() paginationQuery: PaginationQueryDto,
+    @Query() paginationQuery: PaginationQueryDto
   ) {
     return this.wordsService.findByLanguageAndCategory(languageId, categoryId, paginationQuery);
   }
@@ -87,14 +71,24 @@ export class WordsController {
   @Get('search')
   @ApiOperation({ summary: '搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
-  @ApiQuery({ name: 'languageId', description: '语言 ID', type: String, required: false })
-  @ApiQuery({ name: 'categoryId', description: '分类 ID', type: String, required: false })
+  @ApiQuery({
+    name: 'languageId',
+    description: '语言 ID',
+    type: String,
+    required: false
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    description: '分类 ID',
+    type: String,
+    required: false
+  })
   @ApiSuccessResponse([Word], { description: '搜索单词成功' })
   searchWords(
     @Query('keyword') keyword: string,
     @Query() paginationQuery: PaginationQueryDto,
     @Query('languageId') languageId?: string,
-    @Query('categoryId') categoryId?: string,
+    @Query('categoryId') categoryId?: string
   ) {
     return this.wordsService.searchWords(keyword, paginationQuery, languageId, categoryId);
   }
@@ -102,34 +96,54 @@ export class WordsController {
   @Get('search/paginated')
   @ApiOperation({ summary: '分页搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
-  @ApiQuery({ name: 'languageId', description: '语言 ID', type: String, required: false })
-  @ApiQuery({ name: 'categoryId', description: '分类 ID', type: String, required: false })
+  @ApiQuery({
+    name: 'languageId',
+    description: '语言 ID',
+    type: String,
+    required: false
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    description: '分类 ID',
+    type: String,
+    required: false
+  })
   @ApiPaginationResponse(Word, { description: '分页搜索单词成功' })
   searchWordsPaginated(
     @Query('keyword') keyword: string,
     @Query() paginationQuery: PaginationQueryDto,
     @Query('languageId') languageId?: string,
-    @Query('categoryId') categoryId?: string,
+    @Query('categoryId') categoryId?: string
   ) {
-    return this.wordsService.searchWordsPaginated(
-      keyword,
-      paginationQuery,
-      languageId,
-      categoryId,
-    );
+    return this.wordsService.searchWordsPaginated(keyword, paginationQuery, languageId, categoryId);
   }
 
   @Get('random')
   @CacheTTL(1)
   @ApiOperation({ summary: '随机获取单词（用于练习）' })
-  @ApiQuery({ name: 'count', description: '单词数量', type: Number, required: false })
-  @ApiQuery({ name: 'languageId', description: '语言 ID', type: String, required: false })
-  @ApiQuery({ name: 'categoryId', description: '分类 ID', type: String, required: false })
+  @ApiQuery({
+    name: 'count',
+    description: '单词数量',
+    type: Number,
+    required: false
+  })
+  @ApiQuery({
+    name: 'languageId',
+    description: '语言 ID',
+    type: String,
+    required: false
+  })
+  @ApiQuery({
+    name: 'categoryId',
+    description: '分类 ID',
+    type: String,
+    required: false
+  })
   @ApiSuccessResponse([Word], { description: '随机获取单词成功' })
   getRandomWords(
     @Query('count') count?: number,
     @Query('languageId') languageId?: string,
-    @Query('categoryId') categoryId?: string,
+    @Query('categoryId') categoryId?: string
   ) {
     return this.wordsService.getRandomWords(count, languageId, categoryId);
   }

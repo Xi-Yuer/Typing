@@ -11,6 +11,7 @@ import { LanguagesModule } from './modules/languages/languages.module';
 import { WordsModule } from './modules/words/words.module';
 import { SentencesModule } from './modules/sentences/sentences.module';
 import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categories.module';
+import { SpeechModule } from './modules/speech/speech.module';
 
 @Module({
   imports: [
@@ -22,8 +23,9 @@ import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categ
     CorpusCategoriesModule,
     WordsModule,
     SentencesModule,
+    SpeechModule,
     CacheModule.registerAsync({
-      useFactory: async () => {
+      useFactory: () => {
         return {
           stores: [
             new Keyv({

@@ -1,22 +1,14 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import baseConfig from '../../eslint.config.mjs';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default [
+  ...baseConfig,
   {
+    // Client 特定规则
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
+      // 允许在客户端使用 console.log 进行调试
+      'no-console': 'off',
+      // React Hooks 相关
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
 ];
-
-export default eslintConfig;

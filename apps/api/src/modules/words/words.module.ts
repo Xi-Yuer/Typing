@@ -7,11 +7,9 @@ import { Language } from '../languages/entities/language.entity';
 import { CorpusCategory } from '../corpus-categories/entities/corpus-category.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Word, Language, CorpusCategory]),
-  ],
+  imports: [TypeOrmModule.forFeature([Word, Language, CorpusCategory])],
   controllers: [WordsController],
   providers: [WordsService],
-  exports: [WordsService],
+  exports: [WordsService]
 })
 export class WordsModule {}

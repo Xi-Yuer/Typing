@@ -19,10 +19,15 @@
     "build": "rollup -c",
     "dev": "rollup -c --watch",
     "clean": "rm -rf dist",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.7.0"
+  "packageManager": "pnpm@10.7.0",
+  "devDependencies": {
+    "typescript-eslint": "^8.20.0"
+  }
 }

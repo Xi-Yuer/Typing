@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -16,7 +11,7 @@ import { PaginationResponseDto } from '../../common/dto/api-response.dto';
 export class WordsService {
   constructor(
     @InjectRepository(Word)
-    private readonly wordRepository: Repository<Word>,
+    private readonly wordRepository: Repository<Word>
   ) {}
 
   /**
@@ -28,14 +23,12 @@ export class WordsService {
       where: {
         word: createWordDto.word,
         languageId: createWordDto.languageId,
-        categoryId: createWordDto.categoryId,
-      },
+        categoryId: createWordDto.categoryId
+      }
     });
 
     if (existingWord) {
-      throw new ConflictException(
-        `单词 "${createWordDto.word}" 在该语言和分类下已存在`,
-      );
+      throw new ConflictException(`单词 "${createWordDto.word}" 在该语言和分类下已存在`);
     }
 
     const word = this.wordRepository.create(createWordDto);
@@ -44,9 +37,7 @@ export class WordsService {
   /**
    * 分页查询单词
    */
-  async findAllPaginated(
-    paginationQuery: PaginationQueryDto,
-  ): Promise<PaginationResponseDto<Word>> {
+  async findAllPaginated(paginationQuery: PaginationQueryDto): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
 
@@ -54,7 +45,7 @@ export class WordsService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -65,7 +56,7 @@ export class WordsService {
    */
   async findByLanguageId(
     languageId: string,
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -75,7 +66,7 @@ export class WordsService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -86,7 +77,7 @@ export class WordsService {
    */
   async findByCategoryId(
     categoryId: string,
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -96,7 +87,7 @@ export class WordsService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -108,7 +99,7 @@ export class WordsService {
   async findByLanguageAndCategory(
     languageId: string,
     categoryId: string,
-    paginationQuery: PaginationQueryDto,
+    paginationQuery: PaginationQueryDto
   ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -118,7 +109,7 @@ export class WordsService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -131,7 +122,7 @@ export class WordsService {
     keyword: string,
     paginationQuery: PaginationQueryDto,
     languageId?: string,
-    categoryId?: string,
+    categoryId?: string
   ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -140,10 +131,7 @@ export class WordsService {
       throw new BadRequestException('搜索关键词不能为空');
     }
 
-    const whereConditions: any = [
-      { word: Like(`%${keyword}%`) },
-      { meaning: Like(`%${keyword}%`) },
-    ];
+    const whereConditions: any = [{ word: Like(`%${keyword}%`) }, { meaning: Like(`%${keyword}%`) }];
 
     // 如果指定了语言 ID，添加语言过滤条件
     if (languageId) {
@@ -162,7 +150,7 @@ export class WordsService {
     const [list, total] = await this.wordRepository.findAndCount({
       where: whereConditions,
       relations: ['language', 'category'],
-      order: { createdAt: 'DESC' },
+      order: { createdAt: 'DESC' }
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -175,7 +163,7 @@ export class WordsService {
     keyword: string,
     paginationQuery: PaginationQueryDto,
     languageId?: string,
-    categoryId?: string,
+    categoryId?: string
   ): Promise<PaginationResponseDto<Word>> {
     if (!keyword || keyword.trim().length === 0) {
       throw new BadRequestException('搜索关键词不能为空');
@@ -184,10 +172,7 @@ export class WordsService {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
 
-    const whereConditions: any = [
-      { word: Like(`%${keyword}%`) },
-      { meaning: Like(`%${keyword}%`) },
-    ];
+    const whereConditions: any = [{ word: Like(`%${keyword}%`) }, { meaning: Like(`%${keyword}%`) }];
 
     // 如果指定了语言 ID，添加语言过滤条件
     if (languageId) {
@@ -208,7 +193,7 @@ export class WordsService {
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,
-      take: pageSize,
+      take: pageSize
     });
 
     return new PaginationResponseDto(list, total, page, pageSize);
@@ -220,7 +205,7 @@ export class WordsService {
   async findOne(id: string): Promise<Word> {
     const word = await this.wordRepository.findOne({
       where: { id },
-      relations: ['language', 'category'],
+      relations: ['language', 'category']
     });
 
     if (!word) {
@@ -242,14 +227,12 @@ export class WordsService {
         where: {
           word: updateWordDto.word,
           languageId: updateWordDto.languageId || word.languageId,
-          categoryId: updateWordDto.categoryId || word.categoryId,
-        },
+          categoryId: updateWordDto.categoryId || word.categoryId
+        }
       });
 
       if (existingWord && existingWord.id !== id) {
-        throw new ConflictException(
-          `单词 "${updateWordDto.word}" 在该语言和分类下已存在`,
-        );
+        throw new ConflictException(`单词 "${updateWordDto.word}" 在该语言和分类下已存在`);
       }
     }
 
@@ -299,11 +282,7 @@ export class WordsService {
   /**
    * 随机获取单词（用于练习）
    */
-  async getRandomWords(
-    count: number = 10,
-    languageId?: string,
-    categoryId?: string,
-  ): Promise<Word[]> {
+  async getRandomWords(count: number = 10, languageId?: string, categoryId?: string): Promise<Word[]> {
     if (count <= 0 || count > 100) {
       throw new BadRequestException('单词数量必须在 1-100 之间');
     }

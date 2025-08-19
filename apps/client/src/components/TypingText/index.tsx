@@ -1,4 +1,5 @@
 'use client';
+import useSpeech from '@/hooks/useSpeech';
 import React, { useState, useEffect, useRef } from 'react';
 
 interface WordPair {
@@ -26,7 +27,7 @@ export default function TypingText({
   onComplete
 }: TypingTextProps) {
   const wordPair = propWordPair || {
-    word: "I don't like to do it now",
+    word: "I don't like to do , it now",
     mean: '我不喜欢现在做'
   };
 
@@ -37,6 +38,7 @@ export default function TypingText({
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
+  const { speak, cancel, speaking } = useSpeech('This is a test message');
 
   // 预加载音频对象，避免每次创建
   const typingAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -465,11 +467,13 @@ export default function TypingText({
                         word
                       )}
                   `}
-                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}>
+                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}
+                    >
                       <span
                         className={
                           word.incorrect ? 'text-red-500' : 'text-white'
-                        }>
+                        }
+                      >
                         {word.userInput}
                       </span>
                       {showAnswerTip &&
@@ -482,7 +486,8 @@ export default function TypingText({
                   ) : (
                     <div
                       key={index}
-                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'>
+                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'
+                    >
                       {word.text}
                     </div>
                   )
