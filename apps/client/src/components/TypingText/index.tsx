@@ -1,6 +1,11 @@
 'use client';
-import useSpeech from '@/hooks/useSpeech';
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle
+} from 'react';
 
 interface WordPair {
   word: string;
@@ -11,6 +16,8 @@ interface TypingTextProps {
   wordPair?: WordPair;
   className?: string;
   onComplete?: (isCorrect: boolean) => void;
+  onNext?: () => void;
+  onPrev?: () => void;
 }
 
 interface WordState {
@@ -22,9 +29,11 @@ interface WordState {
   completed: boolean;
 }
 
-export default function TypingText({
+const TypingText = function ({
   wordPair: propWordPair,
-  onComplete
+  onComplete,
+  onNext,
+  onPrev
 }: TypingTextProps) {
   const wordPair = propWordPair || {
     word: "I don't like to do , it now",
@@ -38,7 +47,6 @@ export default function TypingText({
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
-  const { speak, cancel, speaking } = useSpeech('This is a test message');
 
   // 预加载音频对象，避免每次创建
   const typingAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -224,6 +232,55 @@ export default function TypingText({
 
   // 处理键盘事件
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Ctrl + R: 重置整个练习
+    if (e.ctrlKey && e.key === 'r') {
+      e.preventDefault();
+      resetExercise();
+      return;
+    }
+
+    // Ctrl + H: 切换答案提示
+    if (e.ctrlKey && e.key === 'h') {
+      e.preventDefault();
+      setShowAnswerTip(!showAnswerTip);
+      return;
+    }
+
+    // Ctrl + N: 跳过当前单词
+    if (e.ctrlKey && e.key === 'n') {
+      e.preventDefault();
+      skipCurrentWord();
+      return;
+    }
+
+    // Ctrl + A: 自动填充当前单词
+    if (e.ctrlKey && e.key === 'a') {
+      e.preventDefault();
+      autoFillCurrentWord();
+      return;
+    }
+
+    // Home: 跳转到第一个未完成的单词
+    if (e.key === 'Home') {
+      e.preventDefault();
+      jumpToFirstIncomplete();
+      return;
+    }
+
+    // End: 跳转到最后一个未完成的单词
+    if (e.key === 'End') {
+      e.preventDefault();
+      jumpToLastIncomplete();
+      return;
+    }
+
+    // Escape: 清除当前输入和错误状态
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      clearCurrentInput();
+      return;
+    }
+
     // 左右键切换单词，不播放打字音效
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();
@@ -397,6 +454,168 @@ export default function TypingText({
     }
   }, []);
 
+  // 重置整个练习
+  const resetExercise = () => {
+    const newWords = initializeWords();
+    setWords(newWords);
+    setCurrentWordIndex(0);
+    setInputValue('');
+    setHasError(false);
+    setShowAnswerTip(false);
+    setIsAllCorrect(false);
+  };
+
+  // 跳过当前单词
+  const skipCurrentWord = () => {
+    // 寻找下一个未完成的单词
+    let nextIndex = -1;
+    for (let i = currentWordIndex + 1; i < words.length; i++) {
+      if (!words[i].completed && isWord(words[i].text)) {
+        nextIndex = i;
+        break;
+      }
+    }
+
+    // 如果右边没有未完成的单词，从左边找
+    if (nextIndex === -1) {
+      for (let i = 0; i < currentWordIndex; i++) {
+        if (!words[i].completed && isWord(words[i].text)) {
+          nextIndex = i;
+          break;
+        }
+      }
+    }
+
+    // 标记当前单词为跳过状态并移动到下一个单词
+    if (nextIndex !== -1) {
+      setWords(prevWords =>
+        prevWords.map((word, index) => {
+          if (index === currentWordIndex) {
+            return {
+              ...word,
+              userInput: '[跳过]',
+              completed: true,
+              isActive: false
+            };
+          } else if (index === nextIndex) {
+            return { ...word, isActive: true };
+          }
+          return word;
+        })
+      );
+
+      setCurrentWordIndex(nextIndex);
+      setInputValue(words[nextIndex]?.userInput || '');
+      setHasError(false);
+    }
+  };
+
+  // 自动填充当前单词
+  const autoFillCurrentWord = () => {
+    const currentWord = words[currentWordIndex];
+    if (currentWord && !currentWord.completed && isWord(currentWord.text)) {
+      setInputValue(currentWord.text);
+
+      setWords(prevWords =>
+        prevWords.map((word, index) =>
+          index === currentWordIndex
+            ? { ...word, userInput: word.text, completed: true }
+            : word
+        )
+      );
+
+      setHasError(false);
+
+      // 自动跳转到下一个单词
+      setTimeout(() => {
+        // 寻找下一个未完成的单词
+        let nextIndex = -1;
+        for (let i = currentWordIndex + 1; i < words.length; i++) {
+          if (!words[i].completed && isWord(words[i].text)) {
+            nextIndex = i;
+            break;
+          }
+        }
+
+        if (nextIndex !== -1) {
+          setCurrentWordIndex(nextIndex);
+
+          setWords(prevWords =>
+            prevWords.map((word, index) => ({
+              ...word,
+              isActive: index === nextIndex
+            }))
+          );
+
+          setInputValue(words[nextIndex]?.userInput || '');
+        }
+      }, 100);
+    }
+  };
+
+  // 跳转到第一个未完成的单词
+  const jumpToFirstIncomplete = () => {
+    const firstIncompleteIndex = words.findIndex(
+      word => !word.completed && isWord(word.text)
+    );
+    if (
+      firstIncompleteIndex !== -1 &&
+      firstIncompleteIndex !== currentWordIndex
+    ) {
+      setCurrentWordIndex(firstIncompleteIndex);
+
+      setWords(prevWords =>
+        prevWords.map((word, index) => ({
+          ...word,
+          isActive: index === firstIncompleteIndex
+        }))
+      );
+
+      setInputValue(words[firstIncompleteIndex]?.userInput || '');
+      setHasError(false);
+    }
+  };
+
+  // 跳转到最后一个未完成的单词
+  const jumpToLastIncomplete = () => {
+    const incompleteIndices = words
+      .map((word, index) => ({ word, index }))
+      .filter(({ word }) => !word.completed && isWord(word.text))
+      .map(({ index }) => index);
+
+    const lastIncompleteIndex = incompleteIndices[incompleteIndices.length - 1];
+    if (
+      lastIncompleteIndex !== undefined &&
+      lastIncompleteIndex !== currentWordIndex
+    ) {
+      setCurrentWordIndex(lastIncompleteIndex);
+
+      setWords(prevWords =>
+        prevWords.map((word, index) => ({
+          ...word,
+          isActive: index === lastIncompleteIndex
+        }))
+      );
+
+      setInputValue(words[lastIncompleteIndex]?.userInput || '');
+      setHasError(false);
+    }
+  };
+
+  // 清除当前输入和错误状态
+  const clearCurrentInput = () => {
+    setInputValue('');
+    setHasError(false);
+
+    setWords(prevWords =>
+      prevWords.map((word, index) =>
+        index === currentWordIndex
+          ? { ...word, userInput: '', incorrect: false, completed: false }
+          : word
+      )
+    );
+  };
+
   // 播放声音函数
   const playTypingSound = () => {
     if (typingAudioRef.current) {
@@ -447,7 +666,7 @@ export default function TypingText({
   }, []);
 
   return (
-    <div className='w-full h-full flex items-center justify-center text-white relative z-50 overflow-hidden'>
+    <div className='w-full h-full flex flex-col items-center justify-center text-white relative z-50 overflow-hidden'>
       {isAllCorrect ? (
         <></>
       ) : (
@@ -467,13 +686,11 @@ export default function TypingText({
                         word
                       )}
                   `}
-                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}
-                    >
+                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}>
                       <span
                         className={
                           word.incorrect ? 'text-red-500' : 'text-white'
-                        }
-                      >
+                        }>
                         {word.userInput}
                       </span>
                       {showAnswerTip &&
@@ -486,8 +703,7 @@ export default function TypingText({
                   ) : (
                     <div
                       key={index}
-                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'
-                    >
+                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'>
                       {word.text}
                     </div>
                   )
@@ -511,8 +727,42 @@ export default function TypingText({
           </div>
         </>
       )}
+
+      {/* 快捷键提示 */}
+      <div className='mt-4 flex items-center justify-between bottom-10 absolute w-full select-none px-8'>
+        <div className='flex items-center text-white/70 pl-20'>
+          <span className='text-xs text-fuchsia-300'>←</span>
+        </div>
+        <div className='flex items-center justify-center space-x-6 text-sm text-white/70'>
+          {[
+            { keys: ['Ctrl', 'R'], label: '重置练习' },
+            { keys: ['Ctrl', 'P'], label: '发音' },
+            { keys: ['Ctrl', 'H'], label: '切换提示' },
+            { keys: ['Enter | Space'], label: '提交' }
+          ].map((shortcut, index) => (
+            <div key={index} className='flex items-center space-x-1'>
+              {shortcut.keys.map((key, keyIndex) => (
+                <React.Fragment key={keyIndex}>
+                  {keyIndex > 0 && (
+                    <span className='text-xs text-fuchsia-300'>+</span>
+                  )}
+                  <kbd className='px-2 py-1 bg-fuchsia-500/20 border border-fuchsia-400/30 rounded text-xs font-mono text-fuchsia-300'>
+                    {key}
+                  </kbd>
+                </React.Fragment>
+              ))}
+              <span className='ml-1 font-bold'>{shortcut.label}</span>
+            </div>
+          ))}
+        </div>
+        <div className='flex items-center text-white/70 pr-20'>
+          <span className='text-xs text-fuchsia-300'>→</span>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default TypingText;
 
 export type { WordPair, TypingTextProps };

@@ -303,7 +303,8 @@ export default function PlasmaWaveV2({
         inset: 0,
         overflow: 'hidden',
         width: '100vw',
-        height: '100vh'
+        height: '100vh',
+        zIndex: 0
       }}
     >
       <div
