@@ -12,6 +12,7 @@ import { WordsModule } from './modules/words/words.module';
 import { SentencesModule } from './modules/sentences/sentences.module';
 import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categories.module';
 import { SpeechModule } from './modules/speech/speech.module';
+import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { SpeechModule } from './modules/speech/speech.module';
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor
+      useClass: CustomCacheInterceptor
     }
   ]
 })

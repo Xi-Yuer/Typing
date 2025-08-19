@@ -31,6 +31,7 @@ import {
   ApiPaginationResponse
 } from '../../common/decorators/api-response.decorator';
 import { CacheTTL } from '@nestjs/cache-manager';
+import { NoCache } from '@/common/decorators/no-cache.decorator';
 
 @ApiTags('句子管理')
 @Controller('sentences')
@@ -155,7 +156,7 @@ export class SentencesController {
   }
 
   @Get('random')
-  @CacheTTL(1)
+  @NoCache()
   @ApiOperation({ summary: '获取随机句子' })
   @ApiQuery({
     name: 'count',

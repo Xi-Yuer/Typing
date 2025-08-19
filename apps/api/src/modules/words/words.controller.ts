@@ -1,5 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiBearerAuth
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/premission.decorator';
@@ -15,6 +31,7 @@ import { UpdateWordDto } from './dto/update-word.dto';
 import { Word } from './entities/word.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { CacheTTL } from '@nestjs/cache-manager';
+import { NoCache } from '@/common/decorators/no-cache.decorator';
 
 @ApiTags('单词管理')
 @Controller('words')
@@ -43,7 +60,10 @@ export class WordsController {
   @ApiOperation({ summary: '根据语言 ID 查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiPaginationResponse(Word, { description: '根据语言 ID 查询单词成功' })
-  findByLanguageId(@Param('languageId') languageId: string, @Query() paginationQuery: PaginationQueryDto) {
+  findByLanguageId(
+    @Param('languageId') languageId: string,
+    @Query() paginationQuery: PaginationQueryDto
+  ) {
     return this.wordsService.findByLanguageId(languageId, paginationQuery);
   }
 
@@ -51,7 +71,10 @@ export class WordsController {
   @ApiOperation({ summary: '根据分类 ID 查询单词' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
   @ApiPaginationResponse(Word, { description: '根据分类 ID 查询单词成功' })
-  findByCategoryId(@Param('categoryId') categoryId: string, @Query() paginationQuery: PaginationQueryDto) {
+  findByCategoryId(
+    @Param('categoryId') categoryId: string,
+    @Query() paginationQuery: PaginationQueryDto
+  ) {
     return this.wordsService.findByCategoryId(categoryId, paginationQuery);
   }
 
@@ -65,7 +88,11 @@ export class WordsController {
     @Param('categoryId') categoryId: string,
     @Query() paginationQuery: PaginationQueryDto
   ) {
-    return this.wordsService.findByLanguageAndCategory(languageId, categoryId, paginationQuery);
+    return this.wordsService.findByLanguageAndCategory(
+      languageId,
+      categoryId,
+      paginationQuery
+    );
   }
 
   @Get('search')
@@ -90,7 +117,12 @@ export class WordsController {
     @Query('languageId') languageId?: string,
     @Query('categoryId') categoryId?: string
   ) {
-    return this.wordsService.searchWords(keyword, paginationQuery, languageId, categoryId);
+    return this.wordsService.searchWords(
+      keyword,
+      paginationQuery,
+      languageId,
+      categoryId
+    );
   }
 
   @Get('search/paginated')
@@ -115,11 +147,16 @@ export class WordsController {
     @Query('languageId') languageId?: string,
     @Query('categoryId') categoryId?: string
   ) {
-    return this.wordsService.searchWordsPaginated(keyword, paginationQuery, languageId, categoryId);
+    return this.wordsService.searchWordsPaginated(
+      keyword,
+      paginationQuery,
+      languageId,
+      categoryId
+    );
   }
 
   @Get('random')
-  @CacheTTL(1)
+  @NoCache()
   @ApiOperation({ summary: '随机获取单词（用于练习）' })
   @ApiQuery({
     name: 'count',
