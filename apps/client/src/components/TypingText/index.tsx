@@ -1,6 +1,9 @@
 'use client';
+import { specialKeys } from '@/constant';
 import useSpeech from '@/hooks/useSpeech';
-import { Word } from '@/type/word';
+import { useTypingSound } from '@/hooks/useTypingSound';
+import { Word } from '@/request/globals';
+import { getWordsClassNames, getWordWidth, isWord } from '@/utils';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
@@ -13,7 +16,7 @@ interface TypingTextProps {
   onPrev?: () => void;
 }
 
-interface WordState {
+export interface WordState {
   id: number;
   text: string;
   userInput: string;
@@ -33,14 +36,11 @@ const TypingText = function ({
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isComposing, setIsComposing] = useState(false);
   const [showAnswerTip, setShowAnswerTip] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const hasErrorRef = useRef(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
   const { speak, speaking, cancel } = useSpeech(word.word);
-
-  // 预加载音频对象，避免每次创建
-  const typingAudioRef = useRef<HTMLAudioElement | null>(null);
-  const successAudioRef = useRef<HTMLAudioElement | null>(null);
-  const errorAudioRef = useRef<HTMLAudioElement | null>(null);
+  const { playTypingSound, playSuccessSound, playErrorSound } =
+    useTypingSound();
 
   // 初始化单词状态
   const initializeWords = (): WordState[] => {
@@ -57,38 +57,6 @@ const TypingText = function ({
 
   const [words, setWords] = useState<WordState[]>(initializeWords());
 
-  // 判断是否为单词（非标点符号）
-  const isWord = (text: string): boolean => {
-    // 支持英文、中文、日文、韩文、俄文等多种语言
-    return /^[\p{L}\p{M}']+$/u.test(text);
-  };
-
-  // 获取单词宽度
-  const getWordWidth = (word: string): number => {
-    return Math.max(word.length, 4);
-  };
-
-  // 获取单词样式类名
-  const getWordsClassNames = (word: WordState): string => {
-    // 错误状态优先显示，确保错误时始终显示红色
-    if (word.incorrect) {
-      return 'text-red-500 border-b-red-500 animate-pulse';
-    }
-
-    // 当前激活的单词显示紫色，移除focusing条件确保始终显示
-    if (word.isActive) {
-      return 'text-fuchsia-500 border-b-fuchsia-500';
-    }
-
-    // 已完成的单词显示灰色
-    if (word.completed) {
-      return 'text-gray-300 border-b-gray-300';
-    }
-
-    // 默认状态
-    return 'text-gray-400 border-b-gray-300';
-  };
-
   // 处理输入变化
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -98,7 +66,7 @@ const TypingText = function ({
 
     // 如果输入长度超过当前单词长度，显示错误并阻止输入
     if (currentWord && value.length > currentWord.text.length) {
-      setHasError(true);
+      hasErrorRef.current = true;
       setWords(prevWords =>
         prevWords.map(word =>
           word.isActive ? { ...word, incorrect: true } : word
@@ -111,8 +79,8 @@ const TypingText = function ({
     setInputValue(value);
 
     // 如果用户开始输入，清除错误状态
-    if (hasError && value.length > 0) {
-      setHasError(false);
+    if (hasErrorRef.current && value.length > 0) {
+      hasErrorRef.current = false;
       // 同时清除当前单词的错误状态
       setWords(prevWords =>
         prevWords.map(word =>
@@ -143,7 +111,7 @@ const TypingText = function ({
     const currentWord = words[currentWordIndex];
     if (!currentWord) {
       // 设置错误状态，将当前输入标记为错误
-      setHasError(true);
+      hasErrorRef.current = true;
       setWords(prevWords =>
         prevWords.map(word =>
           word.isActive ? { ...word, incorrect: true } : word
@@ -156,7 +124,7 @@ const TypingText = function ({
 
     if (isCorrect) {
       // 清除错误状态
-      setHasError(false);
+      hasErrorRef.current = false;
 
       // 标记当前单词为完成
       setWords(prevWords =>
@@ -172,9 +140,10 @@ const TypingText = function ({
         )
       );
 
-      // 检查是否所有单词都已完成
+      // 检查是否所有单词都已完成（只检查真正的单词，忽略标点符号）
       const allCompleted = words.every(
-        (word, index) => index === currentWordIndex || word.completed
+        (word, index) =>
+          index === currentWordIndex || word.completed || !isWord(word.text)
       );
 
       if (allCompleted) {
@@ -184,10 +153,10 @@ const TypingText = function ({
         onComplete?.(true);
         setIsAllCorrect(true);
       } else {
-        // 寻找下一个未完成的单词
+        // 寻找下一个未完成的单词（跳过标点符号）
         let nextIndex = -1;
         for (let i = currentWordIndex + 1; i < words.length; i++) {
-          if (!words[i].completed) {
+          if (!words[i].completed && isWord(words[i].text)) {
             nextIndex = i;
             break;
           }
@@ -196,7 +165,7 @@ const TypingText = function ({
         // 如果右边没有未完成的单词，从左边找
         if (nextIndex === -1) {
           for (let i = 0; i < currentWordIndex; i++) {
-            if (!words[i].completed) {
+            if (!words[i].completed && isWord(words[i].text)) {
               nextIndex = i;
               break;
             }
@@ -219,7 +188,7 @@ const TypingText = function ({
       // 播放错误音效
       playErrorSound();
       // 设置错误状态
-      setHasError(true);
+      hasErrorRef.current = true;
 
       // 标记错误
       setWords(prevWords =>
@@ -235,46 +204,14 @@ const TypingText = function ({
     }
   };
 
-  // 声明一个数组，表示哪些按键不播放打字音效
-  const specialKeys = [
-    'ARROWLEFT',
-    'ARROWRIGHT',
-    'HOME',
-    'END',
-    'ESCAPE',
-    'TAB',
-    'ENTER',
-    'A',
-    'S',
-    'D',
-    'F',
-    'G',
-    'H',
-    'J',
-    'K',
-    'L',
-    'Q',
-    'W',
-    'E',
-    'R',
-    'T',
-    'Y',
-    'U',
-    'I',
-    'O',
-    'P',
-    'Z',
-    'X',
-    'C',
-    'V',
-    'B',
-    'N',
-    'M'
-  ];
   // 处理键盘事件
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // 按键播放打字音效
-    if (specialKeys.includes(e.key.toUpperCase()) && !hasError) {
+    const currentWord = words[currentWordIndex];
+    const isPlayTypingSound =
+      inputValue.trim() === currentWord.text ||
+      (e.key !== ' ' && e.key !== 'Enter');
+    if (specialKeys.includes(e.key.toUpperCase()) && isPlayTypingSound) {
       playTypingSound();
     }
     // Ctrl + R: 重置整个练习
@@ -319,47 +256,62 @@ const TypingText = function ({
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();
 
-      if (e.key === 'ArrowLeft' && currentWordIndex > 0) {
-        // 切换到上一个单词
-        const prevIndex = currentWordIndex - 1;
-        setCurrentWordIndex(prevIndex);
+      if (e.key === 'ArrowLeft') {
+        // 切换到上一个单词（跳过标点符号）
+        let prevIndex = -1;
+        for (let i = currentWordIndex - 1; i >= 0; i--) {
+          if (isWord(words[i].text)) {
+            prevIndex = i;
+            break;
+          }
+        }
 
-        // 更新单词状态
-        setWords(prevWords =>
-          prevWords.map((word, index) => ({
-            ...word,
-            isActive: index === prevIndex
-          }))
-        );
+        if (prevIndex !== -1) {
+          setCurrentWordIndex(prevIndex);
 
-        // 设置输入框的值为目标单词的当前输入
-        const targetWord = words[prevIndex];
-        setInputValue(targetWord.userInput);
+          // 更新单词状态
+          setWords(prevWords =>
+            prevWords.map((word, index) => ({
+              ...word,
+              isActive: index === prevIndex
+            }))
+          );
 
-        // 清除错误状态
-        setHasError(false);
-      } else if (
-        e.key === 'ArrowRight' &&
-        currentWordIndex < words.length - 1
-      ) {
-        // 切换到下一个单词
-        const nextIndex = currentWordIndex + 1;
-        setCurrentWordIndex(nextIndex);
+          // 设置输入框的值为目标单词的当前输入
+          const targetWord = words[prevIndex];
+          setInputValue(targetWord.userInput);
 
-        // 更新单词状态
-        setWords(prevWords =>
-          prevWords.map((word, index) => ({
-            ...word,
-            isActive: index === nextIndex
-          }))
-        );
+          // 清除错误状态
+          hasErrorRef.current = false;
+        }
+      } else if (e.key === 'ArrowRight') {
+        // 切换到下一个单词（跳过标点符号）
+        let nextIndex = -1;
+        for (let i = currentWordIndex + 1; i < words.length; i++) {
+          if (isWord(words[i].text)) {
+            nextIndex = i;
+            break;
+          }
+        }
 
-        // 设置输入框的值为目标单词的当前输入
-        const targetWord = words[nextIndex];
-        setInputValue(targetWord.userInput);
+        if (nextIndex !== -1) {
+          setCurrentWordIndex(nextIndex);
 
-        // 清除错误状态
-        setHasError(false);
+          // 更新单词状态
+          setWords(prevWords =>
+            prevWords.map((word, index) => ({
+              ...word,
+              isActive: index === nextIndex
+            }))
+          );
+
+          // 设置输入框的值为目标单词的当前输入
+          const targetWord = words[nextIndex];
+          setInputValue(targetWord.userInput);
+
+          // 清除错误状态
+          hasErrorRef.current = false;
+        }
       }
       return;
     }
@@ -420,7 +372,7 @@ const TypingText = function ({
         setInputValue(newInputValue);
 
         // 清除错误状态
-        setHasError(false);
+        hasErrorRef.current = false;
         return;
       }
     }
@@ -431,9 +383,9 @@ const TypingText = function ({
       e.stopPropagation();
 
       // 如果当前有错误，清空输入重新开始
-      if (hasError) {
+      if (hasErrorRef.current) {
         setInputValue('');
-        setHasError(false);
+        hasErrorRef.current = false;
         // 清除当前单词的错误状态
         setWords(prevWords =>
           prevWords.map(word =>
@@ -487,32 +439,13 @@ const TypingText = function ({
     }
   };
 
-  // 初始化音频对象
-  useEffect(() => {
-    try {
-      typingAudioRef.current = new Audio('/sounds/typing.mp3');
-      typingAudioRef.current.volume = 0.3;
-      typingAudioRef.current.preload = 'auto';
-
-      successAudioRef.current = new Audio('/sounds/right.mp3');
-      successAudioRef.current.volume = 0.5;
-      successAudioRef.current.preload = 'auto';
-
-      errorAudioRef.current = new Audio('/sounds/error.mp3');
-      errorAudioRef.current.volume = 0.5;
-      errorAudioRef.current.preload = 'auto';
-    } catch (e) {
-      console.log('初始化音频失败:', e);
-    }
-  }, []);
-
   // 重置整个练习
   const resetExercise = () => {
     const newWords = initializeWords();
     setWords(newWords);
     setCurrentWordIndex(0);
     setInputValue('');
-    setHasError(false);
+    hasErrorRef.current = false;
     setShowAnswerTip(false);
     setIsAllCorrect(false);
   };
@@ -536,7 +469,7 @@ const TypingText = function ({
       );
 
       setInputValue(words[firstIncompleteIndex]?.userInput || '');
-      setHasError(false);
+      hasErrorRef.current = false;
     }
   };
 
@@ -562,14 +495,14 @@ const TypingText = function ({
       );
 
       setInputValue(words[lastIncompleteIndex]?.userInput || '');
-      setHasError(false);
+      hasErrorRef.current = false;
     }
   };
 
   // 清除当前输入和错误状态
   const clearCurrentInput = () => {
     setInputValue('');
-    setHasError(false);
+    hasErrorRef.current = false;
 
     setWords(prevWords =>
       prevWords.map((word, index) =>
@@ -580,33 +513,6 @@ const TypingText = function ({
     );
   };
 
-  // 播放声音函数
-  const playTypingSound = () => {
-    if (typingAudioRef.current) {
-      typingAudioRef.current.currentTime = 0; // 重置播放位置
-      typingAudioRef.current
-        .play()
-        .catch(e => console.log('播放成功音效失败:', e));
-    }
-  };
-
-  const playSuccessSound = () => {
-    if (successAudioRef.current) {
-      successAudioRef.current.currentTime = 0; // 重置播放位置
-      successAudioRef.current
-        .play()
-        .catch(e => console.log('播放成功音效失败:', e));
-    }
-  };
-
-  const playErrorSound = () => {
-    if (errorAudioRef.current) {
-      errorAudioRef.current.currentTime = 0; // 重置播放位置
-      errorAudioRef.current
-        .play()
-        .catch(e => console.log('播放错误音效失败:', e));
-    }
-  };
   // 自动聚焦
   useEffect(() => {
     if (inputRef.current) {
@@ -649,11 +555,13 @@ const TypingText = function ({
                         word
                       )}
                   `}
-                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}>
+                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}
+                    >
                       <span
                         className={
                           word.incorrect ? 'text-red-500' : 'text-white'
-                        }>
+                        }
+                      >
                         {word.userInput}
                       </span>
                       {showAnswerTip &&
@@ -666,7 +574,8 @@ const TypingText = function ({
                   ) : (
                     <div
                       key={index}
-                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'>
+                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'
+                    >
                       {word.text}
                     </div>
                   )
@@ -695,7 +604,8 @@ const TypingText = function ({
       <div className='mt-4 flex items-center justify-between bottom-10 absolute w-full select-none px-8'>
         <div
           className='flex items-center text-white/70 pl-20 cursor-pointer'
-          onClick={onPrev}>
+          onClick={onPrev}
+        >
           <Tooltip title='Shift + ←' color='purple'>
             <LeftOutlined className='text-3xl' />
           </Tooltip>
@@ -724,7 +634,8 @@ const TypingText = function ({
         </div>
         <div
           className='flex items-center text-white/70 pr-20 cursor-pointer'
-          onClick={onNext}>
+          onClick={onNext}
+        >
           <Tooltip title='Shift + →' color='purple'>
             <RightOutlined className='text-3xl' />
           </Tooltip>
@@ -735,5 +646,3 @@ const TypingText = function ({
 };
 
 export default TypingText;
-
-export type { TypingTextProps };

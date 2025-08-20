@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import Apis from '@/request';
+import { isWord } from '@/utils';
 
 /**
  * 检测音频数据格式并创建对应的 Blob
@@ -72,7 +73,7 @@ export type UseSpeechResult = {
 
 /**
  * React hook for using the SpeechSynthesis API.
- * @param {string} text The text to be spoken.
+ * @param {string} text The words to be spoken.
  * @param {Partial<SpeechSynthesisUtterance>} option SpeechSynthesisUtterance API option. {@link https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance#instance_properties}
  * @returns {Object} An object containing `speak`, `cancel` methods and `speaking` state.
  * @throws {Error} If browser not support SpeechSynthesis API.
@@ -82,6 +83,10 @@ export default function useSpeech(
   text: string,
   option?: Partial<SpeechSynthesisUtterance>
 ): UseSpeechResult {
+  const words = text
+    .split(' ')
+    .filter(item => isWord(item))
+    .join(' ');
   const [nativeSpeaking, setNativeSpeaking] = useState(false);
   const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(
     null
@@ -101,7 +106,7 @@ export default function useSpeech(
       }
 
       // 创建新的 utterance 或使用现有的
-      const currentUtterance = utterance || new SpeechSynthesisUtterance(text);
+      const currentUtterance = utterance || new SpeechSynthesisUtterance(words);
       if (!utterance) {
         Object.assign(currentUtterance, option);
       }
@@ -114,7 +119,7 @@ export default function useSpeech(
       setNativeSpeaking(true);
       synth.speak(currentUtterance);
     },
-    [utterance, text, option]
+    [utterance, words, option]
   );
 
   const {
@@ -123,7 +128,7 @@ export default function useSpeech(
     loading: apiLoading,
     speaking: apiSpeaking,
     cancel: apiCancel
-  } = useApiSpeech(text, 1, nativeSpeak);
+  } = useApiSpeech(words, 1, nativeSpeak);
 
   useEffect(() => {
     const synth = window.speechSynthesis;
@@ -131,7 +136,7 @@ export default function useSpeech(
       return;
     }
 
-    const newUtterance = new SpeechSynthesisUtterance(text);
+    const newUtterance = new SpeechSynthesisUtterance(words);
     Object.assign(newUtterance, option);
     setUtterance(newUtterance);
 
@@ -139,7 +144,7 @@ export default function useSpeech(
       synth.cancel();
       setNativeSpeaking(false);
     };
-  }, [option, text]);
+  }, [option, words]);
 
   useEffect(() => {
     if (utterance) {
@@ -229,12 +234,12 @@ export type UseApiSpeechResult = {
 
 /**
  * 使用 API 请求获取音频并播放的 Hook
- * @param {string} text 要播放的文本
+ * @param {string} words 要播放的文本
  * @param {number} [type=1] 音频类型，默认为 1
  * @returns {UseApiSpeechResult} 包含播放控制方法和状态的对象
  */
 export function useApiSpeech(
-  text: string,
+  words: string,
   type: number = 1,
   fallbackSpeak: (abort?: boolean) => void
 ): UseApiSpeechResult {
@@ -338,7 +343,7 @@ export function useApiSpeech(
         // 请求音频数据
         const response = await Apis.Speech.SpeechController_getYoudaoAudio({
           params: {
-            word: text,
+            word: words,
             type: type
           },
           cacheFor: {
@@ -373,7 +378,7 @@ export function useApiSpeech(
       }
     },
     [
-      text,
+      words,
       type,
       speaking,
       loading,
