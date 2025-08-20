@@ -31,15 +31,27 @@ export class Word {
   word: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  @ApiProperty({ description: '罗马音/拼音', example: 'hə-ˈlō', required: false })
+  @ApiProperty({
+    description: '罗马音/拼音',
+    example: 'hə-ˈlō',
+    required: false
+  })
   transliteration?: string;
 
   @Column({ name: 'us_phonetic', type: 'varchar', length: 255, nullable: true })
-  @ApiProperty({ description: '美式音标', example: '/həˈloʊ/', required: false })
+  @ApiProperty({
+    description: '美式音标',
+    example: '/həˈloʊ/',
+    required: false
+  })
   usPhonetic?: string;
 
   @Column({ name: 'uk_phonetic', type: 'varchar', length: 255, nullable: true })
-  @ApiProperty({ description: '英式音标', example: '/həˈləʊ/', required: false })
+  @ApiProperty({
+    description: '英式音标',
+    example: '/həˈləʊ/',
+    required: false
+  })
   ukPhonetic?: string;
 
   @Column({ type: 'text' })
@@ -51,11 +63,19 @@ export class Word {
   example?: string;
 
   @Column({ name: 'audio_url', type: 'varchar', length: 255, nullable: true })
-  @ApiProperty({ description: '发音音频链接', example: 'https://example.com/audio/hello.mp3', required: false })
+  @ApiProperty({
+    description: '发音音频链接',
+    example: 'https://example.com/audio/hello.mp3',
+    required: false
+  })
   audioUrl?: string;
 
   @Column({ name: 'image_url', type: 'varchar', length: 255, nullable: true })
-  @ApiProperty({ description: '图片链接', example: 'https://example.com/images/hello.jpg', required: false })
+  @ApiProperty({
+    description: '图片链接',
+    example: 'https://example.com/images/hello.jpg',
+    required: false
+  })
   imageUrl?: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
@@ -67,7 +87,11 @@ export class Word {
   updatedAt: Date;
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp', nullable: true })
-  @ApiProperty({ description: '删除时间', example: '2024-01-01T00:00:00Z', required: false })
+  @ApiProperty({
+    description: '删除时间',
+    example: '2024-01-01T00:00:00Z',
+    required: false
+  })
   deletedAt?: Date;
 
   // 关联关系

@@ -10,7 +10,7 @@ const formatNumber = (num: number) => {
 
 export const getStarsCount = async () => {
   try {
-    const response = await fetch('https://api.github.com/repos/Xi-Yuer/GO-CMS');
+    const response = await fetch('https://api.github.com/repos/Xi-Yuer/Typing');
     const data = await response.json();
     return String(formatNumber(data.stargazers_count)).toUpperCase();
   } catch (error) {

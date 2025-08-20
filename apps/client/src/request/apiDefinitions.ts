@@ -1,6 +1,6 @@
 /// <reference types='./globals.d.ts' />
 /* tslint:disable */
-
+/* eslint-disable */
 /**
  * Typing API - version 1.0
  *
@@ -142,5 +142,6 @@ export default {
     '/sentences/stats/category'
   ],
   'general.SentencesController_findOne': ['GET', '/sentences/{id}'],
-  'general.SentencesController_remove': ['DELETE', '/sentences/{id}']
+  'general.SentencesController_remove': ['DELETE', '/sentences/{id}'],
+  'Speech.SpeechController_getYoudaoAudio': ['GET', '/speech/audio']
 };

@@ -1,16 +1,12 @@
 'use client';
 import useSpeech from '@/hooks/useSpeech';
+import { Word } from '@/type/word';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 
-interface WordPair {
-  word: string;
-  mean: string;
-}
-
 interface TypingTextProps {
-  wordPair?: WordPair;
+  word: Word;
   className?: string;
   onComplete?: (isCorrect: boolean) => void;
   onNext?: () => void;
@@ -27,16 +23,11 @@ interface WordState {
 }
 
 const TypingText = function ({
-  wordPair: propWordPair,
+  word,
   onComplete,
   onNext,
   onPrev
 }: TypingTextProps) {
-  const wordPair = propWordPair || {
-    word: "I don't like to do , it now",
-    mean: '我不喜欢现在做'
-  };
-
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -44,7 +35,7 @@ const TypingText = function ({
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
-  const { speak, speaking, cancel } = useSpeech(wordPair.word);
+  const { speak, speaking, cancel } = useSpeech(word.word);
 
   // 预加载音频对象，避免每次创建
   const typingAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -53,7 +44,7 @@ const TypingText = function ({
 
   // 初始化单词状态
   const initializeWords = (): WordState[] => {
-    const words = wordPair.word.split(' ');
+    const words = word.word.split(' ');
     return words.map((word, index) => ({
       id: index,
       text: word,
@@ -644,8 +635,8 @@ const TypingText = function ({
       ) : (
         <>
           <div className='flex flex-col justify-center items-center gap-y-8'>
-            {/* 中文翻译 */}
-            <div className='text-5xl text-center mb-4'>{wordPair.mean}</div>
+            {/* 翻译 */}
+            <div className='text-5xl text-center mb-4'>{word.meaning}</div>
 
             {/* 单词显示区域 */}
             <div className='text-center'>
@@ -745,4 +736,4 @@ const TypingText = function ({
 
 export default TypingText;
 
-export type { WordPair, TypingTextProps };
+export type { TypingTextProps };

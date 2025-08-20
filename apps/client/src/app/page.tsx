@@ -9,7 +9,9 @@ export default function Page() {
     <div className='bg-black h-[100vh] w-screen flex flex-col'>
       <Header activeItem='home' />
       <PlasmaWaveV2 yOffset={-300} xOffset={0} rotationDeg={-30} />
-      <TypingText />
+      <TypingText
+        word={{ word: 'we are , the best', meaning: '我们最好了' } as any}
+      />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 /* tslint:disable */
-
+/* eslint-disable */
 /**
  * Typing API - version 1.0
  *
@@ -5726,6 +5726,42 @@ declare global {
         'general.SentencesController_remove',
         Config
       >;
+    };
+    Speech: {
+      /**
+       * ---
+       *
+       * [GET]
+       *
+       * **path:** /speech/audio
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   word: string
+       *   type: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = null
+       * ```
+       */
+      SpeechController_getYoudaoAudio<
+        Config extends Alova2MethodConfig<null> & {
+          params: {
+            word: string;
+            type: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<null, 'Speech.SpeechController_getYoudaoAudio', Config>;
     };
   }
 

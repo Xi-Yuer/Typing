@@ -10,7 +10,6 @@ import { NoCache } from '../decorators/no-cache.decorator';
 
 @Controller('api')
 export class ExampleController {
-  
   @Get('cached-data')
   getCachedData() {
     // 这个方法会被缓存
@@ -40,7 +39,6 @@ import { NoCache } from '../decorators/no-cache.decorator';
 @Controller('real-time')
 @NoCache() // 整个控制器的所有方法都不会被缓存
 export class RealTimeController {
-  
   @Get('status')
   getStatus() {
     return { status: 'online', timestamp: Date.now() };

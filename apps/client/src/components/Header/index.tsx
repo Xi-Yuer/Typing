@@ -84,7 +84,7 @@ const DisplayHeader = ({ activeItem }: { activeItem: string }) => {
             style={{
               animationDuration: '6s'
             }}
-            href='https://github.com/DavidHDev/react-bits'
+            href='https://github.com/Xi-Yuer/Typing'
           >
             <span>Star On GitHub</span>
             <div
