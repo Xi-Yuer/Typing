@@ -15,12 +15,7 @@
  *
  * **Do not edit the file manually.**
  */
-import type {
-  Alova,
-  AlovaMethodCreateConfig,
-  AlovaGenerics,
-  Method
-} from 'alova';
+import type { Alova, AlovaMethodCreateConfig, AlovaGenerics, Method } from 'alova';
 import type { $$userConfigMap, alovaInstance } from '.';
 import type apiDefinitions from './apiDefinitions';
 
@@ -42,16 +37,7 @@ type Alova2MethodConfig<Responded> =
   >
     ? Omit<
         AlovaMethodCreateConfig<
-          AlovaGenerics<
-            Responded,
-            any,
-            RequestConfig,
-            Response,
-            ResponseHeader,
-            L1Cache,
-            L2Cache,
-            SE
-          >,
+          AlovaGenerics<Responded, any, RequestConfig, Response, ResponseHeader, L1Cache, L2Cache, SE>,
           any,
           Responded
         >,
@@ -64,9 +50,7 @@ type ExtractUserDefinedTransformed<
   DefinitionKey extends keyof typeof apiDefinitions,
   Default
 > = DefinitionKey extends keyof UserMethodConfigMap
-  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (
-      ...args: any[]
-    ) => any
+  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (...args: any[]) => any
     ? Awaited<ReturnType<UserMethodConfigMap[DefinitionKey]['transform']>>
     : Default
   : Default;
@@ -491,6 +475,10 @@ export interface Word {
    * 中文释义
    */
   meaning: string;
+  /**
+   * 简短翻译
+   */
+  meaningShort: string;
   /**
    * 例句
    */
@@ -998,11 +986,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        AuthResponseDto,
-        'general.AuthController_register',
-        Config
-      >;
+      ): Alova2Method<AuthResponseDto, 'general.AuthController_register', Config>;
       /**
        * ---
        *
@@ -1751,11 +1735,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.LanguagesController_remove',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.LanguagesController_remove', Config>;
       /**
        * ---
        *
@@ -2363,15 +2343,9 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getDifficultyStats<
-        Config extends Alova2MethodConfig<ApiResponseDto>
-      >(
+      CorpusCategoriesController_getDifficultyStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
         config?: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_getDifficultyStats',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getDifficultyStats', Config>;
       /**
        * ---
        *
@@ -2397,15 +2371,9 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getLanguageStats<
-        Config extends Alova2MethodConfig<ApiResponseDto>
-      >(
+      CorpusCategoriesController_getLanguageStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
         config?: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_getLanguageStats',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getLanguageStats', Config>;
       /**
        * ---
        *
@@ -2547,11 +2515,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_remove',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_remove', Config>;
       /**
        * ---
        *
@@ -2620,6 +2584,8 @@ declare global {
        *     ukPhonetic?: string
        *     // 中文释义
        *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
        *     // 例句
        *     example: string
        *     // 发音音频链接
@@ -2765,6 +2731,8 @@ declare global {
        *       ukPhonetic?: string
        *       // 中文释义
        *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
        *       // 例句
        *       example: string
        *       // 发音音频链接
@@ -2934,6 +2902,8 @@ declare global {
        *       ukPhonetic?: string
        *       // 中文释义
        *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
        *       // 例句
        *       example: string
        *       // 发音音频链接
@@ -3109,6 +3079,8 @@ declare global {
        *       ukPhonetic?: string
        *       // 中文释义
        *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
        *       // 例句
        *       example: string
        *       // 发音音频链接
@@ -3286,6 +3258,8 @@ declare global {
        *       ukPhonetic?: string
        *       // 中文释义
        *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
        *       // 例句
        *       example: string
        *       // 发音音频链接
@@ -3460,6 +3434,8 @@ declare global {
        *     ukPhonetic?: string
        *     // 中文释义
        *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
        *     // 例句
        *     example: string
        *     // 发音音频链接
@@ -3632,6 +3608,8 @@ declare global {
        *       ukPhonetic?: string
        *       // 中文释义
        *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
        *       // 例句
        *       example: string
        *       // 发音音频链接
@@ -3804,6 +3782,8 @@ declare global {
        *     ukPhonetic?: string
        *     // 中文释义
        *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
        *     // 例句
        *     example: string
        *     // 发音音频链接
@@ -4041,6 +4021,8 @@ declare global {
        *     ukPhonetic?: string
        *     // 中文释义
        *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
        *     // 例句
        *     example: string
        *     // 发音音频链接
@@ -4193,6 +4175,87 @@ declare global {
           data?: Object;
         },
         'general.WordsController_remove',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 查询单词翻译
+       *
+       * **path:** /words/translate/{word}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 要翻译的单词
+       *   word: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 源语言
+       *   srcLang: string
+       *   // 目标语言
+       *   targetLang: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: object
+       * }
+       * ```
+       */
+      WordsController_getTranslation<
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: Object;
+          }
+        > & {
+          pathParams: {
+            /**
+             * 要翻译的单词
+             */
+            word: string;
+          };
+          params: {
+            /**
+             * 源语言
+             */
+            srcLang: string;
+            /**
+             * 目标语言
+             */
+            targetLang: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        ApiResponseDto & {
+          data?: Object;
+        },
+        'general.WordsController_getTranslation',
         Config
       >;
       /**

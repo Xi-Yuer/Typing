@@ -59,6 +59,10 @@ export class Word {
   meaning: string;
 
   @Column({ type: 'text', nullable: true })
+  @ApiProperty({ description: '简短翻译', example: '你好' })
+  meaningShort?: string;
+
+  @Column({ type: 'text', nullable: true })
   @ApiProperty({ description: '例句', example: 'Hello, how are you?' })
   example?: string;
 

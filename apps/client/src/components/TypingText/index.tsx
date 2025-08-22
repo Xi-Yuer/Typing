@@ -537,7 +537,22 @@ const TypingText = function ({
   return (
     <div className='w-full h-full flex flex-col items-center justify-center text-white relative z-50 overflow-hidden'>
       {isAllCorrect ? (
-        <></>
+        <div className='flex flex-col items-center justify-center gap-8 text-center'>
+          {/* 完成的句子显示 */}
+          <div className='text-6xl font-bold text-white mb-4'>
+            {word.word || word.example}
+          </div>
+
+          {/* 音标显示 */}
+          {(word.usPhonetic || word.ukPhonetic) && (
+            <div className='text-2xl text-gray-400 mb-4'>
+              /{word.usPhonetic || word.ukPhonetic}/
+            </div>
+          )}
+
+          {/* 中文翻译 */}
+          <div className='text-3xl text-gray-300'>{word.meaning}</div>
+        </div>
       ) : (
         <>
           <div className='flex flex-col justify-center items-center gap-y-8'>
@@ -555,13 +570,11 @@ const TypingText = function ({
                         word
                       )}
                   `}
-                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}
-                    >
+                      style={{ minWidth: `${getWordWidth(word.text)}ch` }}>
                       <span
                         className={
                           word.incorrect ? 'text-red-500' : 'text-white'
-                        }
-                      >
+                        }>
                         {word.userInput}
                       </span>
                       {showAnswerTip &&
@@ -574,8 +587,7 @@ const TypingText = function ({
                   ) : (
                     <div
                       key={index}
-                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'
-                    >
+                      className='h-16 rounded-sm text-5xl leading-none transition-all text-white'>
                       {word.text}
                     </div>
                   )
@@ -604,8 +616,7 @@ const TypingText = function ({
       <div className='mt-4 flex items-center justify-between bottom-10 absolute w-full select-none px-8'>
         <div
           className='flex items-center text-white/70 pl-20 cursor-pointer'
-          onClick={onPrev}
-        >
+          onClick={onPrev}>
           <Tooltip title='Shift + ←' color='purple'>
             <LeftOutlined className='text-3xl' />
           </Tooltip>
@@ -634,8 +645,7 @@ const TypingText = function ({
         </div>
         <div
           className='flex items-center text-white/70 pr-20 cursor-pointer'
-          onClick={onNext}
-        >
+          onClick={onNext}>
           <Tooltip title='Shift + →' color='purple'>
             <RightOutlined className='text-3xl' />
           </Tooltip>

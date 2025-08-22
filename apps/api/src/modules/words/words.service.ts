@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { CreateWordDto } from './dto/create-word.dto';
@@ -28,7 +33,9 @@ export class WordsService {
     });
 
     if (existingWord) {
-      throw new ConflictException(`单词 "${createWordDto.word}" 在该语言和分类下已存在`);
+      throw new ConflictException(
+        `单词 "${createWordDto.word}" 在该语言和分类下已存在`
+      );
     }
 
     const word = this.wordRepository.create(createWordDto);
@@ -37,7 +44,9 @@ export class WordsService {
   /**
    * 分页查询单词
    */
-  async findAllPaginated(paginationQuery: PaginationQueryDto): Promise<PaginationResponseDto<Word>> {
+  async findAllPaginated(
+    paginationQuery: PaginationQueryDto
+  ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
 
@@ -125,13 +134,14 @@ export class WordsService {
     categoryId?: string
   ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
-    const skip = (page - 1) * pageSize;
-
     if (!keyword || keyword.trim().length === 0) {
       throw new BadRequestException('搜索关键词不能为空');
     }
 
-    const whereConditions: any = [{ word: Like(`%${keyword}%`) }, { meaning: Like(`%${keyword}%`) }];
+    const whereConditions: any = [
+      { word: Like(`%${keyword}%`) },
+      { meaning: Like(`%${keyword}%`) }
+    ];
 
     // 如果指定了语言 ID，添加语言过滤条件
     if (languageId) {
@@ -172,7 +182,10 @@ export class WordsService {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
 
-    const whereConditions: any = [{ word: Like(`%${keyword}%`) }, { meaning: Like(`%${keyword}%`) }];
+    const whereConditions: any = [
+      { word: Like(`%${keyword}%`) },
+      { meaning: Like(`%${keyword}%`) }
+    ];
 
     // 如果指定了语言 ID，添加语言过滤条件
     if (languageId) {
@@ -232,7 +245,9 @@ export class WordsService {
       });
 
       if (existingWord && existingWord.id !== id) {
-        throw new ConflictException(`单词 "${updateWordDto.word}" 在该语言和分类下已存在`);
+        throw new ConflictException(
+          `单词 "${updateWordDto.word}" 在该语言和分类下已存在`
+        );
       }
     }
 
@@ -282,7 +297,11 @@ export class WordsService {
   /**
    * 随机获取单词（用于练习）
    */
-  async getRandomWords(count: number = 10, languageId?: string, categoryId?: string): Promise<Word[]> {
+  async getRandomWords(
+    count: number = 10,
+    languageId?: string,
+    categoryId?: string
+  ): Promise<Word[]> {
     if (count <= 0 || count > 100) {
       throw new BadRequestException('单词数量必须在 1-100 之间');
     }
