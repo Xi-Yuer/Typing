@@ -68,7 +68,6 @@ export default {
   'general.WordsController_getCategoryStats': ['GET', '/words/stats/category'],
   'general.WordsController_findOne': ['GET', '/words/{id}'],
   'general.WordsController_remove': ['DELETE', '/words/{id}'],
-  'general.WordsController_getTranslation': ['GET', '/words/translate/{word}'],
   'general.SentencesController_create': ['POST', '/sentences'],
   'general.SentencesController_findAllPaginated': ['GET', '/sentences/paginated'],
   'general.SentencesController_findByLanguageId': ['GET', '/sentences/language/{languageId}'],

@@ -9,7 +9,7 @@ import { Tooltip } from 'antd';
 import React, { useState, useEffect, useRef } from 'react';
 
 interface TypingTextProps {
-  word: Word;
+  word?: Word;
   className?: string;
   onComplete?: (isCorrect: boolean) => void;
   onNext?: () => void;
@@ -38,13 +38,13 @@ const TypingText = function ({
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const hasErrorRef = useRef(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
-  const { speak, speaking, cancel } = useSpeech(word.word);
+  const { speak, speaking, cancel } = useSpeech(word?.word || '');
   const { playTypingSound, playSuccessSound, playErrorSound } =
     useTypingSound();
 
   // 初始化单词状态
   const initializeWords = (): WordState[] => {
-    const words = word.word.split(' ');
+    const words = word?.word?.split(' ') || [];
     return words.map((word, index) => ({
       id: index,
       text: word,
@@ -56,6 +56,17 @@ const TypingText = function ({
   };
 
   const [words, setWords] = useState<WordState[]>(initializeWords());
+
+  // 监听外部传入的 word 变化，重新初始化组件状态
+  useEffect(() => {
+    const newWords = initializeWords();
+    setWords(newWords);
+    setCurrentWordIndex(0);
+    setInputValue('');
+    hasErrorRef.current = false;
+    setShowAnswerTip(false);
+    setIsAllCorrect(false);
+  }, [word]);
 
   // 处理输入变化
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -540,24 +551,26 @@ const TypingText = function ({
         <div className='flex flex-col items-center justify-center gap-8 text-center'>
           {/* 完成的句子显示 */}
           <div className='text-6xl font-bold text-white mb-4'>
-            {word.word || word.example}
+            {word?.word || ''}
           </div>
 
           {/* 音标显示 */}
-          {(word.usPhonetic || word.ukPhonetic) && (
+          {(word?.usPhonetic || word?.ukPhonetic) && (
             <div className='text-2xl text-gray-400 mb-4'>
-              /{word.usPhonetic || word.ukPhonetic}/
+              /{word?.usPhonetic || word?.ukPhonetic}/
             </div>
           )}
 
           {/* 中文翻译 */}
-          <div className='text-3xl text-gray-300'>{word.meaning}</div>
+          <div className='text-3xl text-gray-300'>{word?.meaning || ''}</div>
         </div>
       ) : (
         <>
           <div className='flex flex-col justify-center items-center gap-y-8'>
             {/* 翻译 */}
-            <div className='text-5xl text-center mb-4'>{word.meaning}</div>
+            <div className='text-md text-center mb-4'>
+              {word?.meaning || ''}
+            </div>
 
             {/* 单词显示区域 */}
             <div className='text-center'>
