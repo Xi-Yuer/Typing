@@ -1,7 +1,6 @@
 import { Controller, Get, Query, Res, Header } from '@nestjs/common';
 import type { Response } from 'express';
 import { SpeechService } from './speech.service';
-import { CacheTTL } from '@nestjs/cache-manager';
 import * as crypto from 'crypto';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
 

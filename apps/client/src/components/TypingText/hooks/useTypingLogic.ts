@@ -56,15 +56,6 @@ export const useTypingLogic = ({
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      const currentWord = words.find(word => word.isActive);
-
-      // 如果输入长度超过当前单词长度，显示错误并阻止输入
-      if (currentWord && value.length > currentWord.text.length) {
-        hasErrorRef.current = true;
-        setWordError(currentWordIndex, true);
-        playErrorSound();
-        return;
-      }
 
       setInputValue(value);
 

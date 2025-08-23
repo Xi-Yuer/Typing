@@ -27,12 +27,6 @@ export const KEYBOARD_SHORTCUTS = {
 
 // UI文本配置
 export const UI_TEXT = {
-  SHORTCUTS: [
-    { keys: [getModifierKey(), 'R'], label: '重置练习' },
-    { keys: [getModifierKey(), 'P'], label: '发音' },
-    { keys: [getModifierKey(), 'H'], label: '提示' },
-    { keys: ['Space  | Enter'], label: '提交' }
-  ],
   TOOLTIPS: {
     PREV: 'Shift + ←',
     NEXT: 'Shift + →'
