@@ -40,7 +40,7 @@ export const STYLES = {
   HINT_TIMEOUT: 1500,
   COLORS: {
     ERROR: 'text-red-500',
-    NORMAL: 'text-white',
+    NORMAL: 'text-purple-500',
     HINT: 'text-gray-400 opacity-50'
   }
 } as const;

@@ -13,7 +13,7 @@ export default function Page() {
       .WordsController_getRandomWords({
         params: {
           count: 1,
-          languageId: '5'
+          languageId: '1'
         }
       })
       .then(res => {

@@ -9,6 +9,7 @@ export const specialKeys = [
   'ENTER',
   'SPACE',
   ' ',
+  'BACKSPACE',
   'A',
   'S',
   'D',
