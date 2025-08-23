@@ -1,59 +1,37 @@
 import { Word } from '@/request/globals';
 
-// 语音类型定义
-export type PronunciationType =
-  | 'us'
-  | 'uk'
-  | 'zh'
-  | 'ja'
-  | 'de'
-  | 'id'
-  | 'kk'
-  | 'hapin'
-  | 'romaji'
-  | false;
-
-// 有道词典API
-const pronunciationApi = 'https://dict.youdao.com/dictvoice?audio=';
-
 /**
- * 生成单词发音URL
- * @param word 单词
- * @param pronunciation 发音类型
- * @returns 音频URL
+ * 生成语音 API URL
+ * @param input 要转换的文本
+ * @param language 语言代码
+ * @param voice 可选的语音类型
+ * @returns 语音 API URL
  */
-export function generateWordSoundSrc(
-  word: string,
-  pronunciation: string,
-  phrase?: string
+function generateSpeechApiUrl(
+  input: string,
+  language?: string,
+  voice?: string
 ): string {
-  const encodedWord = encodeURIComponent(word);
-  switch (pronunciation) {
-    case 'en':
-      return `${pronunciationApi}${encodedWord}&type=${phrase}`;
-    case 'zh':
-      return `${pronunciationApi}${encodedWord}&le=zh`;
-    case 'ja':
-      return `${pronunciationApi}${encodedWord}&le=jap`;
-    case 'de':
-      return `${pronunciationApi}${encodedWord}&le=de`;
-    case 'id':
-      return `${pronunciationApi}${encodedWord}&le=id`;
-    case 'kk':
-      return `${pronunciationApi}${encodedWord}&le=kk`;
-    case 'hapin':
-      return `${pronunciationApi}${encodedWord}&le=hapin`;
-    case 'romaji':
-      return `${pronunciationApi}${encodedWord}&le=romaji`;
-    default:
-      return `${pronunciationApi}${encodedWord}&type=1`;
+  const baseUrl = 'http://localhost/speech/audio';
+  const params = new URLSearchParams();
+
+  params.append('input', input);
+
+  if (language) {
+    params.append('language', language);
   }
+
+  if (voice) {
+    params.append('voice', voice);
+  }
+
+  return `${baseUrl}?${params.toString()}`;
 }
 
 /**
  * 播放单词发音
  * @param word 单词
- * @param pronunciation 发音类型，默认为'us'
+ * @param phrase 可选的短语
  * @returns Promise<void>
  */
 export async function playWordAudio(
@@ -62,16 +40,21 @@ export async function playWordAudio(
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     // 检查参数有效性
-    if (!word || !word.word || !word.word.trim() || !word.language.code) {
+    if (!word || !word.word || !word.word.trim()) {
       resolve();
       return;
     }
 
-    const audioUrl = generateWordSoundSrc(
-      word.word,
-      word.language.code,
-      phrase
+    // 使用 phrase 或 word.word 作为输入文本
+    const inputText = phrase || word.word;
+
+    // 生成语音 API URL
+    const audioUrl = generateSpeechApiUrl(
+      inputText,
+      word.language?.code,
+      undefined // 让后端根据 language 自动选择 voice
     );
+
     // 创建音频元素
     const audio = new Audio(audioUrl);
 
@@ -88,13 +71,22 @@ export async function playWordAudio(
 
     audio.onended = () => resolve();
 
-    audio.onerror = error => {};
+    audio.onerror = error => {
+      console.warn('Audio playback failed:', error);
+      resolve(); // 即使失败也 resolve，避免阻塞用户操作
+    };
 
     audio.onabort = () => resolve();
 
     // 开始播放
     try {
-      audio.play();
-    } catch (error) {}
+      audio.play().catch(error => {
+        console.warn('Audio play failed:', error);
+        resolve();
+      });
+    } catch (error) {
+      console.warn('Audio play error:', error);
+      resolve();
+    }
   });
 }

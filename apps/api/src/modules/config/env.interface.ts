@@ -14,4 +14,5 @@ export interface EnvironmentVariables {
   FRONTEND_URL: string;
   ENABLE_SWAGGER: boolean;
   ENABLE_CORS: boolean;
+  VOICE_API_URL: string;
 }

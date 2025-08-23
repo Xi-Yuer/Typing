@@ -143,5 +143,5 @@ export default {
   ],
   'general.SentencesController_findOne': ['GET', '/sentences/{id}'],
   'general.SentencesController_remove': ['DELETE', '/sentences/{id}'],
-  'Speech.SpeechController_getYoudaoAudio': ['GET', '/speech/audio']
+  'Speech.SpeechController_getText2Speech': ['GET', '/speech/audio']
 };

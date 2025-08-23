@@ -1,34 +1,87 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { AxiosResponse } from 'axios';
+import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from '../config/env.interface';
 
 @Injectable()
 export class SpeechService {
-  constructor(private readonly httpService: HttpService) {}
-  // 获取有道词典音频数据
-  async getYoudaoAudio(word: string, type: number = 1): Promise<Buffer> {
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService<EnvironmentVariables>
+  ) {}
+
+  // 语言到默认语音的映射
+  private readonly languageVoiceMap = {
+    zh: 'zh-CN-XiaoxiaoNeural',
+    'zh-CN': 'zh-CN-XiaoxiaoNeural',
+    'zh-TW': 'zh-TW-HsiaoyuNeural',
+    en: 'en-US-AvaNeural',
+    'en-US': 'en-US-AvaNeural',
+    'en-GB': 'en-GB-SoniaNeural',
+    ja: 'ja-JP-NanamiNeural',
+    'ja-JP': 'ja-JP-NanamiNeural',
+    ko: 'ko-KR-SunHiNeural',
+    'ko-KR': 'ko-KR-SunHiNeural',
+    fr: 'fr-FR-DeniseNeural',
+    'fr-FR': 'fr-FR-DeniseNeural',
+    de: 'de-DE-KatjaNeural',
+    'de-DE': 'de-DE-KatjaNeural',
+    es: 'es-ES-ElviraNeural',
+    'es-ES': 'es-ES-ElviraNeural',
+    it: 'it-IT-ElsaNeural',
+    'it-IT': 'it-IT-ElsaNeural',
+    pt: 'pt-BR-FranciscaNeural',
+    'pt-BR': 'pt-BR-FranciscaNeural',
+    ru: 'ru-RU-SvetlanaNeural',
+    'ru-RU': 'ru-RU-SvetlanaNeural'
+  };
+
+  async getText2Speech(input: string, voice?: string, language?: string) {
+    if (!input) {
+      throw new Error('Input text is required');
+    }
+
+    // 如果没有指定 voice，根据 language 自动选择
+    let selectedVoice = voice;
+    if (!selectedVoice && language) {
+      selectedVoice =
+        this.languageVoiceMap[language] || this.languageVoiceMap['en-US'];
+    }
+    if (!selectedVoice) {
+      selectedVoice = this.languageVoiceMap['en-US']; // 默认使用英语
+    }
+
     try {
-      const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(word)}&type=${type}`;
-      const response: AxiosResponse<ArrayBuffer> = await firstValueFrom(
-        this.httpService.get(audioUrl, {
-          responseType: 'arraybuffer',
-          timeout: 10000, // 10秒超时
-          headers: {
-            'User-Agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            Accept: 'audio/mpeg, audio/*',
-            Referer: 'https://dict.youdao.com/'
+      // 调用 openai-edge-tts API
+      const response = await firstValueFrom(
+        this.httpService.post(
+          this.configService.get('VOICE_API_URL') || '',
+          {
+            model: 'tts-1',
+            input: input,
+            voice: selectedVoice,
+            response_format: 'mp3',
+            speed: 1.0
+          },
+          {
+            headers: {
+              Authorization: 'Bearer your_api_key_here',
+              'Content-Type': 'application/json'
+            },
+            responseType: 'arraybuffer'
           }
-        })
+        )
       );
-      return Buffer.from(response.data);
+
+      return {
+        audio: Buffer.from(response.data),
+        contentType: 'audio/mpeg',
+        voice: selectedVoice,
+        language: language
+      };
     } catch (error) {
-      console.error('获取有道音频失败:', error.message || error);
-      throw new HttpException(
-        `获取音频失败: ${error.message || '未知错误'}`,
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
+      throw new Error(`Text-to-speech conversion failed: ${error.message}`);
     }
   }
 }

@@ -5762,8 +5762,9 @@ declare global {
        * **Query Parameters**
        * ```ts
        * type QueryParameters = {
-       *   word: string
-       *   type: number
+       *   input: string
+       *   voice: string
+       *   language: string
        * }
        * ```
        *
@@ -5774,16 +5775,17 @@ declare global {
        * type Response = null
        * ```
        */
-      SpeechController_getYoudaoAudio<
+      SpeechController_getText2Speech<
         Config extends Alova2MethodConfig<null> & {
           params: {
-            word: string;
-            type: number;
+            input: string;
+            voice: string;
+            language: string;
           };
         }
       >(
         config: Config
-      ): Alova2Method<null, 'Speech.SpeechController_getYoudaoAudio', Config>;
+      ): Alova2Method<null, 'Speech.SpeechController_getText2Speech', Config>;
     };
   }
 
