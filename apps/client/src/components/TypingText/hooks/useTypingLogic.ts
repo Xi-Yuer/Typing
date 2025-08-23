@@ -25,6 +25,7 @@ export const useTypingLogic = ({
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
   const hasErrorRef = useRef(false);
+  const [hasShownError, setHasShownError] = useState(false);
 
   const { playSuccessSound, playErrorSound } = useTypingSound();
 
@@ -63,6 +64,7 @@ export const useTypingLogic = ({
       if (hasErrorRef.current && value.length > 0) {
         hasErrorRef.current = false;
         setWordError(currentWordIndex, false);
+        setHasShownError(false);
       }
 
       // 更新当前单词的用户输入
@@ -110,6 +112,16 @@ export const useTypingLogic = ({
       hasErrorRef.current = true;
       setWordError(currentWordIndex, true);
 
+      // 如果已经显示过错误，则清空输入内容
+      if (hasShownError) {
+        setInputValue('');
+        updateWordInput(currentWordIndex, '');
+        setHasShownError(false);
+      } else {
+        // 第一次错误，只显示错误提示
+        setHasShownError(true);
+      }
+
       // 确保输入框保持聚焦
       if (inputRef.current) {
         inputRef.current.focus();
@@ -135,6 +147,7 @@ export const useTypingLogic = ({
     hasErrorRef.current = false;
     setShowAnswerTip(false);
     setIsAllCorrect(false);
+    setHasShownError(false);
   }, [resetWords]);
 
   // 切换提示
@@ -247,6 +260,7 @@ export const useTypingLogic = ({
     hasErrorRef.current = false;
     setShowAnswerTip(false);
     setIsAllCorrect(false);
+    setHasShownError(false);
     playWordPronunciation();
   }, [word, initializeWords, playWordPronunciation]);
 
