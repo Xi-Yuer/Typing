@@ -23,8 +23,7 @@ export const getStarsCount = async () => {
 
 // 判断是否为单词（非标点符号）
 export const isWord = (text: string): boolean => {
-  // 支持英文、中文、日文、韩文、俄文等多种语言
-  return /^[\p{L}\p{M}']+$/u.test(text);
+  return !/^\p{P}+$/u.test(text);
 };
 
 // 获取单词宽度

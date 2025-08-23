@@ -2,7 +2,7 @@
 import PlasmaWaveV2 from '@/blocks/PlasmaWaveV2/PlasmaWaveV2';
 import Header from '@/components/Header';
 import TypingText from '@/components/TypingText';
-import useSpeech from '@/hooks/useSpeech';
+import Apis from '@/request';
 import { Word } from '@/request/globals';
 import { useEffect, useState } from 'react';
 export default function Page() {
@@ -11,7 +11,10 @@ export default function Page() {
   useEffect(() => {
     Apis.general
       .WordsController_getRandomWords({
-        params: {}
+        params: {
+          count: 1,
+          languageId: '1'
+        }
       })
       .then(res => {
         setWord(res.data[0]);
