@@ -25,7 +25,6 @@ import { EnvironmentVariables } from '../config/env.interface';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { LoginDto } from './dto/login.dto';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('认证')
 @Controller('auth')
@@ -71,37 +70,10 @@ export class AuthController {
   @ApiResponse({ status: 302, description: '登录成功或绑定成功，重定向到前端' })
   async githubCallback(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
-    const state = req.query.state as string;
     const frontendUrl =
       this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
 
     try {
-      // 检查是否是绑定流程
-      if (state) {
-        const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
-
-        if (stateData.action === 'bind' && stateData.userId) {
-          // 绑定流程：将GitHub账户绑定到现有用户
-          const oauthProfile = {
-            id: user.id.toString(),
-            username: user.name,
-            email: user.email
-          };
-
-          await this.authService.bindOAuthAccount(
-            stateData.userId,
-            OAuthProvider.GITHUB,
-            oauthProfile
-          );
-
-          // 重定向到前端绑定成功页面
-          res.redirect(
-            `${frontendUrl}/settings/account?bind=success&provider=github`
-          );
-          return;
-        }
-      }
-
       // 正常登录流程
       const result = await this.authService.githubLogin({
         id: user.id.toString(),

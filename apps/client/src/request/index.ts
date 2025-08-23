@@ -8,7 +8,7 @@ export const alovaInstance = createAlova({
   cacheFor: null,
   beforeRequest: method => {
     method.config.headers['Authorization'] =
-      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImVtYWlsIjoiYWRtaW5AcXEuY29tIiwibmFtZSI6ImFkbWluIiwicm9sZSI6InN1cGVyX2FkbWluIiwic3RhdHVzIjoiYWN0aXZlIiwiaWF0IjoxNzU1MzU5OTI5LCJleHAiOjE3NTU5NjQ3Mjl9.BAHBaVHv1c3Mf-XPcO42AOvCbAF7i7N2nHFUBue78J4';
+      `Bearer ${localStorage.getItem('token')}`;
   },
   responded: async res => {
     // 其他情况返回 JSON
