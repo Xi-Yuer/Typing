@@ -69,6 +69,7 @@ export interface UseWordStateReturn {
 
 export interface UseKeyboardHandlersReturn {
   handleKeyDown: KeyboardEventHandler;
+  handleGlobalKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
   handleCompositionStart: () => void;
   handleCompositionEnd: () => void;
 }

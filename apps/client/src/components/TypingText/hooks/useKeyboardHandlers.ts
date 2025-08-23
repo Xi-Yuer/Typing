@@ -12,6 +12,7 @@ interface UseKeyboardHandlersProps {
   inputValue: string;
   word?: Word;
   isComposing: boolean;
+  isAllCorrect: boolean;
   onInputChange: (value: string) => void;
   onSubmitAnswer: () => void;
   onResetExercise: () => void;
@@ -30,6 +31,7 @@ export const useKeyboardHandlers = ({
   inputValue,
   word,
   isComposing,
+  isAllCorrect,
   onInputChange,
   onSubmitAnswer,
   onResetExercise,
@@ -181,7 +183,8 @@ export const useKeyboardHandlers = ({
       if (
         (e.key === KEYBOARD_SHORTCUTS.SUBMIT_KEYS.SPACE ||
           e.key === KEYBOARD_SHORTCUTS.SUBMIT_KEYS.ENTER) &&
-        !isComposing
+        !isComposing &&
+        !isAllCorrect
       ) {
         handleSubmitKeys(e);
         return;
@@ -216,8 +219,67 @@ export const useKeyboardHandlers = ({
     isComposingRef.current = false;
   }, []);
 
+  // 全局键盘事件处理器（用于容器div）
+  const handleGlobalKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      // 处理快捷键 (根据系统使用Ctrl或Cmd键)
+      const isModifierPressed = IS_MAC ? e.metaKey : e.ctrlKey;
+
+      if (isModifierPressed) {
+        switch (e.key) {
+          case KEYBOARD_SHORTCUTS.RESET_EXERCISE:
+            e.preventDefault();
+            onResetExercise();
+            return;
+          case KEYBOARD_SHORTCUTS.TOGGLE_HINT:
+            e.preventDefault();
+            onToggleHint();
+            return;
+          case KEYBOARD_SHORTCUTS.PRONUNCIATION:
+            e.preventDefault();
+            playWordPronunciation();
+            return;
+        }
+      }
+
+      // Shift组合键处理
+      if (e.shiftKey) {
+        if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.PREV) {
+          e.preventDefault();
+          onPrev?.();
+          return;
+        }
+        if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.NEXT) {
+          e.preventDefault();
+          onNext?.();
+          return;
+        }
+      }
+      // 全部完成的时候空格键或者回车，切换到下一个单词
+      if (isAllCorrect) {
+        if (
+          e.key === KEYBOARD_SHORTCUTS.SUBMIT_KEYS.SPACE ||
+          e.key === KEYBOARD_SHORTCUTS.SUBMIT_KEYS.ENTER
+        ) {
+          e.preventDefault();
+          onNext?.();
+          return;
+        }
+      }
+    },
+    [
+      onResetExercise,
+      onToggleHint,
+      playWordPronunciation,
+      onNext,
+      onPrev,
+      isAllCorrect
+    ]
+  );
+
   return {
     handleKeyDown,
+    handleGlobalKeyDown,
     handleCompositionStart,
     handleCompositionEnd
   };

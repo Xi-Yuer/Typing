@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { WordState } from '../types';
 import { getWordsClassNames, getWordWidth, isWord } from '@/utils';
 import { STYLES } from '../constants';
@@ -26,6 +26,11 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
   onCompositionStart,
   onCompositionEnd
 }) => {
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputRef]);
   return (
     <div className='text-center'>
       <div className='relative flex flex-wrap justify-center gap-2 transition-all'>

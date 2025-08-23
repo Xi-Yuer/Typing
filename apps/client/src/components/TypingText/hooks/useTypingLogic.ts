@@ -238,6 +238,7 @@ export const useTypingLogic = ({
     inputValue,
     word,
     isComposing,
+    isAllCorrect,
     onInputChange: (value: string) => {
       setInputValue(value);
       updateWordInput(currentWordIndex, value);
@@ -295,7 +296,12 @@ export const useTypingLogic = ({
 
     // 事件处理器
     handleInputChange,
+    handleKeyDown: keyboardHandlers.handleKeyDown,
+    handleGlobalKeyDown: keyboardHandlers.handleGlobalKeyDown,
+    handleCompositionStart: keyboardHandlers.handleCompositionStart,
+    handleCompositionEnd: keyboardHandlers.handleCompositionEnd,
     preventCursorMove,
-    ...keyboardHandlers
+    onNext,
+    onPrev
   };
 };

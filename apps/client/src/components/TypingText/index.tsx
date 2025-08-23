@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { TypingTextProps } from './types';
 import { useTypingLogic } from './hooks/useTypingLogic';
 import { WordDisplay } from './components/WordDisplay';
@@ -15,6 +15,8 @@ const TypingText = function ({
   onNext,
   onPrev
 }: TypingTextProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const {
     words,
     inputValue,
@@ -23,13 +25,26 @@ const TypingText = function ({
     inputRef,
     handleInputChange,
     handleKeyDown,
+    handleGlobalKeyDown,
     handleCompositionStart,
     handleCompositionEnd,
     preventCursorMove
   } = useTypingLogic({ word, onComplete, onNext, onPrev });
 
+  // 确保容器可以接收键盘事件
+  useEffect(() => {
+    if (containerRef.current && isAllCorrect) {
+      containerRef.current.focus();
+    }
+  }, [isAllCorrect]);
+
   return (
-    <div className='w-full h-full flex flex-col items-center justify-center text-white relative z-50 overflow-hidden'>
+    <div
+      ref={containerRef}
+      className='w-full h-full flex flex-col items-center justify-center text-white relative z-50 overflow-hidden outline-none'
+      onKeyDown={handleGlobalKeyDown}
+      tabIndex={0}
+    >
       {isAllCorrect ? (
         <CompletionDisplay word={word} />
       ) : (
