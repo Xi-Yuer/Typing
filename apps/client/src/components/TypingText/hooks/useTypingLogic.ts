@@ -4,7 +4,6 @@ import { playWordAudio } from '@/hooks/useSpeech';
 import { useTypingSound } from '@/hooks/useTypingSound';
 import { useWordState } from './useWordState';
 import { useKeyboardHandlers } from './useKeyboardHandlers';
-import { AUDIO_CONFIG, STYLES } from '../constants';
 import { isWord } from '@/utils';
 
 interface UseTypingLogicProps {
