@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import { getModifierKey } from '../constants';
+import { getModifierKey, UI_TEXT } from '../constants';
 import { ShortcutConfig } from '../types';
 
 interface ShortcutHintsProps {
@@ -54,7 +54,7 @@ export const ShortcutHints: React.FC<ShortcutHintsProps> = ({
         className='flex items-center text-white/70 pl-20 cursor-pointer'
         onClick={onPrev}
       >
-        <Tooltip title='Shift + ←' color='purple'>
+        <Tooltip title={UI_TEXT.TOOLTIPS.PREV} color='purple'>
           <LeftOutlined className='text-3xl' />
         </Tooltip>
       </div>
@@ -67,7 +67,7 @@ export const ShortcutHints: React.FC<ShortcutHintsProps> = ({
         className='flex items-center text-white/70 pr-20 cursor-pointer'
         onClick={onNext}
       >
-        <Tooltip title='Shift + →' color='purple'>
+        <Tooltip title={UI_TEXT.TOOLTIPS.NEXT} color='purple'>
           <RightOutlined className='text-3xl' />
         </Tooltip>
       </div>

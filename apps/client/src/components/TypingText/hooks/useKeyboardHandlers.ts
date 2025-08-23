@@ -139,8 +139,8 @@ export const useKeyboardHandlers = ({
         }
       }
 
-      // Shift组合键处理
-      if (e.shiftKey) {
+      // Command/Ctrl组合键处理（根据操作系统）
+      if (isModifierPressed) {
         if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.PREV) {
           e.preventDefault();
           onNext?.();

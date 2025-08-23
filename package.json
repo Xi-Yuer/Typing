@@ -13,7 +13,7 @@
     "client:dev": "pnpm --filter client dev",
     "client:build": "pnpm --filter client build",
     "client:start": "pnpm --filter client start",
-    "dev": "pnpm packages:build && pnpm --parallel --filter api --filter client run dev",
+    "dev": "pnpm --filter=api run start:dev & pnpm --filter=client run dev",
     "build": "pnpm packages:build && pnpm --filter api build && pnpm --filter client build",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "lint": "eslint . --fix",

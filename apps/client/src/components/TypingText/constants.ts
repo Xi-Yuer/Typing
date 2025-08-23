@@ -28,8 +28,8 @@ export const KEYBOARD_SHORTCUTS = {
 // UI文本配置
 export const UI_TEXT = {
   TOOLTIPS: {
-    PREV: 'Shift + ←',
-    NEXT: 'Shift + →'
+    PREV: `${getModifierKey()} + ←`,
+    NEXT: `${getModifierKey()} + →`
   }
 } as const;
 
