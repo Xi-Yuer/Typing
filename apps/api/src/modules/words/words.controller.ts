@@ -30,7 +30,6 @@ import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
 import { Word } from './entities/word.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
-import { CacheTTL } from '@nestjs/cache-manager';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
 
 @ApiTags('单词管理')

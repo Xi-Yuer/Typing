@@ -34,7 +34,13 @@ export class SpeechService {
     pt: 'pt-BR-FranciscaNeural',
     'pt-BR': 'pt-BR-FranciscaNeural',
     ru: 'ru-RU-SvetlanaNeural',
-    'ru-RU': 'ru-RU-SvetlanaNeural'
+    'ru-RU': 'ru-RU-SvetlanaNeural',
+    id: 'id-ID-ArdiNeural',
+    'id-ID': 'id-ID-ArdiNeural',
+    kz: 'kz-KZ-AigulNeural',
+    'kz-KZ': 'kz-KZ-AigulNeural',
+    tr: 'tr-TR-EmelNeural',
+    'tr-TR': 'tr-TR-EmelNeural'
   };
 
   async getText2Speech(input: string, voice?: string, language?: string) {

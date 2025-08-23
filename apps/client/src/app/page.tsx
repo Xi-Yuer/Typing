@@ -8,23 +8,25 @@ import { useEffect, useState } from 'react';
 export default function Page() {
   const [word, setWord] = useState<Word>();
 
+  const getRandomWord = async () => {
+    const res = await Apis.general.WordsController_getRandomWords({
+      params: {
+        count: 1,
+        languageId: '1'
+      }
+    });
+    setWord(res.data[0]);
+  };
+
   useEffect(() => {
-    Apis.general
-      .WordsController_getRandomWords({
-        params: {
-          count: 1,
-          languageId: '5'
-        }
-      })
-      .then(res => {
-        setWord(res.data[0]);
-      });
+    getRandomWord();
   }, []);
+
   return (
     <div className='bg-black h-[100vh] w-screen flex flex-col'>
       <Header activeItem='home' />
       <PlasmaWaveV2 yOffset={-300} xOffset={0} rotationDeg={-30} />
-      <TypingText word={word} />
+      <TypingText word={word} onNext={getRandomWord} onPrev={getRandomWord} />
     </div>
   );
 }
