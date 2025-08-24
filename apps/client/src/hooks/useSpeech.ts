@@ -34,10 +34,10 @@ function generateSpeechApiUrl(
  * @param phrase 可选的短语
  * @returns Promise<void>
  */
-export async function playWordAudio(
-  word: Word,
-  phrase?: string
-): Promise<void> {
+
+let isPlaying = false;
+
+export async function playWordAudio(word: Word): Promise<void> {
   return new Promise((resolve, reject) => {
     // 检查参数有效性
     if (!word || !word.word || !word.word.trim()) {
@@ -46,7 +46,7 @@ export async function playWordAudio(
     }
 
     // 使用 phrase 或 word.word 作为输入文本
-    const inputText = phrase || word.word;
+    const inputText = word.word;
 
     // 生成语音 API URL
     const audioUrl = generateSpeechApiUrl(
@@ -67,19 +67,28 @@ export async function playWordAudio(
 
     audio.oncanplay = () => {};
 
-    audio.onplay = () => {};
+    audio.onplay = () => {
+      isPlaying = true;
+    };
 
-    audio.onended = () => resolve();
+    audio.onended = () => {
+      isPlaying = false;
+      resolve();
+    };
 
     audio.onerror = error => {
       console.warn('Audio playback failed:', error);
       resolve(); // 即使失败也 resolve，避免阻塞用户操作
     };
 
-    audio.onabort = () => resolve();
+    audio.onabort = () => {
+      isPlaying = false;
+      resolve();
+    };
 
     // 开始播放
     try {
+      if (isPlaying) return;
       audio.play().catch(error => {
         console.warn('Audio play failed:', error);
         resolve();

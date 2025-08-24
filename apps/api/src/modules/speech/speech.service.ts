@@ -68,7 +68,7 @@ export class SpeechService {
             input: input,
             voice: selectedVoice,
             response_format: 'mp3',
-            speed: 1.0
+            speed: 0.8
           },
           {
             headers: {

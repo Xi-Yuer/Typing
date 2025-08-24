@@ -16,7 +16,8 @@
     "next": "15.4.6",
     "ogl": "^1.0.11",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@alova/wormhole": "^1.2.0",

@@ -1,6 +1,6 @@
 'use client';
 import PlasmaWaveV2 from '@/blocks/PlasmaWaveV2/PlasmaWaveV2';
-import Header from '@/components/Header';
+import Header from '@/components/Header/Header';
 import TypingText from '@/components/TypingText';
 import Apis from '@/request';
 import { Word } from '@/request/globals';
