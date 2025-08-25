@@ -7,7 +7,6 @@ import {
   Logger
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ApiResponseDto } from '../dto/api-response.dto';
 
 /**
  * HTTP异常过滤器 - 统一处理异常响应格式

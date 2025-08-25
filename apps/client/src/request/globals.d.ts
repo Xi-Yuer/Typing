@@ -15,12 +15,7 @@
  *
  * **Do not edit the file manually.**
  */
-import type {
-  Alova,
-  AlovaMethodCreateConfig,
-  AlovaGenerics,
-  Method
-} from 'alova';
+import type { Alova, AlovaMethodCreateConfig, AlovaGenerics, Method } from 'alova';
 import type { $$userConfigMap, alovaInstance } from '.';
 import type apiDefinitions from './apiDefinitions';
 
@@ -42,16 +37,7 @@ type Alova2MethodConfig<Responded> =
   >
     ? Omit<
         AlovaMethodCreateConfig<
-          AlovaGenerics<
-            Responded,
-            any,
-            RequestConfig,
-            Response,
-            ResponseHeader,
-            L1Cache,
-            L2Cache,
-            SE
-          >,
+          AlovaGenerics<Responded, any, RequestConfig, Response, ResponseHeader, L1Cache, L2Cache, SE>,
           any,
           Responded
         >,
@@ -64,9 +50,7 @@ type ExtractUserDefinedTransformed<
   DefinitionKey extends keyof typeof apiDefinitions,
   Default
 > = DefinitionKey extends keyof UserMethodConfigMap
-  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (
-      ...args: any[]
-    ) => any
+  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (...args: any[]) => any
     ? Awaited<ReturnType<UserMethodConfigMap[DefinitionKey]['transform']>>
     : Default
   : Default;
@@ -970,40 +954,59 @@ declare global {
        * **Response**
        * ```ts
        * type Response = {
-       *   // 用户信息
-       *   user: {
-       *     // 用户ID
-       *     id: number
-       *     // 用户名
-       *     name: string
-       *     // 邮箱
-       *     email: string
-       *     // 是否激活
-       *     isActive: boolean
-       *     // 用户角色
-       *     role: ('super_admin' | 'admin' | 'user' | 'guest') | null
-       *     // 用户状态
-       *     status: 'active' | 'disabled' | 'pending' | 'deleted'
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // 用户信息
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // JWT访问令牌
+       *     accessToken: string
        *   }
-       *   // JWT访问令牌
-       *   accessToken: string
        * }
        * ```
        */
       AuthController_register<
-        Config extends Alova2MethodConfig<AuthResponseDto> & {
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: AuthResponseDto;
+          }
+        > & {
           data: RegisterDto;
         }
       >(
         config: Config
       ): Alova2Method<
-        AuthResponseDto,
+        ApiResponseDto & {
+          data?: AuthResponseDto;
+        },
         'general.AuthController_register',
         Config
       >;
@@ -1755,11 +1758,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.LanguagesController_remove',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.LanguagesController_remove', Config>;
       /**
        * ---
        *
@@ -2367,15 +2366,9 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getDifficultyStats<
-        Config extends Alova2MethodConfig<ApiResponseDto>
-      >(
+      CorpusCategoriesController_getDifficultyStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
         config?: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_getDifficultyStats',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getDifficultyStats', Config>;
       /**
        * ---
        *
@@ -2401,15 +2394,9 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getLanguageStats<
-        Config extends Alova2MethodConfig<ApiResponseDto>
-      >(
+      CorpusCategoriesController_getLanguageStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
         config?: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_getLanguageStats',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getLanguageStats', Config>;
       /**
        * ---
        *
@@ -2551,11 +2538,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_remove',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_remove', Config>;
       /**
        * ---
        *

@@ -17,6 +17,9 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { user, setUser, setToken } = useUserStore();
+  const [messageApi, messageContext] = message.useMessage();
+
+  console.log('user', user);
 
   // 初始化时检查localStorage中的用户信息
   useEffect(() => {
@@ -56,30 +59,30 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
         });
       }
 
-      const authData = response;
+      console.log('response', response);
 
       // 保存token到localStorage
-      localStorage.setItem('token', authData.accessToken);
+      localStorage.setItem('token', response.data.accessToken);
 
       // 保存用户信息到localStorage
-      localStorage.setItem('userInfo', JSON.stringify(authData.user));
+      localStorage.setItem('userInfo', JSON.stringify(response.data.user));
 
       // 更新状态
-      setUser(authData.user);
-      setToken(authData.accessToken);
+      setUser(response.data.user);
+      setToken(response.data.accessToken);
       setIsLoggedIn(true);
 
       // 显示成功消息
-      message.success(isLogin ? '登录成功' : '注册成功');
+      messageApi.success(isLogin ? '登录成功' : '注册成功');
 
-      return authData;
+      return response;
     } catch (error: any) {
       // 处理错误
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
         (isLogin ? '登录失败' : '注册失败');
-      message.error(errorMessage);
+      messageApi.error(errorMessage);
       throw error;
     }
   };
@@ -94,7 +97,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
     setToken(null);
     setIsLoggedIn(false);
 
-    message.success('已退出登录');
+    messageApi.success('已退出登录');
   };
 
   const openLoginModal = () => {
@@ -111,11 +114,11 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
 
   return (
     <header className='h-[80px] pt-12 z-50 relative'>
+      {messageContext}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
         <Link
           href='/'
-          className='flex items-center space-x-2 text-white transition-colors duration-200'
-        >
+          className='flex items-center space-x-2 text-white transition-colors duration-200'>
           <div className='w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-white text-black'>
             T
           </div>

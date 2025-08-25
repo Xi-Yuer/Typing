@@ -25,6 +25,7 @@ import { EnvironmentVariables } from '../config/env.interface';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { ApiSuccessResponse } from '@/common/decorators/api-response.decorator';
 
 @ApiTags('认证')
 @Controller('auth')
@@ -38,7 +39,8 @@ export class AuthController {
   @ApiOperation({ summary: '用户注册' })
   @ApiResponse({ status: 201, description: '注册成功', type: AuthResponseDto })
   @ApiResponse({ status: 409, description: '用户已存在' })
-  async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
+  @ApiSuccessResponse(AuthResponseDto, { description: '注册成功' })
+  async register(@Body() registerDto: RegisterDto) {
     const result = await this.authService.register(registerDto);
     return new AuthResponseDto(result.user, result.accessToken);
   }
@@ -49,7 +51,8 @@ export class AuthController {
   @ApiBody({ type: LoginDto })
   @ApiResponse({ status: 200, description: '登录成功', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: '用户名或密码错误' })
-  async login(@Req() req: any): Promise<AuthResponseDto> {
+  @ApiSuccessResponse(AuthResponseDto, { description: '登录成功' })
+  async login(@Req() req: any) {
     const user = req.user as User;
     const accessToken = await this.authService.generateToken(user);
     const userResponse = UserResponseDto.fromUser(user);

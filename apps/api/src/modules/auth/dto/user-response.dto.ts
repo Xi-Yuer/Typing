@@ -3,6 +3,7 @@ import { User } from '../../user/entities/user.entity';
 
 export class UserResponseDto extends OmitType(User, ['password'] as const) {
   static fromUser(user: User): UserResponseDto {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword as UserResponseDto;
   }

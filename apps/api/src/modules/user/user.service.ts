@@ -159,7 +159,10 @@ export class UserService {
       const userInfo = await this.findOne(user.id);
       return userInfo;
     } catch (error) {
-      throw new UnauthorizedException('无效的令牌');
+      if (error instanceof NotFoundException) {
+        throw new UnauthorizedException('无效的令牌');
+      }
+      throw error;
     }
   }
 

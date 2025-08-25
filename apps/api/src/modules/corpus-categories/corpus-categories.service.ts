@@ -179,7 +179,6 @@ export class CorpusCategoriesService {
    * 删除语料库分类（软删除）
    */
   async remove(id: string): Promise<void> {
-    const corpusCategory = await this.findOne(id);
     await this.corpusCategoryRepository.softDelete(id);
   }
 

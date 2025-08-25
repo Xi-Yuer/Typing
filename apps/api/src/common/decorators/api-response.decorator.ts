@@ -11,7 +11,7 @@ import { ApiResponseDto, PaginationResponseDto } from '../dto/api-response.dto';
  * 统一成功响应装饰器
  */
 export function ApiSuccessResponse<T>(
-  dataType?: Type<T> | Function | [Function] | string,
+  dataType?: Type<T> | Array<Type<T>>,
   options?: Omit<ApiResponseOptions, 'type' | 'status'>
 ) {
   if (!dataType) {
@@ -74,7 +74,7 @@ export function ApiSuccessResponse<T>(
  * 统一创建响应装饰器
  */
 export function ApiCreatedResponse<T>(
-  dataType?: Type<T> | Function | [Function] | string,
+  dataType?: Type<T> | Array<Type<T>>,
   options?: Omit<ApiResponseOptions, 'type' | 'status'>
 ) {
   if (!dataType) {
@@ -112,7 +112,7 @@ export function ApiCreatedResponse<T>(
  * 统一分页响应装饰器
  */
 export function ApiPaginationResponse<T>(
-  dataType: Type<T> | Function,
+  dataType: Type<T>,
   options?: Omit<ApiResponseOptions, 'type' | 'status'>
 ) {
   return applyDecorators(

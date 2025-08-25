@@ -30,7 +30,6 @@ import {
   ApiCreatedResponse,
   ApiPaginationResponse
 } from '../../common/decorators/api-response.decorator';
-import { CacheTTL } from '@nestjs/cache-manager';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
 
 @ApiTags('句子管理')

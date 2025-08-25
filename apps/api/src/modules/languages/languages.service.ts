@@ -114,7 +114,6 @@ export class LanguagesService {
   }
 
   async remove(id: number): Promise<void> {
-    const language = await this.findOne(id);
     await this.languageRepository.softDelete(id);
   }
 

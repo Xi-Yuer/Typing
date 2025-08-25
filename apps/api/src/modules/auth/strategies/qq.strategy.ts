@@ -46,7 +46,7 @@ export class QQStrategy extends PassportStrategy(Strategy, 'qq') {
           const result = await this.authService.qqLogin(oauthProfile);
           return result.user;
         }
-      } catch (error) {
+      } catch {
         // 如果state解析失败，继续正常登录流程
       }
     }

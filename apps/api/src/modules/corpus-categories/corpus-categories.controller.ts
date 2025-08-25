@@ -15,8 +15,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiBody,
-  ApiBearerAuth,
-  ApiQuery
+  ApiBearerAuth
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -53,7 +52,7 @@ export class CorpusCategoriesController {
 
   @Get()
   @ApiOperation({ summary: '获取所有语料库分类' })
-  @ApiSuccessResponse([CorpusCategory], {
+  @ApiSuccessResponse<CorpusCategory>([CorpusCategory], {
     description: '获取所有语料库分类成功'
   })
   findAll() {

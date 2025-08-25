@@ -35,7 +35,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         throw new UnauthorizedException('账户不存在');
       }
       return user;
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('无效的令牌');
     }
   }
