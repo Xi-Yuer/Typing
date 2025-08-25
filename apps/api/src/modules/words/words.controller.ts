@@ -17,8 +17,8 @@ import {
   ApiBearerAuth
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/premission.decorator';
+import { RolesGuard } from '@/common/guards/roles.guard';
+import { Roles } from '@/common/decorators/premission.decorator';
 import { Role } from 'common';
 import {
   ApiSuccessResponse,
@@ -34,12 +34,12 @@ import { NoCache } from '@/common/decorators/no-cache.decorator';
 
 @ApiTags('单词管理')
 @Controller('words')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 export class WordsController {
   constructor(private readonly wordsService: WordsService) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '创建单词（仅管理员）' })
   @ApiCreatedResponse(Word, { description: '创建单词成功' })
@@ -48,6 +48,7 @@ export class WordsController {
   }
 
   @Get('paginated')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '分页查询单词（仅管理员）' })
   @ApiPaginationResponse(Word, { description: '分页查询单词成功' })
@@ -56,6 +57,7 @@ export class WordsController {
   }
 
   @Get('language/:languageId')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: '根据语言 ID 查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiPaginationResponse(Word, { description: '根据语言 ID 查询单词成功' })
@@ -67,6 +69,7 @@ export class WordsController {
   }
 
   @Get('category/:categoryId')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: '根据分类 ID 查询单词' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
   @ApiPaginationResponse(Word, { description: '根据分类 ID 查询单词成功' })
@@ -78,6 +81,7 @@ export class WordsController {
   }
 
   @Get('language/:languageId/category/:categoryId')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: '根据语言和分类查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
@@ -95,6 +99,7 @@ export class WordsController {
   }
 
   @Get('search')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: '搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -125,6 +130,7 @@ export class WordsController {
   }
 
   @Get('search/paginated')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: '分页搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -185,6 +191,7 @@ export class WordsController {
   }
 
   @Get('stats/language')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '获取语言统计信息（仅管理员）' })
   @ApiSuccessResponse(Object, { description: '获取语言统计信息成功' })
@@ -193,6 +200,7 @@ export class WordsController {
   }
 
   @Get('stats/category')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '获取分类统计信息（仅管理员）' })
   @ApiSuccessResponse(Object, { description: '获取分类统计信息成功' })
@@ -201,6 +209,7 @@ export class WordsController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: '根据 ID 查询单词详情' })
   @ApiParam({ name: 'id', description: '单词 ID', type: String })
   @ApiSuccessResponse(Word, { description: '查询单词详情成功' })
@@ -209,6 +218,7 @@ export class WordsController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '更新单词（仅管理员）' })
   @ApiParam({ name: 'id', description: '单词 ID', type: String })
@@ -218,6 +228,7 @@ export class WordsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '删除单词（仅管理员）' })
   @ApiParam({ name: 'id', description: '单词 ID', type: String })

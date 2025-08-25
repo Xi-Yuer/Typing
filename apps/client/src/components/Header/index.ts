@@ -7,8 +7,6 @@ export { default as UserSection } from './UserSection';
 
 // 类型导出
 export type {
-  User,
-  LoginData,
   LoginErrors,
   NavItem,
   DisplayHeaderProps,

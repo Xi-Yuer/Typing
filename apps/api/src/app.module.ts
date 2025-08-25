@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv, Keyv } from '@keyv/redis';
 import { CacheableMemory } from 'cacheable';
 import { APP_INTERCEPTOR } from '@nestjs/core';

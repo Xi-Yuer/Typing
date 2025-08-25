@@ -10,7 +10,7 @@ import GitHubStarButton from './GitHubStarButton';
 import UserSection from './UserSection';
 import type { DisplayHeaderProps } from './types';
 import { useUserStore } from '@/store/user.store';
-import { LoginDto, RegisterDto } from '@/request/globals';
+import { AuthResponseDto, LoginDto, RegisterDto } from '@/request/globals';
 
 const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   const stars = useStars();
@@ -45,7 +45,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
     isLogin: boolean
   ) => {
     try {
-      let response;
+      let response: any;
 
       if (isLogin) {
         // 登录
@@ -58,8 +58,6 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
           data: data as RegisterDto
         });
       }
-
-      console.log('response', response);
 
       // 保存token到localStorage
       localStorage.setItem('token', response.data.accessToken);
@@ -118,7 +116,8 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
         <Link
           href='/'
-          className='flex items-center space-x-2 text-white transition-colors duration-200'>
+          className='flex items-center space-x-2 text-white transition-colors duration-200'
+        >
           <div className='w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-white text-black'>
             T
           </div>
