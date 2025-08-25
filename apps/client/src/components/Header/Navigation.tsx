@@ -9,11 +9,11 @@ const defaultNavItems: NavItem[] = [
     href: '/'
   },
   {
-    name: 'Docs',
+    name: 'Exercise',
     href: '/text-animations/split-text'
   },
   {
-    name: 'Showcase',
+    name: 'About',
     href: '/showcase'
   }
 ];
@@ -35,8 +35,7 @@ const Navigation = ({
               activeItem === item.name.toLowerCase()
                 ? 'active-link opacity-100'
                 : 'opacity-80'
-            }
-          >
+            }>
             {item.name}
           </Link>
         ))}

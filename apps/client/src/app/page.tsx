@@ -6,6 +6,8 @@ import Header from '@/components/Header/Header';
 import TypingText from '@/components/TypingText';
 import { Welcome } from '@/components/Welcome';
 import { INITAIL_WORD } from '@/constant';
+import { DoubleRightOutlined } from '@ant-design/icons';
+import MoreAction from '@/components/MoreAction';
 
 export default function Page() {
   const [showTyping, setShowTyping] = useState(false);
@@ -94,7 +96,7 @@ export default function Page() {
       </div>
 
       {/* Header - 固定在顶部 */}
-      <div ref={headerRef} className='fixed top-0 left-0 right-0 z-50'>
+      <div ref={headerRef} className='fixed top-0 left-0 right-0 z-[60]'>
         <Header activeItem='home' />
       </div>
 
@@ -108,40 +110,21 @@ export default function Page() {
       {/* 主要内容区域 */}
       <div className='relative z-50'>
         {/* 第一屏 - TypingText */}
-        <div className='h-screen flex items-center justify-center'>
+        <div className='h-screen flex-col mt-16 flex items-center relative justify-center'>
           {showTyping && (
             <div ref={typingRef} style={{ opacity: 0 }}>
               <TypingText word={INITAIL_WORD} />
             </div>
           )}
+          {showTyping && (
+            <div className='text-purple-400 absolute bottom-20 cursor-pointer rotate-90'>
+              <DoubleRightOutlined className='text-3xl animate-pulse' />
+            </div>
+          )}
         </div>
 
         {/* 更多内容区域 */}
-        {showTyping && (
-          <div className='min-h-screen bg-gradient-to-b from-black to-gray-900 p-8'>
-            <div className='max-w-4xl mx-auto'>
-              <h2 className='text-white text-3xl font-bold mb-8 text-center'>
-                更多内容
-              </h2>
-              <div className='space-y-8'>
-                <div className='bg-gray-800 rounded-lg p-6'>
-                  <h3 className='text-white text-xl mb-4'>功能介绍</h3>
-                  <p className='text-gray-300'>
-                    这里可以添加更多功能介绍内容...
-                  </p>
-                </div>
-                <div className='bg-gray-800 rounded-lg p-6'>
-                  <h3 className='text-white text-xl mb-4'>使用指南</h3>
-                  <p className='text-gray-300'>这里可以添加使用指南内容...</p>
-                </div>
-                <div className='bg-gray-800 rounded-lg p-6'>
-                  <h3 className='text-white text-xl mb-4'>更多信息</h3>
-                  <p className='text-gray-300'>这里可以添加更多相关信息...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {showTyping && <MoreAction />}
       </div>
     </div>
   );

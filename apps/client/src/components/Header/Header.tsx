@@ -10,7 +10,7 @@ import GitHubStarButton from './GitHubStarButton';
 import UserSection from './UserSection';
 import type { DisplayHeaderProps } from './types';
 import { useUserStore } from '@/store/user.store';
-import { AuthResponseDto, LoginDto, RegisterDto } from '@/request/globals';
+import { LoginDto, RegisterDto } from '@/request/globals';
 
 const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   const stars = useStars();
@@ -102,10 +102,6 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
 
   const closeLoginModal = () => {
     setIsLoginModalOpen(false);
-  };
-
-  const handleGithubLogin = () => {
-    window.location.href = process.env.GITHUB_SSO_URL || '';
   };
 
   return (
