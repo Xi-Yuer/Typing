@@ -36,7 +36,6 @@ export interface LoginModalProps {
     data: LoginDto | RegisterDto,
     isLogin: boolean
   ) => Promise<AuthResponseDto> | void;
-  onGithubLogin: () => void;
   loading?: boolean;
 }
 

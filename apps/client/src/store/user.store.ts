@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { User } from '@/components/Header/types';
 import { UserResponseDto } from '@/request/globals';
 import { persist, createJSONStorage } from 'zustand/middleware';
 

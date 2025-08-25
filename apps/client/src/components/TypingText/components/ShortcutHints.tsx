@@ -52,21 +52,19 @@ export const ShortcutHints: React.FC<ShortcutHintsProps> = ({
     <div className='mt-4 flex items-center justify-between bottom-10 absolute w-full select-none px-8'>
       <div
         className='flex items-center text-white/70 pl-20 cursor-pointer'
-        onClick={onPrev}
-      >
+        onClick={onPrev}>
         <Tooltip title={UI_TEXT.TOOLTIPS.PREV} color='purple'>
           <LeftOutlined className='text-3xl' />
         </Tooltip>
       </div>
 
-      <div className='flex items-center justify-center space-x-6 text-sm text-white/70'>
+      <div className='flex flex-1 items-center justify-center space-x-6 text-sm text-white/70'>
         {isMounted && shortcuts.map(renderShortcut)}
       </div>
 
       <div
         className='flex items-center text-white/70 pr-20 cursor-pointer'
-        onClick={onNext}
-      >
+        onClick={onNext}>
         <Tooltip title={UI_TEXT.TOOLTIPS.NEXT} color='purple'>
           <RightOutlined className='text-3xl' />
         </Tooltip>

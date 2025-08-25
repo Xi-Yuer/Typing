@@ -12,12 +12,18 @@ const formatNumber = (num: number) => {
 
 export const getStarsCount = async () => {
   try {
-    const response = await fetch('https://api.github.com/repos/Xi-Yuer/Typing');
-    const data = await response.json();
-    return String(formatNumber(data.stargazers_count)).toUpperCase();
+    const count = await fetch('https://api.github.com/repos/Xi-Yuer/Typing')
+      .then(res => res.json())
+      .then(res => {
+        return res.stargazers_count || 0;
+      })
+      .catch(() => {
+        return 0;
+      });
+    return String(formatNumber(count)).toUpperCase();
   } catch (error) {
     console.error('Error fetching stargazers count:', error);
-    return null;
+    return 0;
   }
 };
 

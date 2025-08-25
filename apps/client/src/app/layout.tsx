@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body>
+      <body className='bg-black overflow-x-hidden'>
         <ConfigProvider
           theme={{
             token: {
@@ -23,8 +23,7 @@ export default function RootLayout({
               colorBgContainer: '#141414',
               colorBgElevated: '#141414'
             }
-          }}
-        >
+          }}>
           {children}
         </ConfigProvider>
       </body>

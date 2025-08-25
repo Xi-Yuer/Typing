@@ -1,9 +1,9 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Apis from '@/request';
 
-const AuthCallback = () => {
+const AuthCallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -51,6 +51,22 @@ const AuthCallback = () => {
         <p className='text-white text-lg'>正在处理登录信息...</p>
       </div>
     </div>
+  );
+};
+
+const AuthCallback = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className='min-h-screen flex items-center justify-center'>
+          <div className='text-center'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4'></div>
+            <p className='text-white text-lg'>正在加载...</p>
+          </div>
+        </div>
+      }>
+      <AuthCallbackContent />
+    </Suspense>
   );
 };
 

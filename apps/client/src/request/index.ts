@@ -3,7 +3,7 @@ import fetchAdapter from 'alova/fetch';
 import { createApis, withConfigType, mountApis } from './createApis';
 
 export const alovaInstance = createAlova({
-  baseURL: 'http://localhost',
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   requestAdapter: fetchAdapter(),
   cacheFor: null,
   beforeRequest: method => {

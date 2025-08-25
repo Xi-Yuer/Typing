@@ -19,8 +19,6 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   const { user, setUser, setToken } = useUserStore();
   const [messageApi, messageContext] = message.useMessage();
 
-  console.log('user', user);
-
   // 初始化时检查localStorage中的用户信息
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -107,7 +105,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   };
 
   const handleGithubLogin = () => {
-    window.location.href = 'http://localhost/auth/github';
+    window.location.href = process.env.GITHUB_SSO_URL || '';
   };
 
   return (
@@ -116,8 +114,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
         <Link
           href='/'
-          className='flex items-center space-x-2 text-white transition-colors duration-200'
-        >
+          className='flex items-center space-x-2 text-white transition-colors duration-200'>
           <div className='w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-white text-black'>
             T
           </div>
@@ -140,7 +137,6 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
         isOpen={isLoginModalOpen}
         onClose={closeLoginModal}
         onLogin={handleLogin}
-        onGithubLogin={handleGithubLogin}
       />
     </header>
   );

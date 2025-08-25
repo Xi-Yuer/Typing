@@ -1,3 +1,5 @@
+import { Word } from '@/request/globals';
+
 // 声明一个数组，表示哪些按键需要打字音效
 export const specialKeys = [
   'ARROWLEFT',
@@ -37,3 +39,21 @@ export const specialKeys = [
   'N',
   'M'
 ];
+
+export const INITAIL_WORD = {
+  id: '81336',
+  languageId: '1',
+  categoryId: '7',
+  word: 'Keep walking , keep growing',
+  transliteration: '',
+  usPhonetic: '',
+  ukPhonetic: '',
+  meaning: '不断前行，不断成长',
+  meaningShort: '不断前行，不断成长',
+  example: '',
+  audioUrl: '',
+  imageUrl: '',
+  createdAt: '2025-08-15T11:57:54.994Z',
+  updatedAt: '2025-08-22T08:23:21.063Z',
+  deletedAt: ''
+} as Word;
