@@ -49,7 +49,7 @@ export const ShortcutHints: React.FC<ShortcutHintsProps> = ({
   };
 
   return (
-    <div className='mt-4 flex items-center justify-between bottom-10 absolute w-full select-none px-8'>
+    <div className='mt-4 flex items-center justify-between relative z-50 w-full select-none px-8'>
       <div
         className='flex items-center text-white/70 pl-20 cursor-pointer'
         onClick={onPrev}>

@@ -41,7 +41,7 @@ const TypingText = function ({
   return (
     <div
       ref={containerRef}
-      className='w-full h-full min-h-[500px] flex flex-col items-center justify-center text-white relative z-50 overflow-hidden outline-none'
+      className='min-h-[500px] flex flex-col items-center justify-center text-white relative z-50 overflow-hidden outline-none'
       onKeyDown={handleGlobalKeyDown}
       tabIndex={0}>
       {isAllCorrect ? (
