@@ -109,7 +109,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   };
 
   return (
-    <header className='h-[80px] pt-12 z-50 relative'>
+    <header className='pt-12 pb-2 z-100 absolute w-screen backdrop-blur-md'>
       {messageContext}
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
         <Link
