@@ -4,6 +4,7 @@ import Header from '@/components/Header/Header';
 import PlasmaWaveV2 from '@/blocks/PlasmaWaveV2/PlasmaWaveV2';
 import { CorpusCategory, Language } from '@/request/globals';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 /**
  * 语言分类列表页面组件
@@ -98,7 +99,8 @@ export default function page() {
                           ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25'
                           : 'bg-white/10 text-gray-300 hover:bg-white/20'
                       }`}
-                      onClick={() => handleLanguageSelect(language)}>
+                      onClick={() => handleLanguageSelect(language)}
+                    >
                       <div className='font-medium'>{language.name}</div>
                     </div>
                   ))}
@@ -115,20 +117,25 @@ export default function page() {
                     {categorySubCategories.map(category => (
                       <div
                         key={category.id}
-                        className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10'>
+                        className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10'
+                      >
                         <h3 className='text-lg font-semibold text-white mb-2'>
                           {category.name}
                         </h3>
                         <p className='text-gray-300 text-sm mb-4'>
                           {category.description}
                         </p>
-                        <div className='flex items-center text-purple-400'>
+                        <Link
+                          href={`/practice?languageId=${selectedLanguageId}&categoryId=${category.id}`}
+                          className='flex items-center text-purple-400'
+                        >
                           <span className='text-sm'>开始练习</span>
                           <svg
                             className='w-4 h-4 ml-2'
                             fill='none'
                             stroke='currentColor'
-                            viewBox='0 0 24 24'>
+                            viewBox='0 0 24 24'
+                          >
                             <path
                               strokeLinecap='round'
                               strokeLinejoin='round'
@@ -136,7 +143,7 @@ export default function page() {
                               d='M9 5l7 7-7 7'
                             />
                           </svg>
-                        </div>
+                        </Link>
                       </div>
                     ))}
                   </div>

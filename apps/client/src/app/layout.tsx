@@ -23,7 +23,8 @@ export default function RootLayout({
               colorBgContainer: '#141414',
               colorBgElevated: '#141414'
             }
-          }}>
+          }}
+        >
           {children}
         </ConfigProvider>
       </body>

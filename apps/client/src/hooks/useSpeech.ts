@@ -88,7 +88,11 @@ export async function playWordAudio(word: Word): Promise<void> {
 
     // 开始播放
     try {
-      if (isPlaying) return;
+      if (isPlaying) {
+        audio.pause();
+        audio.currentTime = 0;
+        return;
+      }
       audio.play().catch(error => {
         console.warn('Audio play failed:', error);
         resolve();

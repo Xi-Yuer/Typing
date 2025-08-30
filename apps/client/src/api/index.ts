@@ -11,3 +11,22 @@ export const getLanguageCategorySubCategories = (categoryId: number) => {
     }
   });
 };
+
+// 分页获取单词
+export const getWordsByCategoryId = (
+  languageId: number,
+  categoryId: number,
+  page: number = 1,
+  pageSize: number = 10
+) => {
+  return Apis.general.WordsController_findByLanguageAndCategory({
+    pathParams: {
+      languageId: languageId.toString(),
+      categoryId: categoryId.toString()
+    },
+    params: {
+      page,
+      pageSize
+    }
+  });
+};

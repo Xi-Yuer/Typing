@@ -103,7 +103,8 @@ export default function Page() {
       {/* Welcome 全屏显示 */}
       <div
         ref={welcomeRef}
-        className='fixed inset-0 z-40 flex items-center justify-center'>
+        className='fixed inset-0 z-40 flex items-center justify-center'
+      >
         <Welcome />
       </div>
 

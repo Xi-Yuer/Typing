@@ -110,7 +110,8 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
         <Link
           href='/'
-          className='flex items-center space-x-2 text-white transition-colors duration-200'>
+          className='flex items-center space-x-2 text-white transition-colors duration-200'
+        >
           <div className='w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-white text-black'>
             T
           </div>
