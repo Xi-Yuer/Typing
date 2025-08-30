@@ -5,16 +5,16 @@ import type { NavItem, NavigationProps } from './types';
 
 const defaultNavItems: NavItem[] = [
   {
-    name: 'Home',
+    name: '首页',
     href: '/'
   },
   {
-    name: 'Exercise',
-    href: '/text-animations/split-text'
+    name: '广场',
+    href: '/list'
   },
   {
-    name: 'About',
-    href: '/showcase'
+    name: '关于',
+    href: '/about'
   }
 ];
 
@@ -32,7 +32,7 @@ const Navigation = ({
             key={item.name}
             href={item.href}
             className={
-              activeItem === item.name.toLowerCase()
+              activeItem === item.href.toLowerCase()
                 ? 'active-link opacity-100'
                 : 'opacity-80'
             }>

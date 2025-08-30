@@ -45,7 +45,7 @@ export default function Page() {
         welcomeRef.current,
         {
           opacity: 1,
-          duration: 1.2,
+          duration: 5,
           ease: 'power2.out'
         },
         '-=0.5'
@@ -97,7 +97,7 @@ export default function Page() {
 
       {/* Header - 固定在顶部 */}
       <div ref={headerRef} className='fixed top-0 left-0 right-0 z-[60]'>
-        <Header activeItem='home' />
+        <Header activeItem='/' />
       </div>
 
       {/* Welcome 全屏显示 */}

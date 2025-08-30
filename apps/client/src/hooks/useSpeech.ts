@@ -12,7 +12,7 @@ function generateSpeechApiUrl(
   language?: string,
   voice?: string
 ): string {
-  const baseUrl = 'http://localhost/speech/audio';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/speech/audio';
   const params = new URLSearchParams();
 
   params.append('input', input);

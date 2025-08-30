@@ -46,8 +46,7 @@ export class LanguagesService {
 
   async findAllActive(): Promise<Language[]> {
     return await this.languageRepository.find({
-      where: { isActive: true },
-      order: { name: 'ASC' }
+      where: { isActive: true }
     });
   }
 
