@@ -11,6 +11,7 @@ export type { WordState, TypingTextProps } from './types';
 
 const TypingText = function ({
   word,
+  mode,
   onComplete,
   onNext,
   onPrev
@@ -43,8 +44,7 @@ const TypingText = function ({
       ref={containerRef}
       className='min-h-[500px] flex flex-col items-center justify-center text-white relative z-50 overflow-hidden outline-none'
       onKeyDown={handleGlobalKeyDown}
-      tabIndex={0}
-    >
+      tabIndex={0}>
       {isAllCorrect ? (
         <CompletionDisplay word={word} />
       ) : (
@@ -54,8 +54,7 @@ const TypingText = function ({
             <div
               className={
                 (word?.meaning?.length || 0) > 50 ? 'text-md' : 'text-3xl'
-              }
-            >
+              }>
               {word?.meaning}
             </div>
 

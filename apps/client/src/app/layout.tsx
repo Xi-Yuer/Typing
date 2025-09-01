@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ConfigProvider } from 'antd';
+import { GameModeProvider } from '@/contexts/GameModeContext';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,14 +19,13 @@ export default function RootLayout({
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: '#1890ff',
+              colorPrimary: '#7d26cd',
               colorText: '#fff',
               colorBgContainer: '#141414',
               colorBgElevated: '#141414'
             }
-          }}
-        >
-          {children}
+          }}>
+          <GameModeProvider>{children}</GameModeProvider>
         </ConfigProvider>
       </body>
     </html>

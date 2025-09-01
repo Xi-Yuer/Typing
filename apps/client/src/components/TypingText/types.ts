@@ -1,4 +1,5 @@
 import { Word } from '@/request/globals';
+import { GameMode } from '../GameModeModal/types';
 
 // 单词状态接口
 export interface WordState {
@@ -13,6 +14,7 @@ export interface WordState {
 // 组件Props接口
 export interface TypingTextProps {
   word?: Word;
+  mode?: GameMode;
   className?: string;
   onComplete?: (isCorrect: boolean) => void;
   onNext?: () => void;

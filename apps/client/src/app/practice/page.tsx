@@ -3,9 +3,11 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getWordsByCategoryId } from '@/api';
-import Header from '@/components/Header/Header';
-import PlasmaWaveV2 from '@/blocks/PlasmaWaveV2/PlasmaWaveV2';
+import { useGameModeContext } from '@/contexts/GameModeContext';
+import { Button } from 'antd';
+import { SettingOutlined } from '@ant-design/icons';
 import TypingText from '@/components/TypingText';
+import GameModeModal from '@/components/GameModeModal';
 import { Word } from '@/request/globals';
 
 /**
@@ -14,6 +16,13 @@ import { Word } from '@/request/globals';
  */
 export default function PracticePage() {
   const searchParams = useSearchParams();
+  const {
+    currentMode,
+    isModalOpen,
+    changeMode,
+    openModeModal,
+    closeModeModal
+  } = useGameModeContext();
   const [languageId, setLanguageId] = useState<string | null>(null);
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [words, setWords] = useState<Word[]>([]);
@@ -140,27 +149,11 @@ export default function PracticePage() {
   }, [currentWordIndex]);
 
   return (
-    <div className='bg-black min-h-screen w-screen relative'>
-      {/* 背景动画层 */}
-      <div className='fixed inset-0 z-0 backdrop-blur-3xl'>
-        <PlasmaWaveV2
-          yOffset={-300}
-          xOffset={0}
-          rotationDeg={-30}
-          speed1={1}
-          bend1={200}
-        />
-      </div>
-
-      {/* Header */}
-      <div className='relative z-50'>
-        <Header activeItem='/practice' />
-      </div>
-
+    <div className='bg-black min-h-screen w-screen relative py-4'>
       {/* 主要内容区域 */}
       <div className='relative z-40'>
         {/* 进度指示器 */}
-        <div className='max-w-7xl mx-auto sm:px-6 lg:px-8'>
+        <div className='w-screen mx-auto h-[60px] border-b relative flex items-center justify-between px-4'>
           <div className='text-sm text-gray-300'>
             <span>
               {words?.[currentWordIndex]?.language.name} -
@@ -168,7 +161,20 @@ export default function PracticePage() {
               / {total})
             </span>
           </div>
-          <div className='mt-2 bg-gray-700 rounded-full h-1'>
+
+          {/* 游戏模式切换区域 */}
+          <div className='flex items-center space-x-3'>
+            {/* 模式切换按钮 */}
+            <Button
+              type='text'
+              size='small'
+              icon={<SettingOutlined />}
+              onClick={openModeModal}
+              className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+              title='切换游戏模式'
+            />
+          </div>
+          <div className='absolute bottom-0 left-0 w-full h-1 bg-gray-700'>
             <div
               className='bg-purple-500 h-1 rounded-full transition-all duration-300'
               style={{
@@ -180,12 +186,21 @@ export default function PracticePage() {
         <div className='mt-30'>
           <TypingText
             word={words[currentWordIndex]}
+            mode={currentMode}
             onComplete={handleWordComplete}
             onNext={handleNextWord}
             onPrev={handlePrevWord}
           />
         </div>
       </div>
+
+      {/* 游戏模式选择弹窗 */}
+      <GameModeModal
+        isOpen={isModalOpen}
+        onClose={closeModeModal}
+        currentMode={currentMode}
+        onModeChange={changeMode}
+      />
     </div>
   );
 }
