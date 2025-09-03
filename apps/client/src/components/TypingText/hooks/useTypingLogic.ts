@@ -75,6 +75,10 @@ export const useTypingLogic = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
 
+      // 避免用户输入过长
+      if (value.length > 15) {
+        return;
+      }
       setInputValue(value);
 
       // 如果用户开始输入，清除错误状态

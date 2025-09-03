@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import { getWordsByCategoryId } from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
 import { Button } from 'antd';
-import { SettingOutlined } from '@ant-design/icons';
 import TypingText from '@/components/TypingText';
 import GameModeModal from '@/components/GameModeModal';
 import { Word } from '@/request/globals';
@@ -29,9 +28,7 @@ export default function PracticePage() {
   const [words, setWords] = useState<Word[]>([]);
   const [total, setTotal] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [isPreloading, setIsPreloading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [hasMoreData, setHasMoreData] = useState(true);
 
   /**
    * 从URL参数中获取languageId和categoryId
@@ -55,48 +52,28 @@ export default function PracticePage() {
   /**
    * 加载练习数据
    */
-  const loadPracticeData = async (
-    page: number = 1,
-    isPreload: boolean = false
-  ) => {
-    if (!categoryId) return;
+  const loadPracticeData = async (page: number = 1) => {
+    if (!languageId || !categoryId) return;
 
-    try {
-      if (!isPreload) {
+    const response = await getWordsByCategoryId(
+      parseInt(languageId as string),
+      parseInt(categoryId as string),
+      page
+    );
+
+    if (response && response.data && response.data.list) {
+      const wordList = response.data.list;
+      if (page === 1) {
+        // 初始加载，替换所有数据
+        setWords(wordList);
+        setCurrentWordIndex(0);
       } else {
-        setIsPreloading(true);
+        // 预加载，追加数据
+        setWords(prev => [...prev, ...wordList]);
       }
 
-      const response = await getWordsByCategoryId(
-        parseInt(languageId as string),
-        parseInt(categoryId as string),
-        page
-      );
-
-      if (response && response.data && response.data.list) {
-        const wordList = response.data.list;
-        if (page === 1) {
-          // 初始加载，替换所有数据
-          setWords(wordList);
-          setCurrentWordIndex(0);
-        } else {
-          // 预加载，追加数据
-          setWords(prev => [...prev, ...wordList]);
-        }
-
-        // 检查是否还有更多数据
-        setHasMoreData(wordList.length === 10);
-        setCurrentPage(page);
-        setTotal((response.data as any).total);
-      }
-    } catch (err) {
-      if (!isPreload) {
-      }
-    } finally {
-      if (!isPreload) {
-      } else {
-        setIsPreloading(false);
-      }
+      setCurrentPage(page);
+      setTotal((response.data as any).total);
     }
   };
 
@@ -104,10 +81,8 @@ export default function PracticePage() {
    * 预加载下一批数据
    */
   const preloadNextBatch = useCallback(async () => {
-    if (!hasMoreData || isPreloading) return;
-    console.log('开始预加载下一批数据...');
-    await loadPracticeData(currentPage + 1, true);
-  }, [hasMoreData, isPreloading, currentPage]);
+    await loadPracticeData(currentPage + 1);
+  }, [currentPage, categoryId, languageId]);
 
   /**
    * 处理单词完成事件
@@ -128,17 +103,11 @@ export default function PracticePage() {
       setCurrentWordIndex(nextIndex);
 
       // 当接近数据末尾时触发预加载
-      if (nextIndex >= words.length - 3 && hasMoreData && !isPreloading) {
+      if (nextIndex >= words.length - 3) {
         preloadNextBatch();
       }
     }
-  }, [
-    currentWordIndex,
-    words.length,
-    hasMoreData,
-    isPreloading,
-    preloadNextBatch
-  ]);
+  }, [currentWordIndex, words.length, preloadNextBatch]);
 
   /**
    * 切换到上一个单词

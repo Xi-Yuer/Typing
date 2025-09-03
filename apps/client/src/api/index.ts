@@ -1,3 +1,5 @@
+import Apis from '@/request';
+
 // 获取语言分类列表
 export const getLanguageCategories = () => {
   return Apis.general.LanguagesController_findAllActive();
