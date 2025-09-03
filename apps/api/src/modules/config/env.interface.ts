@@ -15,4 +15,6 @@ export interface EnvironmentVariables {
   ENABLE_SWAGGER: boolean;
   ENABLE_CORS: boolean;
   VOICE_API_URL: string;
+  YOUDAO_APP_KEY: string;
+  YOUDAO_APP_SECRET: string;
 }

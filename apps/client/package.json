@@ -12,6 +12,7 @@
     "@ant-design/icons": "5.x",
     "alova": "^3.3.4",
     "antd": "^5.27.0",
+    "common": "workspace:*",
     "gsap": "^3.13.0",
     "motion": "^12.23.12",
     "next": "15.4.6",

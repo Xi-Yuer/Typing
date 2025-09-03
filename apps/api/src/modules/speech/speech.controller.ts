@@ -2,22 +2,30 @@ import {
   Controller,
   Get,
   Query,
-  Res,
   HttpException,
   HttpStatus
 } from '@nestjs/common';
-import type { Response } from 'express';
 import { SpeechService } from './speech.service';
-import { NoCache } from '@/common/decorators/no-cache.decorator';
+import { ApiTags } from '@nestjs/swagger';
+import type { YouDaoResponseType } from 'common';
+import { ApiSuccessResponse } from '@/common/decorators/api-response.decorator';
 
 @Controller('speech')
+@ApiTags('语音')
 export class SpeechController {
   constructor(private readonly speechService: SpeechService) {}
 
+  /**
+   * 文本转语音接口
+   * 返回包装好的JSON数据，包含语音URL和相关信息
+   * @param input 输入文本
+   * @param voice 语音类型（可选）
+   * @param language 语言（可选）
+   * @returns JSON格式的响应数据
+   */
   @Get('audio')
-  @NoCache()
+  @ApiSuccessResponse<YouDaoResponseType>()
   async getText2Speech(
-    @Res() res: Response,
     @Query('input') input?: string,
     @Query('voice') voice?: string,
     @Query('language') language?: string
@@ -32,21 +40,10 @@ export class SpeechController {
 
       const result = await this.speechService.getText2Speech(
         input,
-        voice,
-        language
+        language,
+        voice
       );
-
-      // 设置响应头
-      res.set({
-        'Content-Type': result.contentType,
-        'Content-Disposition': 'inline; filename="speech.mp3"',
-        'Cache-Control': 'no-cache',
-        'X-Voice-Used': result.voice,
-        'X-Language': result.language || 'auto'
-      });
-
-      // 发送音频数据
-      res.send(result.audio);
+      return result;
     } catch (error) {
       throw new HttpException(
         error.message || 'Text-to-speech conversion failed',

@@ -5767,8 +5767,6 @@ declare global {
         'general.SentencesController_remove',
         Config
       >;
-    };
-    Speech: {
       /**
        * ---
        *
@@ -5791,11 +5789,22 @@ declare global {
        *
        * **Response**
        * ```ts
-       * type Response = null
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
        * ```
        */
       SpeechController_getText2Speech<
-        Config extends Alova2MethodConfig<null> & {
+        Config extends Alova2MethodConfig<ApiResponseDto> & {
           params: {
             input: string;
             voice: string;
@@ -5804,7 +5813,11 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<null, 'Speech.SpeechController_getText2Speech', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.SpeechController_getText2Speech',
+        Config
+      >;
     };
   }
 
