@@ -1,5 +1,11 @@
 'use client';
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode
+} from 'react';
 import { GameMode } from '@/components/GameModeModal/types';
 
 interface GameModeContextType {
@@ -11,7 +17,9 @@ interface GameModeContextType {
   getCurrentModeTitle: () => string;
 }
 
-const GameModeContext = createContext<GameModeContextType | undefined>(undefined);
+const GameModeContext = createContext<GameModeContextType | undefined>(
+  undefined
+);
 
 interface GameModeProviderProps {
   children: ReactNode;
@@ -21,7 +29,9 @@ interface GameModeProviderProps {
  * 游戏模式Context Provider
  * 提供全局的游戏模式状态管理
  */
-export const GameModeProvider: React.FC<GameModeProviderProps> = ({ children }) => {
+export const GameModeProvider: React.FC<GameModeProviderProps> = ({
+  children
+}) => {
   const [currentMode, setCurrentMode] = useState<GameMode>('translation');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -55,21 +65,25 @@ export const GameModeProvider: React.FC<GameModeProviderProps> = ({ children }) 
    */
   const getCurrentModeTitle = useCallback(() => {
     const modeMap: Record<GameMode, string> = {
-      translation: '中译英模式',
-      listening: '听写模式',
-      dictation: '听力模式',
+      dictation: '听写模式',
+      translation: '翻译模式',
+      audioWriting: '音频默写模式',
+      silentTranslation: '静默拼写模式',
       speaking: '口语模式'
     };
     return modeMap[currentMode];
   }, [currentMode]);
 
-
-
   // 初始化时从localStorage读取保存的模式
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedMode = localStorage.getItem('gameMode') as GameMode;
-      if (savedMode && ['translation', 'listening', 'dictation', 'speaking'].includes(savedMode)) {
+      if (
+        savedMode &&
+        ['translation', 'listening', 'dictation', 'speaking'].includes(
+          savedMode
+        )
+      ) {
         setCurrentMode(savedMode);
       }
     }
@@ -97,7 +111,9 @@ export const GameModeProvider: React.FC<GameModeProviderProps> = ({ children }) 
 export const useGameModeContext = (): GameModeContextType => {
   const context = useContext(GameModeContext);
   if (context === undefined) {
-    throw new Error('useGameModeContext must be used within a GameModeProvider');
+    throw new Error(
+      'useGameModeContext must be used within a GameModeProvider'
+    );
   }
   return context;
 };

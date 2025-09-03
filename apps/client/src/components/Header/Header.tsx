@@ -19,7 +19,6 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   const { user, setUser, setToken } = useUserStore();
   const [messageApi, messageContext] = message.useMessage();
 
-
   // 初始化时检查localStorage中的用户信息
   useEffect(() => {
     const token = localStorage.getItem('token');

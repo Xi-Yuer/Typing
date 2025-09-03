@@ -36,25 +36,13 @@ export const useGameMode = () => {
    */
   const getCurrentModeTitle = useCallback(() => {
     const modeMap: Record<GameMode, string> = {
-      translation: '中译英模式',
-      listening: '听写模式',
-      dictation: '听力模式',
+      dictation: '听写模式',
+      translation: '翻译模式',
+      audioWriting: '音频默写模式',
+      silentTranslation: '静默拼写模式',
       speaking: '口语模式'
     };
     return modeMap[currentMode];
-  }, [currentMode]);
-
-  /**
-   * 获取当前模式的图标
-   */
-  const getCurrentModeIcon = useCallback(() => {
-    const iconMap: Record<GameMode, string> = {
-      translation: '📝',
-      listening: '🎧',
-      dictation: '🔊',
-      speaking: '🗣️'
-    };
-    return iconMap[currentMode];
   }, [currentMode]);
 
   return {
@@ -63,7 +51,6 @@ export const useGameMode = () => {
     changeMode,
     openModeModal,
     closeModeModal,
-    getCurrentModeTitle,
-    getCurrentModeIcon
+    getCurrentModeTitle
   };
 };

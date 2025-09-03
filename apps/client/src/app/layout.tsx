@@ -24,7 +24,8 @@ export default function RootLayout({
               colorBgContainer: '#141414',
               colorBgElevated: '#141414'
             }
-          }}>
+          }}
+        >
           <GameModeProvider>{children}</GameModeProvider>
         </ConfigProvider>
       </body>

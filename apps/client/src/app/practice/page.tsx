@@ -9,6 +9,7 @@ import { SettingOutlined } from '@ant-design/icons';
 import TypingText from '@/components/TypingText';
 import GameModeModal from '@/components/GameModeModal';
 import { Word } from '@/request/globals';
+import IconFont from '@/components/IconFont';
 
 /**
  * 练习页面组件
@@ -167,8 +168,7 @@ export default function PracticePage() {
             {/* 模式切换按钮 */}
             <Button
               type='text'
-              size='small'
-              icon={<SettingOutlined />}
+              icon={<IconFont type='icon-game' size={24} />}
               onClick={openModeModal}
               className='text-gray-400 hover:text-purple-300 border-none shadow-none'
               title='切换游戏模式'

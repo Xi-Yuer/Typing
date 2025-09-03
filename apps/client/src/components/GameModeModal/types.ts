@@ -1,7 +1,12 @@
 /**
  * 游戏模式类型定义
  */
-export type GameMode = 'translation' | 'listening' | 'dictation' | 'speaking';
+export type GameMode =
+  | 'dictation' // 听写模式
+  | 'translation' // 翻译模式
+  | 'audioWriting' // 音频默写模式
+  | 'silentTranslation' // 静默拼写模式
+  | 'speaking'; // 口语模式
 
 /**
  * 游戏模式配置接口

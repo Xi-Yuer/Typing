@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Word } from '@/request/globals';
 import { playWordAudio } from '@/hooks/useSpeech';
 import { useTypingSound } from '@/hooks/useTypingSound';
 import { useWordState } from './useWordState';
 import { useKeyboardHandlers } from './useKeyboardHandlers';
 import { isWord } from '@/utils';
+import { GameMode } from '@/components/GameModeModal/types';
 
 interface UseTypingLogicProps {
+  mode?: GameMode;
   word?: Word;
   onComplete?: (isCorrect: boolean) => void;
   onNext?: () => void;
@@ -14,6 +16,7 @@ interface UseTypingLogicProps {
 }
 
 export const useTypingLogic = ({
+  mode = 'dictation',
   word,
   onComplete,
   onNext,
@@ -29,6 +32,20 @@ export const useTypingLogic = ({
 
   const { playSuccessSound, playErrorSound } = useTypingSound();
 
+  // 处理翻译模式下的单词属性转换
+  const processedWord = useMemo(() => {
+    if (!word) return word;
+
+    if (mode === 'translation') {
+      return {
+        ...word,
+        word: word.meaningShort || word.meaning || '',
+        meaning: word.word || ''
+      };
+    }
+    return word;
+  }, [word, mode]);
+
   const {
     words,
     currentWordIndex,
@@ -40,7 +57,7 @@ export const useTypingLogic = ({
     resetWords,
     findNextIncompleteWord,
     findPrevIncompleteWord
-  } = useWordState(word);
+  } = useWordState(processedWord);
 
   // 播放单词发音
   const playWordPronunciation = useCallback(async () => {
@@ -256,14 +273,17 @@ export const useTypingLogic = ({
 
   // 监听外部传入的 word 变化
   useEffect(() => {
-    initializeWords(word);
+    initializeWords(processedWord);
     setInputValue('');
     hasErrorRef.current = false;
     setShowAnswerTip(false);
     setIsAllCorrect(false);
     setHasShownError(false);
-    playWordPronunciation();
-  }, [word, initializeWords, playWordPronunciation]);
+    // 静默翻译模式：只看到母语提示，不提供音频和翻译，用户需要输入对应的外语内容。
+    if (mode !== 'silentTranslation') {
+      playWordPronunciation();
+    }
+  }, [word, mode, processedWord, initializeWords, playWordPronunciation]);
 
   // 自动聚焦
   useEffect(() => {

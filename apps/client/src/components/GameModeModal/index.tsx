@@ -43,26 +43,32 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
     disabled?: boolean;
   }> = [
     {
-      key: 'translation',
-      title: '中译英模式',
-      description: '看到中文提示，尝试用英文表达，练习运用所学词汇和语法。'
-    },
-    {
-      key: 'listening',
-      title: '听写模式',
-      description: '听音频，写出你听到的英文单词，训练听力，掌握单词拼写。'
-    },
-    {
       key: 'dictation',
-      title: '听力模式',
-      description: '播放英语音频，让你沉浸在语言环境中，培养语感，熟悉发音。'
+      title: '听写模式',
+      description: '看到母语提示并听到外语音频，用户需要输入对应的外语内容。'
+    },
+    {
+      key: 'translation',
+      title: '翻译模式',
+      description: '看到外语内容并听到外语音频，用户需要输入对应的母语翻译。'
+    },
+    {
+      key: 'audioWriting',
+      title: '音频默写模式',
+      description: '只听外语音频，不显示翻译，用户需要写出对应的外语内容。'
+    },
+    {
+      key: 'silentTranslation',
+      title: '静默拼写模式',
+      description:
+        '只看到母语提示，不提供音频和翻译，用户需要输入对应的外语内容。'
     },
     {
       key: 'speaking',
       title: '口语模式',
-      // 开发中...
       disabled: true,
-      description: '看到中文提示，尝试用口语表达，提高口语流利度。'
+      description:
+        '看到母语提示并听到外语音频，用户需要用口语说出对应的外语内容。'
     }
   ];
 
@@ -93,7 +99,8 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
         body: {
           padding: '20px'
         }
-      }}>
+      }}
+    >
       <div className='space-y-3'>
         {gameModes.map(mode => (
           <div
@@ -107,7 +114,8 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
                   : 'border-white/10 bg-white/5 hover:border-purple-400/30 hover:bg-white/10'
               }
               ${mode.disabled ? 'cursor-not-allowed opacity-50' : ''}
-            `}>
+            `}
+          >
             {/* 选中状态指示器 */}
             {currentMode === mode.key && (
               <div className='absolute top-3 right-3 w-3 h-3 bg-purple-500 rounded-full shadow-lg shadow-purple-500/50'></div>
@@ -117,7 +125,8 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
             <h3
               className={`text-base font-medium mb-2 transition-colors duration-300 ${
                 currentMode === mode.key ? 'text-purple-300' : 'text-white'
-              }`}>
+              }`}
+            >
               {mode.title}
               {mode.disabled && (
                 <span className='ml-2 text-xs text-red-500'>开发中</span>
@@ -130,7 +139,8 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
                 currentMode === mode.key
                   ? 'text-purple-200/80'
                   : 'text-gray-400'
-              }`}>
+              }`}
+            >
               {mode.description}
             </p>
           </div>
