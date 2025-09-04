@@ -5,6 +5,7 @@ import { useTypingLogic } from './hooks/useTypingLogic';
 import { WordDisplay } from './components/WordDisplay';
 import { CompletionDisplay } from './components/CompletionDisplay';
 import { ShortcutHints } from './components/ShortcutHints';
+import { Word } from '@/request/globals';
 
 // 导出类型供外部使用
 export type { WordState, TypingTextProps } from './types';
@@ -39,6 +40,21 @@ const TypingText = function ({
     }
   }, [isAllCorrect]);
 
+  function showMean(word?: Word) {
+    // 翻译模式下，显示单词
+    if (mode === 'translation') {
+      return word?.word;
+    }
+    if (!word) {
+      return '';
+    }
+    if (word.meaning?.length > 50) {
+      return word.meaningShort;
+    } else {
+      return word.meaning;
+    }
+  }
+
   return (
     <div
       ref={containerRef}
@@ -50,42 +66,11 @@ const TypingText = function ({
         <CompletionDisplay word={word} />
       ) : (
         <>
-          <div className='flex flex-col justify-center items-center gap-y-8'>
+          <div className='flex flex-col justify-center items-center gap-y-8 h-64'>
             {/* 根据不同模式显示不同内容 */}
-            {mode === 'dictation' && (
-              // 听写模式：显示母语提示
-              <div
-                className={
-                  (word?.meaning?.length || 0) > 50 ? 'text-md' : 'text-3xl'
-                }
-              >
-                {word?.meaning}
-              </div>
-            )}
-
-            {mode === 'translation' && (
-              // 翻译模式：显示外语内容
-              <div
-                className={
-                  (word?.word?.length || 0) > 20 ? 'text-md' : 'text-3xl'
-                }
-              >
-                {word?.word}
-              </div>
-            )}
-
-            {mode === 'silentTranslation' && (
-              // 静默翻译模式：显示母语提示
-              <div
-                className={
-                  (word?.meaning?.length || 0) > 50 ? 'text-md' : 'text-3xl'
-                }
-              >
-                {word?.meaning}
-              </div>
-            )}
-
-            {/* 音频默写模式不显示任何提示文字 */}
+            {['dictation', 'translation', 'silentTranslation'].includes(
+              mode as string
+            ) && <div className='text-3xl'>{showMean(word)}</div>}
 
             {/* 单词显示区域 */}
             <WordDisplay

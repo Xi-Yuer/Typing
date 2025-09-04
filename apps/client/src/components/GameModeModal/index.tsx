@@ -82,8 +82,6 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
       footer={null}
       width={520}
       className='game-mode-modal'
-      mask={false}
-      maskClosable={false}
       styles={{
         content: {
           backgroundColor: 'rgba(30, 30, 30, 1)',
@@ -94,7 +92,8 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
         header: {
           backgroundColor: 'transparent',
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          padding: '16px 20px'
+          padding: '16px 20px',
+          color: 'white'
         },
         body: {
           padding: '20px'

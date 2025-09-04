@@ -1,14 +1,15 @@
 'use client';
-
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useFullscreen } from 'ahooks';
 import { useSearchParams } from 'next/navigation';
 import { getWordsByCategoryId } from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import TypingText from '@/components/TypingText';
 import GameModeModal from '@/components/GameModeModal';
 import { Word } from '@/request/globals';
 import IconFont from '@/components/IconFont';
+import { useRouter } from 'next/navigation';
 
 /**
  * 练习页面组件
@@ -29,6 +30,9 @@ export default function PracticePage() {
   const [total, setTotal] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const ref = useRef(null);
+  const [isFullscreen, { toggleFullscreen }] = useFullscreen(ref);
+  const router = useRouter();
 
   /**
    * 从URL参数中获取languageId和categoryId
@@ -119,10 +123,21 @@ export default function PracticePage() {
   }, [currentWordIndex]);
 
   return (
-    <div className='bg-black min-h-screen w-screen relative py-4'>
+    <div
+      className='bg-black min-h-screen w-screen relative py-4 flex flex-col'
+      ref={ref}
+    >
       {/* 主要内容区域 */}
-      <div className='relative z-40'>
+      <div className='flex flex-col'>
         {/* 进度指示器 */}
+        <div className='fixed top-0 left-0 w-full h-1 bg-gray-700'>
+          <div
+            className='bg-purple-500 h-1 rounded-full transition-all duration-300'
+            style={{
+              width: `${((currentWordIndex + 1) / total) * 100}%`
+            }}
+          />
+        </div>
         <div className='w-screen mx-auto h-[60px] border-b relative flex items-center justify-between px-4 border-b-gray-500/30'>
           {/* 单词信息 */}
           <div className='text-sm text-gray-300'>
@@ -132,35 +147,61 @@ export default function PracticePage() {
               / {total})
             </span>
           </div>
-          {/* 游戏模式切换区域 */}
+          {/* 功能区域 */}
           <div className='flex items-center space-x-3'>
             {/* 模式切换按钮 */}
-            <Button
-              type='text'
-              icon={<IconFont type='icon-game' size={24} />}
-              onClick={openModeModal}
-              className='text-gray-400 hover:text-purple-300 border-none shadow-none'
-              title='切换游戏模式'
-            />
-          </div>
-          <div className='fixed top-0 left-0 w-full h-1 bg-gray-700'>
-            <div
-              className='bg-purple-500 h-1 rounded-full transition-all duration-300'
-              style={{
-                width: `${((currentWordIndex + 1) / total) * 100}%`
-              }}
-            />
+            <Tooltip title='切换游戏模式'>
+              <Button
+                type='text'
+                icon={<IconFont type='icon-game-mode' size={24} />}
+                onClick={openModeModal}
+                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+              />
+            </Tooltip>
+            {/* 返回按钮 */}
+            <Tooltip title='返回'>
+              <Button
+                type='text'
+                icon={<IconFont type='icon-back' size={22} />}
+                onClick={() => router.push('/list')}
+                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+              />
+            </Tooltip>
+            {/* 刷新按钮 */}
+            <Tooltip title='刷新'>
+              <Button
+                type='text'
+                icon={<IconFont type='icon-refresh' size={22} />}
+                onClick={() => router.refresh()}
+                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+              />
+            </Tooltip>
+            {/* 全屏按钮 */}
+            <Tooltip title={isFullscreen ? '退出全屏' : '全屏'}>
+              <Button
+                type='text'
+                icon={
+                  isFullscreen ? (
+                    <IconFont type='icon-fullscreen_in' size={22} />
+                  ) : (
+                    <IconFont type='icon-fullscreen_exc' size={22} />
+                  )
+                }
+                onClick={toggleFullscreen}
+                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+              />
+            </Tooltip>
           </div>
         </div>
-        <div className='mt-30'>
-          <TypingText
-            word={words[currentWordIndex]}
-            mode={currentMode}
-            onComplete={handleWordComplete}
-            onNext={handleNextWord}
-            onPrev={handlePrevWord}
-          />
-        </div>
+      </div>
+      <div className='flex-1 flex justify-center items-end mb-20'>
+        <TypingText
+          word={words[currentWordIndex]}
+          mode={currentMode}
+          onComplete={handleWordComplete}
+          onNext={handleNextWord}
+          onPrev={handlePrevWord}
+        />
       </div>
 
       {/* 游戏模式选择弹窗 */}

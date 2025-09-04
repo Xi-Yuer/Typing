@@ -10,7 +10,7 @@ export default function IconFont({
   size?: number;
 }) {
   const IconFont = createFromIconfontCN({
-    scriptUrl: ['//at.alicdn.com/t/c/font_5012902_3axfl131wzj.js']
+    scriptUrl: ['//at.alicdn.com/t/c/font_5012902_wmuuf6c1i3q.js']
   });
   return (
     <div>

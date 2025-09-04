@@ -15,7 +15,12 @@
  *
  * **Do not edit the file manually.**
  */
-import type { Alova, AlovaMethodCreateConfig, AlovaGenerics, Method } from 'alova';
+import type {
+  Alova,
+  AlovaMethodCreateConfig,
+  AlovaGenerics,
+  Method
+} from 'alova';
 import type { $$userConfigMap, alovaInstance } from '.';
 import type apiDefinitions from './apiDefinitions';
 
@@ -37,7 +42,16 @@ type Alova2MethodConfig<Responded> =
   >
     ? Omit<
         AlovaMethodCreateConfig<
-          AlovaGenerics<Responded, any, RequestConfig, Response, ResponseHeader, L1Cache, L2Cache, SE>,
+          AlovaGenerics<
+            Responded,
+            any,
+            RequestConfig,
+            Response,
+            ResponseHeader,
+            L1Cache,
+            L2Cache,
+            SE
+          >,
           any,
           Responded
         >,
@@ -50,7 +64,9 @@ type ExtractUserDefinedTransformed<
   DefinitionKey extends keyof typeof apiDefinitions,
   Default
 > = DefinitionKey extends keyof UserMethodConfigMap
-  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (...args: any[]) => any
+  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (
+      ...args: any[]
+    ) => any
     ? Awaited<ReturnType<UserMethodConfigMap[DefinitionKey]['transform']>>
     : Default
   : Default;
@@ -1792,7 +1808,11 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<ApiResponseDto, 'general.LanguagesController_remove', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.LanguagesController_remove',
+        Config
+      >;
       /**
        * ---
        *
@@ -2400,9 +2420,15 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getDifficultyStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
+      CorpusCategoriesController_getDifficultyStats<
+        Config extends Alova2MethodConfig<ApiResponseDto>
+      >(
         config?: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getDifficultyStats', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_getDifficultyStats',
+        Config
+      >;
       /**
        * ---
        *
@@ -2428,9 +2454,15 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getLanguageStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
+      CorpusCategoriesController_getLanguageStats<
+        Config extends Alova2MethodConfig<ApiResponseDto>
+      >(
         config?: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getLanguageStats', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_getLanguageStats',
+        Config
+      >;
       /**
        * ---
        *
@@ -2572,7 +2604,11 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_remove', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_remove',
+        Config
+      >;
       /**
        * ---
        *

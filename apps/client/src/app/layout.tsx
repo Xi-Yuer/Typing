@@ -1,7 +1,13 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import localFont from 'next/font/local';
 import { ConfigProvider } from 'antd';
 import { GameModeProvider } from '@/contexts/GameModeContext';
+import './globals.css';
+
+const freaoka = localFont({
+  src: '../assets/font/freaoka.ttf',
+  display: 'swap'
+});
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className='bg-black overflow-x-hidden'>
+      <body className={`bg-black overflow-x-hidden ${freaoka.className}`}>
         <ConfigProvider
           theme={{
             token: {

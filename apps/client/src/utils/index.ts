@@ -58,7 +58,7 @@ export const getWordsClassNames = (word: WordState): string => {
   return 'text-gray-400 border-b-gray-300';
 };
 
- /**
+/**
  * 根据难度等级获取对应的样式
  * @param difficulty 难度等级
  * @returns 样式对象
