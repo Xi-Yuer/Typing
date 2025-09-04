@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: typing-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: typing_root_password
+      MYSQL_DATABASE: typing_db
+      MYSQL_USER: typing_user
+      MYSQL_PASSWORD: typing_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - typing-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: typing-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - typing-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      retries: 5
+
+  # 主应用（前端 + 后端）
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: typing-app
+    restart: unless-stopped
+    ports:
+      - "80:80"     # 后端 API
+      - "3000:3000" # 前端应用
+    environment:
+      # 数据库配置
+      DATABASE_URL: mysql://typing_user:typing_password@mysql:3306/typing_db
+      DB_HOST: mysql
+      DB_PORT: 3306
+      
+      # Redis 配置
+      REDIS_URL: redis://redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      
+      # 应用配置
+      NODE_ENV: production
+      PORT: 80
+      
+      # JWT 配置
+      JWT_SECRET: your_jwt_secret_key_here_please_change_in_production
+      JWT_EXPIRES_IN: 7d
+      
+      # 前端配置
+      NEXT_PUBLIC_BASE_URL: http://app:80
+      FRONTEND_URL: http://localhost:3000
+      
+      # 功能开关
+      ENABLE_SWAGGER: true
+      ENABLE_CORS: true
+      
+      # 第三方服务配置（需要根据实际情况填写）
+      GITHUB_CLIENT_ID: your_github_client_id
+      GITHUB_CLIENT_SECRET: your_github_client_secret
+      GITHUB_CALLBACK_URL: http://localhost:80/auth/github/callback
+      
+      QQ_CLIENT_ID: your_qq_client_id
+      QQ_CLIENT_SECRET: your_qq_client_secret
+      QQ_CALLBACK_URL: http://localhost:80/auth/qq/callback
+      
+      # 语音服务配置
+      VOICE_API_URL: https://openapi.youdao.com/ttsapi
+      YOUDAO_APP_KEY: your_youdao_app_key
+      YOUDAO_APP_SECRET: your_youdao_app_secret
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - typing-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "80"]
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  typing-network:
+    driver: bridge
