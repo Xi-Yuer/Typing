@@ -5,12 +5,14 @@ import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from '../config/env.interface';
 import { YouDaoResponseType } from 'common';
 import * as crypto from 'crypto';
+import { WordsService } from '../words/words.service';
 
 @Injectable()
 export class SpeechService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService<EnvironmentVariables>
+    private readonly configService: ConfigService<EnvironmentVariables>,
+    private readonly wordsService: WordsService
   ) {}
 
   /**
@@ -29,8 +31,8 @@ export class SpeechService {
     salt: string,
     curtime: string
   ): string {
-    const input = this.truncate(query);
-    const signStr = appKey + input + salt + curtime + appSecret;
+    const word = this.truncate(query);
+    const signStr = appKey + word + salt + curtime + appSecret;
     return crypto.createHash('sha256').update(signStr).digest('hex');
   }
 
@@ -50,25 +52,21 @@ export class SpeechService {
   /**
    * 文本转语音服务
    * 先调用有道翻译API获取翻译结果和语音URL，然后获取音频数据
-   * @param input 输入文本
+   * @param id 单词ID
+   * @param word 输入文本
    * @param voice 语音类型（可选）
-   * @param language 语言（可选）
+   * @param form 语言（可选）
    * @returns 音频数据和相关信息
    */
   async getText2Speech(
-    input: string,
-    language?: string,
-    voice: string = '0'
+    id: string,
+    word: string,
+    form: string,
+    voice: string
   ): Promise<YouDaoResponseType> {
-    if (!input) {
+    if (!word) {
       throw new Error('Input text is required');
     }
-
-    // 如果没有指定语言，默认使用英文
-    const selectedLanguage = language || 'en';
-    // 对于语音合成，使用相同的源语言和目标语言
-    const fromLang = selectedLanguage === 'zh-CN' ? 'zh' : selectedLanguage;
-    const toLang = fromLang;
 
     // 获取有道API配置
     const appKey = this.configService.get('YOUDAO_APP_KEY');
@@ -81,14 +79,14 @@ export class SpeechService {
     // 生成请求参数
     const salt = crypto.randomUUID();
     const curtime = Math.round(new Date().getTime() / 1000).toString();
-    const sign = this.generateSign(appKey, appSecret, input, salt, curtime);
+    const sign = this.generateSign(appKey, appSecret, word, salt, curtime);
 
     try {
       // 调用有道翻译API
       const params = new URLSearchParams({
-        q: input,
-        from: fromLang,
-        to: toLang,
+        q: word,
+        from: form,
+        to: 'zh-CN',
         appKey: appKey,
         voice: voice,
         salt: salt,
@@ -107,7 +105,9 @@ export class SpeechService {
           }
         )
       );
-
+      this.wordsService.update(id, {
+        meaningShort: response.data.translation.join(',')
+      });
       const data = response.data;
 
       // 检查API响应

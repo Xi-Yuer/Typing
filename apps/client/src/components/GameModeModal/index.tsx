@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Modal } from 'antd';
-import { GameMode, GameModeConfig } from './types';
+import { GameMode } from './types';
 
 interface GameModeModalProps {
   isOpen: boolean;

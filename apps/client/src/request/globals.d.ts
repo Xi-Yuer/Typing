@@ -217,6 +217,10 @@ export interface CreateWordDto {
    */
   meaning: string;
   /**
+   * 中文释义（短）
+   */
+  meaningShort: string;
+  /**
    * 例句
    */
   example: string;
@@ -573,6 +577,36 @@ export interface Sentence {
    * 所属分类
    */
   category: CorpusCategory;
+}
+export interface Speech {
+  /**
+   * 音频URL
+   */
+  audioUrl: string;
+  /**
+   * 语音类型
+   */
+  voice: string;
+  /**
+   * 语言
+   */
+  language: string;
+  /**
+   * 翻译结果
+   */
+  translation: string;
+  /**
+   * 翻译结果
+   */
+  originalText: string;
+  /**
+   * 原始文本
+   */
+  tSpeakUrl: string;
+  /**
+   * 有道API原始响应中的语音URL
+   */
+  speakUrl: string;
 }
 declare global {
   interface Apis {
@@ -2601,6 +2635,8 @@ declare global {
        *   ukPhonetic?: string
        *   // 中文释义
        *   meaning: string
+       *   // 中文释义（短）
+       *   meaningShort: string
        *   // 例句
        *   example: string
        *   // 发音音频链接
@@ -5779,9 +5815,10 @@ declare global {
        * **Query Parameters**
        * ```ts
        * type QueryParameters = {
-       *   input: string
+       *   id: string
+       *   word: string
+       *   form: string
        *   voice: string
-       *   language: string
        * }
        * ```
        *
@@ -5800,21 +5837,45 @@ declare global {
        *   timestamp: number
        *   // 请求路径
        *   path: string
+       * } & {
+       *   data?: {
+       *     // 音频URL
+       *     audioUrl: string
+       *     // 语音类型
+       *     voice: string
+       *     // 语言
+       *     language: string
+       *     // 翻译结果
+       *     translation: string
+       *     // 翻译结果
+       *     originalText: string
+       *     // 原始文本
+       *     tSpeakUrl: string
+       *     // 有道API原始响应中的语音URL
+       *     speakUrl: string
+       *   }
        * }
        * ```
        */
       SpeechController_getText2Speech<
-        Config extends Alova2MethodConfig<ApiResponseDto> & {
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: Speech;
+          }
+        > & {
           params: {
-            input: string;
+            id: string;
+            word: string;
+            form: string;
             voice: string;
-            language: string;
           };
         }
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto,
+        ApiResponseDto & {
+          data?: Speech;
+        },
         'general.SpeechController_getText2Speech',
         Config
       >;

@@ -4,13 +4,16 @@ import Header from '@/components/Header/Header';
 import PlasmaWaveV2 from '@/blocks/PlasmaWaveV2/PlasmaWaveV2';
 import { CorpusCategory, Language } from '@/request/globals';
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useGameModeContext } from '@/contexts/GameModeContext';
+import GameModeModal from '@/components/GameModeModal';
+import { useRouter } from 'next/navigation';
 
 /**
  * 语言分类列表页面组件
  * 展示可用的语言类别和子分类
  */
 export default function page() {
+  const router = useRouter();
   const [languages, setLanguages] = useState<Language[]>([]);
   const [categorySubCategories, setCategorySubCategories] = useState<
     CorpusCategory[]
@@ -19,10 +22,19 @@ export default function page() {
     null
   );
   const [loading, setLoading] = useState(true);
+  const [current, setCurrent] = useState<CorpusCategory>();
 
   useEffect(() => {
     getLanguageCategorySubCategoriesAction();
   }, []);
+
+  const {
+    currentMode,
+    isModalOpen,
+    changeMode,
+    openModeModal,
+    closeModeModal
+  } = useGameModeContext();
 
   /**
    * 获取语言分类和默认子分类数据
@@ -125,9 +137,12 @@ export default function page() {
                         <p className='text-gray-300 text-sm mb-4'>
                           {category.description}
                         </p>
-                        <Link
-                          href={`/practice?languageId=${selectedLanguageId}&categoryId=${category.id}`}
+                        <span
                           className='flex items-center text-purple-400'
+                          onClick={() => {
+                            setCurrent(category);
+                            openModeModal();
+                          }}
                         >
                           <span className='text-sm'>开始练习</span>
                           <svg
@@ -143,7 +158,7 @@ export default function page() {
                               d='M9 5l7 7-7 7'
                             />
                           </svg>
-                        </Link>
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -160,6 +175,19 @@ export default function page() {
           )}
         </div>
       </div>
+
+      {/* 游戏模式选择弹窗 */}
+      <GameModeModal
+        isOpen={isModalOpen}
+        onClose={closeModeModal}
+        currentMode={currentMode}
+        onModeChange={mode => {
+          router.push(
+            `/practice?languageId=${selectedLanguageId}&categoryId=${current?.id}`
+          );
+          changeMode(mode);
+        }}
+      />
     </div>
   );
 }

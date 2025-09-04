@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { SpeechService } from './speech.service';
 import { ApiTags } from '@nestjs/swagger';
-import type { YouDaoResponseType } from 'common';
 import { ApiSuccessResponse } from '@/common/decorators/api-response.decorator';
+import { Speech } from './entities/speech.entity';
 
 @Controller('speech')
 @ApiTags('语音')
@@ -24,11 +24,14 @@ export class SpeechController {
    * @returns JSON格式的响应数据
    */
   @Get('audio')
-  @ApiSuccessResponse<YouDaoResponseType>()
+  @ApiSuccessResponse(Speech, {
+    description: '语音数据'
+  })
   async getText2Speech(
-    @Query('input') input?: string,
-    @Query('voice') voice?: string,
-    @Query('language') language?: string
+    @Query('id') id: string,
+    @Query('word') input: string,
+    @Query('form') language: string,
+    @Query('voice') voice: string
   ) {
     try {
       if (!input) {
@@ -39,6 +42,7 @@ export class SpeechController {
       }
 
       const result = await this.speechService.getText2Speech(
+        id,
         input,
         language,
         voice

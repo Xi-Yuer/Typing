@@ -1,33 +1,27 @@
 import { Word } from '@/request/globals';
 import { YouDaoResponseType } from 'common';
-
+import Apis from '@/request';
 let currentAudio: HTMLAudioElement | null = null;
 
 /**
  * 获取语音数据
- * @param input 要转换的文本
+ * @param word 要转换的文本
  * @param language 语言代码
  * @param voice 可选的语音类型
  */
 async function getSpeechData(
-  input: string,
-  language?: string,
+  word: Word,
   voice?: string
 ): Promise<YouDaoResponseType> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL + '/speech/audio';
-  const params = new URLSearchParams();
-
-  params.append('input', input);
-  if (language) params.append('language', language);
-  if (voice) params.append('voice', voice);
-
-  const response = await fetch(`${baseUrl}?${params.toString()}`);
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const result = await response.json();
-  return result.data;
+  const response = await Apis.general.SpeechController_getText2Speech({
+    params: {
+      id: word.id,
+      word: word.word,
+      form: word.language?.code,
+      voice: voice || '0'
+    }
+  });
+  return response.data;
 }
 
 /**
@@ -42,14 +36,8 @@ export async function playWordAudio(word: Word): Promise<void> {
     }
 
     try {
-      const inputText = word.word;
-
       // 获取语音数据
-      const speechData = await getSpeechData(
-        inputText,
-        word.language?.code,
-        undefined
-      );
+      const speechData = await getSpeechData(word, '0');
 
       // 如果已有音频在播，先停止
       if (currentAudio) {
@@ -59,9 +47,7 @@ export async function playWordAudio(word: Word): Promise<void> {
       }
 
       // 创建新的音频实例
-      currentAudio = new Audio(
-        speechData?.tSpeakUrl || speechData?.speakUrl || ''
-      );
+      currentAudio = new Audio(speechData?.speakUrl);
       currentAudio.preload = 'auto';
       currentAudio.volume = 1;
 
