@@ -42,6 +42,9 @@ export const STYLES = {
     ERROR: 'text-red-500',
     NORMAL: 'text-purple-500',
     HINT: 'text-gray-400 opacity-50'
+  },
+  BORDER: {
+    BLUR: '!border-b-gray-300'
   }
 } as const;
 

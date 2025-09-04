@@ -1,5 +1,11 @@
 'use client';
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  Suspense
+} from 'react';
 import { useFullscreen } from 'ahooks';
 import { useSearchParams } from 'next/navigation';
 import { getWordsByCategoryId } from '@/api';
@@ -12,10 +18,10 @@ import IconFont from '@/components/IconFont';
 import { useRouter } from 'next/navigation';
 
 /**
- * 练习页面组件
- * 通过URL参数获取languageId和categoryId来加载对应的练习数据
+ * 练习页面内部组件
+ * 处理搜索参数和练习逻辑
  */
-export default function PracticePage() {
+function PracticePageContent() {
   const searchParams = useSearchParams();
   const {
     currentMode,
@@ -45,48 +51,51 @@ export default function PracticePage() {
   }, [searchParams]);
 
   /**
+   * 加载练习数据
+   */
+  const loadPracticeData = useCallback(
+    async (page: number = 1) => {
+      if (!languageId || !categoryId) return;
+
+      const response = await getWordsByCategoryId(
+        parseInt(languageId as string),
+        parseInt(categoryId as string),
+        page
+      );
+
+      if (response && response.data && response.data.list) {
+        const wordList = response.data.list;
+        if (page === 1) {
+          // 初始加载，替换所有数据
+          setWords(wordList);
+          setCurrentWordIndex(0);
+        } else {
+          // 预加载，追加数据
+          setWords(prev => [...prev, ...wordList]);
+        }
+
+        setCurrentPage(page);
+        setTotal((response.data as any).total);
+      }
+    },
+    [languageId, categoryId]
+  );
+
+  /**
    * 当参数获取到后，加载练习数据
    */
   useEffect(() => {
     if (languageId && categoryId) {
       loadPracticeData();
     }
-  }, [languageId, categoryId]);
-
-  /**
-   * 加载练习数据
-   */
-  const loadPracticeData = async (page: number = 1) => {
-    if (!languageId || !categoryId) return;
-
-    const response = await getWordsByCategoryId(
-      parseInt(languageId as string),
-      parseInt(categoryId as string),
-      page
-    );
-
-    if (response && response.data && response.data.list) {
-      const wordList = response.data.list;
-      if (page === 1) {
-        // 初始加载，替换所有数据
-        setWords(wordList);
-        setCurrentWordIndex(0);
-      } else {
-        // 预加载，追加数据
-        setWords(prev => [...prev, ...wordList]);
-      }
-
-      setCurrentPage(page);
-      setTotal((response.data as any).total);
-    }
-  };
+  }, [languageId, categoryId, loadPracticeData]);
 
   /**
    * 预加载下一批数据
    */
   const preloadNextBatch = useCallback(async () => {
     await loadPracticeData(currentPage + 1);
-  }, [currentPage, categoryId, languageId]);
+  }, [currentPage, categoryId, languageId, loadPracticeData]);
 
   /**
    * 处理单词完成事件
@@ -124,7 +133,7 @@ export default function PracticePage() {
 
   return (
     <div
-      className='bg-black min-h-screen w-screen relative py-4 flex flex-col'
+      className='bg-slate-950 min-h-screen w-screen relative py-4 flex flex-col'
       ref={ref}
     >
       {/* 主要内容区域 */}
@@ -212,5 +221,23 @@ export default function PracticePage() {
         onModeChange={changeMode}
       />
     </div>
+  );
+}
+
+/**
+ * 练习页面主组件
+ * 使用Suspense包装内部组件以处理useSearchParams
+ */
+export default function PracticePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className='bg-slate-950 min-h-screen w-screen flex items-center justify-center text-white'>
+          Loading...
+        </div>
+      }
+    >
+      <PracticePageContent />
+    </Suspense>
   );
 }

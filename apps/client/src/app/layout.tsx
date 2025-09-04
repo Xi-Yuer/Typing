@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`bg-black overflow-x-hidden ${freaoka.className}`}>
+      <body className={`bg-slate-950 overflow-x-hidden ${freaoka.className}`}>
         <ConfigProvider
           theme={{
             token: {

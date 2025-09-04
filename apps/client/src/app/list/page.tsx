@@ -72,7 +72,7 @@ export default function page() {
   };
 
   return (
-    <div className='bg-black min-h-screen w-screen relative'>
+    <div className='bg-slate-950 min-h-screen w-screen relative'>
       {/* 背景动画层 */}
       <div className='fixed inset-0 z-0 backdrop-blur-3xl'>
         <PlasmaWaveV2

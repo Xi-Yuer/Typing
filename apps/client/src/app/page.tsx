@@ -89,7 +89,7 @@ export default function Page() {
   }, [showTyping]);
 
   return (
-    <div className='bg-black min-h-screen w-screen relative'>
+    <div className='bg-slate-950 min-h-screen w-screen relative'>
       {/* 背景动画层 - 固定在第一屏 */}
       <div ref={plasmaRef} className='fixed inset-0 z-0'>
         <PlasmaWaveV2 yOffset={-300} xOffset={0} rotationDeg={-30} />

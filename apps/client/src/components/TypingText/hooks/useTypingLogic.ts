@@ -24,6 +24,7 @@ export const useTypingLogic = ({
 }: UseTypingLogicProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const [isComposing, setIsComposing] = useState(false);
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
@@ -317,8 +318,11 @@ export const useTypingLogic = ({
     isAllCorrect,
     showAnswerTip,
     inputRef,
+    isFocused,
+    isComposing,
 
     // 事件处理器
+    setIsFocused,
     handleInputChange,
     handleKeyDown: keyboardHandlers.handleKeyDown,
     handleGlobalKeyDown: keyboardHandlers.handleGlobalKeyDown,

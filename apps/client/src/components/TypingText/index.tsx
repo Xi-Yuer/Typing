@@ -25,6 +25,8 @@ const TypingText = function ({
     isAllCorrect,
     showAnswerTip,
     inputRef,
+    isFocused,
+    setIsFocused,
     handleInputChange,
     handleKeyDown,
     handleGlobalKeyDown,
@@ -82,7 +84,9 @@ const TypingText = function ({
               words={words}
               inputValue={inputValue}
               showAnswerTip={showAnswerTip}
+              isFocused={isFocused}
               inputRef={inputRef}
+              setIsFocused={setIsFocused}
             />
           </div>
         </>

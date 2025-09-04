@@ -81,17 +81,16 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
       onCancel={onClose}
       footer={null}
       width={520}
-      className='game-mode-modal'
       styles={{
         content: {
-          backgroundColor: 'rgba(30, 30, 30, 1)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          backgroundColor: 'rgba(50, 50, 60, 1)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
           borderRadius: '12px',
           backdropFilter: 'blur(20px)'
         },
         header: {
           backgroundColor: 'transparent',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
           padding: '16px 20px',
           color: 'white'
         },
@@ -112,7 +111,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
                   ? 'border-purple-500/50 bg-purple-500/10 shadow-lg shadow-purple-500/20'
                   : 'border-white/10 bg-white/5 hover:border-purple-400/30 hover:bg-white/10'
               }
-              ${mode.disabled ? 'cursor-not-allowed opacity-50' : ''}
+              ${mode.disabled ? '!cursor-not-allowed opacity-50' : ''}
             `}
           >
             {/* 选中状态指示器 */}

@@ -8,6 +8,8 @@ interface WordDisplayProps {
   showAnswerTip: boolean;
   inputRef: React.RefObject<HTMLInputElement | null>;
   inputValue: string;
+  isFocused: boolean;
+  setIsFocused: (isFocused: boolean) => void;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onMouseDown: (e: React.MouseEvent) => void;
@@ -20,6 +22,8 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
   showAnswerTip,
   inputRef,
   inputValue,
+  isFocused,
+  setIsFocused,
   onInputChange,
   onKeyDown,
   onMouseDown,
@@ -29,8 +33,9 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
+      setIsFocused(true);
     }
-  }, [inputRef]);
+  }, [inputRef, setIsFocused]);
   return (
     <div className='text-center'>
       <div className='relative flex flex-wrap justify-center gap-2 transition-all'>
@@ -40,7 +45,9 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
               key={index}
               className={`${STYLES.WORD_HEIGHT} rounded-sm border-b-2 border-solid ${STYLES.WORD_TEXT_SIZE} leading-none transition-all ${getWordsClassNames(
                 word
-              )}`}
+              )} ${!isFocused ? STYLES.BORDER.BLUR : ''}
+            }
+              `}
               style={{ minWidth: `${getWordWidth(word.text)}ch` }}
             >
               <span
@@ -78,6 +85,8 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
           onCompositionStart={onCompositionStart}
           onCompositionEnd={onCompositionEnd}
           autoFocus
+          onBlur={() => setIsFocused(false)}
+          onFocus={() => setIsFocused(true)}
         />
       </div>
     </div>
