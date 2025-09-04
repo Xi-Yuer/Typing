@@ -123,7 +123,8 @@ export default function PracticePage() {
       {/* 主要内容区域 */}
       <div className='relative z-40'>
         {/* 进度指示器 */}
-        <div className='w-screen mx-auto h-[60px] border-b relative flex items-center justify-between px-4'>
+        <div className='w-screen mx-auto h-[60px] border-b relative flex items-center justify-between px-4 border-b-gray-500/30'>
+          {/* 单词信息 */}
           <div className='text-sm text-gray-300'>
             <span>
               {words?.[currentWordIndex]?.language.name} -
@@ -131,7 +132,6 @@ export default function PracticePage() {
               / {total})
             </span>
           </div>
-
           {/* 游戏模式切换区域 */}
           <div className='flex items-center space-x-3'>
             {/* 模式切换按钮 */}
@@ -143,7 +143,7 @@ export default function PracticePage() {
               title='切换游戏模式'
             />
           </div>
-          <div className='absolute bottom-0 left-0 w-full h-1 bg-gray-700'>
+          <div className='fixed top-0 left-0 w-full h-1 bg-gray-700'>
             <div
               className='bg-purple-500 h-1 rounded-full transition-all duration-300'
               style={{

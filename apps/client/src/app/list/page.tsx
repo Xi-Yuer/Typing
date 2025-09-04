@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { useGameModeContext } from '@/contexts/GameModeContext';
 import GameModeModal from '@/components/GameModeModal';
 import { useRouter } from 'next/navigation';
+import { getDifficultyStyle } from '@/utils';
 
 /**
  * 语言分类列表页面组件
@@ -111,8 +112,7 @@ export default function page() {
                           ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25'
                           : 'bg-white/10 text-gray-300 hover:bg-white/20'
                       }`}
-                      onClick={() => handleLanguageSelect(language)}
-                    >
+                      onClick={() => handleLanguageSelect(language)}>
                       <div className='font-medium'>{language.name}</div>
                     </div>
                   ))}
@@ -126,41 +126,54 @@ export default function page() {
                 </h2>
                 {categorySubCategories.length > 0 ? (
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-                    {categorySubCategories.map(category => (
-                      <div
-                        key={category.id}
-                        className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10'
-                      >
-                        <h3 className='text-lg font-semibold text-white mb-2'>
-                          {category.name}
-                        </h3>
-                        <p className='text-gray-300 text-sm mb-4'>
-                          {category.description}
-                        </p>
-                        <span
-                          className='flex items-center text-purple-400'
-                          onClick={() => {
-                            setCurrent(category);
-                            openModeModal();
-                          }}
-                        >
-                          <span className='text-sm'>开始练习</span>
-                          <svg
-                            className='w-4 h-4 ml-2'
-                            fill='none'
-                            stroke='currentColor'
-                            viewBox='0 0 24 24'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth={2}
-                              d='M9 5l7 7-7 7'
-                            />
-                          </svg>
-                        </span>
-                      </div>
-                    ))}
+                    {categorySubCategories.map(category => {
+                      const difficultyStyle = getDifficultyStyle(
+                        category.difficulty
+                      );
+
+                      return (
+                        <div
+                          key={category.id}
+                          className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
+                          {/* 右上角难度标签 */}
+                          <div
+                            className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${
+                              difficultyStyle.bg
+                            } ${difficultyStyle.text} ${difficultyStyle.border} border`}>
+                            {difficultyStyle.label}
+                          </div>
+
+                          {/* 标题 */}
+                          <h3 className='text-lg font-semibold text-white mb-2 pr-16'>
+                            {category.name}
+                          </h3>
+
+                          <p className='text-gray-300 text-sm mb-4'>
+                            {category.description}
+                          </p>
+                          <span
+                            className='flex items-center text-purple-400'
+                            onClick={() => {
+                              setCurrent(category);
+                              openModeModal();
+                            }}>
+                            <span className='text-sm'>开始练习</span>
+                            <svg
+                              className='w-4 h-4 ml-2'
+                              fill='none'
+                              stroke='currentColor'
+                              viewBox='0 0 24 24'>
+                              <path
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                strokeWidth={2}
+                                d='M9 5l7 7-7 7'
+                              />
+                            </svg>
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className='text-center py-12'>

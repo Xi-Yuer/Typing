@@ -57,3 +57,58 @@ export const getWordsClassNames = (word: WordState): string => {
   // 默认状态
   return 'text-gray-400 border-b-gray-300';
 };
+
+ /**
+ * 根据难度等级获取对应的样式
+ * @param difficulty 难度等级
+ * @returns 样式对象
+ */
+export const getDifficultyStyle = (difficulty: string | number) => {
+  const difficultyStr = String(difficulty || '').toLowerCase();
+  switch (difficultyStr) {
+    case '1':
+      return {
+        bg: 'bg-green-500/20',
+        text: 'text-green-400',
+        border: 'border-green-500/30',
+        label: '简单'
+      };
+    case '2':
+      return {
+        bg: 'bg-blue-500/20',
+        text: 'text-blue-400',
+        border: 'border-blue-500/30',
+        label: '普通'
+      };
+    case '3':
+    case 'medium':
+    case '中等':
+      return {
+        bg: 'bg-yellow-500/20',
+        text: 'text-yellow-400',
+        border: 'border-yellow-500/30',
+        label: '中等'
+      };
+    case '4':
+      return {
+        bg: 'bg-orange-500/20',
+        text: 'text-orange-400',
+        border: 'border-orange-500/30',
+        label: '困难'
+      };
+    case '5':
+      return {
+        bg: 'bg-red-500/20',
+        text: 'text-red-400',
+        border: 'border-red-500/30',
+        label: '极难'
+      };
+    default:
+      return {
+        bg: 'bg-gray-500/20',
+        text: 'text-gray-400',
+        border: 'border-gray-500/30',
+        label: String(difficulty) || '未知'
+      };
+  }
+};
