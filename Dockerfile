@@ -2,7 +2,7 @@
 # 阶段1: 构建阶段
 FROM node:20-alpine AS builder
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
     && apk update \
     && apk add --no-cache dumb-init
 
