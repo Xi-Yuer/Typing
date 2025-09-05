@@ -38,6 +38,24 @@ services:
       timeout: 3s
       retries: 5
 
+  # Nginx 反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: typing-nginx
+    restart: unless-stopped
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    networks:
+      - typing-network
+    healthcheck:
+      test: ['CMD', 'nginx', '-t']
+      timeout: 3s
+      retries: 3
+
   # 主应用（前端 + 后端）- 使用预构建镜像
   app:
     # 使用 GitHub Container Registry 中的预构建镜像
@@ -46,9 +64,9 @@ services:
     image: ghcr.io/Xi-Yuer/typing:latest
     container_name: typing-app
     restart: unless-stopped
-    ports:
-      - '80:80' # 后端 API
-      - '3000:3000' # 前端应用
+    expose:
+      - '3001' # 后端 API 内部端口
+      - '3000' # 前端应用内部端口
     environment:
       # 数据库配置
       DATABASE_URL: mysql://typing_user:typing_password@mysql:3306/typing_db
@@ -62,14 +80,14 @@ services:
 
       # 应用配置
       NODE_ENV: production
-      PORT: 80
+      PORT: 3001
 
       # JWT 配置
       JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key_here_please_change_in_production}
       JWT_EXPIRES_IN: 7d
 
       # 前端配置
-      NEXT_PUBLIC_BASE_URL: http://app:80/api
+      NEXT_PUBLIC_BASE_URL: http://localhost/api
       FRONTEND_URL: http://localhost:3000
 
       # 功能开关
@@ -79,11 +97,11 @@ services:
       # 第三方服务配置（需要根据实际情况填写）
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-your_github_client_id}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-your_github_client_secret}
-      GITHUB_CALLBACK_URL: http://localhost:80/api/auth/github/callback
+      GITHUB_CALLBACK_URL: http://localhost/api/auth/github/callback
 
       QQ_CLIENT_ID: ${QQ_CLIENT_ID:-your_qq_client_id}
       QQ_CLIENT_SECRET: ${QQ_CLIENT_SECRET:-your_qq_client_secret}
-      QQ_CALLBACK_URL: http://localhost:80/api/auth/qq/callback
+      QQ_CALLBACK_URL: http://localhost/api/auth/qq/callback
 
       # 语音服务配置
       YOUDAO_APP_KEY: ${YOUDAO_APP_KEY:-your_youdao_app_key}
@@ -96,7 +114,7 @@ services:
     networks:
       - typing-network
     healthcheck:
-      test: ['CMD', 'nc', '-z', 'localhost', '80']
+      test: ['CMD', 'nc', '-z', 'localhost', '3001']
       timeout: 10s
       retries: 5
       start_period: 30s
