@@ -84,9 +84,9 @@ docker-compose -f docker-compose.yml up -d
 
 等待所有服务启动完成（大约 2-3 分钟），然后访问：
 
-- **前端应用**: http://localhost:3000
-- **后端 API**: http://localhost:80
-- **API 文档**: http://localhost:80/doc (如果启用了 Swagger)
+- **前端应用**: http://localhost
+- **后端 API**: http://localhost/api
+- **API 文档**: http://localhost/api/doc (如果启用了 Swagger)
 
 ## 📊 服务说明
 
@@ -94,11 +94,17 @@ docker-compose -f docker-compose.yml up -d
 
 ```
 ┌─────────────────┐    ┌─────────────────┐
-│   前端 (Next.js) │    │   后端 (NestJS)  │
-│   端口: 3000    │◄──►│   端口: 80      │
+│   Nginx 代理    │    │   前端 (Next.js) │
+│   端口: 80      │◄──►│   端口: 3000    │
 └─────────────────┘    └─────────────────┘
-                              │
-                              ▼
+         │                       │
+         ▼                       │
+┌─────────────────┐              │
+│   后端 (NestJS)  │◄─────────────┘
+│   端口: 3001    │
+└─────────────────┘
+         │
+         ▼
 ┌─────────────────┐    ┌─────────────────┐
 │  MySQL 数据库   │◄──►│   Redis 缓存    │
 │   端口: 3306    │    │   端口: 6379    │
@@ -121,7 +127,8 @@ docker-compose -f docker-compose.yml up -d
 
 ### 内部网络通信
 
-- 前端通过内部网络 `http://app:80` 访问后端 API
+- 用户通过 `http://localhost` 访问前端应用（通过Nginx代理）
+- 前端通过 `/api` 路径访问后端 API（通过Nginx代理到后端服务）
 - 后端通过内部网络访问数据库和 Redis
 - 所有服务在同一个 Docker 网络 `typing-network` 中
 
@@ -251,9 +258,11 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
 
 ### 端口配置
 
-- **FRONTEND_PORT (3000)**: 前端应用端口
-- **BACKEND_PORT (3001)**: 后端 API 端口（通过 Nginx 代理到 80 端口）
 - **80**: Nginx 反向代理端口（对外访问入口）
+  - 前端应用：`http://localhost/`
+  - 后端 API：`http://localhost/api/`
+- **FRONTEND_PORT (3000)**: 前端应用内部端口
+- **BACKEND_PORT (3001)**: 后端 API 内部端口
 - **3306**: MySQL 数据库端口
 - **6379**: Redis 缓存端口
 

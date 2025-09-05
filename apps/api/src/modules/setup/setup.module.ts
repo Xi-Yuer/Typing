@@ -27,8 +27,18 @@ export class SetupModule {
 
       const document = SwaggerModule.createDocument(app, config);
       SwaggerModule.setup('doc', app, document);
+      
+      // 添加JSON文档端点
+      app.use('/doc-json', (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(document);
+      });
+      
       this.logger.log(
-        `Swagger文档已启用，访问地址: http://localhost:${process.env.BACKEND_PORT}/doc`
+        `Swagger文档已启用，访问地址: http://localhost:${process.env.BACKEND_PORT}/api/doc`
+      );
+      this.logger.log(
+        `Swagger JSON文档已启用，访问地址: http://localhost:${process.env.BACKEND_PORT}/api/doc-json`
       );
     }
 

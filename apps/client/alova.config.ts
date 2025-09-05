@@ -1,7 +1,7 @@
 module.exports = {
   generator: [
     {
-      input: 'http://localhost/doc-json',
+      input: 'http://localhost/api/doc-json',
       platform: 'swagger',
       output: './src/request'
     }

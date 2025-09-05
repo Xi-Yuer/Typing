@@ -74,7 +74,7 @@ export class AuthController {
   async githubCallback(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
     const frontendUrl =
-      this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
+      this.configService.get('FRONTEND_URL') || 'http://localhost';
 
     try {
       // 正常登录流程
@@ -111,7 +111,7 @@ export class AuthController {
     const user = req.user as User;
     const state = req.query.state as string;
     const frontendUrl =
-      this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
+      this.configService.get('FRONTEND_URL') || 'http://localhost';
 
     try {
       // 检查是否是绑定流程

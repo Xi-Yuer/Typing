@@ -88,6 +88,7 @@ services:
       
       # 前端配置
       NEXT_PUBLIC_BASE_URL: /api
+      FRONTEND_URL: http://localhost
       
       # 功能开关
       ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}

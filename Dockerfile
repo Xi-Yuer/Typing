@@ -22,6 +22,9 @@ RUN --mount=type=cache,target=/root/.pnpm-store \
 # 复制源代码
 COPY . .
 
+# 设置构建时环境变量
+ENV NEXT_PUBLIC_BASE_URL=/api
+
 # 构建项目
 RUN pnpm run build
 
@@ -110,6 +113,7 @@ ENV NODE_ENV=production
 ENV BACKEND_PORT=3001
 ENV FRONTEND_PORT=3000
 ENV NEXT_PUBLIC_BASE_URL=/api
+ENV FRONTEND_URL=http://localhost
 ENV DB_HOST=mysql
 ENV DB_PORT=3306
 ENV REDIS_HOST=redis
