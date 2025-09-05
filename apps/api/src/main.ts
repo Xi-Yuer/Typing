@@ -9,5 +9,5 @@ void (async function bootstrap() {
   app.setGlobalPrefix('api');
 
   SetupModule.forRoot(app);
-  await app.listen(process.env.PORT || 80);
+  await app.listen(process.env.BACKEND_PORT || 3001);
 })();

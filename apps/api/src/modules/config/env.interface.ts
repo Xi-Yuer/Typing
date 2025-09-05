@@ -1,6 +1,7 @@
 export interface EnvironmentVariables {
   NODE_ENV: 'development' | 'production' | 'test';
-  PORT: number;
+  BACKEND_PORT: number;
+  FRONTEND_PORT: number;
   DATABASE_URL: string;
   REDIS_URL: string;
   JWT_SECRET: string;

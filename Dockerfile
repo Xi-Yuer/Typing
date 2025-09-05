@@ -92,7 +92,7 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo '' >> /app/start.sh && \
     echo '# 启动前端服务' >> /app/start.sh && \
     echo 'echo "启动前端服务..."' >> /app/start.sh && \
-    echo 'cd /app/apps/client && pnpm start &' >> /app/start.sh && \
+    echo 'cd /app/apps/client && PORT=$FRONTEND_PORT pnpm start &' >> /app/start.sh && \
     echo 'CLIENT_PID=$!' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
     echo '# 等待任一服务退出' >> /app/start.sh && \
@@ -108,7 +108,8 @@ EXPOSE 3001 3000
 
 # 设置环境变量
 ENV NODE_ENV=production
-ENV PORT=3001
+ENV BACKEND_PORT=3001
+ENV FRONTEND_PORT=3000
 ENV NEXT_PUBLIC_BASE_URL=/api
 ENV DB_HOST=mysql
 ENV DB_PORT=3306

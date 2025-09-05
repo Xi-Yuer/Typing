@@ -80,7 +80,8 @@ services:
 
       # 应用配置
       NODE_ENV: production
-      PORT: 3001
+      BACKEND_PORT: 3001
+      FRONTEND_PORT: 3000
 
       # JWT 配置
       JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key_here_please_change_in_production}

@@ -251,8 +251,9 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
 
 ### 端口配置
 
-- **3000**: 前端应用端口
-- **80**: 后端 API 端口
+- **FRONTEND_PORT (3000)**: 前端应用端口
+- **BACKEND_PORT (3001)**: 后端 API 端口（通过 Nginx 代理到 80 端口）
+- **80**: Nginx 反向代理端口（对外访问入口）
 - **3306**: MySQL 数据库端口
 - **6379**: Redis 缓存端口
 
