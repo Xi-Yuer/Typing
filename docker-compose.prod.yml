@@ -81,10 +81,12 @@ services:
       # GitHub OAuth (可选)
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-http://localhost:80/api/auth/github/callback}
       
       # QQ OAuth (可选)
-      QQ_APP_ID: ${QQ_APP_ID:-}
-      QQ_APP_KEY: ${QQ_APP_KEY:-}
+      QQ_CLIENT_ID: ${QQ_CLIENT_ID:-}
+      QQ_CLIENT_SECRET: ${QQ_CLIENT_SECRET:-}
+      QQ_CALLBACK_URL: ${QQ_CALLBACK_URL:-http://localhost:80/api/auth/qq/callback}
       
       # 语音服务 (可选)
       SPEECH_SERVICE_URL: ${SPEECH_SERVICE_URL:-}
