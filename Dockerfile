@@ -47,8 +47,8 @@ COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
-# 安装生产依赖
-RUN pnpm install --prod --frozen-lockfile
+# 安装所有依赖（包括 devDependencies 中的 @nestjs/cli）
+RUN pnpm install --frozen-lockfile
 
 # 从构建阶段复制构建产物
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
