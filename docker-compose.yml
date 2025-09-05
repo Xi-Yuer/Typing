@@ -12,7 +12,7 @@ services:
       MYSQL_USER: typing_user
       MYSQL_PASSWORD: typing_password
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -20,7 +20,7 @@ services:
     networks:
       - typing-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
       timeout: 20s
       retries: 10
 
@@ -30,13 +30,13 @@ services:
     container_name: typing-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     networks:
       - typing-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       timeout: 3s
       retries: 5
 
@@ -44,49 +44,49 @@ services:
   app:
     # 使用 GitHub Container Registry 中的预构建镜像
     # 格式: ghcr.io/用户名/仓库名:标签
-    # 请将 'your-username/typing' 替换为实际的 GitHub 用户名和仓库名
+    # 请将 'Xi-Yuer/typing' 替换为实际的 GitHub 用户名和仓库名
     image: ghcr.io/Xi-Yuer/typing:latest
     container_name: typing-app
     restart: unless-stopped
     ports:
-      - "80:80"     # 后端 API
-      - "3000:3000" # 前端应用
+      - '80:80' # 后端 API
+      - '3000:3000' # 前端应用
     environment:
       # 数据库配置
       DATABASE_URL: mysql://typing_user:typing_password@mysql:3306/typing_db
       DB_HOST: mysql
       DB_PORT: 3306
-      
+
       # Redis 配置
       REDIS_URL: redis://redis:6379
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      
+
       # 应用配置
       NODE_ENV: production
       PORT: 80
-      
+
       # JWT 配置
       JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key_here_please_change_in_production}
       JWT_EXPIRES_IN: 7d
-      
+
       # 前端配置
       NEXT_PUBLIC_BASE_URL: http://app:80
       FRONTEND_URL: http://localhost:3000
-      
+
       # 功能开关
       ENABLE_SWAGGER: true
       ENABLE_CORS: true
-      
+
       # 第三方服务配置（需要根据实际情况填写）
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-your_github_client_id}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-your_github_client_secret}
       GITHUB_CALLBACK_URL: http://localhost:80/auth/github/callback
-      
+
       QQ_CLIENT_ID: ${QQ_CLIENT_ID:-your_qq_client_id}
       QQ_CLIENT_SECRET: ${QQ_CLIENT_SECRET:-your_qq_client_secret}
       QQ_CALLBACK_URL: http://localhost:80/auth/qq/callback
-      
+
       # 语音服务配置
       VOICE_API_URL: https://openapi.youdao.com/ttsapi
       YOUDAO_APP_KEY: ${YOUDAO_APP_KEY:-your_youdao_app_key}
@@ -99,7 +99,7 @@ services:
     networks:
       - typing-network
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "80"]
+      test: ['CMD', 'nc', '-z', 'localhost', '80']
       timeout: 10s
       retries: 5
       start_period: 30s
