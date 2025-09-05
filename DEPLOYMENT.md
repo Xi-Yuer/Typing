@@ -11,14 +11,16 @@
 
 ## 🚀 快速开始
 
-### 1. 克隆项目
+### 开发环境部署（本地构建）
+
+#### 1. 克隆项目
 
 ```bash
 git clone <your-repository-url>
 cd Typing
 ```
 
-### 2. 配置环境变量（可选）
+#### 2. 配置环境变量（可选）
 
 复制环境变量模板文件：
 
@@ -45,11 +47,35 @@ YOUDAO_APP_KEY=your_youdao_app_key
 YOUDAO_APP_SECRET=your_youdao_app_secret
 ```
 
-### 3. 一键部署
+#### 3. 一键部署
 
 ```bash
 # 构建并启动所有服务
 docker-compose up -d
+```
+
+### 生产环境部署（预构建镜像）
+
+#### 1. 配置 GitHub Actions
+
+项目已配置 GitHub Actions 自动构建，每次推送到 `main` 分支或创建 tag 时会自动构建并推送 Docker 镜像到 GitHub Container Registry。
+
+#### 2. 更新镜像地址
+
+编辑 `docker-compose.prod.yml` 文件，将镜像地址更新为你的实际地址：
+```yaml
+services:
+  app:
+    image: ghcr.io/your-username/typing:latest  # 替换为你的用户名
+```
+
+#### 3. 拉取最新镜像并部署
+```bash
+# 拉取最新镜像
+docker-compose -f docker-compose.prod.yml pull
+
+# 启动应用（生产模式）
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ### 4. 验证部署
@@ -77,15 +103,34 @@ docker-compose up -d
 └─────────────────┘    └─────────────────┘
 ```
 
+### 部署模式
+
+#### 开发模式 (docker-compose.yml)
+- 使用本地 Dockerfile 构建镜像
+- 适合开发和测试
+- 支持代码修改后重新构建
+
+#### 生产模式 (docker-compose.prod.yml)
+- 使用预构建的 Docker 镜像
+- 镜像通过 GitHub Actions 自动构建
+- 部署速度更快，适合生产环境
+
 ### 内部网络通信
 
 - 前端通过内部网络 `http://app:80` 访问后端 API
 - 后端通过内部网络访问数据库和 Redis
 - 所有服务在同一个 Docker 网络 `typing-network` 中
 
+### CI/CD 流程
+
+1. **代码推送**: 推送代码到 GitHub
+2. **自动构建**: GitHub Actions 自动构建 Docker 镜像
+3. **镜像推送**: 镜像推送到 GitHub Container Registry
+4. **生产部署**: 使用生产模式命令部署最新镜像
+
 ## 🛠️ 常用命令
 
-### 查看服务状态
+### 开发模式命令
 
 ```bash
 # 查看所有服务状态
@@ -98,21 +143,13 @@ docker-compose logs -f
 docker-compose logs -f app
 docker-compose logs -f mysql
 docker-compose logs -f redis
-```
 
-### 重启服务
-
-```bash
 # 重启所有服务
 docker-compose restart
 
 # 重启特定服务
 docker-compose restart app
-```
 
-### 停止和清理
-
-```bash
 # 停止所有服务
 docker-compose down
 
@@ -123,8 +160,42 @@ docker-compose down -v
 docker-compose up -d --build
 ```
 
+### 生产模式命令
+
+```bash
+# 拉取最新镜像
+docker-compose -f docker-compose.prod.yml pull
+
+# 查看所有服务状态
+docker-compose -f docker-compose.prod.yml ps
+
+# 查看服务日志
+docker-compose -f docker-compose.prod.yml logs -f
+
+# 查看特定服务日志
+docker-compose -f docker-compose.prod.yml logs -f app
+docker-compose -f docker-compose.prod.yml logs -f mysql
+docker-compose -f docker-compose.prod.yml logs -f redis
+
+# 重启所有服务
+docker-compose -f docker-compose.prod.yml restart
+
+# 重启特定服务
+docker-compose -f docker-compose.prod.yml restart app
+
+# 停止所有服务
+docker-compose -f docker-compose.prod.yml down
+
+# 停止服务并删除数据卷（谨慎使用）
+docker-compose -f docker-compose.prod.yml down -v
+
+# 启动服务（使用预构建镜像）
+docker-compose -f docker-compose.prod.yml up -d
+```
+
 ### 数据库操作
 
+#### 开发模式
 ```bash
 # 连接到 MySQL 数据库
 docker-compose exec mysql mysql -u typing_user -p typing_db
@@ -136,14 +207,36 @@ docker-compose exec mysql mysqldump -u typing_user -p typing_db > backup.sql
 docker-compose exec -T mysql mysql -u typing_user -p typing_db < backup.sql
 ```
 
+#### 生产模式
+```bash
+# 连接到 MySQL 数据库
+docker-compose -f docker-compose.prod.yml exec mysql mysql -u typing_user -p typing_db
+
+# 备份数据库
+docker-compose -f docker-compose.prod.yml exec mysql mysqldump -u typing_user -p typing_db > backup.sql
+
+# 恢复数据库
+docker-compose -f docker-compose.prod.yml exec -T mysql mysql -u typing_user -p typing_db < backup.sql
+```
+
 ### Redis 操作
 
+#### 开发模式
 ```bash
 # 连接到 Redis
 docker-compose exec redis redis-cli
 
 # 查看 Redis 信息
 docker-compose exec redis redis-cli info
+```
+
+#### 生产模式
+```bash
+# 连接到 Redis
+docker-compose -f docker-compose.prod.yml exec redis redis-cli
+
+# 查看 Redis 信息
+docker-compose -f docker-compose.prod.yml exec redis redis-cli info
 ```
 
 ## 🔧 配置说明
@@ -200,6 +293,16 @@ docker-compose exec redis redis-cli info
    - 检查 `NEXT_PUBLIC_BASE_URL` 环境变量配置
    - 确认后端服务正常运行
    - 检查网络连接
+
+5. **镜像拉取失败（生产模式）**
+   - 检查 GitHub Container Registry 权限
+   - 确保镜像地址正确
+   - 验证 GitHub Actions 构建状态
+
+6. **GitHub Actions 构建失败**
+   - 检查 GitHub Secrets 配置
+   - 验证 Dockerfile 语法
+   - 查看 Actions 日志
 
 ### 重置环境
 

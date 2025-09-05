@@ -1,10 +1,6 @@
 # 多阶段构建 Dockerfile
 # 阶段1: 构建阶段
-FROM node:20-alpine AS builder
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
-    && apk update \
-    && apk add --no-cache dumb-init
+FROM node:23-alpine
 
 # 设置工作目录
 WORKDIR /app

@@ -40,11 +40,12 @@ services:
       timeout: 3s
       retries: 5
 
-  # 主应用（前端 + 后端）
+  # 主应用（前端 + 后端）- 使用预构建镜像
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # 使用 GitHub Container Registry 中的预构建镜像
+    # 格式: ghcr.io/用户名/仓库名:标签
+    # 请将 'your-username/typing' 替换为实际的 GitHub 用户名和仓库名
+    image: ghcr.io/Xi-Yuer/typing:latest
     container_name: typing-app
     restart: unless-stopped
     ports:
@@ -66,7 +67,7 @@ services:
       PORT: 80
       
       # JWT 配置
-      JWT_SECRET: your_jwt_secret_key_here_please_change_in_production
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key_here_please_change_in_production}
       JWT_EXPIRES_IN: 7d
       
       # 前端配置
@@ -78,18 +79,18 @@ services:
       ENABLE_CORS: true
       
       # 第三方服务配置（需要根据实际情况填写）
-      GITHUB_CLIENT_ID: your_github_client_id
-      GITHUB_CLIENT_SECRET: your_github_client_secret
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-your_github_client_id}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-your_github_client_secret}
       GITHUB_CALLBACK_URL: http://localhost:80/auth/github/callback
       
-      QQ_CLIENT_ID: your_qq_client_id
-      QQ_CLIENT_SECRET: your_qq_client_secret
+      QQ_CLIENT_ID: ${QQ_CLIENT_ID:-your_qq_client_id}
+      QQ_CLIENT_SECRET: ${QQ_CLIENT_SECRET:-your_qq_client_secret}
       QQ_CALLBACK_URL: http://localhost:80/auth/qq/callback
       
       # 语音服务配置
       VOICE_API_URL: https://openapi.youdao.com/ttsapi
-      YOUDAO_APP_KEY: your_youdao_app_key
-      YOUDAO_APP_SECRET: your_youdao_app_secret
+      YOUDAO_APP_KEY: ${YOUDAO_APP_KEY:-your_youdao_app_key}
+      YOUDAO_APP_SECRET: ${YOUDAO_APP_SECRET:-your_youdao_app_secret}
     depends_on:
       mysql:
         condition: service_healthy
