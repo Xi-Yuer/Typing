@@ -87,7 +87,7 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       
       # 前端配置
-      NEXT_PUBLIC_BASE_URL: http://localhost:3001/api
+      NEXT_PUBLIC_BASE_URL: /api
       
       # 功能开关
       ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}
@@ -96,12 +96,12 @@ services:
       # GitHub OAuth (可选)
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
-      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-http://localhost:3001/api/auth/github/callback}
+      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-/api/auth/github/callback}
       
       # QQ OAuth (可选)
       QQ_CLIENT_ID: ${QQ_CLIENT_ID:-}
       QQ_CLIENT_SECRET: ${QQ_CLIENT_SECRET:-}
-      QQ_CALLBACK_URL: ${QQ_CALLBACK_URL:-http://localhost:3001/api/auth/qq/callback}
+      QQ_CALLBACK_URL: ${QQ_CALLBACK_URL:-/api/auth/qq/callback}
       
       # 语音服务 (可选)
       YOUDAO_APP_KEY: ${YOUDAO_APP_KEY:-}

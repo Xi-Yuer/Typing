@@ -88,7 +88,7 @@ services:
       JWT_EXPIRES_IN: 7d
 
       # 前端配置
-      NEXT_PUBLIC_BASE_URL: http://localhost/api
+      NEXT_PUBLIC_BASE_URL: /api
       FRONTEND_URL: http://localhost:3000
 
       # 功能开关
