@@ -2,6 +2,10 @@
 # 阶段1: 构建阶段
 FROM node:20-alpine AS builder
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk update \
+    && apk add --no-cache dumb-init
+
 # 设置工作目录
 WORKDIR /app
 
@@ -25,7 +29,7 @@ COPY . .
 RUN pnpm run build
 
 # 阶段2: 生产阶段
-FROM node:18-alpine AS production
+FROM node:23-alpine AS production
 
 # 安装必要的系统依赖
 RUN apk add --no-cache dumb-init
