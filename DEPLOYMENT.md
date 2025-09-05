@@ -63,13 +63,15 @@ docker-compose up -d
 #### 2. 更新镜像地址
 
 编辑 `docker-compose.yml` 文件，将镜像地址更新为你的实际地址：
+
 ```yaml
 services:
   app:
-    image: ghcr.io/your-username/typing:latest  # 替换为你的用户名
+    image: ghcr.io/your-username/typing:latest # 替换为你的用户名
 ```
 
 #### 3. 拉取最新镜像并部署
+
 ```bash
 # 拉取最新镜像
 docker-compose -f docker-compose.yml pull
@@ -106,11 +108,13 @@ docker-compose -f docker-compose.yml up -d
 ### 部署模式
 
 #### 开发模式 (docker-compose.yml)
+
 - 使用本地 Dockerfile 构建镜像
 - 适合开发和测试
 - 支持代码修改后重新构建
 
 #### 生产模式 (docker-compose.yml)
+
 - 使用预构建的 Docker 镜像
 - 镜像通过 GitHub Actions 自动构建
 - 部署速度更快，适合生产环境
@@ -196,6 +200,7 @@ docker-compose -f docker-compose.yml up -d
 ### 数据库操作
 
 #### 开发模式
+
 ```bash
 # 连接到 MySQL 数据库
 docker-compose exec mysql mysql -u typing_user -p typing_db
@@ -208,6 +213,7 @@ docker-compose exec -T mysql mysql -u typing_user -p typing_db < backup.sql
 ```
 
 #### 生产模式
+
 ```bash
 # 连接到 MySQL 数据库
 docker-compose -f docker-compose.yml exec mysql mysql -u typing_user -p typing_db
@@ -222,6 +228,7 @@ docker-compose -f docker-compose.yml exec -T mysql mysql -u typing_user -p typin
 ### Redis 操作
 
 #### 开发模式
+
 ```bash
 # 连接到 Redis
 docker-compose exec redis redis-cli
@@ -231,6 +238,7 @@ docker-compose exec redis redis-cli info
 ```
 
 #### 生产模式
+
 ```bash
 # 连接到 Redis
 docker-compose -f docker-compose.yml exec redis redis-cli
@@ -257,6 +265,7 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
 ### 健康检查
 
 所有服务都配置了健康检查：
+
 - MySQL: 检查数据库连接
 - Redis: 检查 Redis 连接
 - App: 检查应用端口
@@ -266,6 +275,7 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
 ### 常见问题
 
 1. **端口冲突**
+
    ```bash
    # 检查端口占用
    lsof -i :3000
@@ -275,16 +285,18 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
    ```
 
 2. **内存不足**
+
    ```bash
    # 检查 Docker 资源使用
    docker stats
    ```
 
 3. **数据库连接失败**
+
    ```bash
    # 检查数据库服务状态
    docker-compose logs mysql
-   
+
    # 手动测试数据库连接
    docker-compose exec app nc -z mysql 3306
    ```
@@ -346,6 +358,7 @@ docker-compose up -d --build
 ---
 
 **注意**: 这是一个开发/测试环境的配置。在生产环境中部署时，请确保：
+
 - 使用强密码和安全配置
 - 配置适当的备份策略
 - 设置监控和日志收集

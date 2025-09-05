@@ -27,7 +27,7 @@
 ```yaml
 services:
   app:
-    image: ghcr.io/your-username/typing:latest  # 替换 your-username 为你的 GitHub 用户名
+    image: ghcr.io/your-username/typing:latest # 替换 your-username 为你的 GitHub 用户名
     # ... 其他配置
 ```
 

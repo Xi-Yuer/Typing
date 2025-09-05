@@ -109,7 +109,7 @@ EXPOSE 80 3000
 # 设置环境变量
 ENV NODE_ENV=production
 ENV PORT=80
-ENV NEXT_PUBLIC_BASE_URL=http://localhost:80
+ENV NEXT_PUBLIC_BASE_URL=/api
 
 # 启动应用
 ENTRYPOINT ["dumb-init", "--"]
