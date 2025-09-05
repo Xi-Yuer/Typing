@@ -48,10 +48,9 @@ COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
-# 只安装生产依赖和必要的运行时依赖
+# 安装所有依赖
 RUN --mount=type=cache,target=/root/.pnpm-store \
-    pnpm install --prod --frozen-lockfile && \
-    pnpm add @nestjs/cli --save-dev
+    pnpm install --frozen-lockfile
 
 # 从构建阶段复制构建产物
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
