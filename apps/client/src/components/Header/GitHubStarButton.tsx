@@ -8,7 +8,7 @@ import type { GitHubStarButtonProps } from './types';
 
 const GitHubStarButton = ({
   stars,
-  href = 'https://github.com/Xi-Yuer/Typing'
+  href = 'https://github.com/xi-yuer/typing'
 }: GitHubStarButtonProps) => {
   const starCountRef = useRef(null);
 

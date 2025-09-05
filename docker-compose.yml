@@ -60,8 +60,8 @@ services:
   app:
     # 使用 GitHub Container Registry 中的预构建镜像
     # 格式: ghcr.io/用户名/仓库名:标签
-    # 请将 'Xi-Yuer/typing' 替换为实际的 GitHub 用户名和仓库名
-    image: ghcr.io/Xi-Yuer/typing:latest
+    # 请将 'xi-yuer/typing' 替换为实际的 GitHub 用户名和仓库名
+    image: ghcr.io/xi-yuer/typing:latest
     container_name: typing-app
     restart: unless-stopped
     expose:
