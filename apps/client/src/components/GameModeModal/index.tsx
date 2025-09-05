@@ -83,8 +83,11 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
       width={520}
       styles={{
         content: {
-          backgroundColor: 'rgba(50, 50, 60, 1)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
+          background:
+            'linear-gradient(135deg, rgba(15, 20, 35, 0.95) 0%, rgba(25, 30, 50, 0.9) 100%)',
+          border: '1px solid rgba(59, 130, 246, 0.2)',
+          boxShadow:
+            '0 25px 20px -12px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.05)',
           borderRadius: '12px',
           backdropFilter: 'blur(20px)'
         },
@@ -97,8 +100,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
         body: {
           padding: '20px'
         }
-      }}
-    >
+      }}>
       <div className='space-y-3'>
         {gameModes.map(mode => (
           <div
@@ -112,8 +114,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
                   : 'border-white/10 bg-white/5 hover:border-purple-400/30 hover:bg-white/10'
               }
               ${mode.disabled ? '!cursor-not-allowed opacity-50' : ''}
-            `}
-          >
+            `}>
             {/* 选中状态指示器 */}
             {currentMode === mode.key && (
               <div className='absolute top-3 right-3 w-3 h-3 bg-purple-500 rounded-full shadow-lg shadow-purple-500/50'></div>
@@ -123,8 +124,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
             <h3
               className={`text-base font-medium mb-2 transition-colors duration-300 ${
                 currentMode === mode.key ? 'text-purple-300' : 'text-white'
-              }`}
-            >
+              }`}>
               {mode.title}
               {mode.disabled && (
                 <span className='ml-2 text-xs text-red-500'>开发中</span>
@@ -137,8 +137,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
                 currentMode === mode.key
                   ? 'text-purple-200/80'
                   : 'text-gray-400'
-              }`}
-            >
+              }`}>
               {mode.description}
             </p>
           </div>

@@ -103,8 +103,7 @@ export default function Page() {
       {/* Welcome 全屏显示 */}
       <div
         ref={welcomeRef}
-        className='fixed inset-0 z-40 flex items-center justify-center'
-      >
+        className='fixed inset-0 z-40 flex items-center justify-center'>
         <Welcome />
       </div>
 
@@ -114,7 +113,7 @@ export default function Page() {
         <div className='h-screen flex-col mt-16 flex items-center relative justify-center'>
           {showTyping && (
             <div ref={typingRef} style={{ opacity: 0 }}>
-              <TypingText word={INITAIL_WORD} />
+              <TypingText word={INITAIL_WORD} mode='dictation' />
             </div>
           )}
           {showTyping && (

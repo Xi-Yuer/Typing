@@ -9,7 +9,7 @@ export const CompletionDisplay: React.FC<CompletionDisplayProps> = ({
   word
 }) => {
   return (
-    <div className='flex flex-col items-center justify-center gap-8 text-center'>
+    <div className='flex flex-col items-center justify-center gap-8 text-center h-64'>
       {/* 完成的句子显示 */}
       <div className='text-6xl font-bold text-white mb-4'>
         {word?.word || ''}

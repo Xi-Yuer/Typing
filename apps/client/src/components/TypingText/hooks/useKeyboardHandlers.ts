@@ -243,7 +243,7 @@ export const useKeyboardHandlers = ({
       }
 
       // Shift组合键处理
-      if (e.shiftKey) {
+      if (e.ctrlKey || e.metaKey) {
         if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.PREV) {
           e.preventDefault();
           onPrev?.();
