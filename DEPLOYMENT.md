@@ -62,7 +62,7 @@ docker-compose up -d
 
 #### 2. 更新镜像地址
 
-编辑 `docker-compose.prod.yml` 文件，将镜像地址更新为你的实际地址：
+编辑 `docker-compose.yml` 文件，将镜像地址更新为你的实际地址：
 ```yaml
 services:
   app:
@@ -72,10 +72,10 @@ services:
 #### 3. 拉取最新镜像并部署
 ```bash
 # 拉取最新镜像
-docker-compose -f docker-compose.prod.yml pull
+docker-compose -f docker-compose.yml pull
 
 # 启动应用（生产模式）
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
 ### 4. 验证部署
@@ -110,7 +110,7 @@ docker-compose -f docker-compose.prod.yml up -d
 - 适合开发和测试
 - 支持代码修改后重新构建
 
-#### 生产模式 (docker-compose.prod.yml)
+#### 生产模式 (docker-compose.yml)
 - 使用预构建的 Docker 镜像
 - 镜像通过 GitHub Actions 自动构建
 - 部署速度更快，适合生产环境
@@ -164,33 +164,33 @@ docker-compose up -d --build
 
 ```bash
 # 拉取最新镜像
-docker-compose -f docker-compose.prod.yml pull
+docker-compose -f docker-compose.yml pull
 
 # 查看所有服务状态
-docker-compose -f docker-compose.prod.yml ps
+docker-compose -f docker-compose.yml ps
 
 # 查看服务日志
-docker-compose -f docker-compose.prod.yml logs -f
+docker-compose -f docker-compose.yml logs -f
 
 # 查看特定服务日志
-docker-compose -f docker-compose.prod.yml logs -f app
-docker-compose -f docker-compose.prod.yml logs -f mysql
-docker-compose -f docker-compose.prod.yml logs -f redis
+docker-compose -f docker-compose.yml logs -f app
+docker-compose -f docker-compose.yml logs -f mysql
+docker-compose -f docker-compose.yml logs -f redis
 
 # 重启所有服务
-docker-compose -f docker-compose.prod.yml restart
+docker-compose -f docker-compose.yml restart
 
 # 重启特定服务
-docker-compose -f docker-compose.prod.yml restart app
+docker-compose -f docker-compose.yml restart app
 
 # 停止所有服务
-docker-compose -f docker-compose.prod.yml down
+docker-compose -f docker-compose.yml down
 
 # 停止服务并删除数据卷（谨慎使用）
-docker-compose -f docker-compose.prod.yml down -v
+docker-compose -f docker-compose.yml down -v
 
 # 启动服务（使用预构建镜像）
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
 ### 数据库操作
@@ -210,13 +210,13 @@ docker-compose exec -T mysql mysql -u typing_user -p typing_db < backup.sql
 #### 生产模式
 ```bash
 # 连接到 MySQL 数据库
-docker-compose -f docker-compose.prod.yml exec mysql mysql -u typing_user -p typing_db
+docker-compose -f docker-compose.yml exec mysql mysql -u typing_user -p typing_db
 
 # 备份数据库
-docker-compose -f docker-compose.prod.yml exec mysql mysqldump -u typing_user -p typing_db > backup.sql
+docker-compose -f docker-compose.yml exec mysql mysqldump -u typing_user -p typing_db > backup.sql
 
 # 恢复数据库
-docker-compose -f docker-compose.prod.yml exec -T mysql mysql -u typing_user -p typing_db < backup.sql
+docker-compose -f docker-compose.yml exec -T mysql mysql -u typing_user -p typing_db < backup.sql
 ```
 
 ### Redis 操作
@@ -233,10 +233,10 @@ docker-compose exec redis redis-cli info
 #### 生产模式
 ```bash
 # 连接到 Redis
-docker-compose -f docker-compose.prod.yml exec redis redis-cli
+docker-compose -f docker-compose.yml exec redis redis-cli
 
 # 查看 Redis 信息
-docker-compose -f docker-compose.prod.yml exec redis redis-cli info
+docker-compose -f docker-compose.yml exec redis redis-cli info
 ```
 
 ## 🔧 配置说明

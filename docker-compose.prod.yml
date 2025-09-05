@@ -1,0 +1,114 @@
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: typing-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: ${DB_NAME:-typing_db}
+      MYSQL_USER: ${DB_USER:-typing_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-typing123}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - typing-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 40s
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: typing-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - typing-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      retries: 5
+      interval: 10s
+      start_period: 30s
+
+  # 主应用（前端 + 后端）
+  app:
+    image: ghcr.io/xi-yuer/typing:latest
+    container_name: typing-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "3000:3000"
+    environment:
+      # 应用环境
+      NODE_ENV: production
+      PORT: 80
+      
+      # 数据库配置
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-typing_db}
+      DB_USER: ${DB_USER:-typing_user}
+      DB_PASSWORD: ${DB_PASSWORD:-typing123}
+      DATABASE_URL: mysql://${DB_USER:-typing_user}:${DB_PASSWORD:-typing123}@mysql:3306/${DB_NAME:-typing_db}
+      
+      # Redis 配置
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379
+      
+      # JWT 配置
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      
+      # 前端配置
+      NEXT_PUBLIC_BASE_URL: http://localhost:80
+      
+      # 功能开关
+      ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}
+      ENABLE_GUEST_MODE: ${ENABLE_GUEST_MODE:-true}
+      
+      # GitHub OAuth (可选)
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      
+      # QQ OAuth (可选)
+      QQ_APP_ID: ${QQ_APP_ID:-}
+      QQ_APP_KEY: ${QQ_APP_KEY:-}
+      
+      # 语音服务 (可选)
+      SPEECH_SERVICE_URL: ${SPEECH_SERVICE_URL:-}
+      SPEECH_SERVICE_KEY: ${SPEECH_SERVICE_KEY:-}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - typing-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "80"]
+      timeout: 10s
+      retries: 5
+      interval: 30s
+      start_period: 60s
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  typing-network:
+    driver: bridge
