@@ -104,12 +104,16 @@ RUN chown -R nextjs:nodejs /app
 USER nextjs
 
 # 暴露端口
-EXPOSE 80 3000
+EXPOSE 3001 3000
 
 # 设置环境变量
 ENV NODE_ENV=production
-ENV PORT=80
+ENV PORT=3001
 ENV NEXT_PUBLIC_BASE_URL=/api
+ENV DB_HOST=mysql
+ENV DB_PORT=3306
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
 
 # 启动应用
 ENTRYPOINT ["dumb-init", "--"]
