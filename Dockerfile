@@ -8,15 +8,16 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm@10.7.0
 
-# 复制 package.json 和 pnpm 相关文件
+# 复制 package.json 和 pnpm 相关文件（优化缓存层）
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
-# 安装依赖
-RUN pnpm install --frozen-lockfile
+# 安装依赖（包括开发依赖，用于构建）
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    pnpm install --frozen-lockfile
 
 # 复制源代码
 COPY . .
@@ -28,11 +29,11 @@ RUN pnpm run build
 FROM node:23-alpine AS production
 
 # 安装必要的系统依赖
-RUN apk add --no-cache dumb-init
+RUN apk add --no-cache dumb-init netcat-openbsd
 
 # 创建非 root 用户
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
 
 # 设置工作目录
 WORKDIR /app
@@ -47,8 +48,10 @@ COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
-# 安装所有依赖（包括 devDependencies 中的 @nestjs/cli）
-RUN pnpm install --frozen-lockfile
+# 只安装生产依赖和必要的运行时依赖
+RUN --mount=type=cache,target=/root/.pnpm-store \
+    pnpm install --prod --frozen-lockfile && \
+    pnpm add @nestjs/cli --save-dev
 
 # 从构建阶段复制构建产物
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
@@ -95,9 +98,6 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo '# 等待任一服务退出' >> /app/start.sh && \
     echo 'wait $API_PID $CLIENT_PID' >> /app/start.sh && \
     chmod +x /app/start.sh
-
-# 安装 netcat 用于健康检查
-RUN apk add --no-cache netcat-openbsd
 
 # 更改文件所有权
 RUN chown -R nextjs:nodejs /app
