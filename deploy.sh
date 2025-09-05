@@ -53,7 +53,7 @@ start_services() {
     local compose_file="docker-compose.yml"
     
     if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.yml"
+        compose_file="docker-compose.prod.yml"
         print_message $BLUE "启动打字练习应用 (生产模式 - 使用预构建镜像)..."
     else
         print_message $BLUE "启动打字练习应用 (开发模式 - 本地构建)..."
@@ -94,7 +94,7 @@ start_services() {
 
 # 检查生产环境配置
 check_prod_config() {
-    local compose_file="docker-compose.yml"
+    local compose_file="docker-compose.prod.yml"
     
     if [ ! -f "$compose_file" ]; then
         print_message $RED "错误: 生产环境配置文件 $compose_file 不存在"
@@ -117,7 +117,7 @@ pull_image() {
     if [ "$use_prod" = "true" ]; then
         print_message $BLUE "拉取最新的预构建镜像..."
         check_prod_config
-        docker-compose -f docker-compose.yml pull app
+        docker-compose -f docker-compose.prod.yml pull app
         print_message $GREEN "✓ 镜像拉取完成"
     else
         print_message $YELLOW "开发模式不需要拉取镜像，将使用本地构建"
@@ -130,7 +130,7 @@ stop_services() {
     local compose_file="docker-compose.yml"
     
     if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.yml"
+        compose_file="docker-compose.prod.yml"
     fi
     
     print_message $BLUE "停止所有服务..."
@@ -144,7 +144,7 @@ restart_services() {
     local compose_file="docker-compose.yml"
     
     if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.yml"
+        compose_file="docker-compose.prod.yml"
     fi
     
     print_message $BLUE "重启所有服务..."
@@ -158,7 +158,7 @@ show_logs() {
     local compose_file="docker-compose.yml"
     
     if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.yml"
+        compose_file="docker-compose.prod.yml"
     fi
     
     print_message $BLUE "显示服务日志 (按 Ctrl+C 退出)..."
@@ -171,7 +171,7 @@ show_status() {
     local compose_file="docker-compose.yml"
     
     if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.yml"
+        compose_file="docker-compose.prod.yml"
     fi
     
     print_message $BLUE "服务状态:"
@@ -187,7 +187,7 @@ clean_environment() {
     local compose_file="docker-compose.yml"
     
     if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.yml"
+        compose_file="docker-compose.prod.yml"
     fi
     
     print_message $YELLOW "警告: 这将删除所有容器、网络和数据卷！"
