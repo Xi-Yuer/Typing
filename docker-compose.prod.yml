@@ -74,8 +74,8 @@ services:
       DB_PORT: 3306
       DB_NAME: ${DB_NAME:-typing_db}
       DB_USER: ${DB_USER:-typing_user}
-      DB_PASSWORD: ${DB_PASSWORD:-typing123}
-      DATABASE_URL: mysql://${DB_USER:-typing_user}:${DB_PASSWORD:-typing123}@mysql:3306/${DB_NAME:-typing_db}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DATABASE_URL: mysql://${DB_USER:-typing_user}:${DB_PASSWORD}@mysql:3306/${DB_NAME:-typing_db}
       
       # Redis 配置
       REDIS_HOST: redis
@@ -83,16 +83,18 @@ services:
       REDIS_URL: redis://redis:6379
       
       # JWT 配置
-      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       
       # 前端配置
       NEXT_PUBLIC_BASE_URL: /api
-      FRONTEND_URL: http://localhost
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
       
       # 功能开关
       ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}
       ENABLE_GUEST_MODE: ${ENABLE_GUEST_MODE:-true}
+      ENABLE_SWAGGER: ${ENABLE_SWAGGER:-false}
+      ENABLE_CORS: ${ENABLE_CORS:-true}
       
       # GitHub OAuth (可选)
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}

@@ -16,7 +16,6 @@ import {
   ApiBody,
   ApiBearerAuth
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { LanguagesService } from './languages.service';
 import { CreateLanguageDto } from './dto/create-language.dto';
 import { UpdateLanguageDto } from './dto/update-language.dto';
@@ -29,11 +28,13 @@ import {
 } from '@/common/decorators/api-response.decorator';
 import { Roles } from '@/common/decorators/premission.decorator';
 import { RolesGuard } from '@/common/guards/roles.guard';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { Public } from '@/common/decorators/public.decorator';
 import { Role } from 'common';
 
 @ApiTags('语言管理')
 @Controller('languages')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class LanguagesController {
   constructor(private readonly languagesService: LanguagesService) {}
@@ -48,6 +49,7 @@ export class LanguagesController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: '获取所有语言列表' })
   @ApiSuccessResponse([Language], { description: '获取语言列表成功' })
   findAll() {
@@ -55,6 +57,7 @@ export class LanguagesController {
   }
 
   @Get('active')
+  @Public()
   @ApiOperation({ summary: '获取所有启用的语言列表' })
   @ApiSuccessResponse([Language], { description: '获取启用语言列表成功' })
   findAllActive() {
@@ -70,6 +73,7 @@ export class LanguagesController {
   }
 
   @Get('code/:code')
+  @Public()
   @ApiOperation({ summary: '根据语言代码查询语言' })
   @ApiParam({ name: 'code', description: '语言代码', type: String })
   @ApiSuccessResponse(Language, { description: '查询语言成功' })
@@ -78,6 +82,7 @@ export class LanguagesController {
   }
 
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: '根据ID查询语言' })
   @ApiParam({ name: 'id', description: '语言ID', type: Number })
   @ApiSuccessResponse(Language, { description: '查询语言成功' })

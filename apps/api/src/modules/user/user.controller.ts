@@ -21,7 +21,7 @@ import {
   ApiBody
 } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import {
   ApiSuccessResponse,
   ApiCreatedResponse,
@@ -35,7 +35,7 @@ import { Role, UserStatus } from 'common';
 import { SelfOrAdminGuard } from '@/common/guards/self-or-admin.guard';
 
 @Controller('user')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @RequireUserStatus(UserStatus.ACTIVE)
 @ApiBearerAuth()
 @ApiTags('用户管理')

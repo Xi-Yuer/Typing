@@ -17,7 +17,6 @@ import {
   ApiBody,
   ApiBearerAuth
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/premission.decorator';
 import { Role } from 'common';
@@ -31,10 +30,12 @@ import { CreateCorpusCategoryDto } from './dto/create-corpus-category.dto';
 import { UpdateCorpusCategoryDto } from './dto/update-corpus-category.dto';
 import { CorpusCategory } from './entities/corpus-category.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { Public } from '@/common/decorators/public.decorator';
 
 @ApiTags('语料库分类管理')
 @Controller('corpus-categories')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class CorpusCategoriesController {
   constructor(
@@ -60,8 +61,8 @@ export class CorpusCategoriesController {
   }
 
   @Get('paginated')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: '分页查询语料库分类（仅管理员）' })
+  @Public()
+  @ApiOperation({ summary: '分页查询语料库分类' })
   @ApiPaginationResponse(CorpusCategory, {
     description: '分页查询语料库分类成功'
   })
@@ -70,6 +71,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('language/:languageId')
+  @Public()
   @ApiOperation({ summary: '根据语言 ID 查询分类' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiSuccessResponse([CorpusCategory], {
@@ -80,6 +82,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('difficulty/:difficulty')
+  @Public()
   @ApiOperation({ summary: '根据难度等级查询分类' })
   @ApiParam({
     name: 'difficulty',
@@ -94,6 +97,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('language/:languageId/difficulty/:difficulty')
+  @Public()
   @ApiOperation({ summary: '根据语言 ID 和难度等级查询分类' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({
@@ -115,22 +119,23 @@ export class CorpusCategoriesController {
   }
 
   @Get('stats/difficulty')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: '获取难度等级统计（仅管理员）' })
+  @Public()
+  @ApiOperation({ summary: '获取难度等级统计' })
   @ApiSuccessResponse(undefined, { description: '获取难度等级统计成功' })
   getDifficultyStats() {
     return this.corpusCategoriesService.getDifficultyStats();
   }
 
   @Get('stats/language')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: '获取语言分类数量统计（仅管理员）' })
+  @Public()
+  @ApiOperation({ summary: '获取语言分类数量统计' })
   @ApiSuccessResponse(undefined, { description: '获取语言分类数量统计成功' })
   getLanguageStats() {
     return this.corpusCategoriesService.getLanguageStats();
   }
 
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: '根据 ID 查询语料库分类' })
   @ApiParam({ name: 'id', description: '分类 ID', type: String })
   @ApiSuccessResponse(CorpusCategory, { description: '查询语料库分类成功' })

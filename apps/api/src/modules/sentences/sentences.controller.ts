@@ -21,7 +21,7 @@ import { CreateSentenceDto } from './dto/create-sentence.dto';
 import { UpdateSentenceDto } from './dto/update-sentence.dto';
 import { Sentence } from './entities/sentence.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/premission.decorator';
 import { Role } from 'common';
@@ -31,10 +31,11 @@ import {
   ApiPaginationResponse
 } from '../../common/decorators/api-response.decorator';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
+import { Public } from '@/common/decorators/public.decorator';
 
 @ApiTags('句子管理')
 @Controller('sentences')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class SentencesController {
   constructor(private readonly sentencesService: SentencesService) {}
@@ -48,14 +49,15 @@ export class SentencesController {
   }
 
   @Get('paginated')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: '分页查询句子（仅管理员）' })
+  @Public()
+  @ApiOperation({ summary: '分页查询句子' })
   @ApiPaginationResponse(Sentence, { description: '分页查询句子成功' })
   findAllPaginated(@Query() paginationQuery: PaginationQueryDto) {
     return this.sentencesService.findAllPaginated(paginationQuery);
   }
 
   @Get('language/:languageId')
+  @Public()
   @ApiOperation({ summary: '根据语言 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiPaginationResponse(Sentence, { description: '根据语言 ID 查询句子成功' })
@@ -67,6 +69,7 @@ export class SentencesController {
   }
 
   @Get('category/:categoryId')
+  @Public()
   @ApiOperation({ summary: '根据分类 ID 查询句子' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
   @ApiPaginationResponse(Sentence, { description: '根据分类 ID 查询句子成功' })
@@ -78,6 +81,7 @@ export class SentencesController {
   }
 
   @Get('language/:languageId/category/:categoryId')
+  @Public()
   @ApiOperation({ summary: '根据语言 ID 和分类 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
@@ -97,6 +101,7 @@ export class SentencesController {
   }
 
   @Get('search')
+  @Public()
   @ApiOperation({ summary: '搜索句子' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -125,6 +130,7 @@ export class SentencesController {
   }
 
   @Get('search/paginated')
+  @Public()
   @ApiOperation({ summary: '分页搜索句子' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -155,6 +161,7 @@ export class SentencesController {
   }
 
   @Get('random')
+  @Public()
   @NoCache()
   @ApiOperation({ summary: '获取随机句子' })
   @ApiQuery({
@@ -189,22 +196,23 @@ export class SentencesController {
   }
 
   @Get('stats/language')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: '获取语言统计信息（仅管理员）' })
+  @Public()
+  @ApiOperation({ summary: '获取语言统计信息' })
   @ApiSuccessResponse(Object, { description: '获取语言统计信息成功' })
   getLanguageStats() {
     return this.sentencesService.getLanguageStats();
   }
 
   @Get('stats/category')
-  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
-  @ApiOperation({ summary: '获取分类统计信息（仅管理员）' })
+  @Public()
+  @ApiOperation({ summary: '获取分类统计信息' })
   @ApiSuccessResponse(Object, { description: '获取分类统计信息成功' })
   getCategoryStats() {
     return this.sentencesService.getCategoryStats();
   }
 
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: '根据 ID 查询句子详情' })
   @ApiParam({ name: 'id', description: '句子 ID', type: String })
   @ApiSuccessResponse(Sentence, { description: '查询句子详情成功' })
