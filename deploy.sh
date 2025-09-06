@@ -101,6 +101,9 @@ pull_image() {
     check_prod_config
     docker-compose -f docker-compose.prod.yml pull app
     print_message $GREEN "✓ 镜像拉取完成"
+    print_message $GREEN "拉取最近代码..."
+    git pull origin main
+    print_message $GREEN "✓ 代码拉取完成"
 }
 
 # 停止服务
