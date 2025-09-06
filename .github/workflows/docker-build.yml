@@ -91,3 +91,63 @@ jobs:
           echo "Image tags:"
           echo "${{ steps.meta.outputs.tags }}"
           echo "Image digest: ${{ steps.build.outputs.digest }}"
+
+  # 自动部署到服务器
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      # 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 设置SSH密钥
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 添加服务器到known_hosts
+      - name: Add server to known hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      # 部署到服务器
+      - name: Deploy to server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            # 进入项目目录
+            cd ${{ secrets.PROJECT_PATH }}
+            
+            # 使用项目自带的部署脚本
+            ./deploy.sh pull
+            ./deploy.sh restart
+            
+            # 清理旧镜像
+            docker image prune -f
+            
+            # 显示服务状态
+            ./deploy.sh status
+          EOF
+
+      # 健康检查
+      - name: Health check
+        run: |
+          echo "等待服务启动..."
+          sleep 30
+          
+          # 检查服务是否正常运行
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            # 进入项目目录
+            cd ${{ secrets.PROJECT_PATH }}
+            
+            # 使用部署脚本检查状态
+            ./deploy.sh status
+            
+            # 检查应用健康状态
+            curl -f http://localhost/health || exit 1
+            echo "✅ 部署成功！服务运行正常"
+            echo "🌐 应用访问地址: http://${{ secrets.SERVER_HOST }}"
+          EOF
