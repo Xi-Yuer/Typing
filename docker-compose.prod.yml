@@ -5,10 +5,8 @@ services:
     container_name: typing-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root123}
-      MYSQL_DATABASE: ${DB_NAME:-typing_db}
-      MYSQL_USER: ${DB_USER:-typing_user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-typing123}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3306:3306"
     volumes:
