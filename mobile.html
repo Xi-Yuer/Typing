@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Club</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .logo-section {
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7d26cd, #4c29f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(125, 38, 205, 0.5);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(125, 38, 205, 0.8);
+            }
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .device-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #7d26cd, #4c29f5);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .device-icon::before {
+            content: "💻";
+            font-size: 3rem;
+        }
+
+        .message-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(125, 38, 205, 0.3);
+            border-radius: 16px;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .message-text {
+            font-size: 1rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .features {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        .feature-item::before {
+            content: "✨";
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #7d26cd, #4c29f5);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(125, 38, 205, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(125, 38, 205, 0.6);
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(125, 38, 205, 0.1), rgba(76, 41, 245, 0.1));
+            border-radius: 50%;
+            animation: float-shape 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float-shape {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .message-card {
+                padding: 25px 15px;
+            }
+            
+            .device-icon {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .device-icon::before {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+
+    <div class="container">
+        <div class="logo-section">
+            <div class="logo">Typing Club</div>
+            <div class="subtitle">让你上瘾的英语学习App</div>
+        </div>
+
+        <div class="device-icon"></div>
+
+        <div class="message-card">
+            <div class="message-text">
+                检测到您正在使用移动设备访问，为了获得最佳的学习体验，我们建议您使用PC端访问。
+            </div>
+            
+            <div class="features">
+                <div class="feature-item">更大的屏幕空间，更好的视觉体验</div>
+                <div class="feature-item">完整的键盘功能，提升打字效率</div>
+                <div class="feature-item">更流畅的动画效果和交互体验</div>
+                <div class="feature-item">完整的功能模块，无功能限制</div>
+            </div>
+
+            <a href="#" class="cta-button" onclick="window.open('https://typing-club.com', '_blank')">
+                访问PC版网站
+            </a>
+        </div>
+
+        <div class="message-card">
+            <div class="message-title">🎯 关于 Typing Club</div>
+            <div class="message-text">
+                Typing Club 是一款创新的英语学习应用，通过游戏化的打字练习帮助您快速掌握核心词汇。
+            </div>
+            
+            <div class="features">
+                <div class="feature-item">🎮 游戏化闯关模式，让学习变得有趣</div>
+                <div class="feature-item">📚 丰富的词汇库，涵盖各个学习阶段</div>
+                <div class="feature-item">⚡ 实时打字练习，提升英语输入速度</div>
+                <div class="feature-item">📊 详细的学习统计，追踪进步轨迹</div>
+                <div class="feature-item">🔊 语音朗读功能，提升听说能力</div>
+                <div class="feature-item">🏆 成就系统，激发学习动力</div>
+            </div>
+        </div>
+
+        <div class="message-card">
+            <div class="message-title">🌟 为什么选择 Typing Club？</div>
+            <div class="message-text">
+                告别枯燥的死记硬背，体验高效有趣的英语学习方式！
+            </div>
+            
+            <div class="features">
+                <div class="feature-item">💡 科学的学习方法，事半功倍</div>
+                <div class="feature-item">🎨 精美的界面设计，赏心悦目</div>
+                <div class="feature-item">🚀 流畅的动画效果，沉浸体验</div>
+                <div class="feature-item">👥 社区互动，共同进步</div>
+            </div>
+        </div>
+
+        <div class="footer-text">
+            感谢您对 Typing Club 的支持！<br>
+            我们正在开发移动端版本，敬请期待。
+        </div>
+    </div>
+
+    <script>
+        // 添加一些交互效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为CTA按钮添加点击效果
+            const ctaButton = document.querySelector('.cta-button');
+            ctaButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 创建点击波纹效果
+                const ripple = document.createElement('div');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.left = '50%';
+                ripple.style.top = '50%';
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.marginLeft = '-10px';
+                ripple.style.marginTop = '-10px';
+                
+                this.style.position = 'relative';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+                
+                // 延迟跳转
+                setTimeout(() => {
+                    window.open('https://typing-club.com', '_blank');
+                }, 300);
+            });
+            
+            // 添加键盘样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

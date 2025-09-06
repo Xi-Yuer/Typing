@@ -49,6 +49,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./mobile.html:/usr/share/nginx/html/mobile.html:ro
     depends_on:
       - app
     networks:
