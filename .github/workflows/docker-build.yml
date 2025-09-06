@@ -103,17 +103,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 设置SSH密钥
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      # 安装sshpass用于密码认证
+      - name: Install sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
 
       # 添加服务器到known_hosts
       - name: Add server to known hosts
         run: |
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
       # 部署到服务器
       - name: Deploy to server
@@ -122,10 +124,10 @@ jobs:
           echo "SERVER_USER: ${{ secrets.SERVER_USER }}"
           echo "SERVER_HOST: ${{ secrets.SERVER_HOST }}"
           echo "PROJECT_PATH: ${{ secrets.PROJECT_PATH }}"
-          echo "SSH_PRIVATE_KEY 是否存在: ${{ secrets.SSH_PRIVATE_KEY != '' }}"
+          echo "SERVER_PASSWORD 是否存在: ${{ secrets.SERVER_PASSWORD != '' }}"
           
           echo "🚀 开始部署到服务器..."
-          ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" << EOF
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" << EOF
             echo "📁 当前目录: \$(pwd)"
             echo "📁 目标项目目录: ${{ secrets.PROJECT_PATH }}"
             
@@ -167,9 +169,10 @@ jobs:
           echo "SERVER_USER: ${{ secrets.SERVER_USER }}"
           echo "SERVER_HOST: ${{ secrets.SERVER_HOST }}"
           echo "PROJECT_PATH: ${{ secrets.PROJECT_PATH }}"
+          echo "SERVER_PASSWORD 是否存在: ${{ secrets.SERVER_PASSWORD != '' }}"
           
           # 检查服务是否正常运行
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             echo "📁 健康检查 - 当前目录: \$(pwd)"
             echo "📁 健康检查 - 目标项目目录: ${{ secrets.PROJECT_PATH }}"
             
