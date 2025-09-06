@@ -103,95 +103,52 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 安装sshpass用于密码认证
-      - name: Install sshpass
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
+      # 设置SSH密钥
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # 添加服务器到known_hosts
       - name: Add server to known hosts
         run: |
           mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
 
       # 部署到服务器
       - name: Deploy to server
         run: |
-          echo "🔍 检查环境变量..."
-          echo "SERVER_USER: ${{ secrets.SERVER_USER }}"
-          echo "SERVER_HOST: ${{ secrets.SERVER_HOST }}"
-          echo "PROJECT_PATH: ${{ secrets.PROJECT_PATH }}"
-          echo "SERVER_PASSWORD 是否存在: ${{ secrets.SERVER_PASSWORD != '' }}"
-          
-          echo "🚀 开始部署到服务器..."
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" << EOF
-            echo "📁 当前目录: \$(pwd)"
-            echo "📁 目标项目目录: ${{ secrets.PROJECT_PATH }}"
-            
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             # 进入项目目录
             cd ${{ secrets.PROJECT_PATH }}
-            echo "📁 已进入项目目录: \$(pwd)"
-            
-            # 检查部署脚本是否存在
-            if [ -f "./deploy.sh" ]; then
-              echo "✅ 找到部署脚本 deploy.sh"
-              ls -la ./deploy.sh
-            else
-              echo "❌ 未找到部署脚本 deploy.sh"
-              ls -la
-              exit 1
-            fi
             
             # 使用项目自带的部署脚本
-            echo "🔄 执行部署脚本..."
             ./deploy.sh pull
             ./deploy.sh restart
             
             # 清理旧镜像
-            echo "🧹 清理旧镜像..."
             docker image prune -f
             
             # 显示服务状态
-            echo "📊 显示服务状态..."
             ./deploy.sh status
           EOF
 
       # 健康检查
       - name: Health check
         run: |
-          echo "⏳ 等待服务启动..."
+          echo "等待服务启动..."
           sleep 30
           
-          echo "🔍 健康检查环境变量..."
-          echo "SERVER_USER: ${{ secrets.SERVER_USER }}"
-          echo "SERVER_HOST: ${{ secrets.SERVER_HOST }}"
-          echo "PROJECT_PATH: ${{ secrets.PROJECT_PATH }}"
-          echo "SERVER_PASSWORD 是否存在: ${{ secrets.SERVER_PASSWORD != '' }}"
-          
           # 检查服务是否正常运行
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-            echo "📁 健康检查 - 当前目录: \$(pwd)"
-            echo "📁 健康检查 - 目标项目目录: ${{ secrets.PROJECT_PATH }}"
-            
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             # 进入项目目录
             cd ${{ secrets.PROJECT_PATH }}
-            echo "📁 健康检查 - 已进入项目目录: \$(pwd)"
             
             # 使用部署脚本检查状态
-            echo "📊 使用部署脚本检查状态..."
             ./deploy.sh status
             
             # 检查应用健康状态
-            echo "🏥 检查应用健康状态..."
-            curl -f http://localhost/health || {
-              echo "❌ 健康检查失败"
-              echo "🔍 尝试检查端口状态..."
-              netstat -tlnp | grep :80 || echo "端口80未监听"
-              exit 1
-            }
+            curl -f http://localhost/health || exit 1
             echo "✅ 部署成功！服务运行正常"
             echo "🌐 应用访问地址: http://${{ secrets.SERVER_HOST }}"
           EOF
