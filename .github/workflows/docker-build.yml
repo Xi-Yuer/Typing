@@ -118,7 +118,7 @@ jobs:
       # 部署到服务器
       - name: Deploy to server
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          ssh "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}" << EOF
             # 进入项目目录
             cd ${{ secrets.PROJECT_PATH }}
             
