@@ -49,33 +49,18 @@ check_env_file() {
 
 # 启动服务
 start_services() {
-    local use_prod=${1:-false}
-    local compose_file="docker-compose.yml"
+    local compose_file="docker-compose.prod.yml"
     
-    if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.prod.yml"
-        print_message $BLUE "启动打字练习应用 (生产模式 - 使用预构建镜像)..."
-    else
-        print_message $BLUE "启动打字练习应用 (开发模式 - 本地构建)..."
-    fi
+    print_message $BLUE "启动打字练习应用..."
     
     # 检查依赖
     check_dependencies
     check_env_file
-    
-    # 检查生产模式配置
-    if [ "$use_prod" = "true" ]; then
-        check_prod_config
-    fi
+    check_prod_config
     
     # 启动服务
-    if [ "$use_prod" = "true" ]; then
-        print_message $BLUE "启动所有服务 (使用预构建镜像)..."
-        docker-compose -f $compose_file up -d
-    else
-        print_message $BLUE "构建并启动所有服务..."
-        docker-compose -f $compose_file up -d --build
-    fi
+    print_message $BLUE "启动所有服务..."
+    docker-compose -f $compose_file up -d
     
     # 等待服务启动
     print_message $BLUE "等待服务启动..."
@@ -112,26 +97,15 @@ check_prod_config() {
 
 # 拉取最新镜像
 pull_image() {
-    local use_prod=${1:-false}
-    
-    if [ "$use_prod" = "true" ]; then
-        print_message $BLUE "拉取最新的预构建镜像..."
-        check_prod_config
-        docker-compose -f docker-compose.prod.yml pull app
-        print_message $GREEN "✓ 镜像拉取完成"
-    else
-        print_message $YELLOW "开发模式不需要拉取镜像，将使用本地构建"
-    fi
+    print_message $BLUE "拉取最新的预构建镜像..."
+    check_prod_config
+    docker-compose -f docker-compose.prod.yml pull app
+    print_message $GREEN "✓ 镜像拉取完成"
 }
 
 # 停止服务
 stop_services() {
-    local use_prod=${1:-false}
-    local compose_file="docker-compose.yml"
-    
-    if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.prod.yml"
-    fi
+    local compose_file="docker-compose.prod.yml"
     
     print_message $BLUE "停止所有服务..."
     docker-compose -f $compose_file down
@@ -140,12 +114,7 @@ stop_services() {
 
 # 重启服务
 restart_services() {
-    local use_prod=${1:-false}
-    local compose_file="docker-compose.yml"
-    
-    if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.prod.yml"
-    fi
+    local compose_file="docker-compose.prod.yml"
     
     print_message $BLUE "重启所有服务..."
     docker-compose -f $compose_file restart
@@ -154,12 +123,7 @@ restart_services() {
 
 # 查看日志
 show_logs() {
-    local use_prod=${1:-false}
-    local compose_file="docker-compose.yml"
-    
-    if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.prod.yml"
-    fi
+    local compose_file="docker-compose.prod.yml"
     
     print_message $BLUE "显示服务日志 (按 Ctrl+C 退出)..."
     docker-compose -f $compose_file logs -f
@@ -167,12 +131,7 @@ show_logs() {
 
 # 查看状态
 show_status() {
-    local use_prod=${1:-false}
-    local compose_file="docker-compose.yml"
-    
-    if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.prod.yml"
-    fi
+    local compose_file="docker-compose.prod.yml"
     
     print_message $BLUE "服务状态:"
     docker-compose -f $compose_file ps
@@ -183,12 +142,7 @@ show_status() {
 
 # 清理环境
 clean_environment() {
-    local use_prod=${1:-false}
-    local compose_file="docker-compose.yml"
-    
-    if [ "$use_prod" = "true" ]; then
-        compose_file="docker-compose.prod.yml"
-    fi
+    local compose_file="docker-compose.prod.yml"
     
     print_message $YELLOW "警告: 这将删除所有容器、网络和数据卷！"
     read -p "确定要继续吗？(y/N): " -n 1 -r
@@ -197,12 +151,6 @@ clean_environment() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         print_message $BLUE "清理环境..."
         docker-compose -f $compose_file down -v --remove-orphans
-        
-        # 清理本地构建的镜像
-        if [ "$use_prod" = "false" ]; then
-            docker rmi typing-app 2>/dev/null || true
-        fi
-        
         print_message $GREEN "✓ 环境已清理"
     else
         print_message $YELLOW "操作已取消"
@@ -214,7 +162,7 @@ show_help() {
     echo "打字练习应用部署脚本"
     echo ""
     echo "使用方法:"
-    echo "  ./deploy.sh [命令] [选项]"
+    echo "  ./deploy.sh [命令]"
     echo ""
     echo "可用命令:"
     echo "  start    - 启动所有服务 (默认)"
@@ -226,14 +174,9 @@ show_help() {
     echo "  pull     - 拉取最新的预构建镜像"
     echo "  help     - 显示此帮助信息"
     echo ""
-    echo "选项:"
-    echo "  --prod   - 使用生产环境配置 (预构建镜像)"
-    echo "  --dev    - 使用开发环境配置 (本地构建，默认)"
-    echo ""
     echo "示例:"
-    echo "  ./deploy.sh start           # 启动应用 (开发模式)"
-    echo "  ./deploy.sh start --prod    # 启动应用 (生产模式)"
-    echo "  ./deploy.sh pull --prod     # 拉取最新镜像"
+    echo "  ./deploy.sh start           # 启动应用"
+    echo "  ./deploy.sh pull            # 拉取最新镜像"
     echo "  ./deploy.sh logs            # 查看日志"
     echo "  ./deploy.sh stop            # 停止应用"
 }
@@ -241,19 +184,10 @@ show_help() {
 # 主函数
 main() {
     local command=${1:-start}
-    local use_prod=false
     
     # 解析参数
     while [[ $# -gt 0 ]]; do
         case $1 in
-            --prod)
-                use_prod=true
-                shift
-                ;;
-            --dev)
-                use_prod=false
-                shift
-                ;;
             start|stop|restart|logs|status|clean|pull|help|--help|-h)
                 command=$1
                 shift
@@ -269,25 +203,25 @@ main() {
     
     case $command in
         start)
-            start_services $use_prod
+            start_services
             ;;
         stop)
-            stop_services $use_prod
+            stop_services
             ;;
         restart)
-            restart_services $use_prod
+            restart_services
             ;;
         logs)
-            show_logs $use_prod
+            show_logs
             ;;
         status)
-            show_status $use_prod
+            show_status
             ;;
         clean)
-            clean_environment $use_prod
+            clean_environment
             ;;
         pull)
-            pull_image $use_prod
+            pull_image
             ;;
         help|--help|-h)
             show_help
@@ -302,7 +236,7 @@ main() {
 }
 
 # 检查脚本是否在正确的目录中运行
-if [ ! -f "docker-compose.yml" ]; then
+if [ ! -f "docker-compose.prod.yml" ]; then
     print_message $RED "错误: 请在项目根目录中运行此脚本"
     exit 1
 fi
