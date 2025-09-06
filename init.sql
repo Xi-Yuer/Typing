@@ -1,14 +1,19 @@
+
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY '2214380963Wx!!';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
 -- 数据库初始化脚本
 -- 设置字符集和排序规则
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- 创建数据库（如果不存在）
-CREATE DATABASE IF NOT EXISTS `typing_db` 
+CREATE DATABASE IF NOT EXISTS `typing` 
 DEFAULT CHARACTER SET utf8mb4 
 DEFAULT COLLATE utf8mb4_unicode_ci;
 
-USE `typing_db`;
+USE `typing`;
 
 -- 用户表
 CREATE TABLE IF NOT EXISTS `users` (

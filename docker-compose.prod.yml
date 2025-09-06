@@ -12,6 +12,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./my.cnf:/etc/mysql/my.cnf:ro
     networks:
       - typing-network
     healthcheck:
