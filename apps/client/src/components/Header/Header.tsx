@@ -57,15 +57,26 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
         });
       }
 
+      // 检查响应结构
+      if (!response || !response.data) {
+        throw new Error('API响应格式错误');
+      }
+
+      const { accessToken, user } = response.data;
+      
+      if (!accessToken || !user) {
+        throw new Error('登录响应数据不完整');
+      }
+
       // 保存token到localStorage
-      localStorage.setItem('token', response.data.accessToken);
+      localStorage.setItem('token', accessToken);
 
       // 保存用户信息到localStorage
-      localStorage.setItem('userInfo', JSON.stringify(response.data.user));
+      localStorage.setItem('userInfo', JSON.stringify(user));
 
       // 更新状态
-      setUser(response.data.user);
-      setToken(response.data.accessToken);
+      setUser(user);
+      setToken(accessToken);
       setIsLoggedIn(true);
 
       // 显示成功消息
