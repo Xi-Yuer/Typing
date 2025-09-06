@@ -112,6 +112,7 @@ jobs:
       # 添加服务器到known_hosts
       - name: Add server to known hosts
         run: |
+          mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
       # 部署到服务器
