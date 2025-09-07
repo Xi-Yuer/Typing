@@ -95,6 +95,12 @@ check_prod_config() {
     fi
 }
 
+# 拉取最新代码
+pull_code() {
+    print_message $BLUE "拉取最新代码..."
+    git pull origin main
+}
+
 # 拉取最新镜像
 pull_image() {
     print_message $BLUE "拉取最新的预构建镜像..."
@@ -102,7 +108,7 @@ pull_image() {
     docker-compose -f docker-compose.prod.yml pull app
     print_message $GREEN "✓ 镜像拉取完成"
     print_message $GREEN "拉取最近代码..."
-    git pull origin main
+    pull_code
     print_message $GREEN "✓ 代码拉取完成"
 }
 
