@@ -51,7 +51,7 @@ export class AuthController {
   @ApiBody({ type: LoginDto })
   @ApiResponse({ status: 200, description: '登录成功', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: '用户名或密码错误' })
-  @ApiSuccessResponse<AuthResponseDto>(AuthResponseDto, { description: '登录成功' })
+  @ApiSuccessResponse(AuthResponseDto, { description: '登录成功' })
   async login(@Req() req: any) {
     const user = req.user as User;
     const accessToken = await this.authService.generateToken(user);

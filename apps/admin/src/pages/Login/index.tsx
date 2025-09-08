@@ -38,7 +38,8 @@ const Login: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-      }}>
+      }}
+    >
       <Card style={{ width: 400, padding: '40px 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Title level={2} style={{ margin: 0 }}>
@@ -53,13 +54,15 @@ const Login: React.FC = () => {
             rules={[
               { required: true, message: '请输入邮箱地址!' },
               { type: 'email', message: '请输入有效的邮箱地址!' }
-            ]}>
+            ]}
+          >
             <Input prefix={<UserOutlined />} placeholder='邮箱地址' />
           </Form.Item>
 
           <Form.Item
             name='password'
-            rules={[{ required: true, message: '请输入密码!' }]}>
+            rules={[{ required: true, message: '请输入密码!' }]}
+          >
             <Input.Password prefix={<LockOutlined />} placeholder='密码' />
           </Form.Item>
 
@@ -68,7 +71,8 @@ const Login: React.FC = () => {
               type='primary'
               htmlType='submit'
               loading={loading}
-              style={{ width: '100%' }}>
+              style={{ width: '100%' }}
+            >
               登录
             </Button>
           </Form.Item>

@@ -11,19 +11,19 @@ import {
   message,
   Popconfirm,
   Card,
-  Input as AntInput,
+  Input as AntInput
 } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
 import {
   getAllLanguages,
   createLanguage,
   deleteLanguage,
-  getLanguageById,
+  getLanguageById
 } from '../../apis';
 import type { CreateLanguageDto } from '../../request/globals';
 
@@ -52,7 +52,7 @@ const LanguageManagement: React.FC = () => {
     try {
       setLoading(true);
       const response = await getAllLanguages();
-      
+
       if (response.data) {
         setLanguages(response.data);
       }
@@ -95,7 +95,7 @@ const LanguageManagement: React.FC = () => {
   const handleModalOk = async () => {
     try {
       const values = await form.validateFields();
-      
+
       if (editingLanguage) {
         // 更新语言逻辑（API中暂无更新接口）
         message.info('更新功能暂未实现');
@@ -104,9 +104,9 @@ const LanguageManagement: React.FC = () => {
         const createData: CreateLanguageDto = {
           name: values.name,
           code: values.code,
-          isActive: values.isActive ?? true,
+          isActive: values.isActive ?? true
         };
-        
+
         await createLanguage(createData);
         message.success('创建成功');
         setModalVisible(false);
@@ -117,9 +117,10 @@ const LanguageManagement: React.FC = () => {
     }
   };
 
-  const filteredLanguages = languages.filter(language =>
-    language.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    language.code.toLowerCase().includes(searchText.toLowerCase())
+  const filteredLanguages = languages.filter(
+    language =>
+      language.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      language.code.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const columns = [
@@ -127,20 +128,18 @@ const LanguageManagement: React.FC = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: 80,
+      width: 80
     },
     {
       title: '语言名称',
       dataIndex: 'name',
-      key: 'name',
+      key: 'name'
     },
     {
       title: '语言代码',
       dataIndex: 'code',
       key: 'code',
-      render: (code: string) => (
-        <Tag color="blue">{code.toUpperCase()}</Tag>
-      ),
+      render: (code: string) => <Tag color='blue'>{code.toUpperCase()}</Tag>
     },
     {
       title: '状态',
@@ -150,55 +149,61 @@ const LanguageManagement: React.FC = () => {
         <Tag color={isActive ? 'green' : 'red'}>
           {isActive ? '启用' : '禁用'}
         </Tag>
-      ),
+      )
     },
     {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleString(),
+      render: (date: string) => new Date(date).toLocaleString()
     },
     {
       title: '操作',
       key: 'action',
       render: (_: any, record: Language) => (
-        <Space size="middle">
+        <Space size='middle'>
           <Button
-            type="link"
+            type='link'
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
             编辑
           </Button>
           <Popconfirm
-            title="确定要删除这个语言吗？"
+            title='确定要删除这个语言吗？'
             onConfirm={() => handleDelete(record.id)}
-            okText="确定"
-            cancelText="取消"
+            okText='确定'
+            cancelText='取消'
           >
-            <Button type="link" danger icon={<DeleteOutlined />}>
+            <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
           </Popconfirm>
         </Space>
-      ),
-    },
+      )
+    }
   ];
 
   return (
     <div>
       <Card>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+        <div
+          style={{
+            marginBottom: 16,
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
           <Space>
             <AntInput
-              placeholder="搜索语言..."
+              placeholder='搜索语言...'
               prefix={<SearchOutlined />}
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={e => setSearchText(e.target.value)}
               style={{ width: 200 }}
             />
           </Space>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+          <Button type='primary' icon={<PlusOutlined />} onClick={handleCreate}>
             创建语言
           </Button>
         </div>
@@ -206,14 +211,14 @@ const LanguageManagement: React.FC = () => {
         <Table
           columns={columns}
           dataSource={filteredLanguages}
-          rowKey="id"
+          rowKey='id'
           loading={loading}
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`
           }}
         />
       </Card>
@@ -225,33 +230,25 @@ const LanguageManagement: React.FC = () => {
         onCancel={() => setModalVisible(false)}
         width={600}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={{ isActive: true }}
-        >
+        <Form form={form} layout='vertical' initialValues={{ isActive: true }}>
           <Form.Item
-            name="name"
-            label="语言名称"
+            name='name'
+            label='语言名称'
             rules={[{ required: true, message: '请输入语言名称' }]}
           >
-            <Input placeholder="请输入语言名称，如：英语" />
+            <Input placeholder='请输入语言名称，如：英语' />
           </Form.Item>
 
           <Form.Item
-            name="code"
-            label="语言代码"
+            name='code'
+            label='语言代码'
             rules={[{ required: true, message: '请输入语言代码' }]}
           >
-            <Input placeholder="请输入语言代码，如：en" />
+            <Input placeholder='请输入语言代码，如：en' />
           </Form.Item>
 
-          <Form.Item
-            name="isActive"
-            label="启用状态"
-            valuePropName="checked"
-          >
-            <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+          <Form.Item name='isActive' label='启用状态' valuePropName='checked'>
+            <Switch checkedChildren='启用' unCheckedChildren='禁用' />
           </Form.Item>
         </Form>
       </Modal>

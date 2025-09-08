@@ -5,7 +5,11 @@ import {
   ApiExtraModels,
   getSchemaPath
 } from '@nestjs/swagger';
-import { ApiResponseDto, PaginationResponseDto } from '../dto/api-response.dto';
+import {
+  ApiResponseDto,
+  PaginationResponseDto,
+  PaginationDto
+} from '../dto/api-response.dto';
 
 /**
  * 统一成功响应装饰器
@@ -116,26 +120,65 @@ export function ApiPaginationResponse<T>(
   options?: Omit<ApiResponseOptions, 'type' | 'status'>
 ) {
   return applyDecorators(
-    ApiExtraModels(PaginationResponseDto, dataType as Type<T>),
+    ApiExtraModels(PaginationResponseDto, PaginationDto, dataType as Type<T>),
     ApiResponse({
       status: 200,
       description: options?.description || '查询成功',
       schema: {
-        allOf: [
-          { $ref: getSchemaPath(PaginationResponseDto) },
-          {
+        type: 'object',
+        properties: {
+          code: {
+            type: 'number',
+            description: '状态码',
+            example: 200
+          },
+          message: {
+            type: 'string',
+            description: '响应消息',
+            example: '操作成功'
+          },
+          data: {
+            type: 'object',
             properties: {
-              data: {
-                properties: {
-                  list: {
-                    type: 'array',
-                    items: { $ref: getSchemaPath(dataType as Type<T>) }
-                  }
-                }
+              list: {
+                type: 'array',
+                items: { $ref: getSchemaPath(dataType as Type<T>) }
+              },
+              total: {
+                type: 'number',
+                description: '总数量',
+                example: 100
+              },
+              page: {
+                type: 'number',
+                description: '当前页码',
+                example: 1
+              },
+              pageSize: {
+                type: 'number',
+                description: '每页数量',
+                example: 10
+              },
+              totalPages: {
+                type: 'number',
+                description: '总页数',
+                example: 10
               }
-            }
+            },
+            required: ['list', 'total', 'page', 'pageSize', 'totalPages']
+          },
+          timestamp: {
+            type: 'number',
+            description: '时间戳',
+            example: 1640995200000
+          },
+          path: {
+            type: 'string',
+            description: '请求路径',
+            example: '/api/users'
           }
-        ]
+        },
+        required: ['code', 'message', 'data', 'timestamp', 'path']
       },
       ...options
     })

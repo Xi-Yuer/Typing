@@ -51,6 +51,11 @@ export class RolesGuard implements CanActivate {
       }
     }
 
+    // 如果是管理员或超级管理员，允许访问
+    if (user.role === Role.ADMIN || user.role === Role.SUPER_ADMIN) {
+      return true;
+    }
+
     // 检查用户角色
     if (requiredRoles && requiredRoles.length > 0) {
       if (!user.role || !requiredRoles.includes(user.role)) {

@@ -38,11 +38,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await login(data);
       console.log('Login response:', response); // 调试信息
-      
+
       // 检查响应数据结构
-      const token = response.data?.accessToken || response.accessToken;
-      const userData = response.data?.user || response.user;
-      
+      const token = response.data?.accessToken;
+      const userData = response.data?.user;
+
       if (token) {
         localStorage.setItem('token', token);
         if (userData) {

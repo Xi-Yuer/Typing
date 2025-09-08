@@ -386,27 +386,40 @@ export interface CorpusCategory {
   language: Language;
 }
 export type Object = object;
-export interface PaginationResponseDto {
+export interface ReportStatsDto {
   /**
-   * 状态码
+   * 总报告数
    */
-  code: number;
+  totalReports: number;
   /**
-   * 响应消息
+   * 待处理报告数
    */
-  message: string;
+  pendingReports: number;
   /**
-   * 响应数据
+   * 审核中报告数
    */
-  data: object;
+  reviewingReports: number;
   /**
-   * 时间戳
+   * 已接受报告数
    */
-  timestamp: number;
+  acceptedReports: number;
   /**
-   * 请求路径
+   * 已拒绝报告数
    */
-  path: string;
+  rejectedReports: number;
+  /**
+   * 最近报告统计
+   */
+  recentReports: Array<{
+    /**
+     * 日期
+     */
+    date?: string;
+    /**
+     * 数量
+     */
+    count?: number;
+  }>;
 }
 export interface UserResponseDto {
   /**
@@ -774,17 +787,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 用户ID
        *       id: number
        *       // 用户名
@@ -806,18 +812,60 @@ declare global {
        *       // 删除时间
        *       deleteTime?: string
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       UserController_findPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: User[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: User[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 页码
@@ -832,10 +880,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: User[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: User[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.UserController_findPaginated',
         Config
@@ -1600,17 +1680,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 语言 ID
        *       id: number
        *       // 语言名称（English, 日本語, Français）
@@ -1628,18 +1701,60 @@ declare global {
        *       // 删除时间
        *       deleteTime?: string
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       LanguagesController_findAllPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Language[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 页码
@@ -1654,10 +1769,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Language[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.LanguagesController_findAllPaginated',
         Config
@@ -2065,17 +2212,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 分类 ID
        *       id: string
        *       // 对应语言 ID
@@ -2112,18 +2252,60 @@ declare global {
        *         deleteTime?: string
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       CorpusCategoriesController_findAllPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: CorpusCategory[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 页码
@@ -2138,10 +2320,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: CorpusCategory[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.CorpusCategoriesController_findAllPaginated',
         Config
@@ -2831,17 +3045,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 单词 ID
        *       id: string
        *       // 所属语言 ID
@@ -2930,18 +3137,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordsController_findAllPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Word[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 页码
@@ -2956,10 +3205,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Word[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_findAllPaginated',
         Config
@@ -3002,17 +3283,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 单词 ID
        *       id: string
        *       // 所属语言 ID
@@ -3101,18 +3375,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordsController_findByLanguageId<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Word[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言 ID
@@ -3133,10 +3449,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Word[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_findByLanguageId',
         Config
@@ -3179,17 +3527,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 单词 ID
        *       id: string
        *       // 所属语言 ID
@@ -3278,18 +3619,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordsController_findByCategoryId<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Word[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 分类 ID
@@ -3310,10 +3693,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Word[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_findByCategoryId',
         Config
@@ -3358,17 +3773,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 单词 ID
        *       id: string
        *       // 所属语言 ID
@@ -3457,18 +3865,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordsController_findByLanguageAndCategory<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Word[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言 ID
@@ -3493,10 +3943,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Word[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_findByLanguageAndCategory',
         Config
@@ -3708,17 +4190,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 单词 ID
        *       id: string
        *       // 所属语言 ID
@@ -3807,18 +4282,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordsController_searchWordsPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Word[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -3845,10 +4362,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Word[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Word[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_searchWordsPaginated',
         Config
@@ -4470,17 +5019,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 句子 ID
        *       id: string
        *       // 所属语言 ID
@@ -4557,18 +5099,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_findAllPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Sentence[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 页码
@@ -4583,10 +5167,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Sentence[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_findAllPaginated',
         Config
@@ -4629,17 +5245,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 句子 ID
        *       id: string
        *       // 所属语言 ID
@@ -4716,18 +5325,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_findByLanguageId<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Sentence[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言 ID
@@ -4748,10 +5399,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Sentence[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_findByLanguageId',
         Config
@@ -4794,17 +5477,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 句子 ID
        *       id: string
        *       // 所属语言 ID
@@ -4881,18 +5557,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_findByCategoryId<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Sentence[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 分类 ID
@@ -4913,10 +5631,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Sentence[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_findByCategoryId',
         Config
@@ -4961,17 +5711,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 句子 ID
        *       id: string
        *       // 所属语言 ID
@@ -5048,18 +5791,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_findByLanguageAndCategory<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Sentence[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言 ID
@@ -5084,10 +5869,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Sentence[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_findByLanguageAndCategory',
         Config
@@ -5275,17 +6092,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 句子 ID
        *       id: string
        *       // 所属语言 ID
@@ -5362,18 +6172,60 @@ declare global {
        *         }
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_searchSentencesPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: Sentence[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -5400,10 +6252,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: Sentence[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Sentence[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_searchSentencesPaginated',
         Config
@@ -6154,17 +7038,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 错误报告 ID
        *       id: string
        *       // 报告用户 ID
@@ -6324,18 +7201,60 @@ declare global {
        *         deleteTime?: string
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_findAllPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: WordErrorReport[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 页码
@@ -6350,10 +7269,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: WordErrorReport[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_findAllPaginated',
         Config
@@ -6386,17 +7337,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 错误报告 ID
        *       id: string
        *       // 报告用户 ID
@@ -6556,18 +7500,60 @@ declare global {
        *         deleteTime?: string
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_findMyReports<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: WordErrorReport[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 页码
@@ -6582,10 +7568,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: WordErrorReport[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_findMyReports',
         Config
@@ -6613,21 +7631,41 @@ declare global {
        *   // 请求路径
        *   path: string
        * } & {
-       *   data?: object
+       *   data?: {
+       *     // 总报告数
+       *     totalReports: number
+       *     // 待处理报告数
+       *     pendingReports: number
+       *     // 审核中报告数
+       *     reviewingReports: number
+       *     // 已接受报告数
+       *     acceptedReports: number
+       *     // 已拒绝报告数
+       *     rejectedReports: number
+       *     // 最近报告统计
+       *     // [items] start
+       *     // [items] end
+       *     recentReports: Array<{
+       *       // 日期
+       *       date?: string
+       *       // 数量
+       *       count?: number
+       *     }>
+       *   }
        * }
        * ```
        */
       WordErrorReportsController_getReportStats<
         Config extends Alova2MethodConfig<
           ApiResponseDto & {
-            data?: Object;
+            data?: ReportStatsDto;
           }
         >
       >(
         config?: Config
       ): Alova2Method<
         ApiResponseDto & {
-          data?: Object;
+          data?: ReportStatsDto;
         },
         'general.WordErrorReportsController_getReportStats',
         Config
@@ -6894,17 +7932,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 错误报告 ID
        *       id: string
        *       // 报告用户 ID
@@ -7064,18 +8095,60 @@ declare global {
        *         deleteTime?: string
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_searchMyReportsPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: WordErrorReport[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -7094,10 +8167,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: WordErrorReport[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_searchMyReportsPaginated',
         Config
@@ -7364,17 +8469,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 错误报告 ID
        *       id: string
        *       // 报告用户 ID
@@ -7534,18 +8632,60 @@ declare global {
        *         deleteTime?: string
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_searchAllReportsPaginated<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: WordErrorReport[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -7564,10 +8704,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: WordErrorReport[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_searchAllReportsPaginated',
         Config
@@ -7610,17 +8782,10 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // [items] start
        *     // [items] end
-       *     list?: Array<{
+       *     list: Array<{
        *       // 错误报告 ID
        *       id: string
        *       // 报告用户 ID
@@ -7780,18 +8945,60 @@ declare global {
        *         deleteTime?: string
        *       }
        *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_findByStatus<
-        Config extends Alova2MethodConfig<
-          PaginationResponseDto & {
-            data?: {
-              list?: WordErrorReport[];
-            };
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 报告状态
@@ -7812,10 +9019,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        PaginationResponseDto & {
-          data?: {
-            list?: WordErrorReport[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorReport[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
           };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_findByStatus',
         Config

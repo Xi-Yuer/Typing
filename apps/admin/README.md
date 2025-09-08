@@ -5,6 +5,7 @@
 ## 功能特性
 
 ### 🏠 仪表板
+
 - 系统概览统计
 - 用户数量统计
 - 语言和分类统计
@@ -13,6 +14,7 @@
 - 系统状态监控
 
 ### 👥 用户管理
+
 - 用户列表查看
 - 用户创建
 - 用户信息编辑
@@ -21,6 +23,7 @@
 - 分页显示
 
 ### 🌍 语言管理
+
 - 语言列表管理
 - 新增语言
 - 语言状态控制（启用/禁用）
@@ -28,6 +31,7 @@
 - 语言搜索
 
 ### 📚 语料库分类管理
+
 - 分类列表管理
 - 新增分类
 - 分类统计信息
@@ -35,6 +39,7 @@
 - 分类删除
 
 ### 📝 单词管理
+
 - 单词列表管理
 - 新增单词
 - 单词搜索和筛选
@@ -43,6 +48,7 @@
 - 语音播放功能（待实现）
 
 ### 📄 句子管理
+
 - 句子列表管理
 - 新增句子
 - 句子搜索和筛选
@@ -50,6 +56,7 @@
 - 句子删除
 
 ### 🐛 错误报告管理
+
 - 错误报告列表
 - 报告状态管理
 - 报告详情查看
@@ -128,16 +135,19 @@ pnpm build
 ## 使用说明
 
 ### 登录系统
+
 1. 访问管理后台首页
 2. 使用管理员账号登录
 3. 登录成功后自动跳转到仪表板
 
 ### 功能导航
+
 - 使用左侧导航菜单切换不同功能模块
 - 每个模块都有独立的页面和功能
 - 支持响应式设计，适配移动端
 
 ### 数据操作
+
 - 所有列表页面都支持搜索和筛选
 - 支持分页浏览大量数据
 - 提供创建、编辑、删除等基本操作
@@ -148,6 +158,7 @@ pnpm build
 管理后台使用 Alova 作为 HTTP 客户端，所有 API 接口都在 `src/apis/index.ts` 中定义。
 
 主要接口包括：
+
 - 认证相关：登录、获取用户信息
 - 用户管理：CRUD 操作
 - 语言管理：CRUD 操作
@@ -159,18 +170,21 @@ pnpm build
 ## 开发规范
 
 ### 代码风格
+
 - 使用 TypeScript 进行类型检查
 - 遵循 ESLint 代码规范
 - 组件使用函数式组件 + Hooks
 - 使用 Ant Design 组件库保持 UI 一致性
 
 ### 文件命名
+
 - 组件文件使用 PascalCase
 - Hook 文件使用 camelCase
 - 工具文件使用 camelCase
 - 常量文件使用 UPPER_SNAKE_CASE
 
 ### 组件结构
+
 ```tsx
 import React, { useState, useEffect } from 'react';
 import { ComponentProps } from './types';
@@ -178,23 +192,19 @@ import { ComponentProps } from './types';
 const Component: React.FC<ComponentProps> = ({ prop1, prop2 }) => {
   // Hooks
   const [state, setState] = useState();
-  
+
   // Effects
   useEffect(() => {
     // 副作用逻辑
   }, []);
-  
+
   // Handlers
   const handleAction = () => {
     // 处理逻辑
   };
-  
+
   // Render
-  return (
-    <div>
-      {/* JSX 内容 */}
-    </div>
-  );
+  return <div>{/* JSX 内容 */}</div>;
 };
 
 export default Component;
@@ -203,27 +213,30 @@ export default Component;
 ## 部署说明
 
 ### 环境要求
+
 - Node.js 18+
 - 现代浏览器支持
 
 ### 部署步骤
+
 1. 构建生产版本：`npm run build`
 2. 将 `dist` 目录部署到 Web 服务器
 3. 配置服务器支持 SPA 路由
 4. 确保 API 服务器正常运行
 
 ### Nginx 配置示例
+
 ```nginx
 server {
     listen 80;
     server_name admin.yourdomain.com;
     root /path/to/admin/dist;
     index index.html;
-    
+
     location / {
         try_files $uri $uri/ /index.html;
     }
-    
+
     location /api {
         proxy_pass http://your-api-server;
         proxy_set_header Host $host;
@@ -235,20 +248,25 @@ server {
 ## 常见问题
 
 ### Q: 登录后页面空白？
+
 A: 检查 API 服务器是否正常运行，确认网络请求是否成功。
 
 ### Q: 某些功能无法使用？
+
 A: 检查用户权限，某些功能需要管理员权限。
 
 ### Q: 数据加载缓慢？
+
 A: 检查网络连接和 API 服务器性能，考虑增加分页大小。
 
 ### Q: 移动端显示异常？
+
 A: 管理后台主要针对桌面端设计，移动端可能显示不完整。
 
 ## 更新日志
 
 ### v1.0.0 (2024-01-01)
+
 - 初始版本发布
 - 实现基础管理功能
 - 支持用户、语言、分类、单词、句子、错误报告管理

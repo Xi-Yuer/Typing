@@ -34,7 +34,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh'
-        }}>
+        }}
+      >
         <div>加载中...</div>
       </div>
     );
@@ -59,7 +60,8 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh'
-        }}>
+        }}
+      >
         <div>加载中...</div>
       </div>
     );
@@ -79,7 +81,7 @@ function App() {
         <Router
           future={{
             v7_startTransition: true,
-            v7_relativeSplatPath: true,
+            v7_relativeSplatPath: true
           }}
         >
           <Routes>

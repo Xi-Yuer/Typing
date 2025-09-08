@@ -11,30 +11,21 @@ import {
   message,
   Popconfirm,
   Card,
-  Input as AntInput,
+  Input as AntInput
 } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
 import {
   getUserPaginated,
   createUser,
   deleteUser,
-  getUserById,
+  getUserById
 } from '../../apis';
-import type { CreateUserDto } from '../../request/globals';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { CreateUserDto, User } from '../../request/globals';
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -42,7 +33,7 @@ const UserManagement: React.FC = () => {
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
-    total: 0,
+    total: 0
   });
   const [searchText, setSearchText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -58,17 +49,17 @@ const UserManagement: React.FC = () => {
       setLoading(true);
       const response = await getUserPaginated({
         page: pagination.current,
-        pageSize: pagination.pageSize,
+        pageSize: pagination.pageSize
       });
-      
+
       if (response.data) {
-        setUsers(response.data.data || []);
+        setUsers(response.data.list || []);
         setPagination(prev => ({
           ...prev,
-          total: response.data.total || 0,
+          total: response.data.total || 0
         }));
       }
-    } catch (error) {
+    } catch {
       message.error('获取用户列表失败');
     } finally {
       setLoading(false);
@@ -89,7 +80,7 @@ const UserManagement: React.FC = () => {
         form.setFieldsValue(response.data);
         setModalVisible(true);
       }
-    } catch (error) {
+    } catch {
       message.error('获取用户信息失败');
     }
   };
@@ -99,7 +90,7 @@ const UserManagement: React.FC = () => {
       await deleteUser(id);
       message.success('删除成功');
       fetchUsers();
-    } catch (error) {
+    } catch {
       message.error('删除失败');
     }
   };
@@ -107,7 +98,7 @@ const UserManagement: React.FC = () => {
   const handleModalOk = async () => {
     try {
       const values = await form.validateFields();
-      
+
       if (editingUser) {
         // 更新用户逻辑（API中暂无更新接口）
         message.info('更新功能暂未实现');
@@ -117,15 +108,15 @@ const UserManagement: React.FC = () => {
           name: values.name,
           email: values.email,
           password: values.password,
-          role: values.role,
+          role: values.role
         };
-        
+
         await createUser(createData);
         message.success('创建成功');
         setModalVisible(false);
         fetchUsers();
       }
-    } catch (error) {
+    } catch {
       message.error('操作失败');
     }
   };
@@ -139,17 +130,17 @@ const UserManagement: React.FC = () => {
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      width: 80,
+      width: 80
     },
     {
       title: '用户名',
       dataIndex: 'name',
-      key: 'name',
+      key: 'name'
     },
     {
       title: '邮箱',
       dataIndex: 'email',
-      key: 'email',
+      key: 'email'
     },
     {
       title: '角色',
@@ -159,55 +150,61 @@ const UserManagement: React.FC = () => {
         <Tag color={role === 'admin' ? 'red' : 'blue'}>
           {role === 'admin' ? '管理员' : '用户'}
         </Tag>
-      ),
+      )
     },
     {
       title: '创建时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleString(),
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: (date: string) => new Date(date).toLocaleString()
     },
     {
       title: '操作',
       key: 'action',
       render: (_: any, record: User) => (
-        <Space size="middle">
+        <Space size='middle'>
           <Button
-            type="link"
+            type='link'
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
             编辑
           </Button>
           <Popconfirm
-            title="确定要删除这个用户吗？"
+            title='确定要删除这个用户吗？'
             onConfirm={() => handleDelete(record.id)}
-            okText="确定"
-            cancelText="取消"
+            okText='确定'
+            cancelText='取消'
           >
-            <Button type="link" danger icon={<DeleteOutlined />}>
+            <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
           </Popconfirm>
         </Space>
-      ),
-    },
+      )
+    }
   ];
 
   return (
     <div>
       <Card>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+        <div
+          style={{
+            marginBottom: 16,
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
+        >
           <Space>
             <AntInput
-              placeholder="搜索用户..."
+              placeholder='搜索用户...'
               prefix={<SearchOutlined />}
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={e => setSearchText(e.target.value)}
               style={{ width: 200 }}
             />
           </Space>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+          <Button type='primary' icon={<PlusOutlined />} onClick={handleCreate}>
             创建用户
           </Button>
         </div>
@@ -215,14 +212,14 @@ const UserManagement: React.FC = () => {
         <Table
           columns={columns}
           dataSource={users}
-          rowKey="id"
+          rowKey='id'
           loading={loading}
           pagination={{
             ...pagination,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`
           }}
           onChange={handleTableChange}
         />
@@ -235,48 +232,44 @@ const UserManagement: React.FC = () => {
         onCancel={() => setModalVisible(false)}
         width={600}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={{ role: 'user' }}
-        >
+        <Form form={form} layout='vertical' initialValues={{ role: 'user' }}>
           <Form.Item
-            name="name"
-            label="用户名"
+            name='name'
+            label='用户名'
             rules={[{ required: true, message: '请输入用户名' }]}
           >
-            <Input placeholder="请输入用户名" />
+            <Input placeholder='请输入用户名' />
           </Form.Item>
 
           <Form.Item
-            name="email"
-            label="邮箱"
+            name='email'
+            label='邮箱'
             rules={[
               { required: true, message: '请输入邮箱' },
               { type: 'email', message: '请输入有效的邮箱地址' }
             ]}
           >
-            <Input placeholder="请输入邮箱" />
+            <Input placeholder='请输入邮箱' />
           </Form.Item>
 
           {!editingUser && (
             <Form.Item
-              name="password"
-              label="密码"
+              name='password'
+              label='密码'
               rules={[{ required: true, message: '请输入密码' }]}
             >
-              <Input.Password placeholder="请输入密码" />
+              <Input.Password placeholder='请输入密码' />
             </Form.Item>
           )}
 
           <Form.Item
-            name="role"
-            label="角色"
+            name='role'
+            label='角色'
             rules={[{ required: true, message: '请选择角色' }]}
           >
-            <Select placeholder="请选择角色">
-              <Select.Option value="user">用户</Select.Option>
-              <Select.Option value="admin">管理员</Select.Option>
+            <Select placeholder='请选择角色'>
+              <Select.Option value='user'>用户</Select.Option>
+              <Select.Option value='admin'>管理员</Select.Option>
             </Select>
           </Form.Item>
         </Form>

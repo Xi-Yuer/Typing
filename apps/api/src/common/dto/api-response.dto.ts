@@ -54,19 +54,10 @@ export class ApiResponseDto<T> {
  * 分页响应数据
  */
 export class PaginationDto<T = any> {
-  @ApiProperty({ description: '数据列表' })
   list: T[];
-
-  @ApiProperty({ description: '总数量', example: 100 })
   total: number;
-
-  @ApiProperty({ description: '当前页码', example: 1 })
   page: number;
-
-  @ApiProperty({ description: '每页数量', example: 10 })
   pageSize: number;
-
-  @ApiProperty({ description: '总页数', example: 10 })
   totalPages: number;
 
   constructor(list: T[], total: number, page: number, pageSize: number) {
@@ -84,6 +75,8 @@ export class PaginationDto<T = any> {
 export class PaginationResponseDto<T = any> extends ApiResponseDto<
   PaginationDto<T>
 > {
+  data: PaginationDto<T>;
+
   constructor(
     list: T[],
     total: number,
@@ -94,5 +87,58 @@ export class PaginationResponseDto<T = any> extends ApiResponseDto<
   ) {
     const paginationData = new PaginationDto(list, total, page, pageSize);
     super(paginationData, message, 200, path);
+    this.data = paginationData;
+  }
+}
+
+/**
+ * 用户分页响应格式
+ */
+export class UserPaginationResponseDto extends ApiResponseDto<{
+  list: any[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}> {
+  @ApiProperty({
+    description: '分页数据',
+    type: 'object',
+    properties: {
+      list: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/User' }
+      },
+      total: { type: 'number', description: '总数量' },
+      page: { type: 'number', description: '当前页码' },
+      pageSize: { type: 'number', description: '每页数量' },
+      totalPages: { type: 'number', description: '总页数' }
+    }
+  })
+  data: {
+    list: any[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+
+  constructor(
+    list: any[],
+    total: number,
+    page: number,
+    pageSize: number,
+    message = '查询成功',
+    path = ''
+  ) {
+    const paginationData = {
+      list,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize)
+    };
+    super(paginationData, message, 200, path);
+    this.data = paginationData;
   }
 }

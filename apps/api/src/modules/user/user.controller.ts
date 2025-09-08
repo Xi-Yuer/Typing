@@ -68,7 +68,7 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: '根据ID查询用户' })
   @ApiParam({ name: 'id', description: '用户ID', type: Number })
-  @ApiSuccessResponse<User>(User, { description: '返回用户' })
+  @ApiSuccessResponse(User, { description: '返回用户' })
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }

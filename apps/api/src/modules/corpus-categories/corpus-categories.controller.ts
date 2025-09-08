@@ -53,7 +53,7 @@ export class CorpusCategoriesController {
 
   @Get()
   @ApiOperation({ summary: '获取所有语料库分类' })
-  @ApiSuccessResponse<CorpusCategory>([CorpusCategory], {
+  @ApiSuccessResponse([CorpusCategory], {
     description: '获取所有语料库分类成功'
   })
   findAll() {

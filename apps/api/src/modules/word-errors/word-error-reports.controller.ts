@@ -28,6 +28,7 @@ import {
 import { WordErrorReportsService } from './word-error-reports.service';
 import { CreateWordErrorReportDto } from './dto/create-word-error-report.dto';
 import { UpdateWordErrorReportDto } from './dto/update-word-error.dto';
+import { ReportStatsDto } from './dto/report-stats.dto';
 import { WordErrorReport } from './entities/word-error.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
@@ -82,7 +83,9 @@ export class WordErrorReportsController {
   @Get('stats')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '获取错误报告统计信息（仅管理员）' })
-  @ApiSuccessResponse(Object, { description: '获取错误报告统计信息成功' })
+  @ApiSuccessResponse(ReportStatsDto, {
+    description: '获取错误报告统计信息成功'
+  })
   getReportStats() {
     return this.wordErrorReportsService.getReportStats();
   }

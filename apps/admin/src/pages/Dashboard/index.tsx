@@ -4,13 +4,13 @@ import {
   UserOutlined,
   GlobalOutlined,
   BookOutlined,
-  BugOutlined,
+  BugOutlined
 } from '@ant-design/icons';
 import {
   getUserPaginated,
   getAllLanguages,
   getCorpusCategoriesPaginated,
-  getWordErrorReportStats,
+  getWordErrorReportStats
 } from '../../apis';
 
 interface DashboardStats {
@@ -24,8 +24,8 @@ interface RecentUser {
   id: number;
   name: string;
   email: string;
-  role: string;
-  createdAt: string;
+  role: string | null;
+  createTime: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -33,7 +33,7 @@ const Dashboard: React.FC = () => {
     totalUsers: 0,
     totalLanguages: 0,
     totalCategories: 0,
-    pendingReports: 0,
+    pendingReports: 0
   });
   const [recentUsers, setRecentUsers] = useState<RecentUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+
       // 获取用户统计
       const usersResponse = await getUserPaginated({ page: 1, pageSize: 1 });
       const totalUsers = usersResponse.data?.total || 0;
@@ -55,24 +55,29 @@ const Dashboard: React.FC = () => {
       const totalLanguages = languagesResponse.data?.length || 0;
 
       // 获取分类统计
-      const categoriesResponse = await getCorpusCategoriesPaginated({ page: 1, pageSize: 1 });
+      const categoriesResponse = await getCorpusCategoriesPaginated({
+        page: 1,
+        pageSize: 1
+      });
       const totalCategories = categoriesResponse.data?.total || 0;
 
       // 获取错误报告统计
       const reportsResponse = await getWordErrorReportStats();
-      const pendingReports = reportsResponse.data?.pending || 0;
+      const pendingReports = reportsResponse.data?.pendingReports || 0;
 
       setStats({
         totalUsers,
         totalLanguages,
         totalCategories,
-        pendingReports,
+        pendingReports
       });
 
       // 获取最近用户
-      const recentUsersResponse = await getUserPaginated({ page: 1, pageSize: 5 });
-      setRecentUsers(recentUsersResponse.data?.data || []);
-
+      const recentUsersResponse = await getUserPaginated({
+        page: 1,
+        pageSize: 5
+      });
+      setRecentUsers(recentUsersResponse.data?.list || []);
     } catch (error) {
       console.error('获取仪表板数据失败:', error);
     } finally {
@@ -84,12 +89,12 @@ const Dashboard: React.FC = () => {
     {
       title: '用户名',
       dataIndex: 'name',
-      key: 'name',
+      key: 'name'
     },
     {
       title: '邮箱',
       dataIndex: 'email',
-      key: 'email',
+      key: 'email'
     },
     {
       title: '角色',
@@ -99,20 +104,20 @@ const Dashboard: React.FC = () => {
         <Tag color={role === 'admin' ? 'red' : 'blue'}>
           {role === 'admin' ? '管理员' : '用户'}
         </Tag>
-      ),
+      )
     },
     {
       title: '注册时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleDateString(),
-    },
+      render: (date: string) => new Date(date).toLocaleDateString()
+    }
   ];
 
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
-        <Spin size="large" />
+        <Spin size='large' />
       </div>
     );
   }
@@ -120,12 +125,12 @@ const Dashboard: React.FC = () => {
   return (
     <div>
       <h1 style={{ marginBottom: 24 }}>仪表板</h1>
-      
+
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="总用户数"
+              title='总用户数'
               value={stats.totalUsers}
               prefix={<UserOutlined />}
               valueStyle={{ color: '#3f8600' }}
@@ -135,7 +140,7 @@ const Dashboard: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="支持语言"
+              title='支持语言'
               value={stats.totalLanguages}
               prefix={<GlobalOutlined />}
               valueStyle={{ color: '#1890ff' }}
@@ -145,7 +150,7 @@ const Dashboard: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="语料库分类"
+              title='语料库分类'
               value={stats.totalCategories}
               prefix={<BookOutlined />}
               valueStyle={{ color: '#722ed1' }}
@@ -155,7 +160,7 @@ const Dashboard: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="待处理报告"
+              title='待处理报告'
               value={stats.pendingReports}
               prefix={<BugOutlined />}
               valueStyle={{ color: '#cf1322' }}
@@ -166,30 +171,30 @@ const Dashboard: React.FC = () => {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
-          <Card title="最近注册用户" style={{ height: 400 }}>
+          <Card title='最近注册用户' style={{ height: 400 }}>
             <Table
               dataSource={recentUsers}
               columns={userColumns}
               pagination={false}
-              size="small"
-              rowKey="id"
+              size='small'
+              rowKey='id'
             />
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title="系统状态" style={{ height: 400 }}>
+          <Card title='系统状态' style={{ height: 400 }}>
             <div style={{ padding: '20px 0' }}>
               <div style={{ marginBottom: 16 }}>
                 <strong>API 服务状态：</strong>
-                <Tag color="green">正常</Tag>
+                <Tag color='green'>正常</Tag>
               </div>
               <div style={{ marginBottom: 16 }}>
                 <strong>数据库状态：</strong>
-                <Tag color="green">正常</Tag>
+                <Tag color='green'>正常</Tag>
               </div>
               <div style={{ marginBottom: 16 }}>
                 <strong>文件存储：</strong>
-                <Tag color="green">正常</Tag>
+                <Tag color='green'>正常</Tag>
               </div>
               <div>
                 <strong>系统版本：</strong>
