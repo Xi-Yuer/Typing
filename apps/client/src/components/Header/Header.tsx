@@ -63,7 +63,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
       }
 
       const { accessToken, user } = response.data;
-      
+
       if (!accessToken || !user) {
         throw new Error('登录响应数据不完整');
       }

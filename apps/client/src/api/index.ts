@@ -32,3 +32,13 @@ export const getWordsByCategoryId = (
     }
   });
 };
+
+// 单词错误上报
+export const reportWordError = (wordId: string, errorDescription: string) => {
+  return Apis.general.WordErrorReportsController_create({
+    data: {
+      wordId,
+      errorDescription
+    }
+  });
+};

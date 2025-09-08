@@ -8,11 +8,13 @@ import React, {
 } from 'react';
 import { useFullscreen } from 'ahooks';
 import { useSearchParams } from 'next/navigation';
-import { getWordsByCategoryId } from '@/api';
+import { getWordsByCategoryId, reportWordError } from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
 import { Button, Tooltip } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import TypingText from '@/components/TypingText';
 import GameModeModal from '@/components/GameModeModal';
+import WordErrorReportModal from '@/components/WordErrorReportModal';
 import { Word } from '@/request/globals';
 import IconFont from '@/components/IconFont';
 import { useRouter } from 'next/navigation';
@@ -36,6 +38,7 @@ function PracticePageContent() {
   const [total, setTotal] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isErrorReportModalOpen, setIsErrorReportModalOpen] = useState(false);
   const ref = useRef(null);
   const [isFullscreen, { toggleFullscreen }] = useFullscreen(ref);
   const router = useRouter();
@@ -131,6 +134,30 @@ function PracticePageContent() {
     }
   }, [currentWordIndex]);
 
+  /**
+   * 处理错误上报
+   */
+  const handleReportError = useCallback(
+    async (wordId: string, errorDescription: string) => {
+      await reportWordError(wordId, errorDescription);
+    },
+    []
+  );
+
+  /**
+   * 打开错误上报Modal
+   */
+  const openErrorReportModal = useCallback(() => {
+    setIsErrorReportModalOpen(true);
+  }, []);
+
+  /**
+   * 关闭错误上报Modal
+   */
+  const closeErrorReportModal = useCallback(() => {
+    setIsErrorReportModalOpen(false);
+  }, []);
+
   return (
     <div
       className='bg-slate-950 min-h-screen w-screen relative py-4 flex flex-col'
@@ -185,6 +212,15 @@ function PracticePageContent() {
                 className='text-gray-400 hover:text-purple-300 border-none shadow-none'
               />
             </Tooltip>
+            {/* 错误上报按钮 */}
+            <Tooltip title='报告单词错误'>
+              <Button
+                type='text'
+                icon={<IconFont type='icon-error' size={22} />}
+                onClick={openErrorReportModal}
+                className='text-gray-400 hover:text-red-300 border-none shadow-none'
+              />
+            </Tooltip>
             {/* 全屏按钮 */}
             <Tooltip title={isFullscreen ? '退出全屏' : '全屏'}>
               <Button
@@ -219,6 +255,14 @@ function PracticePageContent() {
         onClose={closeModeModal}
         currentMode={currentMode}
         onModeChange={changeMode}
+      />
+
+      {/* 错误上报弹窗 */}
+      <WordErrorReportModal
+        isOpen={isErrorReportModalOpen}
+        onClose={closeErrorReportModal}
+        word={words[currentWordIndex] || null}
+        onSubmit={handleReportError}
       />
     </div>
   );

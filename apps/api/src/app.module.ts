@@ -12,6 +12,7 @@ import { WordsModule } from './modules/words/words.module';
 import { SentencesModule } from './modules/sentences/sentences.module';
 import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categories.module';
 import { SpeechModule } from './modules/speech/speech.module';
+import { WordErrorReportsModule } from './modules/word-errors/word-errors.module';
 import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor';
 
 @Module({
@@ -25,6 +26,7 @@ import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor'
     WordsModule,
     SentencesModule,
     SpeechModule,
+    WordErrorReportsModule,
     CacheModule.registerAsync({
       useFactory: () => {
         return {

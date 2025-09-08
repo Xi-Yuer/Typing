@@ -32,7 +32,7 @@ interface GameModeProviderProps {
 export const GameModeProvider: React.FC<GameModeProviderProps> = ({
   children
 }) => {
-  const [currentMode, setCurrentMode] = useState<GameMode>('translation');
+  const [currentMode, setCurrentMode] = useState<GameMode>('dictation');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**

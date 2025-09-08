@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { ConfigProvider } from 'antd';
 import { GameModeProvider } from '@/contexts/GameModeContext';
-import './globals.css';
+import '@/assets/styles/global.css';
 
 const freaoka = localFont({
   src: '../assets/font/freaoka.ttf',
@@ -28,7 +28,20 @@ export default function RootLayout({
               colorPrimary: '#7d26cd',
               colorText: '#fff',
               colorBgContainer: '#141414',
-              colorBgElevated: '#141414'
+              colorBgElevated: '#141414',
+              colorError: '#7d26cd',
+              colorErrorText: '#7d26cd'
+            },
+            components: {
+              Button: {
+                colorBorder: '#4b5563',
+                primaryShadow: 'none'
+              },
+              Input: {
+                colorBorder: '#4b5563',
+                activeBorderColor: '#4b5563',
+                activeShadow: 'none'
+              }
             }
           }}
         >

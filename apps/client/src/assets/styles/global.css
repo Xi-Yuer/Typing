@@ -38,3 +38,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: transparent;
 }
+
+.ant-input {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  &::placeholder {
+    color: #ccc;
+  }
+}

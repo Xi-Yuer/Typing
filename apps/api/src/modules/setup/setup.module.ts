@@ -26,10 +26,10 @@ export class SetupModule {
         .build();
 
       const document = SwaggerModule.createDocument(app, config);
-      SwaggerModule.setup('doc', app, document);
+      SwaggerModule.setup('/api/doc', app, document);
 
       // 添加JSON文档端点
-      app.use('/doc-json', (req, res) => {
+      app.use('/api/doc-json', (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.send(document);
       });

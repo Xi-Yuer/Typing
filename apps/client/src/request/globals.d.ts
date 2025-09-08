@@ -255,6 +255,16 @@ export interface CreateSentenceDto {
    */
   audioUrl?: string;
 }
+export interface CreateWordErrorReportDto {
+  /**
+   * 被报告的单词 ID
+   */
+  wordId: string;
+  /**
+   * 错误描述
+   */
+  errorDescription: string;
+}
 export interface ApiResponseDto {
   /**
    * 状态码
@@ -608,6 +618,64 @@ export interface Speech {
    */
   speakUrl: string;
 }
+export interface WordErrorReport {
+  /**
+   * 错误报告 ID
+   */
+  id: string;
+  /**
+   * 报告用户 ID
+   */
+  userId: string;
+  /**
+   * 被报告的单词 ID
+   */
+  wordId: string;
+  /**
+   * 错误描述
+   */
+  errorDescription: string;
+  /**
+   * 处理状态
+   */
+  status: 'pending' | 'reviewing' | 'accepted' | 'rejected';
+  /**
+   * 管理员处理备注
+   */
+  adminNote?: string;
+  /**
+   * 处理管理员 ID
+   */
+  processedBy?: string;
+  /**
+   * 处理时间
+   */
+  processedAt?: string;
+  /**
+   * 创建时间
+   */
+  createdAt: string;
+  /**
+   * 更新时间
+   */
+  updatedAt: string;
+  /**
+   * 删除时间
+   */
+  deletedAt?: string;
+  /**
+   * 报告用户信息
+   */
+  user: User;
+  /**
+   * 被报告的单词信息
+   */
+  word: Word;
+  /**
+   * 处理管理员信息
+   */
+  processor?: User;
+}
 declare global {
   interface Apis {
     general: {
@@ -616,7 +684,7 @@ declare global {
        *
        * [POST] 创建用户（仅管理员）
        *
-       * **path:** /user
+       * **path:** /api/user
        *
        * ---
        *
@@ -699,7 +767,7 @@ declare global {
        *
        * [GET] 分页查询用户（仅管理员）
        *
-       * **path:** /user/paginated
+       * **path:** /api/user/paginated
        *
        * ---
        *
@@ -793,7 +861,7 @@ declare global {
        *
        * [GET] 根据用户 Token 查询当前用户
        *
-       * **path:** /user/me
+       * **path:** /api/user/me
        *
        * ---
        *
@@ -856,7 +924,7 @@ declare global {
        *
        * [GET] 根据ID查询用户
        *
-       * **path:** /user/{id}
+       * **path:** /api/user/{id}
        *
        * ---
        *
@@ -936,7 +1004,7 @@ declare global {
        *
        * [DELETE] 根据ID删除用户（仅超级管理员）
        *
-       * **path:** /user/{id}
+       * **path:** /api/user/{id}
        *
        * ---
        *
@@ -983,7 +1051,7 @@ declare global {
        *
        * [POST] 用户注册
        *
-       * **path:** /auth/register
+       * **path:** /api/auth/register
        *
        * ---
        *
@@ -1065,7 +1133,7 @@ declare global {
        *
        * [POST] 用户登录
        *
-       * **path:** /auth/login
+       * **path:** /api/auth/login
        *
        * ---
        *
@@ -1122,7 +1190,7 @@ declare global {
        *
        * [GET] GitHub OAuth 登录
        *
-       * **path:** /auth/github
+       * **path:** /api/auth/github
        *
        * ---
        *
@@ -1139,7 +1207,7 @@ declare global {
        *
        * [GET] GitHub OAuth 回调
        *
-       * **path:** /auth/github/callback
+       * **path:** /api/auth/github/callback
        *
        * ---
        *
@@ -1156,7 +1224,7 @@ declare global {
        *
        * [GET] QQ OAuth 登录
        *
-       * **path:** /auth/qq
+       * **path:** /api/auth/qq
        *
        * ---
        *
@@ -1173,7 +1241,7 @@ declare global {
        *
        * [GET] QQ OAuth 回调
        *
-       * **path:** /auth/qq/callback
+       * **path:** /api/auth/qq/callback
        *
        * ---
        *
@@ -1190,7 +1258,7 @@ declare global {
        *
        * [GET] 获取用户信息
        *
-       * **path:** /auth/profile
+       * **path:** /api/auth/profile
        *
        * ---
        *
@@ -1207,7 +1275,7 @@ declare global {
        *
        * [GET] 绑定GitHub账户 - 重定向到GitHub授权页面
        *
-       * **path:** /auth/bind/github
+       * **path:** /api/auth/bind/github
        *
        * ---
        *
@@ -1224,7 +1292,7 @@ declare global {
        *
        * [POST] 手动绑定GitHub账户
        *
-       * **path:** /auth/bind/github/manual
+       * **path:** /api/auth/bind/github/manual
        *
        * ---
        *
@@ -1241,7 +1309,7 @@ declare global {
        *
        * [POST] 解绑GitHub账户
        *
-       * **path:** /auth/unbind/github
+       * **path:** /api/auth/unbind/github
        *
        * ---
        *
@@ -1258,7 +1326,7 @@ declare global {
        *
        * [GET] 绑定QQ账户 - 重定向到QQ授权页面
        *
-       * **path:** /auth/bind/qq
+       * **path:** /api/auth/bind/qq
        *
        * ---
        *
@@ -1275,7 +1343,7 @@ declare global {
        *
        * [POST] 手动绑定QQ账户
        *
-       * **path:** /auth/bind/qq/manual
+       * **path:** /api/auth/bind/qq/manual
        *
        * ---
        *
@@ -1292,7 +1360,7 @@ declare global {
        *
        * [POST] 解绑QQ账户
        *
-       * **path:** /auth/unbind/qq
+       * **path:** /api/auth/unbind/qq
        *
        * ---
        *
@@ -1309,7 +1377,7 @@ declare global {
        *
        * [GET] 获取用户绑定的第三方账户
        *
-       * **path:** /auth/bindings
+       * **path:** /api/auth/bindings
        *
        * ---
        *
@@ -1326,7 +1394,7 @@ declare global {
        *
        * [POST] 创建语言
        *
-       * **path:** /languages
+       * **path:** /api/languages
        *
        * ---
        *
@@ -1403,7 +1471,7 @@ declare global {
        *
        * [GET] 获取所有语言列表
        *
-       * **path:** /languages
+       * **path:** /api/languages
        *
        * ---
        *
@@ -1464,7 +1532,7 @@ declare global {
        *
        * [GET] 获取所有启用的语言列表
        *
-       * **path:** /languages/active
+       * **path:** /api/languages/active
        *
        * ---
        *
@@ -1525,7 +1593,7 @@ declare global {
        *
        * [GET] 分页查询语言（仅管理员）
        *
-       * **path:** /languages/paginated
+       * **path:** /api/languages/paginated
        *
        * ---
        *
@@ -1615,7 +1683,7 @@ declare global {
        *
        * [GET] 根据语言代码查询语言
        *
-       * **path:** /languages/code/{code}
+       * **path:** /api/languages/code/{code}
        *
        * ---
        *
@@ -1691,7 +1759,7 @@ declare global {
        *
        * [GET] 根据ID查询语言
        *
-       * **path:** /languages/{id}
+       * **path:** /api/languages/{id}
        *
        * ---
        *
@@ -1767,7 +1835,7 @@ declare global {
        *
        * [DELETE] 删除语言
        *
-       * **path:** /languages/{id}
+       * **path:** /api/languages/{id}
        *
        * ---
        *
@@ -1818,7 +1886,7 @@ declare global {
        *
        * [POST] 创建语料库分类（仅管理员）
        *
-       * **path:** /corpus-categories
+       * **path:** /api/corpus-categories
        *
        * ---
        *
@@ -1914,7 +1982,7 @@ declare global {
        *
        * [GET] 获取所有语料库分类
        *
-       * **path:** /corpus-categories
+       * **path:** /api/corpus-categories
        *
        * ---
        *
@@ -1992,9 +2060,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 分页查询语料库分类（仅管理员）
+       * [GET] 分页查询语料库分类
        *
-       * **path:** /corpus-categories/paginated
+       * **path:** /api/corpus-categories/paginated
        *
        * ---
        *
@@ -2103,7 +2171,7 @@ declare global {
        *
        * [GET] 根据语言 ID 查询分类
        *
-       * **path:** /corpus-categories/language/{languageId}
+       * **path:** /api/corpus-categories/language/{languageId}
        *
        * ---
        *
@@ -2200,7 +2268,7 @@ declare global {
        *
        * [GET] 根据难度等级查询分类
        *
-       * **path:** /corpus-categories/difficulty/{difficulty}
+       * **path:** /api/corpus-categories/difficulty/{difficulty}
        *
        * ---
        *
@@ -2297,7 +2365,7 @@ declare global {
        *
        * [GET] 根据语言 ID 和难度等级查询分类
        *
-       * **path:** /corpus-categories/language/{languageId}/difficulty/{difficulty}
+       * **path:** /api/corpus-categories/language/{languageId}/difficulty/{difficulty}
        *
        * ---
        *
@@ -2398,9 +2466,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 获取难度等级统计（仅管理员）
+       * [GET] 获取难度等级统计
        *
-       * **path:** /corpus-categories/stats/difficulty
+       * **path:** /api/corpus-categories/stats/difficulty
        *
        * ---
        *
@@ -2432,9 +2500,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 获取语言分类数量统计（仅管理员）
+       * [GET] 获取语言分类数量统计
        *
-       * **path:** /corpus-categories/stats/language
+       * **path:** /api/corpus-categories/stats/language
        *
        * ---
        *
@@ -2468,7 +2536,7 @@ declare global {
        *
        * [GET] 根据 ID 查询语料库分类
        *
-       * **path:** /corpus-categories/{id}
+       * **path:** /api/corpus-categories/{id}
        *
        * ---
        *
@@ -2563,7 +2631,7 @@ declare global {
        *
        * [DELETE] 删除语料库分类（仅管理员）
        *
-       * **path:** /corpus-categories/{id}
+       * **path:** /api/corpus-categories/{id}
        *
        * ---
        *
@@ -2614,7 +2682,7 @@ declare global {
        *
        * [POST] 创建单词（仅管理员）
        *
-       * **path:** /words
+       * **path:** /api/words
        *
        * ---
        *
@@ -2776,7 +2844,7 @@ declare global {
        *
        * [GET] 分页查询单词（仅管理员）
        *
-       * **path:** /words/paginated
+       * **path:** /api/words/paginated
        *
        * ---
        *
@@ -2937,7 +3005,7 @@ declare global {
        *
        * [GET] 根据语言 ID 查询单词
        *
-       * **path:** /words/language/{languageId}
+       * **path:** /api/words/language/{languageId}
        *
        * ---
        *
@@ -3114,7 +3182,7 @@ declare global {
        *
        * [GET] 根据分类 ID 查询单词
        *
-       * **path:** /words/category/{categoryId}
+       * **path:** /api/words/category/{categoryId}
        *
        * ---
        *
@@ -3291,7 +3359,7 @@ declare global {
        *
        * [GET] 根据语言和分类查询单词
        *
-       * **path:** /words/language/{languageId}/category/{categoryId}
+       * **path:** /api/words/language/{languageId}/category/{categoryId}
        *
        * ---
        *
@@ -3474,7 +3542,7 @@ declare global {
        *
        * [GET] 搜索单词
        *
-       * **path:** /words/search
+       * **path:** /api/words/search
        *
        * ---
        *
@@ -3647,7 +3715,7 @@ declare global {
        *
        * [GET] 分页搜索单词
        *
-       * **path:** /words/search/paginated
+       * **path:** /api/words/search/paginated
        *
        * ---
        *
@@ -3826,7 +3894,7 @@ declare global {
        *
        * [GET] 随机获取单词（用于练习）
        *
-       * **path:** /words/random
+       * **path:** /api/words/random
        *
        * ---
        *
@@ -3985,9 +4053,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 获取语言统计信息（仅管理员）
+       * [GET] 获取语言统计信息
        *
-       * **path:** /words/stats/language
+       * **path:** /api/words/stats/language
        *
        * ---
        *
@@ -4027,9 +4095,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 获取分类统计信息（仅管理员）
+       * [GET] 获取分类统计信息
        *
-       * **path:** /words/stats/category
+       * **path:** /api/words/stats/category
        *
        * ---
        *
@@ -4071,7 +4139,7 @@ declare global {
        *
        * [GET] 根据 ID 查询单词详情
        *
-       * **path:** /words/{id}
+       * **path:** /api/words/{id}
        *
        * ---
        *
@@ -4218,7 +4286,7 @@ declare global {
        *
        * [DELETE] 删除单词（仅管理员）
        *
-       * **path:** /words/{id}
+       * **path:** /api/words/{id}
        *
        * ---
        *
@@ -4277,7 +4345,7 @@ declare global {
        *
        * [POST] 创建句子（仅管理员）
        *
-       * **path:** /sentences
+       * **path:** /api/sentences
        *
        * ---
        *
@@ -4413,9 +4481,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 分页查询句子（仅管理员）
+       * [GET] 分页查询句子
        *
-       * **path:** /sentences/paginated
+       * **path:** /api/sentences/paginated
        *
        * ---
        *
@@ -4564,7 +4632,7 @@ declare global {
        *
        * [GET] 根据语言 ID 查询句子
        *
-       * **path:** /sentences/language/{languageId}
+       * **path:** /api/sentences/language/{languageId}
        *
        * ---
        *
@@ -4729,7 +4797,7 @@ declare global {
        *
        * [GET] 根据分类 ID 查询句子
        *
-       * **path:** /sentences/category/{categoryId}
+       * **path:** /api/sentences/category/{categoryId}
        *
        * ---
        *
@@ -4894,7 +4962,7 @@ declare global {
        *
        * [GET] 根据语言 ID 和分类 ID 查询句子
        *
-       * **path:** /sentences/language/{languageId}/category/{categoryId}
+       * **path:** /api/sentences/language/{languageId}/category/{categoryId}
        *
        * ---
        *
@@ -5065,7 +5133,7 @@ declare global {
        *
        * [GET] 搜索句子
        *
-       * **path:** /sentences/search
+       * **path:** /api/sentences/search
        *
        * ---
        *
@@ -5214,7 +5282,7 @@ declare global {
        *
        * [GET] 分页搜索句子
        *
-       * **path:** /sentences/search/paginated
+       * **path:** /api/sentences/search/paginated
        *
        * ---
        *
@@ -5381,7 +5449,7 @@ declare global {
        *
        * [GET] 获取随机句子
        *
-       * **path:** /sentences/random
+       * **path:** /api/sentences/random
        *
        * ---
        *
@@ -5528,9 +5596,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 获取语言统计信息（仅管理员）
+       * [GET] 获取语言统计信息
        *
-       * **path:** /sentences/stats/language
+       * **path:** /api/sentences/stats/language
        *
        * ---
        *
@@ -5570,9 +5638,9 @@ declare global {
       /**
        * ---
        *
-       * [GET] 获取分类统计信息（仅管理员）
+       * [GET] 获取分类统计信息
        *
-       * **path:** /sentences/stats/category
+       * **path:** /api/sentences/stats/category
        *
        * ---
        *
@@ -5614,7 +5682,7 @@ declare global {
        *
        * [GET] 根据 ID 查询句子详情
        *
-       * **path:** /sentences/{id}
+       * **path:** /api/sentences/{id}
        *
        * ---
        *
@@ -5749,7 +5817,7 @@ declare global {
        *
        * [DELETE] 删除句子（仅管理员）
        *
-       * **path:** /sentences/{id}
+       * **path:** /api/sentences/{id}
        *
        * ---
        *
@@ -5808,7 +5876,7 @@ declare global {
        *
        * [GET]
        *
-       * **path:** /speech/audio
+       * **path:** /api/speech/audio
        *
        * ---
        *
@@ -5877,6 +5945,2192 @@ declare global {
           data?: Speech;
         },
         'general.SpeechController_getText2Speech',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 提交单词错误报告
+       *
+       * **path:** /api/word-error-reports
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 被报告的单词 ID
+       *   wordId: string
+       *   // 错误描述
+       *   errorDescription: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // 错误报告 ID
+       *     id: string
+       *     // 报告用户 ID
+       *     userId: string
+       *     // 被报告的单词 ID
+       *     wordId: string
+       *     // 错误描述
+       *     errorDescription: string
+       *     // 处理状态
+       *     status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *     // 管理员处理备注
+       *     adminNote?: string
+       *     // 处理管理员 ID
+       *     processedBy?: string
+       *     // 处理时间
+       *     processedAt?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 报告用户信息
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 被报告的单词信息
+       *     word: {
+       *       // 单词 ID
+       *       id: string
+       *       // 所属语言 ID
+       *       languageId: string
+       *       // 所属分类 ID
+       *       categoryId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 所属分类
+       *       category: {
+       *         // 分类 ID
+       *         id: string
+       *         // 对应语言 ID
+       *         languageId: string
+       *         // 分类名称（旅游、商务、日常会话）
+       *         name: string
+       *         // 分类描述
+       *         description?: string
+       *         // 难度等级（1-5）
+       *         difficulty: number
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *         // 关联的语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *       }
+       *     }
+       *     // 处理管理员信息
+       *     processor?: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }
+       * }
+       * ```
+       */
+      WordErrorReportsController_create<
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: WordErrorReport;
+          }
+        > & {
+          data: CreateWordErrorReportDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        ApiResponseDto & {
+          data?: WordErrorReport;
+        },
+        'general.WordErrorReportsController_create',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 分页查询所有错误报告（仅管理员）
+       *
+       * **path:** /api/word-error-reports/paginated
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // [items] start
+       *     // [items] end
+       *     list?: Array<{
+       *       // 错误报告 ID
+       *       id: string
+       *       // 报告用户 ID
+       *       userId: string
+       *       // 被报告的单词 ID
+       *       wordId: string
+       *       // 错误描述
+       *       errorDescription: string
+       *       // 处理状态
+       *       status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *       // 管理员处理备注
+       *       adminNote?: string
+       *       // 处理管理员 ID
+       *       processedBy?: string
+       *       // 处理时间
+       *       processedAt?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 报告用户信息
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 被报告的单词信息
+       *       word: {
+       *         // 单词 ID
+       *         id: string
+       *         // 所属语言 ID
+       *         languageId: string
+       *         // 所属分类 ID
+       *         categoryId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 所属分类
+       *         category: {
+       *           // 分类 ID
+       *           id: string
+       *           // 对应语言 ID
+       *           languageId: string
+       *           // 分类名称（旅游、商务、日常会话）
+       *           name: string
+       *           // 分类描述
+       *           description?: string
+       *           // 难度等级（1-5）
+       *           difficulty: number
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *           // 关联的语言
+       *           language: {
+       *             // 语言 ID
+       *             id: number
+       *             // 语言名称（English, 日本語, Français）
+       *             name: string
+       *             // 语言代码（en, ja, fr）
+       *             code: string
+       *             // 文字体系（Latin, Kanji, Cyrillic）
+       *             script: string
+       *             // 是否启用
+       *             isActive: boolean
+       *             // 创建时间
+       *             createTime: string
+       *             // 更新时间
+       *             updateTime: string
+       *             // 删除时间
+       *             deleteTime?: string
+       *           }
+       *         }
+       *       }
+       *       // 处理管理员信息
+       *       processor?: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *   }
+       * }
+       * ```
+       */
+      WordErrorReportsController_findAllPaginated<
+        Config extends Alova2MethodConfig<
+          PaginationResponseDto & {
+            data?: {
+              list?: WordErrorReport[];
+            };
+          }
+        > & {
+          params: {
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        PaginationResponseDto & {
+          data?: {
+            list?: WordErrorReport[];
+          };
+        },
+        'general.WordErrorReportsController_findAllPaginated',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 查询我的错误报告
+       *
+       * **path:** /api/word-error-reports/my-reports
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // [items] start
+       *     // [items] end
+       *     list?: Array<{
+       *       // 错误报告 ID
+       *       id: string
+       *       // 报告用户 ID
+       *       userId: string
+       *       // 被报告的单词 ID
+       *       wordId: string
+       *       // 错误描述
+       *       errorDescription: string
+       *       // 处理状态
+       *       status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *       // 管理员处理备注
+       *       adminNote?: string
+       *       // 处理管理员 ID
+       *       processedBy?: string
+       *       // 处理时间
+       *       processedAt?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 报告用户信息
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 被报告的单词信息
+       *       word: {
+       *         // 单词 ID
+       *         id: string
+       *         // 所属语言 ID
+       *         languageId: string
+       *         // 所属分类 ID
+       *         categoryId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 所属分类
+       *         category: {
+       *           // 分类 ID
+       *           id: string
+       *           // 对应语言 ID
+       *           languageId: string
+       *           // 分类名称（旅游、商务、日常会话）
+       *           name: string
+       *           // 分类描述
+       *           description?: string
+       *           // 难度等级（1-5）
+       *           difficulty: number
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *           // 关联的语言
+       *           language: {
+       *             // 语言 ID
+       *             id: number
+       *             // 语言名称（English, 日本語, Français）
+       *             name: string
+       *             // 语言代码（en, ja, fr）
+       *             code: string
+       *             // 文字体系（Latin, Kanji, Cyrillic）
+       *             script: string
+       *             // 是否启用
+       *             isActive: boolean
+       *             // 创建时间
+       *             createTime: string
+       *             // 更新时间
+       *             updateTime: string
+       *             // 删除时间
+       *             deleteTime?: string
+       *           }
+       *         }
+       *       }
+       *       // 处理管理员信息
+       *       processor?: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *   }
+       * }
+       * ```
+       */
+      WordErrorReportsController_findMyReports<
+        Config extends Alova2MethodConfig<
+          PaginationResponseDto & {
+            data?: {
+              list?: WordErrorReport[];
+            };
+          }
+        > & {
+          params: {
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        PaginationResponseDto & {
+          data?: {
+            list?: WordErrorReport[];
+          };
+        },
+        'general.WordErrorReportsController_findMyReports',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取错误报告统计信息（仅管理员）
+       *
+       * **path:** /api/word-error-reports/stats
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: object
+       * }
+       * ```
+       */
+      WordErrorReportsController_getReportStats<
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: Object;
+          }
+        >
+      >(
+        config?: Config
+      ): Alova2Method<
+        ApiResponseDto & {
+          data?: Object;
+        },
+        'general.WordErrorReportsController_getReportStats',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 搜索我的错误报告
+       *
+       * **path:** /api/word-error-reports/search
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 搜索关键词
+       *   keyword: string
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   // [items] start
+       *   // [items] end
+       *   data?: Array<{
+       *     // 错误报告 ID
+       *     id: string
+       *     // 报告用户 ID
+       *     userId: string
+       *     // 被报告的单词 ID
+       *     wordId: string
+       *     // 错误描述
+       *     errorDescription: string
+       *     // 处理状态
+       *     status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *     // 管理员处理备注
+       *     adminNote?: string
+       *     // 处理管理员 ID
+       *     processedBy?: string
+       *     // 处理时间
+       *     processedAt?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 报告用户信息
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 被报告的单词信息
+       *     word: {
+       *       // 单词 ID
+       *       id: string
+       *       // 所属语言 ID
+       *       languageId: string
+       *       // 所属分类 ID
+       *       categoryId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 所属分类
+       *       category: {
+       *         // 分类 ID
+       *         id: string
+       *         // 对应语言 ID
+       *         languageId: string
+       *         // 分类名称（旅游、商务、日常会话）
+       *         name: string
+       *         // 分类描述
+       *         description?: string
+       *         // 难度等级（1-5）
+       *         difficulty: number
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *         // 关联的语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *       }
+       *     }
+       *     // 处理管理员信息
+       *     processor?: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }>
+       * }
+       * ```
+       */
+      WordErrorReportsController_searchMyReports<
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: WordErrorReport[];
+          }
+        > & {
+          params: {
+            /**
+             * 搜索关键词
+             */
+            keyword: string;
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        ApiResponseDto & {
+          data?: WordErrorReport[];
+        },
+        'general.WordErrorReportsController_searchMyReports',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 分页搜索我的错误报告
+       *
+       * **path:** /api/word-error-reports/search/paginated
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 搜索关键词
+       *   keyword: string
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // [items] start
+       *     // [items] end
+       *     list?: Array<{
+       *       // 错误报告 ID
+       *       id: string
+       *       // 报告用户 ID
+       *       userId: string
+       *       // 被报告的单词 ID
+       *       wordId: string
+       *       // 错误描述
+       *       errorDescription: string
+       *       // 处理状态
+       *       status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *       // 管理员处理备注
+       *       adminNote?: string
+       *       // 处理管理员 ID
+       *       processedBy?: string
+       *       // 处理时间
+       *       processedAt?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 报告用户信息
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 被报告的单词信息
+       *       word: {
+       *         // 单词 ID
+       *         id: string
+       *         // 所属语言 ID
+       *         languageId: string
+       *         // 所属分类 ID
+       *         categoryId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 所属分类
+       *         category: {
+       *           // 分类 ID
+       *           id: string
+       *           // 对应语言 ID
+       *           languageId: string
+       *           // 分类名称（旅游、商务、日常会话）
+       *           name: string
+       *           // 分类描述
+       *           description?: string
+       *           // 难度等级（1-5）
+       *           difficulty: number
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *           // 关联的语言
+       *           language: {
+       *             // 语言 ID
+       *             id: number
+       *             // 语言名称（English, 日本語, Français）
+       *             name: string
+       *             // 语言代码（en, ja, fr）
+       *             code: string
+       *             // 文字体系（Latin, Kanji, Cyrillic）
+       *             script: string
+       *             // 是否启用
+       *             isActive: boolean
+       *             // 创建时间
+       *             createTime: string
+       *             // 更新时间
+       *             updateTime: string
+       *             // 删除时间
+       *             deleteTime?: string
+       *           }
+       *         }
+       *       }
+       *       // 处理管理员信息
+       *       processor?: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *   }
+       * }
+       * ```
+       */
+      WordErrorReportsController_searchMyReportsPaginated<
+        Config extends Alova2MethodConfig<
+          PaginationResponseDto & {
+            data?: {
+              list?: WordErrorReport[];
+            };
+          }
+        > & {
+          params: {
+            /**
+             * 搜索关键词
+             */
+            keyword: string;
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        PaginationResponseDto & {
+          data?: {
+            list?: WordErrorReport[];
+          };
+        },
+        'general.WordErrorReportsController_searchMyReportsPaginated',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 搜索所有错误报告（仅管理员）
+       *
+       * **path:** /api/word-error-reports/admin/search
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 搜索关键词
+       *   keyword: string
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   // [items] start
+       *   // [items] end
+       *   data?: Array<{
+       *     // 错误报告 ID
+       *     id: string
+       *     // 报告用户 ID
+       *     userId: string
+       *     // 被报告的单词 ID
+       *     wordId: string
+       *     // 错误描述
+       *     errorDescription: string
+       *     // 处理状态
+       *     status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *     // 管理员处理备注
+       *     adminNote?: string
+       *     // 处理管理员 ID
+       *     processedBy?: string
+       *     // 处理时间
+       *     processedAt?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 报告用户信息
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 被报告的单词信息
+       *     word: {
+       *       // 单词 ID
+       *       id: string
+       *       // 所属语言 ID
+       *       languageId: string
+       *       // 所属分类 ID
+       *       categoryId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 所属分类
+       *       category: {
+       *         // 分类 ID
+       *         id: string
+       *         // 对应语言 ID
+       *         languageId: string
+       *         // 分类名称（旅游、商务、日常会话）
+       *         name: string
+       *         // 分类描述
+       *         description?: string
+       *         // 难度等级（1-5）
+       *         difficulty: number
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *         // 关联的语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *       }
+       *     }
+       *     // 处理管理员信息
+       *     processor?: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }>
+       * }
+       * ```
+       */
+      WordErrorReportsController_searchAllReports<
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: WordErrorReport[];
+          }
+        > & {
+          params: {
+            /**
+             * 搜索关键词
+             */
+            keyword: string;
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        ApiResponseDto & {
+          data?: WordErrorReport[];
+        },
+        'general.WordErrorReportsController_searchAllReports',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 分页搜索所有错误报告（仅管理员）
+       *
+       * **path:** /api/word-error-reports/admin/search/paginated
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 搜索关键词
+       *   keyword: string
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // [items] start
+       *     // [items] end
+       *     list?: Array<{
+       *       // 错误报告 ID
+       *       id: string
+       *       // 报告用户 ID
+       *       userId: string
+       *       // 被报告的单词 ID
+       *       wordId: string
+       *       // 错误描述
+       *       errorDescription: string
+       *       // 处理状态
+       *       status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *       // 管理员处理备注
+       *       adminNote?: string
+       *       // 处理管理员 ID
+       *       processedBy?: string
+       *       // 处理时间
+       *       processedAt?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 报告用户信息
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 被报告的单词信息
+       *       word: {
+       *         // 单词 ID
+       *         id: string
+       *         // 所属语言 ID
+       *         languageId: string
+       *         // 所属分类 ID
+       *         categoryId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 所属分类
+       *         category: {
+       *           // 分类 ID
+       *           id: string
+       *           // 对应语言 ID
+       *           languageId: string
+       *           // 分类名称（旅游、商务、日常会话）
+       *           name: string
+       *           // 分类描述
+       *           description?: string
+       *           // 难度等级（1-5）
+       *           difficulty: number
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *           // 关联的语言
+       *           language: {
+       *             // 语言 ID
+       *             id: number
+       *             // 语言名称（English, 日本語, Français）
+       *             name: string
+       *             // 语言代码（en, ja, fr）
+       *             code: string
+       *             // 文字体系（Latin, Kanji, Cyrillic）
+       *             script: string
+       *             // 是否启用
+       *             isActive: boolean
+       *             // 创建时间
+       *             createTime: string
+       *             // 更新时间
+       *             updateTime: string
+       *             // 删除时间
+       *             deleteTime?: string
+       *           }
+       *         }
+       *       }
+       *       // 处理管理员信息
+       *       processor?: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *   }
+       * }
+       * ```
+       */
+      WordErrorReportsController_searchAllReportsPaginated<
+        Config extends Alova2MethodConfig<
+          PaginationResponseDto & {
+            data?: {
+              list?: WordErrorReport[];
+            };
+          }
+        > & {
+          params: {
+            /**
+             * 搜索关键词
+             */
+            keyword: string;
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        PaginationResponseDto & {
+          data?: {
+            list?: WordErrorReport[];
+          };
+        },
+        'general.WordErrorReportsController_searchAllReportsPaginated',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 根据状态查询错误报告（仅管理员）
+       *
+       * **path:** /api/word-error-reports/status/{status}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 报告状态
+       *   status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // [items] start
+       *     // [items] end
+       *     list?: Array<{
+       *       // 错误报告 ID
+       *       id: string
+       *       // 报告用户 ID
+       *       userId: string
+       *       // 被报告的单词 ID
+       *       wordId: string
+       *       // 错误描述
+       *       errorDescription: string
+       *       // 处理状态
+       *       status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *       // 管理员处理备注
+       *       adminNote?: string
+       *       // 处理管理员 ID
+       *       processedBy?: string
+       *       // 处理时间
+       *       processedAt?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 报告用户信息
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 被报告的单词信息
+       *       word: {
+       *         // 单词 ID
+       *         id: string
+       *         // 所属语言 ID
+       *         languageId: string
+       *         // 所属分类 ID
+       *         categoryId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 所属分类
+       *         category: {
+       *           // 分类 ID
+       *           id: string
+       *           // 对应语言 ID
+       *           languageId: string
+       *           // 分类名称（旅游、商务、日常会话）
+       *           name: string
+       *           // 分类描述
+       *           description?: string
+       *           // 难度等级（1-5）
+       *           difficulty: number
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *           // 关联的语言
+       *           language: {
+       *             // 语言 ID
+       *             id: number
+       *             // 语言名称（English, 日本語, Français）
+       *             name: string
+       *             // 语言代码（en, ja, fr）
+       *             code: string
+       *             // 文字体系（Latin, Kanji, Cyrillic）
+       *             script: string
+       *             // 是否启用
+       *             isActive: boolean
+       *             // 创建时间
+       *             createTime: string
+       *             // 更新时间
+       *             updateTime: string
+       *             // 删除时间
+       *             deleteTime?: string
+       *           }
+       *         }
+       *       }
+       *       // 处理管理员信息
+       *       processor?: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *   }
+       * }
+       * ```
+       */
+      WordErrorReportsController_findByStatus<
+        Config extends Alova2MethodConfig<
+          PaginationResponseDto & {
+            data?: {
+              list?: WordErrorReport[];
+            };
+          }
+        > & {
+          pathParams: {
+            /**
+             * 报告状态
+             */
+            status: 'pending' | 'reviewing' | 'accepted' | 'rejected';
+          };
+          params: {
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        PaginationResponseDto & {
+          data?: {
+            list?: WordErrorReport[];
+          };
+        },
+        'general.WordErrorReportsController_findByStatus',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 根据 ID 查询错误报告详情
+       *
+       * **path:** /api/word-error-reports/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 错误报告 ID
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: {
+       *     // 错误报告 ID
+       *     id: string
+       *     // 报告用户 ID
+       *     userId: string
+       *     // 被报告的单词 ID
+       *     wordId: string
+       *     // 错误描述
+       *     errorDescription: string
+       *     // 处理状态
+       *     status: 'pending' | 'reviewing' | 'accepted' | 'rejected'
+       *     // 管理员处理备注
+       *     adminNote?: string
+       *     // 处理管理员 ID
+       *     processedBy?: string
+       *     // 处理时间
+       *     processedAt?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 报告用户信息
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 被报告的单词信息
+       *     word: {
+       *       // 单词 ID
+       *       id: string
+       *       // 所属语言 ID
+       *       languageId: string
+       *       // 所属分类 ID
+       *       categoryId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 所属分类
+       *       category: {
+       *         // 分类 ID
+       *         id: string
+       *         // 对应语言 ID
+       *         languageId: string
+       *         // 分类名称（旅游、商务、日常会话）
+       *         name: string
+       *         // 分类描述
+       *         description?: string
+       *         // 难度等级（1-5）
+       *         difficulty: number
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *         // 关联的语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *       }
+       *     }
+       *     // 处理管理员信息
+       *     processor?: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }
+       * }
+       * ```
+       */
+      WordErrorReportsController_findOne<
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: WordErrorReport;
+          }
+        > & {
+          pathParams: {
+            /**
+             * 错误报告 ID
+             */
+            id: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        ApiResponseDto & {
+          data?: WordErrorReport;
+        },
+        'general.WordErrorReportsController_findOne',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [DELETE] 删除错误报告（仅管理员）
+       *
+       * **path:** /api/word-error-reports/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 错误报告 ID
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   // 响应数据
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * } & {
+       *   data?: object
+       * }
+       * ```
+       */
+      WordErrorReportsController_remove<
+        Config extends Alova2MethodConfig<
+          ApiResponseDto & {
+            data?: Object;
+          }
+        > & {
+          pathParams: {
+            /**
+             * 错误报告 ID
+             */
+            id: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        ApiResponseDto & {
+          data?: Object;
+        },
+        'general.WordErrorReportsController_remove',
         Config
       >;
     };

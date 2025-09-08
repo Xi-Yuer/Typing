@@ -17,131 +17,193 @@
  * **Do not edit the file manually.**
  */
 export default {
-  'general.UserController_create': ['POST', '/user'],
-  'general.UserController_findPaginated': ['GET', '/user/paginated'],
-  'general.UserController_findMe': ['GET', '/user/me'],
-  'general.UserController_findOne': ['GET', '/user/{id}'],
-  'general.UserController_remove': ['DELETE', '/user/{id}'],
-  'general.AuthController_register': ['POST', '/auth/register'],
-  'general.AuthController_login': ['POST', '/auth/login'],
-  'general.AuthController_githubAuth': ['GET', '/auth/github'],
-  'general.AuthController_githubCallback': ['GET', '/auth/github/callback'],
-  'general.AuthController_qqAuth': ['GET', '/auth/qq'],
-  'general.AuthController_qqCallback': ['GET', '/auth/qq/callback'],
-  'general.AuthController_getProfile': ['GET', '/auth/profile'],
-  'general.AuthController_bindGithub': ['GET', '/auth/bind/github'],
+  'general.UserController_create': ['POST', '/api/user'],
+  'general.UserController_findPaginated': ['GET', '/api/user/paginated'],
+  'general.UserController_findMe': ['GET', '/api/user/me'],
+  'general.UserController_findOne': ['GET', '/api/user/{id}'],
+  'general.UserController_remove': ['DELETE', '/api/user/{id}'],
+  'general.AuthController_register': ['POST', '/api/auth/register'],
+  'general.AuthController_login': ['POST', '/api/auth/login'],
+  'general.AuthController_githubAuth': ['GET', '/api/auth/github'],
+  'general.AuthController_githubCallback': ['GET', '/api/auth/github/callback'],
+  'general.AuthController_qqAuth': ['GET', '/api/auth/qq'],
+  'general.AuthController_qqCallback': ['GET', '/api/auth/qq/callback'],
+  'general.AuthController_getProfile': ['GET', '/api/auth/profile'],
+  'general.AuthController_bindGithub': ['GET', '/api/auth/bind/github'],
   'general.AuthController_bindGithubManual': [
     'POST',
-    '/auth/bind/github/manual'
+    '/api/auth/bind/github/manual'
   ],
-  'general.AuthController_unbindGithub': ['POST', '/auth/unbind/github'],
-  'general.AuthController_bindQQ': ['GET', '/auth/bind/qq'],
-  'general.AuthController_bindQQManual': ['POST', '/auth/bind/qq/manual'],
-  'general.AuthController_unbindQQ': ['POST', '/auth/unbind/qq'],
-  'general.AuthController_getBindings': ['GET', '/auth/bindings'],
-  'general.LanguagesController_create': ['POST', '/languages'],
-  'general.LanguagesController_findAll': ['GET', '/languages'],
-  'general.LanguagesController_findAllActive': ['GET', '/languages/active'],
+  'general.AuthController_unbindGithub': ['POST', '/api/auth/unbind/github'],
+  'general.AuthController_bindQQ': ['GET', '/api/auth/bind/qq'],
+  'general.AuthController_bindQQManual': ['POST', '/api/auth/bind/qq/manual'],
+  'general.AuthController_unbindQQ': ['POST', '/api/auth/unbind/qq'],
+  'general.AuthController_getBindings': ['GET', '/api/auth/bindings'],
+  'general.LanguagesController_create': ['POST', '/api/languages'],
+  'general.LanguagesController_findAll': ['GET', '/api/languages'],
+  'general.LanguagesController_findAllActive': ['GET', '/api/languages/active'],
   'general.LanguagesController_findAllPaginated': [
     'GET',
-    '/languages/paginated'
+    '/api/languages/paginated'
   ],
-  'general.LanguagesController_findByCode': ['GET', '/languages/code/{code}'],
-  'general.LanguagesController_findOne': ['GET', '/languages/{id}'],
-  'general.LanguagesController_remove': ['DELETE', '/languages/{id}'],
-  'general.CorpusCategoriesController_create': ['POST', '/corpus-categories'],
-  'general.CorpusCategoriesController_findAll': ['GET', '/corpus-categories'],
+  'general.LanguagesController_findByCode': [
+    'GET',
+    '/api/languages/code/{code}'
+  ],
+  'general.LanguagesController_findOne': ['GET', '/api/languages/{id}'],
+  'general.LanguagesController_remove': ['DELETE', '/api/languages/{id}'],
+  'general.CorpusCategoriesController_create': [
+    'POST',
+    '/api/corpus-categories'
+  ],
+  'general.CorpusCategoriesController_findAll': [
+    'GET',
+    '/api/corpus-categories'
+  ],
   'general.CorpusCategoriesController_findAllPaginated': [
     'GET',
-    '/corpus-categories/paginated'
+    '/api/corpus-categories/paginated'
   ],
   'general.CorpusCategoriesController_findByLanguageId': [
     'GET',
-    '/corpus-categories/language/{languageId}'
+    '/api/corpus-categories/language/{languageId}'
   ],
   'general.CorpusCategoriesController_findByDifficulty': [
     'GET',
-    '/corpus-categories/difficulty/{difficulty}'
+    '/api/corpus-categories/difficulty/{difficulty}'
   ],
   'general.CorpusCategoriesController_findByLanguageAndDifficulty': [
     'GET',
-    '/corpus-categories/language/{languageId}/difficulty/{difficulty}'
+    '/api/corpus-categories/language/{languageId}/difficulty/{difficulty}'
   ],
   'general.CorpusCategoriesController_getDifficultyStats': [
     'GET',
-    '/corpus-categories/stats/difficulty'
+    '/api/corpus-categories/stats/difficulty'
   ],
   'general.CorpusCategoriesController_getLanguageStats': [
     'GET',
-    '/corpus-categories/stats/language'
+    '/api/corpus-categories/stats/language'
   ],
   'general.CorpusCategoriesController_findOne': [
     'GET',
-    '/corpus-categories/{id}'
+    '/api/corpus-categories/{id}'
   ],
   'general.CorpusCategoriesController_remove': [
     'DELETE',
-    '/corpus-categories/{id}'
+    '/api/corpus-categories/{id}'
   ],
-  'general.WordsController_create': ['POST', '/words'],
-  'general.WordsController_findAllPaginated': ['GET', '/words/paginated'],
+  'general.WordsController_create': ['POST', '/api/words'],
+  'general.WordsController_findAllPaginated': ['GET', '/api/words/paginated'],
   'general.WordsController_findByLanguageId': [
     'GET',
-    '/words/language/{languageId}'
+    '/api/words/language/{languageId}'
   ],
   'general.WordsController_findByCategoryId': [
     'GET',
-    '/words/category/{categoryId}'
+    '/api/words/category/{categoryId}'
   ],
   'general.WordsController_findByLanguageAndCategory': [
     'GET',
-    '/words/language/{languageId}/category/{categoryId}'
+    '/api/words/language/{languageId}/category/{categoryId}'
   ],
-  'general.WordsController_searchWords': ['GET', '/words/search'],
+  'general.WordsController_searchWords': ['GET', '/api/words/search'],
   'general.WordsController_searchWordsPaginated': [
     'GET',
-    '/words/search/paginated'
+    '/api/words/search/paginated'
   ],
-  'general.WordsController_getRandomWords': ['GET', '/words/random'],
-  'general.WordsController_getLanguageStats': ['GET', '/words/stats/language'],
-  'general.WordsController_getCategoryStats': ['GET', '/words/stats/category'],
-  'general.WordsController_findOne': ['GET', '/words/{id}'],
-  'general.WordsController_remove': ['DELETE', '/words/{id}'],
-  'general.SentencesController_create': ['POST', '/sentences'],
+  'general.WordsController_getRandomWords': ['GET', '/api/words/random'],
+  'general.WordsController_getLanguageStats': [
+    'GET',
+    '/api/words/stats/language'
+  ],
+  'general.WordsController_getCategoryStats': [
+    'GET',
+    '/api/words/stats/category'
+  ],
+  'general.WordsController_findOne': ['GET', '/api/words/{id}'],
+  'general.WordsController_remove': ['DELETE', '/api/words/{id}'],
+  'general.SentencesController_create': ['POST', '/api/sentences'],
   'general.SentencesController_findAllPaginated': [
     'GET',
-    '/sentences/paginated'
+    '/api/sentences/paginated'
   ],
   'general.SentencesController_findByLanguageId': [
     'GET',
-    '/sentences/language/{languageId}'
+    '/api/sentences/language/{languageId}'
   ],
   'general.SentencesController_findByCategoryId': [
     'GET',
-    '/sentences/category/{categoryId}'
+    '/api/sentences/category/{categoryId}'
   ],
   'general.SentencesController_findByLanguageAndCategory': [
     'GET',
-    '/sentences/language/{languageId}/category/{categoryId}'
+    '/api/sentences/language/{languageId}/category/{categoryId}'
   ],
-  'general.SentencesController_searchSentences': ['GET', '/sentences/search'],
+  'general.SentencesController_searchSentences': [
+    'GET',
+    '/api/sentences/search'
+  ],
   'general.SentencesController_searchSentencesPaginated': [
     'GET',
-    '/sentences/search/paginated'
+    '/api/sentences/search/paginated'
   ],
   'general.SentencesController_getRandomSentences': [
     'GET',
-    '/sentences/random'
+    '/api/sentences/random'
   ],
   'general.SentencesController_getLanguageStats': [
     'GET',
-    '/sentences/stats/language'
+    '/api/sentences/stats/language'
   ],
   'general.SentencesController_getCategoryStats': [
     'GET',
-    '/sentences/stats/category'
+    '/api/sentences/stats/category'
   ],
-  'general.SentencesController_findOne': ['GET', '/sentences/{id}'],
-  'general.SentencesController_remove': ['DELETE', '/sentences/{id}'],
-  'general.SpeechController_getText2Speech': ['GET', '/speech/audio']
+  'general.SentencesController_findOne': ['GET', '/api/sentences/{id}'],
+  'general.SentencesController_remove': ['DELETE', '/api/sentences/{id}'],
+  'general.SpeechController_getText2Speech': ['GET', '/api/speech/audio'],
+  'general.WordErrorReportsController_create': [
+    'POST',
+    '/api/word-error-reports'
+  ],
+  'general.WordErrorReportsController_findAllPaginated': [
+    'GET',
+    '/api/word-error-reports/paginated'
+  ],
+  'general.WordErrorReportsController_findMyReports': [
+    'GET',
+    '/api/word-error-reports/my-reports'
+  ],
+  'general.WordErrorReportsController_getReportStats': [
+    'GET',
+    '/api/word-error-reports/stats'
+  ],
+  'general.WordErrorReportsController_searchMyReports': [
+    'GET',
+    '/api/word-error-reports/search'
+  ],
+  'general.WordErrorReportsController_searchMyReportsPaginated': [
+    'GET',
+    '/api/word-error-reports/search/paginated'
+  ],
+  'general.WordErrorReportsController_searchAllReports': [
+    'GET',
+    '/api/word-error-reports/admin/search'
+  ],
+  'general.WordErrorReportsController_searchAllReportsPaginated': [
+    'GET',
+    '/api/word-error-reports/admin/search/paginated'
+  ],
+  'general.WordErrorReportsController_findByStatus': [
+    'GET',
+    '/api/word-error-reports/status/{status}'
+  ],
+  'general.WordErrorReportsController_findOne': [
+    'GET',
+    '/api/word-error-reports/{id}'
+  ],
+  'general.WordErrorReportsController_remove': [
+    'DELETE',
+    '/api/word-error-reports/{id}'
+  ]
 };
