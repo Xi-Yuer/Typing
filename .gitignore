@@ -140,3 +140,4 @@ words
 .volumes
 cache
 course-db
+.rollup.cache

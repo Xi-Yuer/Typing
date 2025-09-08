@@ -15,13 +15,22 @@
  *
  * **Do not edit the file manually.**
  */
-import type { Alova, MethodType, AlovaGenerics, AlovaMethodCreateConfig } from 'alova';
 import { Method } from 'alova';
 import apiDefinitions from './apiDefinitions';
 
 const cache = Object.create(null);
-const createFunctionalProxy = (array: (string | symbol)[], alovaInstance: Alova<AlovaGenerics>, configMap: any) => {
-  const apiPathKey = array.join('.') as keyof typeof apiDefinitions;
+/**
+ * @typedef {import('alova').AlovaGenerics} AlovaGenerics
+ */
+/**
+ *
+ * @param {(string|symbol)[]} array
+ * @param {Alova<AlovaGenerics>} alovaInstance
+ * @param {any} configMap
+ * @returns {()=>void}
+ */
+const createFunctionalProxy = (array, alovaInstance, configMap) => {
+  const apiPathKey = array.join('.');
   if (cache[apiPathKey]) {
     return cache[apiPathKey];
   }
@@ -44,7 +53,7 @@ const createFunctionalProxy = (array: (string | symbol)[], alovaInstance: Alova<
       };
       const [method, url] = apiItem;
       const pathParams = mergedConfig.pathParams;
-      const urlReplaced = url!.replace(/\{([^}]+)\}/g, (_, key) => {
+      const urlReplaced = url.replace(/\{([^}]+)\}/g, (_, key) => {
         const pathParam = pathParams[key];
         return pathParam;
       });
@@ -61,40 +70,70 @@ const createFunctionalProxy = (array: (string | symbol)[], alovaInstance: Alova<
         }
         data = hasBlobData ? formData : data;
       }
-      return new Method(method!.toUpperCase() as MethodType, alovaInstance, urlReplaced, mergedConfig, data);
+      return new Method(method.toUpperCase(), alovaInstance, urlReplaced, mergedConfig, data);
     }
   });
   cache[apiPathKey] = proxy;
   return proxy;
 };
-
-export const createApis = (alovaInstance: Alova<AlovaGenerics>, configMap: any) => {
-  const Apis = new Proxy({} as Apis, {
-    get(_, property) {
-      return createFunctionalProxy([property], alovaInstance, configMap);
+/**
+ *
+ * @param {Alova<AlovaGenerics>} alovaInstance
+ * @param {any} configMap
+ * @returns { Apis }
+ */
+export const createApis = (alovaInstance, configMap) => {
+  const Apis = new Proxy(
+    {},
+    {
+      get(_, property) {
+        return createFunctionalProxy([property], alovaInstance, configMap);
+      }
     }
-  });
+  );
   return Apis;
 };
-export const mountApis = (Apis: Apis) => {
+/**
+ * @param { Apis } Apis
+ * @returns { void }
+ */
+export const mountApis = Apis => {
   // define global variable `Apis`
-  (globalThis as any).Apis = Apis;
+  globalThis.Apis = Apis;
 };
-type MethodConfig<T> = AlovaMethodCreateConfig<
-  (typeof import('./index'))['alovaInstance'] extends Alova<infer AG> ? AG : any,
-  any,
-  T
->;
-type APISofParameters<Tag extends string, Url extends string> = Tag extends keyof Apis
-  ? Url extends keyof Apis[Tag]
-    ? Apis[Tag][Url] extends (...args: any) => any
-      ? Parameters<Apis[Tag][Url]>
-      : any
-    : any
-  : any;
-type MethodsConfigMap = {
-  [P in keyof typeof import('./apiDefinitions').default]?: MethodConfig<
-    P extends `${infer Tag}.${infer Url}` ? Parameters<NonNullable<APISofParameters<Tag, Url>[0]>['transform']>[0] : any
-  >;
-};
-export const withConfigType = <Config extends MethodsConfigMap>(config: Config) => config;
+/**
+ * @template T
+ * @typedef {import('alova').AlovaMethodCreateConfig<
+ *  typeof import('./index')['alovaInstance'] extends import('alova').Alova<infer AG>
+ *   ? AG
+ *   : any,
+ *  any,
+ *  T
+ *>} MethodConfig
+ */
+/**
+ * @template {string} Tag
+ * @template {string} Url
+ * @typedef {Tag extends keyof Apis
+ *   ? Url extends keyof Apis[Tag]
+ *     ? Apis[Tag][Url] extends (...args: any) => any
+ *       ? Parameters<Apis[Tag][Url]>
+ *       : any
+ *     : any
+ *   : any
+ * } APISofParameters
+ */
+/**
+ * @typedef {{
+ *  [P in keyof typeof import('./apiDefinitions').default]?: MethodConfig<
+ *    P extends `${infer Tag}.${infer Url}`
+ *      ? Parameters<NonNullable<APISofParameters<Tag,Url>[0]>['transform']>[0]
+ *      : any
+ *  >
+ * }} MethodsConfigMap
+ */
+/**
+ * @template {MethodsConfigMap} Config
+ * @param {Config} config
+ */
+export const withConfigType = config => config;

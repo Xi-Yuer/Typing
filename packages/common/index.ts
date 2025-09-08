@@ -1,2 +1,2 @@
-export * from './enums';
-export * from './types';
+export * from './src/enums';
+export * from './src/types';
