@@ -3,9 +3,12 @@ import fetchAdapter from 'alova/fetch';
 import { createApis, withConfigType, mountApis } from './createApis';
 
 export const alovaInstance = createAlova({
-  baseURL: '',
+  baseURL: '/api',
   requestAdapter: fetchAdapter(),
-  beforeRequest: method => {},
+  beforeRequest: method => {
+    method.config.headers['Authorization'] =
+      `Bearer ${localStorage.getItem('token')}`;
+  },
   responded: res => {
     return res.json();
   }

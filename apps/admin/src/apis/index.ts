@@ -48,7 +48,7 @@ export const qqCallback = () => {
 
 // 获取用户信息
 export const getProfile = () => {
-  return Apis.general.AuthController_getProfile();
+  return Apis.general.UserController_findMe();
 };
 
 // 绑定GitHub账户
