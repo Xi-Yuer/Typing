@@ -18,7 +18,7 @@ COPY apps/admin/package.json ./apps/admin/
 
 # 安装依赖（包括开发依赖，用于构建）
 RUN --mount=type=cache,target=/root/.pnpm-store \
-    pnpm install --frozen-lockfile
+    pnpm install
 
 # 复制源代码
 COPY . .
@@ -54,7 +54,7 @@ COPY packages/utils/package.json ./packages/utils/
 COPY apps/admin/package.json ./apps/admin/
 # 安装所有依赖
 RUN --mount=type=cache,target=/root/.pnpm-store \
-    pnpm install --frozen-lockfile
+    pnpm install
 
 # 从构建阶段复制构建产物
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
