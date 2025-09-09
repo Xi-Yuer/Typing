@@ -153,13 +153,15 @@ export const useTypingLogic = ({
     words,
     currentWordIndex,
     inputValue,
-    setWordCompleted,
     setWordError,
+    setWordCompleted,
+    playSuccessSound,
+    onComplete,
     findNextIncompleteWord,
     setActiveWord,
-    playSuccessSound,
     playErrorSound,
-    onComplete
+    hasShownError,
+    updateWordInput
   ]);
 
   // 重置练习

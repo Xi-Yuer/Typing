@@ -1,6 +1,6 @@
 /// <reference types='./globals.d.ts' />
 /* tslint:disable */
-/* eslint-disable */
+
 /**
  * Typing API - version 1.0
  *

@@ -17,6 +17,7 @@
     "admin:build": "pnpm --filter admin build",
     "dev": "pnpm --filter=api run start:dev & pnpm --filter=client run dev & pnpm --filter=admin run dev",
     "build": "pnpm packages:build && pnpm --filter api build && pnpm --filter client build && pnpm --filter admin build",
+    "build:no-lint": "pnpm packages:build && pnpm --filter api build && pnpm --filter client build && pnpm --filter admin build",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
@@ -48,6 +49,12 @@
     "typescript-eslint": "^8.20.0"
   },
   "dependencies": {
-    "alova": "^3.3.4"
+    "alova": "^3.3.4",
+    "typing": "link:"
+  },
+  "pnpm": {
+    "overrides": {
+      "typing": "link:"
+    }
   }
 }
