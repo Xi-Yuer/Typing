@@ -3,7 +3,7 @@ import fetchAdapter from 'alova/fetch';
 import { createApis, withConfigType, mountApis } from './createApis';
 
 export const alovaInstance = createAlova({
-  baseURL: '/api',
+  baseURL: process.env.VITE_API_URL,
   requestAdapter: fetchAdapter(),
   beforeRequest: method => {
     const token = localStorage.getItem('token');
