@@ -14,6 +14,7 @@ COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
+COPY apps/admin/package.json ./apps/admin/
 
 # 安装依赖（包括开发依赖，用于构建）
 RUN --mount=type=cache,target=/root/.pnpm-store \
@@ -50,7 +51,7 @@ COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
-
+COPY apps/admin/package.json ./apps/admin/
 # 安装所有依赖
 RUN --mount=type=cache,target=/root/.pnpm-store \
     pnpm install --frozen-lockfile
@@ -61,11 +62,13 @@ COPY --from=builder /app/apps/client/.next ./apps/client/.next
 COPY --from=builder /app/apps/client/public ./apps/client/public
 COPY --from=builder /app/packages/common/dist ./packages/common/dist
 COPY --from=builder /app/packages/utils/dist ./packages/utils/dist
+COPY --from=builder /app/apps/admin/dist ./apps/admin/dist
 
 # 复制必要的配置文件
 COPY apps/api/nest-cli.json ./apps/api/
 COPY apps/client/next.config.ts ./apps/client/
 COPY apps/client/alova.config.ts ./apps/client/
+COPY apps/admin/alova.config.ts ./apps/admin/
 
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /app/start.sh && \

@@ -7,7 +7,10 @@ import type {
   CreateCorpusCategoryDto,
   CreateWordDto,
   CreateSentenceDto,
-  CreateWordErrorReportDto
+  CreateWordErrorReportDto,
+  UpdateWordDto,
+  UpdateLanguageDto,
+  UpdateSentenceDto
 } from '../request/globals';
 
 // ==================== 认证相关 API ====================
@@ -169,7 +172,13 @@ export const getLanguageById = (id: number) => {
   });
 };
 
-// 注意：更新语言相关的接口在API定义中不存在，可能需要重新生成API定义
+// 更新语言
+export const updateLanguage = (id: number, data: UpdateLanguageDto) => {
+  return Apis.general.LanguagesController_update({
+    pathParams: { id },
+    data
+  });
+};
 
 // 删除语言
 export const deleteLanguage = (id: number) => {
@@ -297,7 +306,7 @@ export const getWordsByCategory = (
 export const getWordsByLanguageAndCategory = (
   languageId: string,
   categoryId: string,
-  params: { page?: number; pageSize?: number }
+  params: { page?: number; pageSize?: number } = {}
 ) => {
   return Apis.general.WordsController_findByLanguageAndCategory({
     pathParams: { languageId, categoryId },
@@ -361,7 +370,13 @@ export const getWordById = (id: string) => {
   });
 };
 
-// 注意：更新单词相关的接口在API定义中不存在，可能需要重新生成API定义
+// 更新单词
+export const updateWord = (id: string, data: UpdateWordDto) => {
+  return Apis.general.WordsController_update({
+    pathParams: { id },
+    data
+  });
+};
 
 // 删除单词（仅管理员）
 export const deleteWord = (id: string) => {
@@ -478,6 +493,14 @@ export const getSentenceById = (id: string) => {
 };
 
 // 注意：更新句子相关的接口在API定义中不存在，可能需要重新生成API定义
+
+// 更新句子
+export const updateSentence = (id: string, data: UpdateSentenceDto) => {
+  return Apis.general.SentencesController_update({
+    pathParams: { id },
+    data
+  });
+};
 
 // 删除句子（仅管理员）
 export const deleteSentence = (id: string) => {

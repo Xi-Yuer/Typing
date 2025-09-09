@@ -3,7 +3,7 @@ import { Word } from '@/request/globals';
 import { WordState, UseWordStateReturn } from '../types';
 import { isWord } from '@/utils';
 
-export const useWordState = (initialWord?: Word): UseWordStateReturn => {
+export const useWordState = (_initialWord?: Word): UseWordStateReturn => {
   const [words, setWords] = useState<WordState[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 

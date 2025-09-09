@@ -106,15 +106,24 @@ export class WordsService {
    * 根据语言 ID 和分类 ID 查询单词
    */
   async findByLanguageAndCategory(
-    languageId: string,
-    categoryId: string,
-    paginationQuery: PaginationQueryDto
+    paginationQuery: PaginationQueryDto,
+    languageId?: string,
+    categoryId?: string
   ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
 
+    // 构建查询条件，只添加非空的过滤条件
+    const whereConditions: any = {};
+    if (languageId) {
+      whereConditions.languageId = languageId;
+    }
+    if (categoryId) {
+      whereConditions.categoryId = categoryId;
+    }
+
     const [list, total] = await this.wordRepository.findAndCount({
-      where: { languageId, categoryId },
+      where: whereConditions,
       relations: ['language', 'category'],
       order: { createdAt: 'DESC' },
       skip,

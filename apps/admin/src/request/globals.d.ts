@@ -15,7 +15,12 @@
  *
  * **Do not edit the file manually.**
  */
-import type { Alova, AlovaMethodCreateConfig, AlovaGenerics, Method } from 'alova';
+import type {
+  Alova,
+  AlovaMethodCreateConfig,
+  AlovaGenerics,
+  Method
+} from 'alova';
 import type { $$userConfigMap, alovaInstance } from '.';
 import type apiDefinitions from './apiDefinitions';
 
@@ -37,7 +42,16 @@ type Alova2MethodConfig<Responded> =
   >
     ? Omit<
         AlovaMethodCreateConfig<
-          AlovaGenerics<Responded, any, RequestConfig, Response, ResponseHeader, L1Cache, L2Cache, SE>,
+          AlovaGenerics<
+            Responded,
+            any,
+            RequestConfig,
+            Response,
+            ResponseHeader,
+            L1Cache,
+            L2Cache,
+            SE
+          >,
           any,
           Responded
         >,
@@ -50,7 +64,9 @@ type ExtractUserDefinedTransformed<
   DefinitionKey extends keyof typeof apiDefinitions,
   Default
 > = DefinitionKey extends keyof UserMethodConfigMap
-  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (...args: any[]) => any
+  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (
+      ...args: any[]
+    ) => any
     ? Awaited<ReturnType<UserMethodConfigMap[DefinitionKey]['transform']>>
     : Default
   : Default;
@@ -249,28 +265,6 @@ export interface CreateWordErrorReportDto {
    */
   errorDescription: string;
 }
-export interface ApiResponseDto {
-  /**
-   * 状态码
-   */
-  code: number;
-  /**
-   * 响应消息
-   */
-  message: string;
-  /**
-   * 响应数据
-   */
-  data: object;
-  /**
-   * 时间戳
-   */
-  timestamp: number;
-  /**
-   * 请求路径
-   */
-  path: string;
-}
 export interface User {
   /**
    * 用户ID
@@ -385,6 +379,64 @@ export interface CorpusCategory {
    */
   language: Language;
 }
+export interface ApiResponseDto {
+  /**
+   * 状态码
+   */
+  code: number;
+  /**
+   * 响应消息
+   */
+  message: string;
+  /**
+   * 响应数据
+   */
+  data: object;
+  /**
+   * 时间戳
+   */
+  timestamp: number;
+  /**
+   * 请求路径
+   */
+  path: string;
+}
+export interface GetLanguageStatusDto {
+  /**
+   * 语言 ID
+   */
+  languageId: string;
+  /**
+   * 语言状态
+   */
+  languageStatus: string;
+  /**
+   * 页码
+   */
+  page: number;
+  /**
+   * 每页数量
+   */
+  pageSize: number;
+}
+export interface GetCategoryStatusDto {
+  /**
+   * 分类 ID
+   */
+  categoryId: string;
+  /**
+   * 分类状态
+   */
+  categoryStatus: string;
+  /**
+   * 页码
+   */
+  page: number;
+  /**
+   * 每页数量
+   */
+  pageSize: number;
+}
 export type Object = object;
 export interface ReportStatsDto {
   /**
@@ -420,6 +472,92 @@ export interface ReportStatsDto {
      */
     count?: number;
   }>;
+}
+export interface UpdateLanguageDto {
+  /**
+   * 语言名称
+   */
+  name?: string;
+  /**
+   * 语言代码
+   */
+  code?: string;
+  /**
+   * 文字体系
+   */
+  script?: string;
+  /**
+   * 是否启用
+   */
+  isActive?: boolean;
+}
+export interface UpdateWordDto {
+  /**
+   * 所属语言 ID
+   */
+  languageId?: string;
+  /**
+   * 所属分类 ID
+   */
+  categoryId?: string;
+  /**
+   * 单词原文
+   */
+  word?: string;
+  /**
+   * 罗马音/拼音
+   */
+  transliteration?: string;
+  /**
+   * 美式音标
+   */
+  usPhonetic?: string;
+  /**
+   * 英式音标
+   */
+  ukPhonetic?: string;
+  /**
+   * 中文释义
+   */
+  meaning?: string;
+  /**
+   * 中文释义（短）
+   */
+  meaningShort?: string;
+  /**
+   * 例句
+   */
+  example?: string;
+  /**
+   * 发音音频链接
+   */
+  audioUrl?: string;
+  /**
+   * 图片链接
+   */
+  imageUrl?: string;
+}
+export interface UpdateSentenceDto {
+  /**
+   * 所属语言 ID
+   */
+  languageId?: string;
+  /**
+   * 所属分类 ID
+   */
+  categoryId?: string;
+  /**
+   * 句子原文
+   */
+  sentence?: string;
+  /**
+   * 中文释义
+   */
+  meaning?: string;
+  /**
+   * 句子音频 URL
+   */
+  audioUrl?: string;
 }
 export interface UserResponseDto {
   /**
@@ -936,14 +1074,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 用户ID
        *     id: number
        *     // 用户名
@@ -965,20 +1096,54 @@ declare global {
        *     // 删除时间
        *     deleteTime?: string
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       UserController_findMe<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: User;
-          }
-        >
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: User;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: User;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: User;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.UserController_findMe',
         Config
@@ -1009,14 +1174,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 用户ID
        *     id: number
        *     // 用户名
@@ -1038,15 +1196,33 @@ declare global {
        *     // 删除时间
        *     deleteTime?: string
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       UserController_findOne<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: User;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: User;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 用户ID
@@ -1057,8 +1233,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: User;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: User;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.UserController_findOne',
         Config
@@ -1140,14 +1332,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 用户信息
        *     user: {
        *       // 用户ID
@@ -1172,22 +1357,56 @@ declare global {
        *     // JWT访问令牌
        *     accessToken: string
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       AuthController_register<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: AuthResponseDto;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: AuthResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           data: RegisterDto;
         }
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: AuthResponseDto;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: AuthResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.AuthController_register',
         Config
@@ -1216,39 +1435,89 @@ declare global {
        * **Response**
        * ```ts
        * type Response = {
-       *   // 用户信息
-       *   user: {
-       *     // 用户ID
-       *     id: number
-       *     // 用户名
-       *     name: string
-       *     // 邮箱
-       *     email: string
-       *     // 是否激活
-       *     isActive: boolean
-       *     // 用户角色
-       *     role: ('super_admin' | 'admin' | 'user' | 'guest') | null
-       *     // 用户状态
-       *     status: 'active' | 'disabled' | 'pending' | 'deleted'
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 用户信息
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // JWT访问令牌
+       *     accessToken: string
        *   }
-       *   // JWT访问令牌
-       *   accessToken: string
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       AuthController_login<
-        Config extends Alova2MethodConfig<AuthResponseDto> & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: AuthResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           data: LoginDto;
         }
       >(
         config: Config
-      ): Alova2Method<AuthResponseDto, 'general.AuthController_login', Config>;
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: AuthResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.AuthController_login',
+        Config
+      >;
       /**
        * ---
        *
@@ -1546,47 +1815,120 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
-       *     // 语言 ID
-       *     id: number
-       *     // 语言名称（English, 日本語, Français）
-       *     name: string
-       *     // 语言代码（en, ja, fr）
-       *     code: string
-       *     // 文字体系（Latin, Kanji, Cyrillic）
-       *     script: string
-       *     // 是否启用
-       *     isActive: boolean
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
-       *   }>
        * }
        * ```
        */
       LanguagesController_findAll<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Language[];
-          }
-        >
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Language[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.LanguagesController_findAll',
         Config
@@ -1607,47 +1949,120 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
-       *     // 语言 ID
-       *     id: number
-       *     // 语言名称（English, 日本語, Français）
-       *     name: string
-       *     // 语言代码（en, ja, fr）
-       *     code: string
-       *     // 文字体系（Latin, Kanji, Cyrillic）
-       *     script: string
-       *     // 是否启用
-       *     isActive: boolean
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
-       *   }>
        * }
        * ```
        */
       LanguagesController_findAllActive<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Language[];
-          }
-        >
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Language[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.LanguagesController_findAllActive',
         Config
@@ -1835,40 +2250,81 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   data?: {
-       *     // 语言 ID
-       *     id: number
-       *     // 语言名称（English, 日本語, Français）
-       *     name: string
-       *     // 语言代码（en, ja, fr）
-       *     code: string
-       *     // 文字体系（Latin, Kanji, Cyrillic）
-       *     script: string
-       *     // 是否启用
-       *     isActive: boolean
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
-       *   }
        * }
        * ```
        */
       LanguagesController_findByCode<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Language;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言代码
@@ -1879,8 +2335,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Language;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: Language[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.LanguagesController_findByCode',
         Config
@@ -1911,14 +2401,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 语言 ID
        *     id: number
        *     // 语言名称（English, 日本語, Français）
@@ -1936,15 +2419,33 @@ declare global {
        *     // 删除时间
        *     deleteTime?: string
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       LanguagesController_findOne<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Language;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Language;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言ID
@@ -1955,10 +2456,146 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Language;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Language;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.LanguagesController_findOne',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 更新语言信息
+       *
+       * **path:** /api/languages/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 语言ID
+       *   id: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 语言名称
+       *   name?: string
+       *   // 语言代码
+       *   code?: string
+       *   // 文字体系
+       *   script?: string
+       *   // 是否启用
+       *   isActive?: boolean
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 语言 ID
+       *     id: number
+       *     // 语言名称（English, 日本語, Français）
+       *     name: string
+       *     // 语言代码（en, ja, fr）
+       *     code: string
+       *     // 文字体系（Latin, Kanji, Cyrillic）
+       *     script: string
+       *     // 是否启用
+       *     isActive: boolean
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      LanguagesController_update<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Language;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            /**
+             * 语言ID
+             */
+            id: number;
+          };
+          data: UpdateLanguageDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Language;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.LanguagesController_update',
         Config
       >;
       /**
@@ -2007,7 +2644,114 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<ApiResponseDto, 'general.LanguagesController_remove', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.LanguagesController_remove',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 切换语言启用状态
+       *
+       * **path:** /api/languages/{id}/toggle-active
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 语言ID
+       *   id: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 语言 ID
+       *     id: number
+       *     // 语言名称（English, 日本語, Français）
+       *     name: string
+       *     // 语言代码（en, ja, fr）
+       *     code: string
+       *     // 文字体系（Latin, Kanji, Cyrillic）
+       *     script: string
+       *     // 是否启用
+       *     isActive: boolean
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      LanguagesController_toggleActive<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Language;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            /**
+             * 语言ID
+             */
+            id: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Language;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.LanguagesController_toggleActive',
+        Config
+      >;
       /**
        * ---
        *
@@ -2120,66 +2864,139 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
-       *     // 分类 ID
-       *     id: string
-       *     // 对应语言 ID
-       *     languageId: string
-       *     // 分类名称（旅游、商务、日常会话）
-       *     name: string
-       *     // 分类描述
-       *     description?: string
-       *     // 难度等级（1-5）
-       *     difficulty: number
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
-       *     // 关联的语言
-       *     language: {
-       *       // 语言 ID
-       *       id: number
-       *       // 语言名称（English, 日本語, Français）
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
        *       name: string
-       *       // 语言代码（en, ja, fr）
-       *       code: string
-       *       // 文字体系（Latin, Kanji, Cyrillic）
-       *       script: string
-       *       // 是否启用
-       *       isActive: boolean
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
        *       // 创建时间
        *       createTime: string
        *       // 更新时间
        *       updateTime: string
        *       // 删除时间
        *       deleteTime?: string
-       *     }
-       *   }>
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       CorpusCategoriesController_findAll<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: CorpusCategory[];
-          }
-        >
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: CorpusCategory[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.CorpusCategoriesController_findAll',
         Config
@@ -2386,61 +3203,100 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
-       *     // 分类 ID
-       *     id: string
-       *     // 对应语言 ID
-       *     languageId: string
-       *     // 分类名称（旅游、商务、日常会话）
-       *     name: string
-       *     // 分类描述
-       *     description?: string
-       *     // 难度等级（1-5）
-       *     difficulty: number
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
-       *     // 关联的语言
-       *     language: {
-       *       // 语言 ID
-       *       id: number
-       *       // 语言名称（English, 日本語, Français）
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
        *       name: string
-       *       // 语言代码（en, ja, fr）
-       *       code: string
-       *       // 文字体系（Latin, Kanji, Cyrillic）
-       *       script: string
-       *       // 是否启用
-       *       isActive: boolean
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
        *       // 创建时间
        *       createTime: string
        *       // 更新时间
        *       updateTime: string
        *       // 删除时间
        *       deleteTime?: string
-       *     }
-       *   }>
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       CorpusCategoriesController_findByLanguageId<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: CorpusCategory[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言 ID
@@ -2451,8 +3307,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: CorpusCategory[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.CorpusCategoriesController_findByLanguageId',
         Config
@@ -2483,61 +3373,100 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
-       *     // 分类 ID
-       *     id: string
-       *     // 对应语言 ID
-       *     languageId: string
-       *     // 分类名称（旅游、商务、日常会话）
-       *     name: string
-       *     // 分类描述
-       *     description?: string
-       *     // 难度等级（1-5）
-       *     difficulty: number
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
-       *     // 关联的语言
-       *     language: {
-       *       // 语言 ID
-       *       id: number
-       *       // 语言名称（English, 日本語, Français）
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
        *       name: string
-       *       // 语言代码（en, ja, fr）
-       *       code: string
-       *       // 文字体系（Latin, Kanji, Cyrillic）
-       *       script: string
-       *       // 是否启用
-       *       isActive: boolean
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
        *       // 创建时间
        *       createTime: string
        *       // 更新时间
        *       updateTime: string
        *       // 删除时间
        *       deleteTime?: string
-       *     }
-       *   }>
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       CorpusCategoriesController_findByDifficulty<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: CorpusCategory[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 难度等级（1-5）
@@ -2548,8 +3477,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: CorpusCategory[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.CorpusCategoriesController_findByDifficulty',
         Config
@@ -2582,61 +3545,100 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
-       *     // 分类 ID
-       *     id: string
-       *     // 对应语言 ID
-       *     languageId: string
-       *     // 分类名称（旅游、商务、日常会话）
-       *     name: string
-       *     // 分类描述
-       *     description?: string
-       *     // 难度等级（1-5）
-       *     difficulty: number
-       *     // 创建时间
-       *     createTime: string
-       *     // 更新时间
-       *     updateTime: string
-       *     // 删除时间
-       *     deleteTime?: string
-       *     // 关联的语言
-       *     language: {
-       *       // 语言 ID
-       *       id: number
-       *       // 语言名称（English, 日本語, Français）
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
        *       name: string
-       *       // 语言代码（en, ja, fr）
-       *       code: string
-       *       // 文字体系（Latin, Kanji, Cyrillic）
-       *       script: string
-       *       // 是否启用
-       *       isActive: boolean
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
        *       // 创建时间
        *       createTime: string
        *       // 更新时间
        *       updateTime: string
        *       // 删除时间
        *       deleteTime?: string
-       *     }
-       *   }>
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       CorpusCategoriesController_findByLanguageAndDifficulty<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: CorpusCategory[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 语言 ID
@@ -2651,8 +3653,42 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: CorpusCategory[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CorpusCategory[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.CorpusCategoriesController_findByLanguageAndDifficulty',
         Config
@@ -2682,9 +3718,15 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getDifficultyStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
+      CorpusCategoriesController_getDifficultyStats<
+        Config extends Alova2MethodConfig<ApiResponseDto>
+      >(
         config?: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getDifficultyStats', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_getDifficultyStats',
+        Config
+      >;
       /**
        * ---
        *
@@ -2710,9 +3752,15 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getLanguageStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
+      CorpusCategoriesController_getLanguageStats<
+        Config extends Alova2MethodConfig<ApiResponseDto>
+      >(
         config?: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getLanguageStats', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_getLanguageStats',
+        Config
+      >;
       /**
        * ---
        *
@@ -2739,14 +3787,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 分类 ID
        *     id: string
        *     // 对应语言 ID
@@ -2783,15 +3824,33 @@ declare global {
        *       deleteTime?: string
        *     }
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       CorpusCategoriesController_findOne<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: CorpusCategory;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CorpusCategory;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 分类 ID
@@ -2802,8 +3861,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: CorpusCategory;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CorpusCategory;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.CorpusCategoriesController_findOne',
         Config
@@ -2854,7 +3929,11 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_remove', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_remove',
+        Config
+      >;
       /**
        * ---
        *
@@ -4017,16 +5096,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
+       *   data: {
        *     // 单词 ID
        *     id: string
        *     // 所属语言 ID
@@ -4114,16 +5184,34 @@ declare global {
        *         deleteTime?: string
        *       }
        *     }
-       *   }>
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordsController_searchWords<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Word[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -4150,8 +5238,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Word[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_searchWords',
         Config
@@ -4432,255 +5536,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   // [items] start
-       *   // [items] end
-       *   data?: Array<{
-       *     // 单词 ID
-       *     id: string
-       *     // 所属语言 ID
-       *     languageId: string
-       *     // 所属分类 ID
-       *     categoryId: string
-       *     // 单词原文
-       *     word: string
-       *     // 罗马音/拼音
-       *     transliteration?: string
-       *     // 美式音标
-       *     usPhonetic?: string
-       *     // 英式音标
-       *     ukPhonetic?: string
-       *     // 中文释义
-       *     meaning: string
-       *     // 简短翻译
-       *     meaningShort: string
-       *     // 例句
-       *     example: string
-       *     // 发音音频链接
-       *     audioUrl?: string
-       *     // 图片链接
-       *     imageUrl?: string
-       *     // 创建时间
-       *     createdAt: string
-       *     // 更新时间
-       *     updatedAt: string
-       *     // 删除时间
-       *     deletedAt?: string
-       *     // 所属语言
-       *     language: {
-       *       // 语言 ID
-       *       id: number
-       *       // 语言名称（English, 日本語, Français）
-       *       name: string
-       *       // 语言代码（en, ja, fr）
-       *       code: string
-       *       // 文字体系（Latin, Kanji, Cyrillic）
-       *       script: string
-       *       // 是否启用
-       *       isActive: boolean
-       *       // 创建时间
-       *       createTime: string
-       *       // 更新时间
-       *       updateTime: string
-       *       // 删除时间
-       *       deleteTime?: string
-       *     }
-       *     // 所属分类
-       *     category: {
-       *       // 分类 ID
-       *       id: string
-       *       // 对应语言 ID
-       *       languageId: string
-       *       // 分类名称（旅游、商务、日常会话）
-       *       name: string
-       *       // 分类描述
-       *       description?: string
-       *       // 难度等级（1-5）
-       *       difficulty: number
-       *       // 创建时间
-       *       createTime: string
-       *       // 更新时间
-       *       updateTime: string
-       *       // 删除时间
-       *       deleteTime?: string
-       *       // 关联的语言
-       *       language: {
-       *         // 语言 ID
-       *         id: number
-       *         // 语言名称（English, 日本語, Français）
-       *         name: string
-       *         // 语言代码（en, ja, fr）
-       *         code: string
-       *         // 文字体系（Latin, Kanji, Cyrillic）
-       *         script: string
-       *         // 是否启用
-       *         isActive: boolean
-       *         // 创建时间
-       *         createTime: string
-       *         // 更新时间
-       *         updateTime: string
-       *         // 删除时间
-       *         deleteTime?: string
-       *       }
-       *     }
-       *   }>
-       * }
-       * ```
-       */
-      WordsController_getRandomWords<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Word[];
-          }
-        > & {
-          params: {
-            /**
-             * 单词数量
-             */
-            count?: number;
-            /**
-             * 语言 ID
-             */
-            languageId?: string;
-            /**
-             * 分类 ID
-             */
-            categoryId?: string;
-          };
-        }
-      >(
-        config: Config
-      ): Alova2Method<
-        ApiResponseDto & {
-          data?: Word[];
-        },
-        'general.WordsController_getRandomWords',
-        Config
-      >;
-      /**
-       * ---
-       *
-       * [GET] 获取语言统计信息
-       *
-       * **path:** /api/words/stats/language
-       *
-       * ---
-       *
-       * **Response**
-       * ```ts
-       * type Response = {
-       *   // 状态码
-       *   code: number
-       *   // 响应消息
-       *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: object
-       * }
-       * ```
-       */
-      WordsController_getLanguageStats<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Object;
-          }
-        >
-      >(
-        config?: Config
-      ): Alova2Method<
-        ApiResponseDto & {
-          data?: Object;
-        },
-        'general.WordsController_getLanguageStats',
-        Config
-      >;
-      /**
-       * ---
-       *
-       * [GET] 获取分类统计信息
-       *
-       * **path:** /api/words/stats/category
-       *
-       * ---
-       *
-       * **Response**
-       * ```ts
-       * type Response = {
-       *   // 状态码
-       *   code: number
-       *   // 响应消息
-       *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: object
-       * }
-       * ```
-       */
-      WordsController_getCategoryStats<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Object;
-          }
-        >
-      >(
-        config?: Config
-      ): Alova2Method<
-        ApiResponseDto & {
-          data?: Object;
-        },
-        'general.WordsController_getCategoryStats',
-        Config
-      >;
-      /**
-       * ---
-       *
-       * [GET] 根据 ID 查询单词详情
-       *
-       * **path:** /api/words/{id}
-       *
-       * ---
-       *
-       * **Path Parameters**
-       * ```ts
-       * type PathParameters = {
-       *   // 单词 ID
-       *   id: string
-       * }
-       * ```
-       *
-       * ---
-       *
-       * **Response**
-       * ```ts
-       * type Response = {
-       *   // 状态码
-       *   code: number
-       *   // 响应消息
-       *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 单词 ID
        *     id: string
        *     // 所属语言 ID
@@ -4769,15 +5625,371 @@ declare global {
        *       }
        *     }
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      WordsController_getRandomWords<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          params: {
+            /**
+             * 单词数量
+             */
+            count?: number;
+            /**
+             * 语言 ID
+             */
+            languageId?: string;
+            /**
+             * 分类 ID
+             */
+            categoryId?: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.WordsController_getRandomWords',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取语言统计信息
+       *
+       * **path:** /api/words/stats/language
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 语言 ID
+       *     languageId: string
+       *     // 语言状态
+       *     languageStatus: string
+       *     // 页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      WordsController_getLanguageStats<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: GetLanguageStatusDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
+      >(
+        config?: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: GetLanguageStatusDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.WordsController_getLanguageStats',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取分类统计信息
+       *
+       * **path:** /api/words/stats/category
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 分类 ID
+       *     categoryId: string
+       *     // 分类状态
+       *     categoryStatus: string
+       *     // 页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      WordsController_getCategoryStats<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: GetCategoryStatusDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
+      >(
+        config?: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: GetCategoryStatusDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.WordsController_getCategoryStats',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 根据 ID 查询单词详情
+       *
+       * **path:** /api/words/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 单词 ID
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 单词 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordsController_findOne<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Word;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 单词 ID
@@ -4788,10 +6000,231 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Word;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_findOne',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 更新单词（仅管理员）
+       *
+       * **path:** /api/words/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 单词 ID
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 所属语言 ID
+       *   languageId?: string
+       *   // 所属分类 ID
+       *   categoryId?: string
+       *   // 单词原文
+       *   word?: string
+       *   // 罗马音/拼音
+       *   transliteration?: string
+       *   // 美式音标
+       *   usPhonetic?: string
+       *   // 英式音标
+       *   ukPhonetic?: string
+       *   // 中文释义
+       *   meaning?: string
+       *   // 中文释义（短）
+       *   meaningShort?: string
+       *   // 例句
+       *   example?: string
+       *   // 发音音频链接
+       *   audioUrl?: string
+       *   // 图片链接
+       *   imageUrl?: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 单词 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      WordsController_update<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            /**
+             * 单词 ID
+             */
+            id: string;
+          };
+          data: UpdateWordDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.WordsController_update',
         Config
       >;
       /**
@@ -4820,23 +6253,122 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
+       *   data: {
+       *     // 单词 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   data?: object
        * }
        * ```
        */
       WordsController_remove<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Object;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 单词 ID
@@ -4847,8 +6379,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Object;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Word;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordsController_remove',
         Config
@@ -5939,16 +7487,9 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
        *   // [items] start
        *   // [items] end
-       *   data?: Array<{
+       *   data: Array<{
        *     // 句子 ID
        *     id: string
        *     // 所属语言 ID
@@ -6025,15 +7566,33 @@ declare global {
        *       }
        *     }
        *   }>
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_searchSentences<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Sentence[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -6052,8 +7611,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Sentence[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_searchSentences',
         Config
@@ -6322,16 +7897,9 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
        *   // [items] start
        *   // [items] end
-       *   data?: Array<{
+       *   data: Array<{
        *     // 句子 ID
        *     id: string
        *     // 所属语言 ID
@@ -6408,15 +7976,33 @@ declare global {
        *       }
        *     }
        *   }>
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_getRandomSentences<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Sentence[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 数量
@@ -6435,8 +8021,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Sentence[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_getRandomSentences',
         Config
@@ -6457,28 +8059,55 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
        *   data: object
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   data?: object
        * }
        * ```
        */
       SentencesController_getLanguageStats<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Object;
-          }
-        >
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Object;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_getLanguageStats',
         Config
@@ -6499,28 +8128,55 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
        *   data: object
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   data?: object
        * }
        * ```
        */
       SentencesController_getCategoryStats<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Object;
-          }
-        >
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Object;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_getCategoryStats',
         Config
@@ -6551,14 +8207,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 句子 ID
        *     id: string
        *     // 所属语言 ID
@@ -6635,15 +8284,33 @@ declare global {
        *       }
        *     }
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SentencesController_findOne<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Sentence;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 句子 ID
@@ -6654,10 +8321,207 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Sentence;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_findOne',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 更新句子（仅管理员）
+       *
+       * **path:** /api/sentences/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   // 句子 ID
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 所属语言 ID
+       *   languageId?: string
+       *   // 所属分类 ID
+       *   categoryId?: string
+       *   // 句子原文
+       *   sentence?: string
+       *   // 中文释义
+       *   meaning?: string
+       *   // 句子音频 URL
+       *   audioUrl?: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 句子 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 句子原文
+       *     sentence: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 句子音频 URL
+       *     audioUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      SentencesController_update<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            /**
+             * 句子 ID
+             */
+            id: string;
+          };
+          data: UpdateSentenceDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Sentence;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.SentencesController_update',
         Config
       >;
       /**
@@ -6686,23 +8550,34 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
        *   data: object
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   data?: object
        * }
        * ```
        */
       SentencesController_remove<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Object;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 句子 ID
@@ -6713,8 +8588,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Object;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SentencesController_remove',
         Config
@@ -6747,14 +8638,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 音频URL
        *     audioUrl: string
        *     // 语音类型
@@ -6770,15 +8654,33 @@ declare global {
        *     // 有道API原始响应中的语音URL
        *     speakUrl: string
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       SpeechController_getText2Speech<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Speech;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Speech;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             id: string;
             word: string;
@@ -6789,8 +8691,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Speech;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Speech;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.SpeechController_getText2Speech',
         Config
@@ -7624,14 +9542,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 总报告数
        *     totalReports: number
        *     // 待处理报告数
@@ -7652,20 +9563,54 @@ declare global {
        *       count?: number
        *     }>
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_getReportStats<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: ReportStatsDto;
-          }
-        >
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: ReportStatsDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: ReportStatsDto;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: ReportStatsDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_getReportStats',
         Config
@@ -7700,16 +9645,9 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
        *   // [items] start
        *   // [items] end
-       *   data?: Array<{
+       *   data: Array<{
        *     // 错误报告 ID
        *     id: string
        *     // 报告用户 ID
@@ -7869,15 +9807,33 @@ declare global {
        *       deleteTime?: string
        *     }
        *   }>
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_searchMyReports<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: WordErrorReport[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorReport[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -7896,8 +9852,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: WordErrorReport[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorReport[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_searchMyReports',
         Config
@@ -8237,16 +10209,9 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
        *   // [items] start
        *   // [items] end
-       *   data?: Array<{
+       *   data: Array<{
        *     // 错误报告 ID
        *     id: string
        *     // 报告用户 ID
@@ -8406,15 +10371,33 @@ declare global {
        *       deleteTime?: string
        *     }
        *   }>
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_searchAllReports<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: WordErrorReport[];
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorReport[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             /**
              * 搜索关键词
@@ -8433,8 +10416,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: WordErrorReport[];
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorReport[];
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_searchAllReports',
         Config
@@ -9085,14 +11084,7 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
-       *   data: object
-       *   // 时间戳
-       *   timestamp: number
-       *   // 请求路径
-       *   path: string
-       * } & {
-       *   data?: {
+       *   data: {
        *     // 错误报告 ID
        *     id: string
        *     // 报告用户 ID
@@ -9252,15 +11244,33 @@ declare global {
        *       deleteTime?: string
        *     }
        *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorReportsController_findOne<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: WordErrorReport;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorReport;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 错误报告 ID
@@ -9271,8 +11281,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: WordErrorReport;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorReport;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_findOne',
         Config
@@ -9303,23 +11329,34 @@ declare global {
        *   code: number
        *   // 响应消息
        *   message: string
-       *   // 响应数据
        *   data: object
        *   // 时间戳
        *   timestamp: number
        *   // 请求路径
        *   path: string
-       * } & {
-       *   data?: object
        * }
        * ```
        */
       WordErrorReportsController_remove<
-        Config extends Alova2MethodConfig<
-          ApiResponseDto & {
-            data?: Object;
-          }
-        > & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             /**
              * 错误报告 ID
@@ -9330,8 +11367,24 @@ declare global {
       >(
         config: Config
       ): Alova2Method<
-        ApiResponseDto & {
-          data?: Object;
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: Object;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
         },
         'general.WordErrorReportsController_remove',
         Config

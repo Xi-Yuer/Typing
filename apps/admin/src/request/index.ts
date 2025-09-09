@@ -6,10 +6,16 @@ export const alovaInstance = createAlova({
   baseURL: '/api',
   requestAdapter: fetchAdapter(),
   beforeRequest: method => {
-    method.config.headers['Authorization'] =
-      `Bearer ${localStorage.getItem('token')}`;
+    const token = localStorage.getItem('token');
+    if (token) {
+      method.config.headers['Authorization'] = `Bearer ${token}`;
+    }
   },
-  responded: res => {
+  responded: async res => {
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: '网络错误' }));
+      throw new Error(error.message || `HTTP ${res.status}`);
+    }
     return res.json();
   }
 });

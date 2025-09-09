@@ -11,7 +11,6 @@ import { useSearchParams } from 'next/navigation';
 import { getWordsByCategoryId, reportWordError } from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
 import { Button, Tooltip } from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 import TypingText from '@/components/TypingText';
 import GameModeModal from '@/components/GameModeModal';
 import WordErrorReportModal from '@/components/WordErrorReportModal';
@@ -98,15 +97,13 @@ function PracticePageContent() {
    */
   const preloadNextBatch = useCallback(async () => {
     await loadPracticeData(currentPage + 1);
-  }, [currentPage, categoryId, languageId, loadPracticeData]);
+  }, [currentPage, loadPracticeData]);
 
   /**
    * 处理单词完成事件
    */
   const handleWordComplete = useCallback(
-    (isCorrect: boolean) => {
-      console.log('单词完成:', { isCorrect, currentWordIndex });
-    },
+    (isCorrect: boolean) => {},
     [currentWordIndex]
   );
 

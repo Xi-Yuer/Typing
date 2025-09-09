@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -51,7 +50,7 @@ export class LanguagesController {
   @Get()
   @Public()
   @ApiOperation({ summary: '获取所有语言列表' })
-  @ApiSuccessResponse([Language], { description: '获取语言列表成功' })
+  @ApiPaginationResponse(Language, { description: '获取语言列表成功' })
   findAll() {
     return this.languagesService.findAll();
   }
@@ -59,7 +58,7 @@ export class LanguagesController {
   @Get('active')
   @Public()
   @ApiOperation({ summary: '获取所有启用的语言列表' })
-  @ApiSuccessResponse([Language], { description: '获取启用语言列表成功' })
+  @ApiPaginationResponse(Language, { description: '获取启用语言列表成功' })
   findAllActive() {
     return this.languagesService.findAllActive();
   }
@@ -76,7 +75,7 @@ export class LanguagesController {
   @Public()
   @ApiOperation({ summary: '根据语言代码查询语言' })
   @ApiParam({ name: 'code', description: '语言代码', type: String })
-  @ApiSuccessResponse(Language, { description: '查询语言成功' })
+  @ApiPaginationResponse(Language, { description: '查询语言成功' })
   findByCode(@Param('code') code: string) {
     return this.languagesService.findByCode(code);
   }
@@ -90,7 +89,7 @@ export class LanguagesController {
     return this.languagesService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Post(':id')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '更新语言信息' })
   @ApiParam({ name: 'id', description: '语言ID', type: Number })
@@ -103,7 +102,7 @@ export class LanguagesController {
     return this.languagesService.update(+id, updateLanguageDto);
   }
 
-  @Patch(':id/toggle-active')
+  @Post(':id/toggle-active')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '切换语言启用状态' })
   @ApiParam({ name: 'id', description: '语言ID', type: Number })

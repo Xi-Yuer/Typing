@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -33,6 +32,10 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { Public } from '@/common/decorators/public.decorator';
+import {
+  GetCategoryStatusDto,
+  GetLanguageStatusDto
+} from './dto/getlanguageStatus.dto';
 
 @ApiTags('单词管理')
 @Controller('words')
@@ -52,7 +55,9 @@ export class WordsController {
   @Get('paginated')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '分页查询单词（仅管理员）' })
-  @ApiPaginationResponse(Word, { description: '分页查询单词成功' })
+  @ApiPaginationResponse<Word>(Word, {
+    description: '分页查询单词成功'
+  })
   findAllPaginated(@Query() paginationQuery: PaginationQueryDto) {
     return this.wordsService.findAllPaginated(paginationQuery);
   }
@@ -61,7 +66,9 @@ export class WordsController {
   @Public()
   @ApiOperation({ summary: '根据语言 ID 查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
-  @ApiPaginationResponse(Word, { description: '根据语言 ID 查询单词成功' })
+  @ApiPaginationResponse<Word>(Word, {
+    description: '根据语言 ID 查询单词成功'
+  })
   findByLanguageId(
     @Param('languageId') languageId: string,
     @Query() paginationQuery: PaginationQueryDto
@@ -73,7 +80,9 @@ export class WordsController {
   @Public()
   @ApiOperation({ summary: '根据分类 ID 查询单词' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
-  @ApiPaginationResponse(Word, { description: '根据分类 ID 查询单词成功' })
+  @ApiPaginationResponse<Word>(Word, {
+    description: '根据分类 ID 查询单词成功'
+  })
   findByCategoryId(
     @Param('categoryId') categoryId: string,
     @Query() paginationQuery: PaginationQueryDto
@@ -86,16 +95,24 @@ export class WordsController {
   @ApiOperation({ summary: '根据语言和分类查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
-  @ApiPaginationResponse(Word, { description: '根据语言和分类查询单词成功' })
+  @ApiPaginationResponse<Word>(Word, {
+    description: '根据语言和分类查询单词成功'
+  })
   findByLanguageAndCategory(
+    @Query() paginationQuery: PaginationQueryDto,
     @Param('languageId') languageId: string,
-    @Param('categoryId') categoryId: string,
-    @Query() paginationQuery: PaginationQueryDto
+    @Param('categoryId') categoryId: string
   ) {
+    // 将空字符串转换为 undefined
+    const normalizedLanguageId =
+      languageId && languageId.trim() !== '' ? languageId : undefined;
+    const normalizedCategoryId =
+      categoryId && categoryId.trim() !== '' ? categoryId : undefined;
+
     return this.wordsService.findByLanguageAndCategory(
-      languageId,
-      categoryId,
-      paginationQuery
+      paginationQuery,
+      normalizedLanguageId,
+      normalizedCategoryId
     );
   }
 
@@ -115,7 +132,7 @@ export class WordsController {
     type: String,
     required: false
   })
-  @ApiSuccessResponse([Word], { description: '搜索单词成功' })
+  @ApiSuccessResponse<Word>(Word, { description: '搜索单词成功' })
   searchWords(
     @Query('keyword') keyword: string,
     @Query() paginationQuery: PaginationQueryDto,
@@ -146,7 +163,9 @@ export class WordsController {
     type: String,
     required: false
   })
-  @ApiPaginationResponse(Word, { description: '分页搜索单词成功' })
+  @ApiPaginationResponse<Word>(Word, {
+    description: '分页搜索单词成功'
+  })
   searchWordsPaginated(
     @Query('keyword') keyword: string,
     @Query() paginationQuery: PaginationQueryDto,
@@ -182,7 +201,7 @@ export class WordsController {
     type: String,
     required: false
   })
-  @ApiSuccessResponse([Word], { description: '随机获取单词成功' })
+  @ApiSuccessResponse<Word>(Word, { description: '随机获取单词成功' })
   getRandomWords(
     @Query('count') count?: number,
     @Query('languageId') languageId?: string,
@@ -194,7 +213,9 @@ export class WordsController {
   @Get('stats/language')
   @Public()
   @ApiOperation({ summary: '获取语言统计信息' })
-  @ApiSuccessResponse(Object, { description: '获取语言统计信息成功' })
+  @ApiSuccessResponse<GetLanguageStatusDto>(GetLanguageStatusDto, {
+    description: '获取语言统计信息成功'
+  })
   getLanguageStats() {
     return this.wordsService.getLanguageStats();
   }
@@ -202,7 +223,9 @@ export class WordsController {
   @Get('stats/category')
   @Public()
   @ApiOperation({ summary: '获取分类统计信息' })
-  @ApiSuccessResponse(Object, { description: '获取分类统计信息成功' })
+  @ApiSuccessResponse<GetCategoryStatusDto>(GetCategoryStatusDto, {
+    description: '获取分类统计信息成功'
+  })
   getCategoryStats() {
     return this.wordsService.getCategoryStats();
   }
@@ -216,7 +239,7 @@ export class WordsController {
     return this.wordsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Post(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '更新单词（仅管理员）' })
@@ -231,7 +254,7 @@ export class WordsController {
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '删除单词（仅管理员）' })
   @ApiParam({ name: 'id', description: '单词 ID', type: String })
-  @ApiSuccessResponse(Object, { description: '删除单词成功' })
+  @ApiSuccessResponse<Word>(Word, { description: '删除单词成功' })
   remove(@Param('id') id: string) {
     return this.wordsService.remove(id);
   }

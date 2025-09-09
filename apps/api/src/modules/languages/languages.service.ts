@@ -1,7 +1,8 @@
 import {
   Injectable,
   NotFoundException,
-  ConflictException
+  ConflictException,
+  Inject
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,12 +11,15 @@ import { UpdateLanguageDto } from './dto/update-language.dto';
 import { Language } from './entities/language.entity';
 import { PaginationQueryDto } from '@/common/dto/pagination-query.dto';
 import { PaginationResponseDto } from '@/common/dto/api-response.dto';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 
 @Injectable()
 export class LanguagesService {
   constructor(
     @InjectRepository(Language)
-    private readonly languageRepository: Repository<Language>
+    private readonly languageRepository: Repository<Language>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async create(createLanguageDto: CreateLanguageDto): Promise<Language> {
@@ -38,16 +42,18 @@ export class LanguagesService {
     return await this.languageRepository.save(language);
   }
 
-  async findAll(): Promise<Language[]> {
-    return await this.languageRepository.find({
+  async findAll(): Promise<PaginationResponseDto<Language>> {
+    const list = await this.languageRepository.find({
       order: { createTime: 'DESC' }
     });
+    return new PaginationResponseDto(list, list.length, 1, list.length);
   }
 
-  async findAllActive(): Promise<Language[]> {
-    return await this.languageRepository.find({
+  async findAllActive(): Promise<PaginationResponseDto<Language>> {
+    const list = await this.languageRepository.find({
       where: { isActive: true }
     });
+    return new PaginationResponseDto(list, list.length, 1, list.length);
   }
 
   async findAllPaginated(
@@ -109,6 +115,8 @@ export class LanguagesService {
     }
 
     Object.assign(language, updateLanguageDto);
+    // 删除缓存
+    await this.cacheManager.del(`languages`);
     return await this.languageRepository.save(language);
   }
 

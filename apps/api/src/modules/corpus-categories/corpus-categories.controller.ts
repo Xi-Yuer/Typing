@@ -53,7 +53,7 @@ export class CorpusCategoriesController {
 
   @Get()
   @ApiOperation({ summary: '获取所有语料库分类' })
-  @ApiSuccessResponse([CorpusCategory], {
+  @ApiPaginationResponse(CorpusCategory, {
     description: '获取所有语料库分类成功'
   })
   findAll() {
@@ -74,7 +74,7 @@ export class CorpusCategoriesController {
   @Public()
   @ApiOperation({ summary: '根据语言 ID 查询分类' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
-  @ApiSuccessResponse([CorpusCategory], {
+  @ApiPaginationResponse(CorpusCategory, {
     description: '根据语言 ID 查询分类成功'
   })
   findByLanguageId(@Param('languageId') languageId: string) {
@@ -89,7 +89,7 @@ export class CorpusCategoriesController {
     description: '难度等级（1-5）',
     type: Number
   })
-  @ApiSuccessResponse([CorpusCategory], {
+  @ApiPaginationResponse(CorpusCategory, {
     description: '根据难度等级查询分类成功'
   })
   findByDifficulty(@Param('difficulty', ParseIntPipe) difficulty: number) {
@@ -105,7 +105,7 @@ export class CorpusCategoriesController {
     description: '难度等级（1-5）',
     type: Number
   })
-  @ApiSuccessResponse([CorpusCategory], {
+  @ApiPaginationResponse(CorpusCategory, {
     description: '根据语言 ID 和难度等级查询分类成功'
   })
   findByLanguageAndDifficulty(

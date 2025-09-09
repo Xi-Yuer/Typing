@@ -32,7 +32,7 @@ const AuthCallbackContent = () => {
       } else {
         throw new Error('获取用户信息失败');
       }
-    } catch (error) {
+    } catch {
       // 清除可能存在的无效token
       localStorage.removeItem('token');
       localStorage.removeItem('userInfo');

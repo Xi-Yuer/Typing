@@ -48,8 +48,8 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
           req.bindingUserId = stateData.userId;
           return null; // 返回null，让controller处理绑定逻辑
         }
-      } catch (error) {
-        console.error('Failed to parse state:', error);
+      } catch {
+        // 如果state解析失败，继续正常登录流程
       }
     }
 

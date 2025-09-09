@@ -25,7 +25,7 @@ export const useTypingLogic = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [isComposing, setIsComposing] = useState(false);
+  const [isComposing] = useState(false);
   const [showAnswerTip, setShowAnswerTip] = useState(false);
   const [isAllCorrect, setIsAllCorrect] = useState(false);
   const hasErrorRef = useRef(false);
@@ -65,7 +65,7 @@ export const useTypingLogic = ({
     if (word?.word) {
       try {
         await playWordAudio(word);
-      } catch (error) {
+      } catch {
         // 静默处理错误
       }
     }

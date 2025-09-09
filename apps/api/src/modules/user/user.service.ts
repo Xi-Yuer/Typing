@@ -177,9 +177,8 @@ export class UserService {
       await this.cacheManager.del(`/user/${userId}`);
       // 清除用户列表相关缓存
       await this.clearUserListCache();
-    } catch (error) {
+    } catch {
       // 缓存清除失败不应该影响主要业务逻辑
-      console.warn('清除用户缓存失败:', error);
     }
   }
 
@@ -189,8 +188,8 @@ export class UserService {
   private async clearUserListCache(): Promise<void> {
     try {
       await this.cacheManager.del('/user/paginated');
-    } catch (error) {
-      console.warn('清除用户列表缓存失败:', error);
+    } catch {
+      // 缓存清除失败不应该影响主要业务逻辑
     }
   }
 }

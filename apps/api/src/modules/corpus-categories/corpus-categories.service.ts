@@ -48,11 +48,12 @@ export class CorpusCategoriesService {
   /**
    * 获取所有语料库分类
    */
-  async findAll(): Promise<CorpusCategory[]> {
-    return await this.corpusCategoryRepository.find({
+  async findAll(): Promise<PaginationResponseDto<CorpusCategory>> {
+    const list = await this.corpusCategoryRepository.find({
       relations: ['language'],
       order: { createTime: 'DESC' }
     });
+    return new PaginationResponseDto(list, list.length, 1, list.length);
   }
 
   /**
@@ -77,27 +78,33 @@ export class CorpusCategoriesService {
   /**
    * 根据语言 ID 查询分类
    */
-  async findByLanguageId(languageId: string): Promise<CorpusCategory[]> {
-    return await this.corpusCategoryRepository.find({
+  async findByLanguageId(
+    languageId: string
+  ): Promise<PaginationResponseDto<CorpusCategory>> {
+    const list = await this.corpusCategoryRepository.find({
       where: { languageId },
       relations: ['language'],
       order: { difficulty: 'ASC', createTime: 'DESC' }
     });
+    return new PaginationResponseDto(list, list.length, 1, list.length);
   }
 
   /**
    * 根据难度等级查询分类
    */
-  async findByDifficulty(difficulty: number): Promise<CorpusCategory[]> {
+  async findByDifficulty(
+    difficulty: number
+  ): Promise<PaginationResponseDto<CorpusCategory>> {
     if (difficulty < 1 || difficulty > 5) {
       throw new BadRequestException('难度等级必须在 1-5 之间');
     }
 
-    return await this.corpusCategoryRepository.find({
+    const list = await this.corpusCategoryRepository.find({
       where: { difficulty },
       relations: ['language'],
       order: { createTime: 'DESC' }
     });
+    return new PaginationResponseDto(list, list.length, 1, list.length);
   }
 
   /**
@@ -106,16 +113,17 @@ export class CorpusCategoriesService {
   async findByLanguageAndDifficulty(
     languageId: string,
     difficulty: number
-  ): Promise<CorpusCategory[]> {
+  ): Promise<PaginationResponseDto<CorpusCategory>> {
     if (difficulty < 1 || difficulty > 5) {
       throw new BadRequestException('难度等级必须在 1-5 之间');
     }
 
-    return await this.corpusCategoryRepository.find({
+    const list = await this.corpusCategoryRepository.find({
       where: { languageId, difficulty },
       relations: ['language'],
       order: { createTime: 'DESC' }
     });
+    return new PaginationResponseDto(list, list.length, 1, list.length);
   }
 
   /**

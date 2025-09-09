@@ -28,9 +28,8 @@ const WordErrorReportModal: React.FC<WordErrorReportModalProps> = ({
       message.success('错误报告提交成功，感谢您的反馈！');
       form.resetFields();
       onClose();
-    } catch (error) {
+    } catch {
       message.error('提交失败，请稍后重试');
-      console.error('Error submitting report:', error);
     } finally {
       setLoading(false);
     }

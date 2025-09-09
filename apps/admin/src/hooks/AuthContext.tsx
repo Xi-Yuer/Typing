@@ -3,6 +3,7 @@ import { message } from 'antd';
 import { getCurrentUser, login } from '../apis';
 import { AuthContext } from './AuthContext';
 import type { LoginDto } from '../request/globals';
+import React from 'react';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children
@@ -26,8 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (response.data) {
         setUser(response.data);
       }
-    } catch (error) {
-      console.error('Auth check failed:', error);
+    } catch {
       localStorage.removeItem('token');
     } finally {
       setLoading(false);
@@ -37,7 +37,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const handleLogin = async (data: LoginDto): Promise<boolean> => {
     try {
       const response = await login(data);
-      console.log('Login response:', response); // 调试信息
 
       // 检查响应数据结构
       const token = response.data?.accessToken;
@@ -55,7 +54,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       return false;
     } catch (error: any) {
-      console.error('Login error:', error); // 调试信息
       message.error(error.message || '登录失败');
       return false;
     }

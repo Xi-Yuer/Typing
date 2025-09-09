@@ -23,18 +23,10 @@ import {
   getAllLanguages,
   createLanguage,
   deleteLanguage,
-  getLanguageById
+  getLanguageById,
+  updateLanguage
 } from '../../apis';
-import type { CreateLanguageDto } from '../../request/globals';
-
-interface Language {
-  id: number;
-  name: string;
-  code: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { CreateLanguageDto, Language } from '../../request/globals';
 
 const LanguageManagement: React.FC = () => {
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -54,9 +46,9 @@ const LanguageManagement: React.FC = () => {
       const response = await getAllLanguages();
 
       if (response.data) {
-        setLanguages(response.data);
+        setLanguages(response.data.list);
       }
-    } catch (error) {
+    } catch {
       message.error('获取语言列表失败');
     } finally {
       setLoading(false);
@@ -77,7 +69,7 @@ const LanguageManagement: React.FC = () => {
         form.setFieldsValue(response.data);
         setModalVisible(true);
       }
-    } catch (error) {
+    } catch {
       message.error('获取语言信息失败');
     }
   };
@@ -87,7 +79,7 @@ const LanguageManagement: React.FC = () => {
       await deleteLanguage(id);
       message.success('删除成功');
       fetchLanguages();
-    } catch (error) {
+    } catch {
       message.error('删除失败');
     }
   };
@@ -97,13 +89,17 @@ const LanguageManagement: React.FC = () => {
       const values = await form.validateFields();
 
       if (editingLanguage) {
-        // 更新语言逻辑（API中暂无更新接口）
-        message.info('更新功能暂未实现');
+        // 更新语言
+        await updateLanguage(editingLanguage.id, values);
+        message.success('更新成功');
+        setModalVisible(false);
+        fetchLanguages();
       } else {
         // 创建语言
         const createData: CreateLanguageDto = {
           name: values.name,
           code: values.code,
+          script: values.script,
           isActive: values.isActive ?? true
         };
 
@@ -112,7 +108,7 @@ const LanguageManagement: React.FC = () => {
         setModalVisible(false);
         fetchLanguages();
       }
-    } catch (error) {
+    } catch {
       message.error('操作失败');
     }
   };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Table,
   Button,
@@ -14,8 +14,7 @@ import {
   Input as AntInput,
   Row,
   Col,
-  Statistic,
-  Tabs
+  Statistic
 } from 'antd';
 import {
   PlusOutlined,
@@ -26,55 +25,25 @@ import {
   SoundOutlined
 } from '@ant-design/icons';
 import {
-  getWordsPaginated,
   createWord,
   deleteWord,
   getWordById,
-  getWordLanguageStats,
-  getWordCategoryStats,
-  getAllLanguages,
-  getAllCorpusCategories
+  getWordsByLanguageAndCategory,
+  getActiveLanguages,
+  getCorpusCategoriesByLanguage,
+  updateWord
 } from '../../apis';
-import type { CreateWordDto } from '../../request/globals';
-
-interface Word {
-  id: string;
-  word: string;
-  translation: string;
-  pronunciation: string;
-  languageId: string;
-  categoryId: string;
-  createdAt: string;
-  updatedAt: string;
-  language?: {
-    id: number;
-    name: string;
-    code: string;
-  };
-  category?: {
-    id: string;
-    name: string;
-    difficulty: number;
-  };
-}
-
-interface Language {
-  id: number;
-  name: string;
-  code: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  difficulty: number;
-  languageId: string;
-}
-
+import type {
+  CorpusCategory,
+  CreateWordDto,
+  Language,
+  Word
+} from '../../request/globals';
+import { playWordAudio } from '@/hooks/useSpeech';
 const WordManagement: React.FC = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CorpusCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -88,73 +57,65 @@ const WordManagement: React.FC = () => {
   const [editingWord, setEditingWord] = useState<Word | null>(null);
   const [form] = Form.useForm();
 
+  const fetchData = async () => {
+    try {
+      // 获取语言列表
+      const languagesResponse = await getActiveLanguages();
+      if (languagesResponse.data) {
+        setLanguages(languagesResponse.data.list);
+        setSelectedLanguage(languagesResponse.data.list[0].id.toString());
+      }
+
+      // 获取分类列表
+      const categoriesResponse = await getCorpusCategoriesByLanguage(
+        languagesResponse.data.list[0].id.toString()
+      );
+      if (categoriesResponse.data) {
+        setCategories(categoriesResponse.data.list);
+        setSelectedCategory(categoriesResponse.data.list[0].id.toString());
+      }
+    } catch {
+      message.error('获取基础数据失败');
+    }
+  };
+
+  const fetchCategories = async (languageId: string) => {
+    const categoriesResponse = await getCorpusCategoriesByLanguage(languageId);
+    if (categoriesResponse.data) {
+      setCategories(categoriesResponse.data.list);
+      setSelectedCategory(categoriesResponse.data.list[0].id.toString());
+    }
+  };
+
+  const fetchWords = useCallback(async () => {
+    if (!selectedLanguage || !selectedCategory) {
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await getWordsByLanguageAndCategory(
+        selectedLanguage,
+        selectedCategory,
+        {
+          page: pagination.current,
+          pageSize: pagination.pageSize
+        }
+      );
+      setWords(response.data.list);
+    } catch {
+      message.error('获取单词列表失败');
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedLanguage, selectedCategory, pagination]);
+
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
     fetchWords();
-  }, [
-    pagination.current,
-    pagination.pageSize,
-    selectedLanguage,
-    selectedCategory
-  ]);
-
-  const fetchData = async () => {
-    try {
-      // 获取语言列表
-      const languagesResponse = await getAllLanguages();
-      if (languagesResponse.data) {
-        setLanguages(languagesResponse.data);
-      }
-
-      // 获取分类列表
-      const categoriesResponse = await getAllCorpusCategories();
-      if (categoriesResponse.data) {
-        setCategories(categoriesResponse.data);
-      }
-    } catch (error) {
-      message.error('获取基础数据失败');
-    }
-  };
-
-  const fetchWords = async () => {
-    try {
-      setLoading(true);
-      const response = await getWordsPaginated({
-        page: pagination.current,
-        pageSize: pagination.pageSize
-      });
-
-      if (response.data) {
-        let filteredWords = response.data.data || [];
-
-        // 根据选择的语言和分类过滤
-        if (selectedLanguage) {
-          filteredWords = filteredWords.filter(
-            (word: Word) => word.languageId === selectedLanguage
-          );
-        }
-
-        if (selectedCategory) {
-          filteredWords = filteredWords.filter(
-            (word: Word) => word.categoryId === selectedCategory
-          );
-        }
-
-        setWords(filteredWords);
-        setPagination(prev => ({
-          ...prev,
-          total: response.data.total || 0
-        }));
-      }
-    } catch (error) {
-      message.error('获取单词列表失败');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [pagination.pageSize, selectedLanguage, selectedCategory, fetchWords]);
 
   const handleCreate = () => {
     setEditingWord(null);
@@ -170,7 +131,7 @@ const WordManagement: React.FC = () => {
         form.setFieldsValue(response.data);
         setModalVisible(true);
       }
-    } catch (error) {
+    } catch {
       message.error('获取单词信息失败');
     }
   };
@@ -180,7 +141,7 @@ const WordManagement: React.FC = () => {
       await deleteWord(id);
       message.success('删除成功');
       fetchWords();
-    } catch (error) {
+    } catch {
       message.error('删除失败');
     }
   };
@@ -190,14 +151,23 @@ const WordManagement: React.FC = () => {
       const values = await form.validateFields();
 
       if (editingWord) {
-        // 更新单词逻辑（API中暂无更新接口）
-        message.info('更新功能暂未实现');
+        // 更新单词
+        await updateWord(editingWord.id, values);
+        message.success('更新成功');
+        setModalVisible(false);
+        fetchWords();
       } else {
         // 创建单词
         const createData: CreateWordDto = {
           word: values.word,
-          translation: values.translation,
-          pronunciation: values.pronunciation,
+          meaning: values.meaning,
+          meaningShort: values.meaningShort,
+          example: values.example,
+          transliteration: values.transliteration,
+          usPhonetic: values.usPhonetic,
+          ukPhonetic: values.ukPhonetic,
+          audioUrl: values.audioUrl,
+          imageUrl: values.imageUrl,
           languageId: values.languageId,
           categoryId: values.categoryId
         };
@@ -207,24 +177,13 @@ const WordManagement: React.FC = () => {
         setModalVisible(false);
         fetchWords();
       }
-    } catch (error) {
+    } catch {
       message.error('操作失败');
     }
   };
 
   const handleTableChange = (pagination: any) => {
     setPagination(pagination);
-  };
-
-  const filteredWords = words.filter(
-    word =>
-      word.word.toLowerCase().includes(searchText.toLowerCase()) ||
-      word.translation.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const getFilteredCategories = () => {
-    if (!selectedLanguage) return categories;
-    return categories.filter(cat => cat.languageId === selectedLanguage);
   };
 
   const columns = [
@@ -238,23 +197,40 @@ const WordManagement: React.FC = () => {
     },
     {
       title: '翻译',
-      dataIndex: 'translation',
-      key: 'translation'
+      dataIndex: 'meaning',
+      key: 'meaning'
     },
     {
-      title: '发音',
-      dataIndex: 'pronunciation',
-      key: 'pronunciation',
-      render: (pronunciation: string) => (
+      title: '美式发音',
+      dataIndex: 'ukPhonetic',
+      key: 'ukPhonetic',
+      render: (ukPhonetic: string, record: Word) => (
         <Space>
-          <span>{pronunciation}</span>
+          <span>{ukPhonetic}</span>
           <Button
             type='link'
             size='small'
             icon={<SoundOutlined />}
             onClick={() => {
-              // 这里可以调用语音API
-              message.info('语音播放功能待实现');
+              playWordAudio(record);
+            }}
+          />
+        </Space>
+      )
+    },
+    {
+      title: '英式发音',
+      dataIndex: 'usPhonetic',
+      key: 'usPhonetic',
+      render: (usPhonetic: string, record: Word) => (
+        <Space>
+          <span>{usPhonetic}</span>
+          <Button
+            type='link'
+            size='small'
+            icon={<SoundOutlined />}
+            onClick={() => {
+              playWordAudio(record);
             }}
           />
         </Space>
@@ -336,7 +312,7 @@ const WordManagement: React.FC = () => {
           <Card>
             <Statistic
               title='分类数量'
-              value={categories.length}
+              value={categories?.length || 0}
               prefix={<FileTextOutlined />}
               valueStyle={{ color: '#722ed1' }}
             />
@@ -346,7 +322,7 @@ const WordManagement: React.FC = () => {
           <Card>
             <Statistic
               title='当前页'
-              value={words.length}
+              value={words?.length || 0}
               prefix={<FileTextOutlined />}
               valueStyle={{ color: '#fa8c16' }}
             />
@@ -375,7 +351,10 @@ const WordManagement: React.FC = () => {
             <Select
               placeholder='选择语言'
               value={selectedLanguage}
-              onChange={setSelectedLanguage}
+              onChange={value => {
+                setSelectedLanguage(value);
+                fetchCategories(value);
+              }}
               style={{ width: 150 }}
               allowClear
             >
@@ -392,7 +371,7 @@ const WordManagement: React.FC = () => {
               style={{ width: 150 }}
               allowClear
             >
-              {getFilteredCategories().map(category => (
+              {categories.map(category => (
                 <Select.Option key={category.id} value={category.id}>
                   {category.name}
                 </Select.Option>
@@ -406,7 +385,7 @@ const WordManagement: React.FC = () => {
 
         <Table
           columns={columns}
-          dataSource={filteredWords}
+          dataSource={words}
           rowKey='id'
           loading={loading}
           pagination={{
@@ -437,19 +416,34 @@ const WordManagement: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name='translation'
+            name='meaning'
             label='翻译'
             rules={[{ required: true, message: '请输入翻译' }]}
           >
-            <Input placeholder='请输入翻译' />
+            <Input.TextArea placeholder='请输入翻译' rows={3} />
+          </Form.Item>
+          <Form.Item
+            name='meaningShort'
+            label='短翻译'
+            rules={[{ required: true, message: '请输入短翻译' }]}
+          >
+            <Input.TextArea placeholder='请输入短翻译' rows={2} />
           </Form.Item>
 
           <Form.Item
-            name='pronunciation'
-            label='发音'
+            name='usPhonetic'
+            label='美式发音'
             rules={[{ required: true, message: '请输入发音' }]}
           >
-            <Input placeholder='请输入发音，如：/ˈhæpi/' />
+            <Input placeholder='请输入美式发音，如：/ˈhæpi/' />
+          </Form.Item>
+
+          <Form.Item
+            name='ukPhonetic'
+            label='英式发音'
+            rules={[{ required: true, message: '请输入英式发音' }]}
+          >
+            <Input placeholder='请输入英式发音，如：/ˈhæpi/' />
           </Form.Item>
 
           <Form.Item
@@ -459,7 +453,7 @@ const WordManagement: React.FC = () => {
           >
             <Select placeholder='请选择语言'>
               {languages.map(language => (
-                <Select.Option key={language.id} value={language.id.toString()}>
+                <Select.Option key={language.id} value={language.id}>
                   {language.name} ({language.code})
                 </Select.Option>
               ))}

@@ -1,5 +1,5 @@
 'use client';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import type { UserSectionProps } from './types';
 import { Dropdown } from 'antd';
 

@@ -49,7 +49,10 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      # 移动端静态资源
       - ./mobile.html:/usr/share/nginx/html/mobile.html:ro
+      # 管理后台静态资源
+      - ./apps/admin/dist:/usr/share/nginx/html/admin:ro
     depends_on:
       - app
     networks:

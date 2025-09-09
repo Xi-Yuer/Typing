@@ -13,7 +13,8 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
-  ApiBody
+  ApiBody,
+  ApiExtraModels
 } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -28,6 +29,7 @@ import { LoginDto } from './dto/login.dto';
 import { ApiSuccessResponse } from '@/common/decorators/api-response.decorator';
 
 @ApiTags('认证')
+@ApiExtraModels(AuthResponseDto, UserResponseDto, User)
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -49,7 +51,6 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @ApiOperation({ summary: '用户登录' })
   @ApiBody({ type: LoginDto })
-  @ApiResponse({ status: 200, description: '登录成功', type: AuthResponseDto })
   @ApiResponse({ status: 401, description: '用户名或密码错误' })
   @ApiSuccessResponse(AuthResponseDto, { description: '登录成功' })
   async login(@Req() req: any) {

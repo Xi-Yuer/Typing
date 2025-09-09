@@ -30,7 +30,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
         setUser(parsedUser);
         setToken(token);
         setIsLoggedIn(true);
-      } catch (error) {
+      } catch {
         // 如果解析失败，清除无效数据
         localStorage.removeItem('token');
         localStorage.removeItem('userInfo');

@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
 
       // 获取语言统计
       const languagesResponse = await getAllLanguages();
-      const totalLanguages = languagesResponse.data?.length || 0;
+      const totalLanguages = languagesResponse.data?.list?.length || 0;
 
       // 获取分类统计
       const categoriesResponse = await getCorpusCategoriesPaginated({
@@ -78,8 +78,8 @@ const Dashboard: React.FC = () => {
         pageSize: 5
       });
       setRecentUsers(recentUsersResponse.data?.list || []);
-    } catch (error) {
-      console.error('获取仪表板数据失败:', error);
+    } catch {
+      // 获取数据失败不应该影响主要业务逻辑
     } finally {
       setLoading(false);
     }

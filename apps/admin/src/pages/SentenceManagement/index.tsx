@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Table,
   Button,
@@ -21,58 +21,29 @@ import {
   EditOutlined,
   DeleteOutlined,
   SearchOutlined,
-  FileTextOutlined,
-  SoundOutlined
+  FileTextOutlined
 } from '@ant-design/icons';
 import {
-  getSentencesPaginated,
   createSentence,
   deleteSentence,
   getSentenceById,
-  getSentenceLanguageStats,
-  getSentenceCategoryStats,
   getAllLanguages,
-  getAllCorpusCategories
+  getAllCorpusCategories,
+  updateSentence,
+  getCorpusCategoriesByLanguage,
+  getSentencesByLanguageAndCategory
 } from '../../apis';
-import type { CreateSentenceDto } from '../../request/globals';
-
-interface Sentence {
-  id: string;
-  text: string;
-  translation: string;
-  languageId: string;
-  categoryId: string;
-  createdAt: string;
-  updatedAt: string;
-  language?: {
-    id: number;
-    name: string;
-    code: string;
-  };
-  category?: {
-    id: string;
-    name: string;
-    difficulty: number;
-  };
-}
-
-interface Language {
-  id: number;
-  name: string;
-  code: string;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  difficulty: number;
-  languageId: string;
-}
+import type {
+  CorpusCategory,
+  CreateSentenceDto,
+  Language,
+  Sentence
+} from '../../request/globals';
 
 const SentenceManagement: React.FC = () => {
   const [sentences, setSentences] = useState<Sentence[]>([]);
   const [languages, setLanguages] = useState<Language[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CorpusCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -85,74 +56,74 @@ const SentenceManagement: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingSentence, setEditingSentence] = useState<Sentence | null>(null);
   const [form] = Form.useForm();
+  const paginationRef = useRef(pagination);
+
+  useEffect(() => {
+    paginationRef.current = pagination;
+  }, [pagination]);
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    fetchSentences();
-  }, [
-    pagination.current,
-    pagination.pageSize,
-    selectedLanguage,
-    selectedCategory
-  ]);
 
   const fetchData = async () => {
     try {
       // 获取语言列表
       const languagesResponse = await getAllLanguages();
       if (languagesResponse.data) {
-        setLanguages(languagesResponse.data);
+        setLanguages(languagesResponse.data.list);
+        setSelectedLanguage(languagesResponse.data.list[0].id.toString());
       }
 
       // 获取分类列表
       const categoriesResponse = await getAllCorpusCategories();
       if (categoriesResponse.data) {
-        setCategories(categoriesResponse.data);
+        setCategories(categoriesResponse.data.list);
+        setSelectedCategory(categoriesResponse.data.list[0].id.toString());
       }
-    } catch (error) {
+    } catch {
       message.error('获取基础数据失败');
     }
   };
 
-  const fetchSentences = async () => {
+  const fetchSentences = useCallback(async () => {
+    if (!selectedLanguage || !selectedCategory) {
+      return;
+    }
     try {
       setLoading(true);
-      const response = await getSentencesPaginated({
-        page: pagination.current,
-        pageSize: pagination.pageSize
-      });
-
-      if (response.data) {
-        let filteredSentences = response.data.data || [];
-
-        // 根据选择的语言和分类过滤
-        if (selectedLanguage) {
-          filteredSentences = filteredSentences.filter(
-            (sentence: Sentence) => sentence.languageId === selectedLanguage
-          );
+      const currentPagination = paginationRef.current;
+      const response = await getSentencesByLanguageAndCategory(
+        selectedLanguage,
+        selectedCategory,
+        {
+          page: currentPagination.current,
+          pageSize: currentPagination.pageSize
         }
-
-        if (selectedCategory) {
-          filteredSentences = filteredSentences.filter(
-            (sentence: Sentence) => sentence.categoryId === selectedCategory
-          );
-        }
-
-        setSentences(filteredSentences);
-        setPagination(prev => ({
-          ...prev,
-          total: response.data.total || 0
-        }));
-      }
-    } catch (error) {
+      );
+      setSentences(response.data.list);
+      setPagination(prev => ({
+        ...prev,
+        total: response.data.total
+      }));
+    } catch {
       message.error('获取句子列表失败');
     } finally {
       setLoading(false);
     }
+  }, [selectedLanguage, selectedCategory]);
+
+  const fetchCategories = async (languageId: string) => {
+    const categoriesResponse = await getCorpusCategoriesByLanguage(languageId);
+    if (categoriesResponse.data) {
+      setCategories(categoriesResponse.data.list);
+      setSelectedCategory(categoriesResponse.data.list[0].id.toString());
+    }
   };
+
+  useEffect(() => {
+    fetchSentences();
+  }, [pagination.pageSize, selectedLanguage, selectedCategory, fetchSentences]);
 
   const handleCreate = () => {
     setEditingSentence(null);
@@ -168,7 +139,7 @@ const SentenceManagement: React.FC = () => {
         form.setFieldsValue(response.data);
         setModalVisible(true);
       }
-    } catch (error) {
+    } catch {
       message.error('获取句子信息失败');
     }
   };
@@ -178,7 +149,7 @@ const SentenceManagement: React.FC = () => {
       await deleteSentence(id);
       message.success('删除成功');
       fetchSentences();
-    } catch (error) {
+    } catch {
       message.error('删除失败');
     }
   };
@@ -188,13 +159,16 @@ const SentenceManagement: React.FC = () => {
       const values = await form.validateFields();
 
       if (editingSentence) {
-        // 更新句子逻辑（API中暂无更新接口）
-        message.info('更新功能暂未实现');
+        // 更新句子
+        await updateSentence(editingSentence.id, values);
+        message.success('更新成功');
+        setModalVisible(false);
+        fetchSentences();
       } else {
         // 创建句子
         const createData: CreateSentenceDto = {
-          text: values.text,
-          translation: values.translation,
+          sentence: values.sentence,
+          meaning: values.meaning,
           languageId: values.languageId,
           categoryId: values.categoryId
         };
@@ -204,7 +178,7 @@ const SentenceManagement: React.FC = () => {
         setModalVisible(false);
         fetchSentences();
       }
-    } catch (error) {
+    } catch {
       message.error('操作失败');
     }
   };
@@ -213,21 +187,10 @@ const SentenceManagement: React.FC = () => {
     setPagination(pagination);
   };
 
-  const filteredSentences = sentences.filter(
-    sentence =>
-      sentence.text.toLowerCase().includes(searchText.toLowerCase()) ||
-      sentence.translation.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const getFilteredCategories = () => {
-    if (!selectedLanguage) return categories;
-    return categories.filter(cat => cat.languageId === selectedLanguage);
-  };
-
   const columns = [
     {
       title: '句子',
-      dataIndex: 'text',
+      dataIndex: 'sentence',
       key: 'text',
       width: 300,
       render: (text: string) => (
@@ -245,10 +208,10 @@ const SentenceManagement: React.FC = () => {
     },
     {
       title: '翻译',
-      dataIndex: 'translation',
-      key: 'translation',
+      dataIndex: 'meaning',
+      key: 'meaning',
       width: 200,
-      render: (translation: string) => (
+      render: (meaning: string) => (
         <div
           style={{
             maxWidth: 180,
@@ -257,7 +220,7 @@ const SentenceManagement: React.FC = () => {
             whiteSpace: 'nowrap'
           }}
         >
-          {translation}
+          {meaning}
         </div>
       )
     },
@@ -380,7 +343,12 @@ const SentenceManagement: React.FC = () => {
             <Select
               placeholder='选择语言'
               value={selectedLanguage}
-              onChange={setSelectedLanguage}
+              onChange={async value => {
+                setSelectedLanguage(value);
+                if (value) {
+                  await fetchCategories(value);
+                }
+              }}
               style={{ width: 150 }}
               allowClear
             >
@@ -397,7 +365,7 @@ const SentenceManagement: React.FC = () => {
               style={{ width: 150 }}
               allowClear
             >
-              {getFilteredCategories().map(category => (
+              {categories.map(category => (
                 <Select.Option key={category.id} value={category.id}>
                   {category.name}
                 </Select.Option>
@@ -411,7 +379,7 @@ const SentenceManagement: React.FC = () => {
 
         <Table
           columns={columns}
-          dataSource={filteredSentences}
+          dataSource={sentences}
           rowKey='id'
           loading={loading}
           pagination={{
@@ -435,7 +403,7 @@ const SentenceManagement: React.FC = () => {
       >
         <Form form={form} layout='vertical'>
           <Form.Item
-            name='text'
+            name='sentence'
             label='句子内容'
             rules={[{ required: true, message: '请输入句子内容' }]}
           >
@@ -448,7 +416,7 @@ const SentenceManagement: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name='translation'
+            name='meaning'
             label='翻译'
             rules={[{ required: true, message: '请输入翻译' }]}
           >

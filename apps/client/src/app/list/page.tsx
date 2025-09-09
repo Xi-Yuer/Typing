@@ -43,10 +43,10 @@ export default function page() {
   const getLanguageCategorySubCategoriesAction = () => {
     setLoading(true);
     getLanguageCategories().then(res => {
-      setLanguages(res.data);
-      if (res.data.length > 0) {
-        setSelectedLanguageId(res.data[0].id);
-        getCategorySubCategoriesAction(res.data[0].id);
+      setLanguages(res.data.list);
+      if (res.data.total > 0) {
+        setSelectedLanguageId(res.data.list[0].id);
+        getCategorySubCategoriesAction(res.data.list[0].id);
       }
       setLoading(false);
     });
@@ -58,7 +58,7 @@ export default function page() {
    */
   const getCategorySubCategoriesAction = (categoryId: number) => {
     getLanguageCategorySubCategories(categoryId).then(res => {
-      setCategorySubCategories(res.data);
+      setCategorySubCategories(res.data.list);
     });
   };
 

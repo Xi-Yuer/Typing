@@ -21,8 +21,7 @@ export const getStarsCount = async () => {
         return 0;
       });
     return String(formatNumber(count)).toUpperCase();
-  } catch (error) {
-    console.error('Error fetching stargazers count:', error);
+  } catch {
     return 0;
   }
 };

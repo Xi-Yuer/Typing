@@ -29,32 +29,13 @@ import {
   createCorpusCategory,
   deleteCorpusCategory,
   getCorpusCategoryById,
-  getDifficultyStats,
-  getLanguageStats,
   getAllLanguages
 } from '../../apis';
-import type { CreateCorpusCategoryDto } from '../../request/globals';
-
-interface CorpusCategory {
-  id: string;
-  name: string;
-  description: string;
-  languageId: string;
-  difficulty: number;
-  createdAt: string;
-  updatedAt: string;
-  language?: {
-    id: number;
-    name: string;
-    code: string;
-  };
-}
-
-interface Language {
-  id: number;
-  name: string;
-  code: string;
-}
+import type {
+  CorpusCategory,
+  CreateCorpusCategoryDto,
+  Language
+} from '../../request/globals';
 
 const CorpusCategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<CorpusCategory[]>([]);
@@ -78,15 +59,15 @@ const CorpusCategoryManagement: React.FC = () => {
       // 获取分类列表
       const categoriesResponse = await getAllCorpusCategories();
       if (categoriesResponse.data) {
-        setCategories(categoriesResponse.data);
+        setCategories(categoriesResponse.data.list);
       }
 
       // 获取语言列表
       const languagesResponse = await getAllLanguages();
       if (languagesResponse.data) {
-        setLanguages(languagesResponse.data);
+        setLanguages(languagesResponse.data.list);
       }
-    } catch (error) {
+    } catch {
       message.error('获取数据失败');
     } finally {
       setLoading(false);
@@ -107,7 +88,7 @@ const CorpusCategoryManagement: React.FC = () => {
         form.setFieldsValue(response.data);
         setModalVisible(true);
       }
-    } catch (error) {
+    } catch {
       message.error('获取分类信息失败');
     }
   };
@@ -117,7 +98,7 @@ const CorpusCategoryManagement: React.FC = () => {
       await deleteCorpusCategory(id);
       message.success('删除成功');
       fetchData();
-    } catch (error) {
+    } catch {
       message.error('删除失败');
     }
   };
@@ -143,7 +124,7 @@ const CorpusCategoryManagement: React.FC = () => {
         setModalVisible(false);
         fetchData();
       }
-    } catch (error) {
+    } catch {
       message.error('操作失败');
     }
   };
@@ -151,7 +132,7 @@ const CorpusCategoryManagement: React.FC = () => {
   const filteredCategories = categories.filter(
     category =>
       category.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      category.description.toLowerCase().includes(searchText.toLowerCase())
+      category.description?.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const getDifficultyColor = (difficulty: number) => {

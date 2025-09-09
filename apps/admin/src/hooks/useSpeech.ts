@@ -1,6 +1,6 @@
-import { Word } from '@/request/globals';
-import { YouDaoResponseType } from 'common';
+import type { YouDaoResponseType } from 'common';
 import Apis from '@/request';
+import type { Word } from '@/request/globals';
 let currentAudio: HTMLAudioElement | null = null;
 
 /**
@@ -49,8 +49,8 @@ export async function playWordAudio(word: Word): Promise<void> {
     currentAudio.preload = 'auto';
     currentAudio.volume = 1;
 
-    // 返回一个 Promise 来处理音频播放
-    return new Promise(resolve => {
+    // 返回播放 Promise
+    return new Promise<void>(resolve => {
       // 注册事件
       currentAudio!.onended = () => {
         currentAudio = null;

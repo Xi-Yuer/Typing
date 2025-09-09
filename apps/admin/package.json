@@ -17,7 +17,8 @@
     "dayjs": "^1.11.13",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "common": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

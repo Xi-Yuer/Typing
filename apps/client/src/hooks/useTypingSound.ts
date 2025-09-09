@@ -20,8 +20,8 @@ export const useTypingSound = () => {
       errorAudioRef.current = new Audio('/sounds/error.mp3');
       errorAudioRef.current.volume = 1;
       errorAudioRef.current.preload = 'auto';
-    } catch (e) {
-      console.log('初始化音频失败:', e);
+    } catch {
+      // 初始化音频对象失败不应该影响主要业务逻辑
     }
   }, []);
 
@@ -29,27 +29,21 @@ export const useTypingSound = () => {
   const playTypingSound = () => {
     if (typingAudioRef.current) {
       typingAudioRef.current.currentTime = 0; // 重置播放位置
-      typingAudioRef.current
-        .play()
-        .catch(e => console.log('播放成功音效失败:', e));
+      typingAudioRef.current.play();
     }
   };
 
   const playSuccessSound = () => {
     if (successAudioRef.current) {
       successAudioRef.current.currentTime = 0; // 重置播放位置
-      successAudioRef.current
-        .play()
-        .catch(e => console.log('播放成功音效失败:', e));
+      successAudioRef.current.play();
     }
   };
 
   const playErrorSound = () => {
     if (errorAudioRef.current) {
       errorAudioRef.current.currentTime = 0; // 重置播放位置
-      errorAudioRef.current
-        .play()
-        .catch(e => console.log('播放错误音效失败:', e));
+      errorAudioRef.current.play();
     }
   };
 

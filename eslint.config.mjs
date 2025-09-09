@@ -1,6 +1,7 @@
 // @ts-check
 import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -28,6 +29,15 @@ export default [
   ...tseslint.configs.recommended,
   // Prettier 集成配置
   eslintPluginPrettierRecommended,
+  // React Hooks 规则
+  {
+    plugins: {
+      'react-hooks': reactHooks
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules
+    }
+  },
   {
     // 语言选项配置
     languageOptions: {
@@ -43,16 +53,41 @@ export default [
     rules: {
       // TypeScript 规则（仅不需要类型检查的规则）
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
-      
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_' }
+      ],
+
       // Prettier 规则
       'prettier/prettier': 'warn',
-      
+
       // 通用规则
       'no-console': 'warn',
       'no-debugger': 'warn',
       'prefer-const': 'warn',
-      'no-var': 'error'
-    }
+      'no-var': 'error',
+      'no-async-promise-executor': 'error'
+    },
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/.next/**',
+      '**/coverage/**',
+      '**/*.config.js',
+      '**/*.config.mjs',
+      '**/eslint.config.mjs',
+      '**/.rollup.cache/**',
+      '**/.turbo/**',
+      '**/.pnpm-store/**',
+      '**/.next/**',
+      '**/.nuxt/**',
+      '**/.vuepress/dist/**',
+      '**/.serverless/**',
+      '**/.fusebox/**',
+      '**/.dynamodb/**',
+      '**/.tern-port/**',
+      '**/.rollup.cache/**'
+    ]
   }
 ];

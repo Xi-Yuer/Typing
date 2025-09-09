@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -220,7 +219,7 @@ export class SentencesController {
     return this.sentencesService.findOne(id);
   }
 
-  @Patch(':id')
+  @Post(':id')
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '更新句子（仅管理员）' })
   @ApiParam({ name: 'id', description: '句子 ID', type: String })

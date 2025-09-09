@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Table,
   Button,
   Space,
   Tag,
   Modal,
-  Form,
-  Input,
-  Select,
   message,
   Popconfirm,
   Card,
@@ -19,7 +16,6 @@ import {
   Descriptions
 } from 'antd';
 import {
-  EditOutlined,
   DeleteOutlined,
   SearchOutlined,
   BugOutlined,
@@ -34,38 +30,10 @@ import {
   getWordErrorReportStats,
   getWordErrorReportsByStatus
 } from '../../apis';
-
-interface ErrorReport {
-  id: string;
-  wordId: string;
-  userId: number;
-  errorType: string;
-  description: string;
-  status: 'pending' | 'reviewing' | 'accepted' | 'rejected';
-  createdAt: string;
-  updatedAt: string;
-  word?: {
-    id: string;
-    word: string;
-    translation: string;
-  };
-  user?: {
-    id: number;
-    name: string;
-    email: string;
-  };
-}
-
-interface ReportStats {
-  total: number;
-  pending: number;
-  reviewing: number;
-  accepted: number;
-  rejected: number;
-}
+import type { ReportStatsDto, WordErrorReport } from '../../request/globals';
 
 const ErrorReportManagement: React.FC = () => {
-  const [reports, setReports] = useState<ErrorReport[]>([]);
+  const [reports, setReports] = useState<WordErrorReport[]>([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
@@ -75,76 +43,95 @@ const ErrorReportManagement: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedReport, setSelectedReport] = useState<ErrorReport | null>(
+  const [selectedReport, setSelectedReport] = useState<WordErrorReport | null>(
     null
   );
-  const [stats, setStats] = useState<ReportStats>({
-    total: 0,
-    pending: 0,
-    reviewing: 0,
-    accepted: 0,
-    rejected: 0
+  const [stats, setStats] = useState<ReportStatsDto>({
+    totalReports: 0,
+    pendingReports: 0,
+    reviewingReports: 0,
+    acceptedReports: 0,
+    rejectedReports: 0,
+    recentReports: []
   });
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchReports();
-  }, [pagination.current, pagination.pageSize, selectedStatus]);
-
-  const fetchData = async () => {
+  const prevPaginationRef = useRef(pagination);
+  const prevSelectedStatusRef = useRef(selectedStatus);
+  const fetchData = useCallback(async () => {
     try {
       // 获取统计信息
       const statsResponse = await getWordErrorReportStats();
       if (statsResponse.data) {
         setStats(statsResponse.data);
       }
-    } catch (error) {
+    } catch {
       message.error('获取统计数据失败');
     }
-  };
+  }, []);
 
-  const fetchReports = async () => {
-    try {
-      setLoading(true);
-      let response;
+  const fetchReports = useCallback(
+    async (currentPage: number, pageSize: number, status: string) => {
+      try {
+        setLoading(true);
+        let response;
 
-      if (selectedStatus) {
-        response = await getWordErrorReportsByStatus(
-          selectedStatus as 'pending' | 'reviewing' | 'accepted' | 'rejected',
-          { page: pagination.current, pageSize: pagination.pageSize }
-        );
-      } else {
-        response = await getWordErrorReportsPaginated({
-          page: pagination.current,
-          pageSize: pagination.pageSize
-        });
+        if (status) {
+          response = await getWordErrorReportsByStatus(
+            status as 'pending' | 'reviewing' | 'accepted' | 'rejected',
+            { page: currentPage, pageSize }
+          );
+        } else {
+          response = await getWordErrorReportsPaginated({
+            page: currentPage,
+            pageSize
+          });
+        }
+
+        if (response.data) {
+          setReports(response.data.list || []);
+          setPagination(prev => ({
+            ...prev,
+            total: response.data.total || 0
+          }));
+        }
+      } catch {
+        message.error('获取错误报告列表失败');
+      } finally {
+        setLoading(false);
       }
+    },
+    []
+  );
 
-      if (response.data) {
-        setReports(response.data.data || []);
-        setPagination(prev => ({
-          ...prev,
-          total: response.data.total || 0
-        }));
-      }
-    } catch (error) {
-      message.error('获取错误报告列表失败');
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    fetchData();
+    fetchReports(pagination.current, pagination.pageSize, selectedStatus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const prevPagination = prevPaginationRef.current;
+    const prevSelectedStatus = prevSelectedStatusRef.current;
+
+    const paginationChanged =
+      prevPagination.current !== pagination.current ||
+      prevPagination.pageSize !== pagination.pageSize;
+    const statusChanged = prevSelectedStatus !== selectedStatus;
+
+    if (paginationChanged || statusChanged) {
+      fetchReports(pagination.current, pagination.pageSize, selectedStatus);
+      prevPaginationRef.current = pagination;
+      prevSelectedStatusRef.current = selectedStatus;
     }
-  };
+  });
 
-  const handleView = async (report: ErrorReport) => {
+  const handleView = async (report: WordErrorReport) => {
     try {
       const response = await getWordErrorReportById(report.id);
       if (response.data) {
         setSelectedReport(response.data);
         setModalVisible(true);
       }
-    } catch (error) {
+    } catch {
       message.error('获取报告详情失败');
     }
   };
@@ -153,21 +140,26 @@ const ErrorReportManagement: React.FC = () => {
     try {
       await deleteWordErrorReport(id);
       message.success('删除成功');
-      fetchReports();
+      fetchReports(pagination.current, pagination.pageSize, selectedStatus);
       fetchData(); // 更新统计
-    } catch (error) {
+    } catch {
       message.error('删除失败');
     }
   };
 
   const handleTableChange = (pagination: any) => {
     setPagination(pagination);
+    fetchReports(pagination.current, pagination.pageSize, selectedStatus);
   };
 
   const filteredReports = reports.filter(
     report =>
-      report.description.toLowerCase().includes(searchText.toLowerCase()) ||
-      report.errorType.toLowerCase().includes(searchText.toLowerCase()) ||
+      report.errorDescription
+        .toLowerCase()
+        .includes(searchText.toLowerCase()) ||
+      report.errorDescription
+        .toLowerCase()
+        .includes(searchText.toLowerCase()) ||
       report.word?.word.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -248,8 +240,8 @@ const ErrorReportManagement: React.FC = () => {
     },
     {
       title: '错误类型',
-      dataIndex: 'errorType',
-      key: 'errorType',
+      dataIndex: 'errorDescription',
+      key: 'errorDescription',
       width: 100,
       render: (type: string) => (
         <Tag color={getErrorTypeColor(type)}>{getErrorTypeText(type)}</Tag>
@@ -300,7 +292,7 @@ const ErrorReportManagement: React.FC = () => {
       title: '操作',
       key: 'action',
       width: 150,
-      render: (_: any, record: ErrorReport) => (
+      render: (_: any, record: WordErrorReport) => (
         <Space size='middle'>
           <Button
             type='link'
@@ -327,23 +319,23 @@ const ErrorReportManagement: React.FC = () => {
   const tabItems = [
     {
       key: '',
-      label: `全部 (${stats.total})`
+      label: `全部 (${stats.totalReports})`
     },
     {
       key: 'pending',
-      label: `待处理 (${stats.pending})`
+      label: `待处理 (${stats.pendingReports})`
     },
     {
       key: 'reviewing',
-      label: `审核中 (${stats.reviewing})`
+      label: `审核中 (${stats.reviewingReports})`
     },
     {
       key: 'accepted',
-      label: `已接受 (${stats.accepted})`
+      label: `已接受 (${stats.acceptedReports})`
     },
     {
       key: 'rejected',
-      label: `已拒绝 (${stats.rejected})`
+      label: `已拒绝 (${stats.rejectedReports})`
     }
   ];
 
@@ -354,7 +346,7 @@ const ErrorReportManagement: React.FC = () => {
           <Card>
             <Statistic
               title='总报告数'
-              value={stats.total}
+              value={stats.totalReports}
               prefix={<BugOutlined />}
               valueStyle={{ color: '#3f8600' }}
             />
@@ -364,7 +356,7 @@ const ErrorReportManagement: React.FC = () => {
           <Card>
             <Statistic
               title='待处理'
-              value={stats.pending}
+              value={stats.pendingReports}
               prefix={<BugOutlined />}
               valueStyle={{ color: '#fa8c16' }}
             />
@@ -374,7 +366,7 @@ const ErrorReportManagement: React.FC = () => {
           <Card>
             <Statistic
               title='已接受'
-              value={stats.accepted}
+              value={stats.acceptedReports}
               prefix={<CheckOutlined />}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -384,7 +376,7 @@ const ErrorReportManagement: React.FC = () => {
           <Card>
             <Statistic
               title='已拒绝'
-              value={stats.rejected}
+              value={stats.rejectedReports}
               prefix={<CloseOutlined />}
               valueStyle={{ color: '#ff4d4f' }}
             />
@@ -456,11 +448,11 @@ const ErrorReportManagement: React.FC = () => {
               {selectedReport.word?.word || '未知'}
             </Descriptions.Item>
             <Descriptions.Item label='翻译'>
-              {selectedReport.word?.translation || '未知'}
+              {selectedReport.word?.meaning || '未知'}
             </Descriptions.Item>
             <Descriptions.Item label='错误类型'>
-              <Tag color={getErrorTypeColor(selectedReport.errorType)}>
-                {getErrorTypeText(selectedReport.errorType)}
+              <Tag color={getErrorTypeColor(selectedReport.errorDescription)}>
+                {getErrorTypeText(selectedReport.errorDescription)}
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label='状态'>
@@ -478,7 +470,7 @@ const ErrorReportManagement: React.FC = () => {
               {new Date(selectedReport.createdAt).toLocaleString()}
             </Descriptions.Item>
             <Descriptions.Item label='描述' span={2}>
-              {selectedReport.description}
+              {selectedReport.errorDescription}
             </Descriptions.Item>
           </Descriptions>
         )}

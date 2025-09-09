@@ -48,7 +48,7 @@ const Login: React.FC = () => {
           <p style={{ color: '#666', marginTop: 8 }}>管理后台登录</p>
         </div>
 
-        <Form name='login' onFinish={onFinish} autoComplete='off' size='large'>
+        <Form name='login' onFinish={onFinish} size='large'>
           <Form.Item
             name='email'
             rules={[

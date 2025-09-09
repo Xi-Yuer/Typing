@@ -37,17 +37,34 @@ export function ApiSuccessResponse<T>(
         status: 200,
         description: options?.description || '操作成功',
         schema: {
-          allOf: [
-            { $ref: getSchemaPath(ApiResponseDto) },
-            {
-              properties: {
-                data: {
-                  type: 'array',
-                  items: { $ref: getSchemaPath(itemType) }
-                }
-              }
+          type: 'object',
+          properties: {
+            code: {
+              type: 'number',
+              description: '状态码',
+              example: 200
+            },
+            message: {
+              type: 'string',
+              description: '响应消息',
+              example: '操作成功'
+            },
+            data: {
+              type: 'array',
+              items: { $ref: getSchemaPath(itemType) }
+            },
+            timestamp: {
+              type: 'number',
+              description: '时间戳',
+              example: 1640995200000
+            },
+            path: {
+              type: 'string',
+              description: '请求路径',
+              example: '/api/users'
             }
-          ]
+          },
+          required: ['code', 'message', 'data', 'timestamp', 'path']
         },
         ...options
       })
@@ -60,14 +77,33 @@ export function ApiSuccessResponse<T>(
       status: 200,
       description: options?.description || '操作成功',
       schema: {
-        allOf: [
-          { $ref: getSchemaPath(ApiResponseDto) },
-          {
-            properties: {
-              data: { $ref: getSchemaPath(dataType as Type<T>) }
-            }
+        type: 'object',
+        properties: {
+          code: {
+            type: 'number',
+            description: '状态码',
+            example: 200
+          },
+          message: {
+            type: 'string',
+            description: '响应消息',
+            example: '操作成功'
+          },
+          data: {
+            $ref: getSchemaPath(dataType as Type<T>)
+          },
+          timestamp: {
+            type: 'number',
+            description: '时间戳',
+            example: 1640995200000
+          },
+          path: {
+            type: 'string',
+            description: '请求路径',
+            example: '/api/users'
           }
-        ]
+        },
+        required: ['code', 'message', 'data', 'timestamp', 'path']
       },
       ...options
     })

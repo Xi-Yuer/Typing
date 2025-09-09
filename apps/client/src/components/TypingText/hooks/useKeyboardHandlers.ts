@@ -43,7 +43,7 @@ export const useKeyboardHandlers = ({
   onNext,
   onPrev
 }: UseKeyboardHandlersProps): UseKeyboardHandlersReturn => {
-  const { playTypingSound, playErrorSound } = useTypingSound();
+  const { playTypingSound } = useTypingSound();
   const hasErrorRef = useRef(false);
   const isComposingRef = useRef(false);
 
@@ -52,7 +52,7 @@ export const useKeyboardHandlers = ({
     if (word?.word) {
       try {
         await playWordAudio(word);
-      } catch (error) {
+      } catch {
         // 静默处理错误
       }
     }

@@ -54,7 +54,7 @@ export class WordErrorReportsService {
     paginationQuery: PaginationQueryDto,
     userId?: string
   ): Promise<{
-    data: WordErrorReport[];
+    list: WordErrorReport[];
     total: number;
     page: number;
     pageSize: number;
@@ -81,7 +81,7 @@ export class WordErrorReportsService {
       .getManyAndCount();
 
     return {
-      data,
+      list: data,
       total,
       page,
       pageSize
@@ -191,7 +191,7 @@ export class WordErrorReportsService {
     paginationQuery: PaginationQueryDto,
     userId?: string
   ): Promise<{
-    data: WordErrorReport[];
+    list: WordErrorReport[];
     total: number;
     page: number;
     pageSize: number;
@@ -222,7 +222,7 @@ export class WordErrorReportsService {
       .getManyAndCount();
 
     return {
-      data,
+      list: data,
       total,
       page,
       pageSize
@@ -236,7 +236,7 @@ export class WordErrorReportsService {
     status: 'pending' | 'reviewing' | 'accepted' | 'rejected',
     paginationQuery: PaginationQueryDto
   ): Promise<{
-    data: WordErrorReport[];
+    list: WordErrorReport[];
     total: number;
     page: number;
     pageSize: number;
@@ -259,7 +259,7 @@ export class WordErrorReportsService {
     });
 
     return {
-      data,
+      list: data,
       total,
       page,
       pageSize
