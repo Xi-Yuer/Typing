@@ -35,7 +35,7 @@ import { Public } from '@/common/decorators/public.decorator';
 import {
   GetCategoryStatusDto,
   GetLanguageStatusDto
-} from './dto/getlanguageStatus.dto';
+} from './dto/getlanguage-status.dto';
 
 @ApiTags('单词管理')
 @Controller('words')
