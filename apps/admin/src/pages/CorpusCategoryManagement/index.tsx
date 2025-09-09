@@ -191,14 +191,16 @@ const CorpusCategoryManagement: React.FC = () => {
           <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}>
+            onClick={() => handleEdit(record)}
+          >
             编辑
           </Button>
           <Popconfirm
             title='确定要删除这个分类吗？'
             onConfirm={() => handleDelete(record.id)}
             okText='确定'
-            cancelText='取消'>
+            cancelText='取消'
+          >
             <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
@@ -259,7 +261,8 @@ const CorpusCategoryManagement: React.FC = () => {
             marginBottom: 16,
             display: 'flex',
             justifyContent: 'space-between'
-          }}>
+          }}
+        >
           <Space>
             <AntInput
               placeholder='搜索分类...'
@@ -294,26 +297,30 @@ const CorpusCategoryManagement: React.FC = () => {
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
-        width={600}>
+        width={600}
+      >
         <Form form={form} layout='vertical'>
           <Form.Item
             name='name'
             label='分类名称'
-            rules={[{ required: true, message: '请输入分类名称' }]}>
+            rules={[{ required: true, message: '请输入分类名称' }]}
+          >
             <Input placeholder='请输入分类名称' />
           </Form.Item>
 
           <Form.Item
             name='description'
             label='描述'
-            rules={[{ required: true, message: '请输入描述' }]}>
+            rules={[{ required: true, message: '请输入描述' }]}
+          >
             <Input.TextArea rows={3} placeholder='请输入分类描述' />
           </Form.Item>
 
           <Form.Item
             name='languageId'
             label='所属语言'
-            rules={[{ required: true, message: '请选择语言' }]}>
+            rules={[{ required: true, message: '请选择语言' }]}
+          >
             <Select placeholder='请选择语言'>
               {languages.map(language => (
                 <Select.Option key={language.id} value={language.id.toString()}>
@@ -326,7 +333,8 @@ const CorpusCategoryManagement: React.FC = () => {
           <Form.Item
             name='difficulty'
             label='难度等级'
-            rules={[{ required: true, message: '请选择难度等级' }]}>
+            rules={[{ required: true, message: '请选择难度等级' }]}
+          >
             <InputNumber
               min={1}
               max={5}
