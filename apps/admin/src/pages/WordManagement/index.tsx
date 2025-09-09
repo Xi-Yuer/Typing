@@ -50,6 +50,7 @@ const WordManagement: React.FC = () => {
     pageSize: 10,
     total: 0
   });
+  const [wordsCount, setWordsCount] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -102,6 +103,7 @@ const WordManagement: React.FC = () => {
         }
       );
       setWords(response.data.list);
+      setWordsCount(response.data.total);
     } catch {
       message.error('获取单词列表失败');
     } finally {
@@ -292,7 +294,7 @@ const WordManagement: React.FC = () => {
           <Card>
             <Statistic
               title='总单词数'
-              value={pagination.total}
+              value={wordsCount}
               prefix={<FileTextOutlined />}
               valueStyle={{ color: '#3f8600' }}
             />
