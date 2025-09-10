@@ -1,351 +1,904 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Typing Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --dark-bg: linear-gradient(
+          135deg,
+          #0c0c0c 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        --glass-bg: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --text-primary: #ffffff;
+        --text-secondary: #b8c5d1;
+        --text-muted: #8b9dc3;
+        --shadow-primary: 0 20px 40px rgba(0, 0, 0, 0.3);
+        --shadow-glow: 0 0 30px rgba(102, 126, 234, 0.4);
+      }
 
+      body {
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        min-height: 100vh;
+        padding: 0;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(
+            circle at 20% 80%,
+            rgba(102, 126, 234, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(118, 75, 162, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 40%,
+            rgba(79, 172, 254, 0.05) 0%,
+            transparent 50%
+          );
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .container {
+        max-width: 420px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+        z-index: 10;
+      }
+
+      .hero-section {
+        text-align: center;
+        padding: 40px 0 60px;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 3rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+        animation: logoGlow 3s ease-in-out infinite alternate;
+      }
+
+      @keyframes logoGlow {
+        0% {
+          filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3));
+        }
+        100% {
+          filter: drop-shadow(0 0 40px rgba(102, 126, 234, 0.6));
+        }
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+        font-weight: 400;
+        line-height: 1.5;
+      }
+
+      .device-showcase {
+        position: relative;
+        margin: 40px 0;
+      }
+
+      .carousel-container {
+        width: 100%;
+        height: 200px;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: var(--shadow-primary);
+      }
+
+      .carousel-slides {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .carousel-slide {
+        min-width: 100%;
+        height: 100%;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .carousel-slide::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--primary-gradient);
+        opacity: 0.1;
+        z-index: 1;
+      }
+
+      .carousel-slide-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: var(--text-primary);
+      }
+
+      .carousel-slide-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .carousel-slide-desc {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
+
+      .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .carousel-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--glass-border);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .carousel-indicator.active {
+        background: var(--primary-gradient);
+        transform: scale(1.2);
+      }
+
+      .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        z-index: 3;
+      }
+
+      .carousel-nav:hover {
+        background: var(--primary-gradient);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .carousel-nav::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border: 2px solid var(--text-primary);
+        border-top: none;
+        border-right: none;
+        transform: rotate(45deg);
+      }
+
+      @keyframes deviceFloat {
+        0%,
+        100% {
+          transform: translateY(0px) rotateY(0deg);
+        }
+        50% {
+          transform: translateY(-15px) rotateY(5deg);
+        }
+      }
+
+      @keyframes screenGlow {
+        0% {
+          opacity: 0.6;
+        }
+        100% {
+          opacity: 0.9;
+        }
+      }
+
+      @keyframes iconPulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+      }
+
+      .content-section {
+        margin-bottom: 30px;
+      }
+
+      .message-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 32px 24px;
+        margin-bottom: 24px;
+        backdrop-filter: blur(20px);
+        box-shadow: var(--shadow-primary);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .message-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+      }
+
+      .message-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .message-text {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 24px;
+        font-weight: 400;
+      }
+
+      .features {
+        margin: 24px 0;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        padding: 8px 0;
+        transition: all 0.2s ease;
+      }
+
+      .feature-item:hover {
+        color: var(--text-primary);
+        transform: translateX(4px);
+      }
+
+      .feature-item::before {
+        content: '✨';
+        margin-right: 12px;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .cta-button {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        padding: 16px 32px;
+        border-radius: 16px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 24px;
+        box-shadow: var(--shadow-glow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .cta-button:hover::before {
+        left: 100%;
+      }
+
+      .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+      }
+
+      .cta-button:active {
+        transform: translateY(-1px);
+      }
+
+      .floating-elements {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        animation: floatShape 8s ease-in-out infinite;
+        opacity: 0.6;
+      }
+
+      .floating-shape:nth-child(1) {
+        width: 100px;
+        height: 100px;
+        top: 15%;
+        left: 8%;
+        background: var(--primary-gradient);
+        animation-delay: 0s;
+      }
+
+      .floating-shape:nth-child(2) {
+        width: 150px;
+        height: 150px;
+        top: 55%;
+        right: 10%;
+        background: var(--secondary-gradient);
+        animation-delay: 2s;
+      }
+
+      .floating-shape:nth-child(3) {
+        width: 80px;
+        height: 80px;
+        bottom: 25%;
+        left: 15%;
+        background: var(--accent-gradient);
+        animation-delay: 4s;
+      }
+
+      .floating-shape:nth-child(4) {
+        width: 60px;
+        height: 60px;
+        top: 35%;
+        right: 25%;
+        background: var(--primary-gradient);
+        animation-delay: 6s;
+      }
+
+      @keyframes floatShape {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg) scale(1);
+        }
+        25% {
+          transform: translateY(-30px) rotate(90deg) scale(1.1);
+        }
+        50% {
+          transform: translateY(-20px) rotate(180deg) scale(0.9);
+        }
+        75% {
+          transform: translateY(-40px) rotate(270deg) scale(1.05);
+        }
+      }
+
+      .footer-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-top: 40px;
+        text-align: center;
+        line-height: 1.6;
+        padding: 20px;
+        background: var(--glass-bg);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border);
+      }
+
+      .stats-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 24px 0;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 20px;
+        background: var(--glass-bg);
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+      }
+
+      .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 4px;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      @media (max-width: 480px) {
         .container {
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            margin: 0 auto;
-            padding: 20px 0;
-        }
-
-        .logo-section {
-            margin-bottom: 40px;
+          padding: 16px;
         }
 
         .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #7d26cd, #4c29f5);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 20px rgba(125, 38, 205, 0.5);
-            }
-            to {
-                text-shadow: 0 0 30px rgba(125, 38, 205, 0.8);
-            }
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-
-        .device-icon {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 30px;
-            background: linear-gradient(135deg, #7d26cd, #4c29f5);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .device-icon::before {
-            content: "💻";
-            font-size: 3rem;
+          font-size: 2.5rem;
         }
 
         .message-card {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(125, 38, 205, 0.3);
-            border-radius: 16px;
-            padding: 30px 20px;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          padding: 24px 20px;
         }
 
-        .message-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 15px;
+        .carousel-container {
+          width: 100%;
+          height: 160px;
         }
 
-        .message-text {
-            font-size: 1rem;
-            color: #cbd5e1;
-            line-height: 1.6;
-            margin-bottom: 20px;
+        .carousel-slide-title {
+          font-size: 1rem;
         }
 
-        .features {
-            text-align: left;
-            margin: 20px 0;
+        .carousel-slide-desc {
+          font-size: 0.8rem;
         }
 
-        .feature-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
-            color: #e2e8f0;
+        .carousel-nav {
+          width: 30px;
+          height: 30px;
         }
 
-        .feature-item::before {
-            content: "✨";
-            margin-right: 10px;
-            font-size: 1.1rem;
+        .carousel-nav.prev {
+          left: -15px;
         }
 
-        .cta-button {
-            background: linear-gradient(135deg, #7d26cd, #4c29f5);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(125, 38, 205, 0.4);
+        .carousel-nav.next {
+          right: -15px;
         }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(125, 38, 205, 0.6);
+        .stats-section {
+          grid-template-columns: 1fr;
+          gap: 12px;
         }
-
-        .background-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .floating-shape {
-            position: absolute;
-            background: linear-gradient(135deg, rgba(125, 38, 205, 0.1), rgba(76, 41, 245, 0.1));
-            border-radius: 50%;
-            animation: float-shape 6s ease-in-out infinite;
-        }
-
-        .floating-shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            right: 15%;
-            animation-delay: 2s;
-        }
-
-        .floating-shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float-shape {
-            0%, 100% {
-                transform: translateY(0px) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
-        }
-
-        .footer-text {
-            font-size: 0.9rem;
-            color: #64748b;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 10px;
-            }
-            
-            .logo {
-                font-size: 2rem;
-            }
-            
-            .message-card {
-                padding: 25px 15px;
-            }
-            
-            .device-icon {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .device-icon::before {
-                font-size: 2.5rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-    <div class="background-animation">
-        <div class="floating-shape"></div>
-        <div class="floating-shape"></div>
-        <div class="floating-shape"></div>
+  </head>
+  <body>
+    <div class="floating-elements">
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
+      <div class="floating-shape"></div>
     </div>
 
     <div class="container">
-        <div class="logo-section">
-            <div class="logo">Typing Club</div>
-            <div class="subtitle">让你上瘾的英语学习App</div>
-        </div>
+      <div class="hero-section">
+        <div class="logo">Typing Club</div>
+        <div class="subtitle">让你上瘾的英语学习App</div>
 
-        <div class="device-icon"></div>
+        <div class="device-showcase">
+          <div class="carousel-container">
+            <div class="carousel-slides" id="carouselSlides">
+              <div class="carousel-slide">
+                <div class="carousel-slide-content">
+                  <div class="carousel-slide-title">🎮 游戏化学习</div>
+                  <div class="carousel-slide-desc">
+                    通过闯关模式让英语学习变得有趣
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="carousel-slide-content">
+                  <div class="carousel-slide-title">⚡ 实时练习</div>
+                  <div class="carousel-slide-desc">
+                    提升打字速度和英语输入能力
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="carousel-slide-content">
+                  <div class="carousel-slide-title">📊 学习统计</div>
+                  <div class="carousel-slide-desc">详细追踪学习进度和成果</div>
+                </div>
+              </div>
+              <div class="carousel-slide">
+                <div class="carousel-slide-content">
+                  <div class="carousel-slide-title">🔊 语音功能</div>
+                  <div class="carousel-slide-desc">
+                    标准发音帮助提升听说能力
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-indicators">
+            <div class="carousel-indicator active" onclick="goToSlide(0)"></div>
+            <div class="carousel-indicator" onclick="goToSlide(1)"></div>
+            <div class="carousel-indicator" onclick="goToSlide(2)"></div>
+            <div class="carousel-indicator" onclick="goToSlide(3)"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <div class="message-card">
+          <div class="message-text">
+            检测到您正在使用移动设备访问，为了获得最佳的学习体验，我们建议您使用PC端访问。
+          </div>
+
+          <div class="features">
+            <div class="feature-item">更大的屏幕空间，更好的视觉体验</div>
+            <div class="feature-item">完整的键盘功能，提升打字效率</div>
+            <div class="feature-item">更流畅的动画效果和交互体验</div>
+            <div class="feature-item">完整的功能模块，无功能限制</div>
+          </div>
+
+          <a
+            href="#"
+            class="cta-button"
+            onclick="window.open('https://typing-club.com', '_blank')"
+          >
+            🚀 访问PC版网站
+          </a>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <div class="message-card">
+          <div class="message-title">🎯 关于 Typing Club</div>
+          <div class="message-text">
+            Typing Club
+            是一款创新的英语学习应用，通过游戏化的打字练习帮助您快速掌握核心词汇。
+          </div>
+
+          <div class="stats-section">
+            <div class="stat-item">
+              <div class="stat-number">10K+</div>
+              <div class="stat-label">活跃用户</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">50K+</div>
+              <div class="stat-label">词汇量</div>
+            </div>
+          </div>
+
+          <div class="features">
+            <div class="feature-item">🎮 游戏化闯关模式，让学习变得有趣</div>
+            <div class="feature-item">📚 丰富的词汇库，涵盖各个学习阶段</div>
+            <div class="feature-item">⚡ 实时打字练习，提升英语输入速度</div>
+            <div class="feature-item">📊 详细的学习统计，追踪进步轨迹</div>
+            <div class="feature-item">🔊 语音朗读功能，提升听说能力</div>
+            <div class="feature-item">🏆 成就系统，激发学习动力</div>
+          </div>
+        </div>
 
         <div class="message-card">
-            <div class="message-text">
-                检测到您正在使用移动设备访问，为了获得最佳的学习体验，我们建议您使用PC端访问。
-            </div>
-            
-            <div class="features">
-                <div class="feature-item">更大的屏幕空间，更好的视觉体验</div>
-                <div class="feature-item">完整的键盘功能，提升打字效率</div>
-                <div class="feature-item">更流畅的动画效果和交互体验</div>
-                <div class="feature-item">完整的功能模块，无功能限制</div>
-            </div>
+          <div class="message-title">🌟 为什么选择 Typing Club？</div>
+          <div class="message-text">
+            告别枯燥的死记硬背，体验高效有趣的英语学习方式！
+          </div>
 
-            <a href="#" class="cta-button" onclick="window.open('https://typing-club.com', '_blank')">
-                访问PC版网站
-            </a>
+          <div class="features">
+            <div class="feature-item">💡 科学的学习方法，事半功倍</div>
+            <div class="feature-item">🎨 精美的界面设计，赏心悦目</div>
+            <div class="feature-item">🚀 流畅的动画效果，沉浸体验</div>
+            <div class="feature-item">👥 社区互动，共同进步</div>
+          </div>
         </div>
+      </div>
 
-        <div class="message-card">
-            <div class="message-title">🎯 关于 Typing Club</div>
-            <div class="message-text">
-                Typing Club 是一款创新的英语学习应用，通过游戏化的打字练习帮助您快速掌握核心词汇。
-            </div>
-            
-            <div class="features">
-                <div class="feature-item">🎮 游戏化闯关模式，让学习变得有趣</div>
-                <div class="feature-item">📚 丰富的词汇库，涵盖各个学习阶段</div>
-                <div class="feature-item">⚡ 实时打字练习，提升英语输入速度</div>
-                <div class="feature-item">📊 详细的学习统计，追踪进步轨迹</div>
-                <div class="feature-item">🔊 语音朗读功能，提升听说能力</div>
-                <div class="feature-item">🏆 成就系统，激发学习动力</div>
-            </div>
-        </div>
-
-        <div class="message-card">
-            <div class="message-title">🌟 为什么选择 Typing Club？</div>
-            <div class="message-text">
-                告别枯燥的死记硬背，体验高效有趣的英语学习方式！
-            </div>
-            
-            <div class="features">
-                <div class="feature-item">💡 科学的学习方法，事半功倍</div>
-                <div class="feature-item">🎨 精美的界面设计，赏心悦目</div>
-                <div class="feature-item">🚀 流畅的动画效果，沉浸体验</div>
-                <div class="feature-item">👥 社区互动，共同进步</div>
-            </div>
-        </div>
-
-        <div class="footer-text">
-            感谢您对 Typing Club 的支持！<br>
-            我们正在开发移动端版本，敬请期待。
-        </div>
+      <div class="footer-text">
+        感谢您对 Typing Club 的支持！<br />
+        我们正在开发移动端版本，敬请期待。
+      </div>
     </div>
 
     <script>
-        // 添加一些交互效果
-        document.addEventListener('DOMContentLoaded', function() {
-            // 为CTA按钮添加点击效果
-            const ctaButton = document.querySelector('.cta-button');
-            ctaButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // 创建点击波纹效果
-                const ripple = document.createElement('div');
-                ripple.style.position = 'absolute';
-                ripple.style.borderRadius = '50%';
-                ripple.style.background = 'rgba(255, 255, 255, 0.6)';
-                ripple.style.transform = 'scale(0)';
-                ripple.style.animation = 'ripple 0.6s linear';
-                ripple.style.left = '50%';
-                ripple.style.top = '50%';
-                ripple.style.width = '20px';
-                ripple.style.height = '20px';
-                ripple.style.marginLeft = '-10px';
-                ripple.style.marginTop = '-10px';
-                
-                this.style.position = 'relative';
-                this.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-                
-                // 延迟跳转
-                setTimeout(() => {
-                    window.open('https://typing-club.com', '_blank');
-                }, 300);
-            });
-            
-            // 添加键盘样式
-            const style = document.createElement('style');
-            style.textContent = `
+      // 轮播图功能
+      let currentSlide = 0;
+      const totalSlides = 4;
+      let autoSlideInterval;
+
+      function changeSlide(direction) {
+        currentSlide += direction;
+
+        if (currentSlide >= totalSlides) {
+          currentSlide = 0;
+        } else if (currentSlide < 0) {
+          currentSlide = totalSlides - 1;
+        }
+
+        updateCarousel();
+      }
+
+      function goToSlide(slideIndex) {
+        currentSlide = slideIndex;
+        updateCarousel();
+      }
+
+      function updateCarousel() {
+        const slides = document.getElementById('carouselSlides');
+        const indicators = document.querySelectorAll('.carousel-indicator');
+
+        // 更新轮播图位置
+        slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+        // 更新指示器状态
+        indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === currentSlide);
+        });
+      }
+
+      function startAutoSlide() {
+        autoSlideInterval = setInterval(() => {
+          changeSlide(1);
+        }, 4000);
+      }
+
+      function stopAutoSlide() {
+        clearInterval(autoSlideInterval);
+      }
+
+      // 增强的交互效果
+      document.addEventListener('DOMContentLoaded', function () {
+        // 启动自动轮播
+        startAutoSlide();
+
+        // 鼠标悬停时暂停自动轮播
+        const carouselContainer = document.querySelector('.carousel-container');
+        carouselContainer.addEventListener('mouseenter', stopAutoSlide);
+        carouselContainer.addEventListener('mouseleave', startAutoSlide);
+
+        // 添加触摸滑动支持
+        let startX = 0;
+        let startY = 0;
+        let isDragging = false;
+
+        carouselContainer.addEventListener('touchstart', function (e) {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          isDragging = true;
+          stopAutoSlide();
+        });
+
+        carouselContainer.addEventListener('touchmove', function (e) {
+          if (!isDragging) return;
+          e.preventDefault();
+        });
+
+        carouselContainer.addEventListener('touchend', function (e) {
+          if (!isDragging) return;
+
+          const endX = e.changedTouches[0].clientX;
+          const endY = e.changedTouches[0].clientY;
+          const diffX = startX - endX;
+          const diffY = startY - endY;
+
+          // 确保是水平滑动而不是垂直滑动
+          if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+            if (diffX > 0) {
+              changeSlide(1); // 向左滑动，显示下一张
+            } else {
+              changeSlide(-1); // 向右滑动，显示上一张
+            }
+          }
+
+          isDragging = false;
+          startAutoSlide();
+        });
+
+        // 为CTA按钮添加点击效果
+        const ctaButton = document.querySelector('.cta-button');
+        ctaButton.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          // 创建点击波纹效果
+          const ripple = document.createElement('div');
+          ripple.style.position = 'absolute';
+          ripple.style.borderRadius = '50%';
+          ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+          ripple.style.transform = 'scale(0)';
+          ripple.style.animation = 'ripple 0.6s linear';
+          ripple.style.left = '50%';
+          ripple.style.top = '50%';
+          ripple.style.width = '20px';
+          ripple.style.height = '20px';
+          ripple.style.marginLeft = '-10px';
+          ripple.style.marginTop = '-10px';
+
+          this.style.position = 'relative';
+          this.appendChild(ripple);
+
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+
+          // 延迟跳转
+          setTimeout(() => {
+            window.open('https://typing-club.com', '_blank');
+          }, 300);
+        });
+
+        // 为卡片添加滚动动画
+        const observerOptions = {
+          threshold: 0.1,
+          rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        }, observerOptions);
+
+        // 观察所有卡片
+        document.querySelectorAll('.message-card').forEach(card => {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(30px)';
+          card.style.transition = 'all 0.6s ease';
+          observer.observe(card);
+        });
+
+        // 添加鼠标跟随效果
+        document.addEventListener('mousemove', function (e) {
+          const shapes = document.querySelectorAll('.floating-shape');
+          const x = e.clientX / window.innerWidth;
+          const y = e.clientY / window.innerHeight;
+
+          shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.5;
+            const xOffset = (x - 0.5) * speed * 20;
+            const yOffset = (y - 0.5) * speed * 20;
+
+            shape.style.transform += ` translate(${xOffset}px, ${yOffset}px)`;
+          });
+        });
+
+        // 添加键盘样式
+        const style = document.createElement('style');
+        style.textContent = `
                 @keyframes ripple {
                     to {
                         transform: scale(4);
                         opacity: 0;
                     }
                 }
+                
+                .message-card {
+                    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                
+                .feature-item {
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+                
+                .stat-item {
+                    transition: all 0.3s ease;
+                }
+                
+                .stat-item:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                }
             `;
-            document.head.appendChild(style);
-        });
+        document.head.appendChild(style);
+
+        // 添加数字动画效果
+        function animateNumbers() {
+          const statNumbers = document.querySelectorAll('.stat-number');
+          statNumbers.forEach(stat => {
+            const target = parseInt(stat.textContent.replace(/[^\d]/g, ''));
+            const suffix = stat.textContent.replace(/[\d]/g, '');
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                current = target;
+                clearInterval(timer);
+              }
+              stat.textContent = Math.floor(current) + suffix;
+            }, 30);
+          });
+        }
+
+        // 延迟启动数字动画
+        setTimeout(animateNumbers, 1000);
+      });
     </script>
-</body>
+  </body>
 </html>

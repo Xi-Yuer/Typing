@@ -149,8 +149,8 @@ const LanguageManagement: React.FC = () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'createTime',
+      key: 'createTime',
       render: (date: string) => new Date(date).toLocaleString()
     },
     {

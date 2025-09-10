@@ -101,15 +101,15 @@ const Dashboard: React.FC = () => {
       dataIndex: 'role',
       key: 'role',
       render: (role: string) => (
-        <Tag color={role === 'admin' ? 'red' : 'blue'}>
-          {role === 'admin' ? '管理员' : '用户'}
+        <Tag color={role === 'admin' || role === 'super_admin' ? 'red' : 'blue'}>
+          {role === 'admin' || role === 'super_admin' ? '管理员' : '用户'}
         </Tag>
       )
     },
     {
       title: '注册时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'createTime',
+      key: 'createTime',
       render: (date: string) => new Date(date).toLocaleDateString()
     }
   ];

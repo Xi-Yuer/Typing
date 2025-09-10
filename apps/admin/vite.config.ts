@@ -6,14 +6,15 @@ import path from 'path';
 export default defineConfig(({ mode }) => {
   // 加载环境变量
   const env = loadEnv(mode, process.cwd(), '');
-  
+
   return {
     plugins: [react()],
     server: {
       proxy: {
         '/api': {
           target: 'http://localhost:3001',
-          changeOrigin: true
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/api/, '')
         }
       }
     },
