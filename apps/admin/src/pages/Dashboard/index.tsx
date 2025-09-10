@@ -101,7 +101,9 @@ const Dashboard: React.FC = () => {
       dataIndex: 'role',
       key: 'role',
       render: (role: string) => (
-        <Tag color={role === 'admin' || role === 'super_admin' ? 'red' : 'blue'}>
+        <Tag
+          color={role === 'admin' || role === 'super_admin' ? 'red' : 'blue'}
+        >
           {role === 'admin' || role === 'super_admin' ? '管理员' : '用户'}
         </Tag>
       )

@@ -1,5 +1,5 @@
 /* tslint:disable */
-
+/* eslint-disable */
 /**
  * Typing API - version 1.0
  *
@@ -676,6 +676,28 @@ export interface Word {
    * 所属分类
    */
   category: CorpusCategory;
+}
+export interface GetUserWordsProgressDto {
+  /**
+   * 用户 ID
+   */
+  userId: number;
+  /**
+   * 语言 ID
+   */
+  languageId: string;
+  /**
+   * 分类 ID
+   */
+  categoryId: string;
+  /**
+   * 分页大小
+   */
+  pageSize: number;
+  /**
+   * 分页号
+   */
+  page: number;
 }
 export interface Sentence {
   /**
@@ -4810,6 +4832,109 @@ declare global {
           path: string;
         },
         'general.WordsController_findByCategoryId',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取用户分页查询单词的进度
+       *
+       * **path:** /api/words/user/progress
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 语言 ID
+       *   languageId: string
+       *   // 分类 ID
+       *   categoryId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 用户 ID
+       *     userId: number
+       *     // 语言 ID
+       *     languageId: string
+       *     // 分类 ID
+       *     categoryId: string
+       *     // 分页大小
+       *     pageSize: number
+       *     // 分页号
+       *     page: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      WordsController_getUserWordsProgress<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: GetUserWordsProgressDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          params: {
+            /**
+             * 语言 ID
+             */
+            languageId: string;
+            /**
+             * 分类 ID
+             */
+            categoryId: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: GetUserWordsProgressDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.WordsController_getUserWordsProgress',
         Config
       >;
       /**

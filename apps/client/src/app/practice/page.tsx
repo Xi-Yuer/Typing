@@ -8,7 +8,11 @@ import React, {
 } from 'react';
 import { useFullscreen } from 'ahooks';
 import { useSearchParams } from 'next/navigation';
-import { getWordsByCategoryId, reportWordError } from '@/api';
+import {
+  getUserWordsProgress,
+  getWordsByCategoryId,
+  reportWordError
+} from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
 import { Button, Tooltip } from 'antd';
 import TypingText from '@/components/TypingText';
@@ -35,8 +39,9 @@ function PracticePageContent() {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [words, setWords] = useState<Word[]>([]);
   const [total, setTotal] = useState(0);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isErrorReportModalOpen, setIsErrorReportModalOpen] = useState(false);
   const ref = useRef(null);
   const [isFullscreen, { toggleFullscreen }] = useFullscreen(ref);
@@ -56,13 +61,14 @@ function PracticePageContent() {
    * 加载练习数据
    */
   const loadPracticeData = useCallback(
-    async (page: number = 1) => {
+    async (page: number = 1, pageSize: number = 10) => {
       if (!languageId || !categoryId) return;
 
       const response = await getWordsByCategoryId(
         parseInt(languageId as string),
         parseInt(categoryId as string),
-        page
+        page,
+        pageSize
       );
 
       if (response && response.data && response.data.list) {
@@ -77,18 +83,38 @@ function PracticePageContent() {
         }
 
         setCurrentPage(page);
-        setTotal((response.data as any).total);
+        setTotal(response.data.total);
       }
     },
     [languageId, categoryId]
   );
 
   /**
-   * 当参数获取到后，加载练习数据
+   * 当参数获取到后，先获取用户进度，再加载练习数据
    */
   useEffect(() => {
     if (languageId && categoryId) {
-      loadPracticeData();
+      const initializePracticeData = async () => {
+        try {
+          // 先获取用户进度
+          const { data: progressData } = await getUserWordsProgress(
+            languageId as string,
+            categoryId as string
+          );
+
+          // 设置用户进度信息
+          setCurrentPage(progressData.page);
+          setPageSize(progressData.pageSize);
+
+          // 使用获取到的分页信息加载练习数据
+          await loadPracticeData(progressData.page, progressData.pageSize);
+        } catch {
+          // 如果获取用户进度失败，使用默认分页加载数据
+          await loadPracticeData(1, 10);
+        }
+      };
+
+      initializePracticeData();
     }
   }, [languageId, categoryId, loadPracticeData]);
 
@@ -96,16 +122,13 @@ function PracticePageContent() {
    * 预加载下一批数据
    */
   const preloadNextBatch = useCallback(async () => {
-    await loadPracticeData(currentPage + 1);
-  }, [currentPage, loadPracticeData]);
+    await loadPracticeData(currentPage + 1, pageSize);
+  }, [currentPage, pageSize, loadPracticeData]);
 
   /**
    * 处理单词完成事件
    */
-  const handleWordComplete = useCallback(
-    (isCorrect: boolean) => {},
-    [currentWordIndex]
-  );
+  const handleWordComplete = useCallback((_isCorrect: boolean) => {}, []);
 
   /**
    * 切换到下一个单词
@@ -167,7 +190,7 @@ function PracticePageContent() {
           <div
             className='bg-purple-500 h-1 rounded-full transition-all duration-300'
             style={{
-              width: `${((currentWordIndex + 1) / total) * 100}%`
+              width: `${(((currentPage - 1) * pageSize + currentWordIndex + 1) / total) * 100}%`
             }}
           />
         </div>
@@ -176,8 +199,8 @@ function PracticePageContent() {
           <div className='text-sm text-gray-300'>
             <span>
               {words?.[currentWordIndex]?.language.name} -
-              {words?.[currentWordIndex]?.category.name}({currentWordIndex + 1}{' '}
-              / {total})
+              {words?.[currentWordIndex]?.category.name}(
+              {(currentPage - 1) * pageSize + currentWordIndex + 1} / {total})
             </span>
           </div>
           {/* 功能区域 */}

@@ -14,9 +14,11 @@ import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categ
 import { SpeechModule } from './modules/speech/speech.module';
 import { WordErrorReportsModule } from './modules/word-errors/word-errors.module';
 import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor';
+import { RedisCacheModule } from './modules/redis/redis.module';
 
 @Module({
   imports: [
+    RedisCacheModule,
     ConfigModule,
     DatabaseModule,
     UserModule,

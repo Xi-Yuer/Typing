@@ -20,7 +20,6 @@ import { CreateSentenceDto } from './dto/create-sentence.dto';
 import { UpdateSentenceDto } from './dto/update-sentence.dto';
 import { Sentence } from './entities/sentence.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
-import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/premission.decorator';
 import { Role } from 'common';
@@ -30,7 +29,8 @@ import {
   ApiPaginationResponse
 } from '../../common/decorators/api-response.decorator';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
-import { Public } from '@/common/decorators/public.decorator';
+import { OptionalAuth } from '@/common/decorators/optional-auth.decorator';
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 
 @ApiTags('句子管理')
 @Controller('sentences')
@@ -48,7 +48,7 @@ export class SentencesController {
   }
 
   @Get('paginated')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '分页查询句子' })
   @ApiPaginationResponse(Sentence, { description: '分页查询句子成功' })
   findAllPaginated(@Query() paginationQuery: PaginationQueryDto) {
@@ -56,7 +56,7 @@ export class SentencesController {
   }
 
   @Get('language/:languageId')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据语言 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiPaginationResponse(Sentence, { description: '根据语言 ID 查询句子成功' })
@@ -68,7 +68,7 @@ export class SentencesController {
   }
 
   @Get('category/:categoryId')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据分类 ID 查询句子' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
   @ApiPaginationResponse(Sentence, { description: '根据分类 ID 查询句子成功' })
@@ -80,7 +80,7 @@ export class SentencesController {
   }
 
   @Get('language/:languageId/category/:categoryId')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据语言 ID 和分类 ID 查询句子' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
@@ -100,7 +100,7 @@ export class SentencesController {
   }
 
   @Get('search')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '搜索句子' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -129,7 +129,7 @@ export class SentencesController {
   }
 
   @Get('search/paginated')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '分页搜索句子' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -160,7 +160,7 @@ export class SentencesController {
   }
 
   @Get('random')
-  @Public()
+  @OptionalAuth()
   @NoCache()
   @ApiOperation({ summary: '获取随机句子' })
   @ApiQuery({
@@ -195,7 +195,7 @@ export class SentencesController {
   }
 
   @Get('stats/language')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取语言统计信息' })
   @ApiSuccessResponse(Object, { description: '获取语言统计信息成功' })
   getLanguageStats() {
@@ -203,7 +203,7 @@ export class SentencesController {
   }
 
   @Get('stats/category')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取分类统计信息' })
   @ApiSuccessResponse(Object, { description: '获取分类统计信息成功' })
   getCategoryStats() {
@@ -211,7 +211,7 @@ export class SentencesController {
   }
 
   @Get(':id')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据 ID 查询句子详情' })
   @ApiParam({ name: 'id', description: '句子 ID', type: String })
   @ApiSuccessResponse(Sentence, { description: '查询句子详情成功' })

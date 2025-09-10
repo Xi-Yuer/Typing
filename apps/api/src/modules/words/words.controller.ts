@@ -6,7 +6,8 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards
+  UseGuards,
+  Req
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -31,11 +32,12 @@ import { Word } from './entities/word.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
-import { Public } from '@/common/decorators/public.decorator';
+import { OptionalAuth } from '@/common/decorators/optional-auth.decorator';
 import {
   GetCategoryStatusDto,
   GetLanguageStatusDto
 } from './dto/getlanguage-status.dto';
+import { GetUserWordsProgressDto } from './dto/get-user-words-progress.dto';
 
 @ApiTags('单词管理')
 @Controller('words')
@@ -63,7 +65,7 @@ export class WordsController {
   }
 
   @Get('language/:languageId')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据语言 ID 查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiPaginationResponse<Word>(Word, {
@@ -77,7 +79,7 @@ export class WordsController {
   }
 
   @Get('category/:categoryId')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据分类 ID 查询单词' })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
   @ApiPaginationResponse<Word>(Word, {
@@ -90,8 +92,29 @@ export class WordsController {
     return this.wordsService.findByCategoryId(categoryId, paginationQuery);
   }
 
+  @Get('user/progress')
+  @OptionalAuth()
+  @ApiOperation({ summary: '获取用户分页查询单词的进度' })
+  @ApiQuery({ name: 'languageId', description: '语言 ID', type: String })
+  @ApiQuery({ name: 'categoryId', description: '分类 ID', type: String })
+  @NoCache()
+  @ApiSuccessResponse<GetUserWordsProgressDto>(GetUserWordsProgressDto, {
+    description: '获取用户分页查询单词的进度成功'
+  })
+  getUserWordsProgress(
+    @Query('languageId') languageId: string,
+    @Query('categoryId') categoryId: string,
+    @Req() req?: any
+  ) {
+    return this.wordsService.getUserWordsProgress(
+      languageId,
+      categoryId,
+      req.user?.id
+    );
+  }
+
   @Get('language/:languageId/category/:categoryId')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据语言和分类查询单词' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({ name: 'categoryId', description: '分类 ID', type: String })
@@ -101,7 +124,8 @@ export class WordsController {
   findByLanguageAndCategory(
     @Query() paginationQuery: PaginationQueryDto,
     @Param('languageId') languageId: string,
-    @Param('categoryId') categoryId: string
+    @Param('categoryId') categoryId: string,
+    @Req() req: any
   ) {
     // 将空字符串转换为 undefined
     const normalizedLanguageId =
@@ -112,12 +136,13 @@ export class WordsController {
     return this.wordsService.findByLanguageAndCategory(
       paginationQuery,
       normalizedLanguageId,
-      normalizedCategoryId
+      normalizedCategoryId,
+      req.user
     );
   }
 
   @Get('search')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -148,7 +173,7 @@ export class WordsController {
   }
 
   @Get('search/paginated')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '分页搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
@@ -211,7 +236,7 @@ export class WordsController {
   }
 
   @Get('stats/language')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取语言统计信息' })
   @ApiSuccessResponse<GetLanguageStatusDto>(GetLanguageStatusDto, {
     description: '获取语言统计信息成功'
@@ -221,7 +246,7 @@ export class WordsController {
   }
 
   @Get('stats/category')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取分类统计信息' })
   @ApiSuccessResponse<GetCategoryStatusDto>(GetCategoryStatusDto, {
     description: '获取分类统计信息成功'
@@ -231,7 +256,7 @@ export class WordsController {
   }
 
   @Get(':id')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据 ID 查询单词详情' })
   @ApiParam({ name: 'id', description: '单词 ID', type: String })
   @ApiSuccessResponse(Word, { description: '查询单词详情成功' })

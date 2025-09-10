@@ -28,8 +28,8 @@ import {
 import { Roles } from '@/common/decorators/premission.decorator';
 import { RolesGuard } from '@/common/guards/roles.guard';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
-import { Public } from '@/common/decorators/public.decorator';
 import { Role } from 'common';
+import { OptionalAuth } from '@/common/decorators/optional-auth.decorator';
 
 @ApiTags('语言管理')
 @Controller('languages')
@@ -48,7 +48,7 @@ export class LanguagesController {
   }
 
   @Get()
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取所有语言列表' })
   @ApiPaginationResponse(Language, { description: '获取语言列表成功' })
   findAll() {
@@ -56,7 +56,7 @@ export class LanguagesController {
   }
 
   @Get('active')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取所有启用的语言列表' })
   @ApiPaginationResponse(Language, { description: '获取启用语言列表成功' })
   findAllActive() {
@@ -72,7 +72,7 @@ export class LanguagesController {
   }
 
   @Get('code/:code')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据语言代码查询语言' })
   @ApiParam({ name: 'code', description: '语言代码', type: String })
   @ApiPaginationResponse(Language, { description: '查询语言成功' })
@@ -81,7 +81,7 @@ export class LanguagesController {
   }
 
   @Get(':id')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据ID查询语言' })
   @ApiParam({ name: 'id', description: '语言ID', type: Number })
   @ApiSuccessResponse(Language, { description: '查询语言成功' })

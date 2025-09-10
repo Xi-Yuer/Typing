@@ -1,6 +1,6 @@
 /// <reference types='./globals.d.ts' />
 /* tslint:disable */
-
+/* eslint-disable */
 /**
  * Typing API - version 1.0
  *
@@ -106,6 +106,10 @@ export default {
   'general.WordsController_findByCategoryId': [
     'GET',
     '/api/words/category/{categoryId}'
+  ],
+  'general.WordsController_getUserWordsProgress': [
+    'GET',
+    '/api/words/user/progress'
   ],
   'general.WordsController_findByLanguageAndCategory': [
     'GET',

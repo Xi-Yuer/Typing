@@ -14,6 +14,19 @@ export const getLanguageCategorySubCategories = (categoryId: number) => {
   });
 };
 
+// 获取用户分页查询单词的进度
+export const getUserWordsProgress = (
+  languageId: string,
+  categoryId: string
+) => {
+  return Apis.general.WordsController_getUserWordsProgress({
+    params: {
+      languageId: languageId,
+      categoryId: categoryId
+    }
+  });
+};
+
 // 分页获取单词
 export const getWordsByCategoryId = (
   languageId: number,

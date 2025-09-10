@@ -2,21 +2,27 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException
+  BadRequestException,
+  Logger
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
 import { Word } from './entities/word.entity';
+import { GetUserWordsProgressDto } from './dto/get-user-words-progress.dto';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginationResponseDto } from '../../common/dto/api-response.dto';
+import { RedisService } from '../redis/redis.service';
+import { JwtPayload } from '../auth/auth.service';
 
 @Injectable()
 export class WordsService {
+  private readonly logger = new Logger(WordsService.name);
   constructor(
     @InjectRepository(Word)
-    private readonly wordRepository: Repository<Word>
+    private readonly wordRepository: Repository<Word>,
+    private readonly redisService: RedisService
   ) {}
 
   /**
@@ -108,7 +114,8 @@ export class WordsService {
   async findByLanguageAndCategory(
     paginationQuery: PaginationQueryDto,
     languageId?: string,
-    categoryId?: string
+    categoryId?: string,
+    user?: JwtPayload
   ): Promise<PaginationResponseDto<Word>> {
     const { page = 1, pageSize = 10 } = paginationQuery;
     const skip = (page - 1) * pageSize;
@@ -129,6 +136,16 @@ export class WordsService {
       skip,
       take: pageSize
     });
+
+    if (user) {
+      await this.redisService.setCache(
+        `${user.id}:words:${languageId}:${categoryId}`,
+        {
+          page,
+          pageSize
+        }
+      );
+    }
 
     return new PaginationResponseDto(list, total, page, pageSize);
   }
@@ -331,5 +348,33 @@ export class WordsService {
     }
 
     return await queryBuilder.getMany();
+  }
+
+  /**
+   * 获取用户分页查询单词的进度,如果缓存不存在，则返回空对象
+   */
+  async getUserWordsProgress(
+    languageId: string,
+    categoryId: string,
+    userId?: number
+  ): Promise<GetUserWordsProgressDto> {
+    console.log(userId);
+    if (!userId) {
+      return new GetUserWordsProgressDto({ userId });
+    }
+    try {
+      const progress = await this.redisService.getCache(
+        `${userId}:words:${languageId}:${categoryId}`
+      );
+      console.log('progress', progress);
+      console.log(
+        '`${userId}:words:${languageId}:${categoryId}`',
+        `${userId}:words:${languageId}:${categoryId}`
+      );
+
+      return new GetUserWordsProgressDto(progress);
+    } catch {
+      return new GetUserWordsProgressDto({ userId });
+    }
   }
 }

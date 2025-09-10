@@ -106,7 +106,7 @@ export class SpeechService {
         )
       );
       this.wordsService.update(id, {
-        meaningShort: response.data.translation.join(',')
+        meaningShort: response.data.translation?.join(',') || ''
       });
       const data = response.data;
 

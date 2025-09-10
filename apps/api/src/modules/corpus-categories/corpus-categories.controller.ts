@@ -30,8 +30,8 @@ import { CreateCorpusCategoryDto } from './dto/create-corpus-category.dto';
 import { UpdateCorpusCategoryDto } from './dto/update-corpus-category.dto';
 import { CorpusCategory } from './entities/corpus-category.entity';
 import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
+import { OptionalAuth } from '@/common/decorators/optional-auth.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
-import { Public } from '@/common/decorators/public.decorator';
 
 @ApiTags('语料库分类管理')
 @Controller('corpus-categories')
@@ -61,7 +61,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('paginated')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '分页查询语料库分类' })
   @ApiPaginationResponse(CorpusCategory, {
     description: '分页查询语料库分类成功'
@@ -71,7 +71,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('language/:languageId')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据语言 ID 查询分类' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiPaginationResponse(CorpusCategory, {
@@ -82,7 +82,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('difficulty/:difficulty')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据难度等级查询分类' })
   @ApiParam({
     name: 'difficulty',
@@ -97,7 +97,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('language/:languageId/difficulty/:difficulty')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据语言 ID 和难度等级查询分类' })
   @ApiParam({ name: 'languageId', description: '语言 ID', type: String })
   @ApiParam({
@@ -119,7 +119,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('stats/difficulty')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取难度等级统计' })
   @ApiSuccessResponse(undefined, { description: '获取难度等级统计成功' })
   getDifficultyStats() {
@@ -127,7 +127,7 @@ export class CorpusCategoriesController {
   }
 
   @Get('stats/language')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '获取语言分类数量统计' })
   @ApiSuccessResponse(undefined, { description: '获取语言分类数量统计成功' })
   getLanguageStats() {
@@ -135,7 +135,7 @@ export class CorpusCategoriesController {
   }
 
   @Get(':id')
-  @Public()
+  @OptionalAuth()
   @ApiOperation({ summary: '根据 ID 查询语料库分类' })
   @ApiParam({ name: 'id', description: '分类 ID', type: String })
   @ApiSuccessResponse(CorpusCategory, { description: '查询语料库分类成功' })
