@@ -15,10 +15,16 @@ export class RedisService {
    * 使用 Cache Manager 设置缓存
    * @param key 缓存键
    * @param value 缓存值
-   * @param ttl 过期时间（毫秒）
+   * @param ttl 过期时间（毫秒），不传则永久存储
    */
   async setCache(key: string, value: any, ttl?: number): Promise<void> {
-    await this.cacheManager.set(key, value, ttl);
+    if (!ttl) {
+      // 永久存储：直接使用 Redis 避免 cache-manager 的 TTL 问题
+      await this.setObject(key, value);
+    } else {
+      // 有 TTL 时使用 cache-manager
+      await this.cacheManager.set(key, value, ttl);
+    }
   }
 
   /**
@@ -36,6 +42,67 @@ export class RedisService {
    */
   async deleteCache(key: string): Promise<void> {
     await this.cacheManager.del(key);
+  }
+
+  /**
+   * 使用 Cache Manager 设置永久缓存（不设置 TTL）
+   * @param key 缓存键
+   * @param value 缓存值
+   */
+  async setPermanentCache(key: string, value: any): Promise<void> {
+    // 直接使用 Redis 设置永久存储，避免 cache-manager 的 TTL 问题
+    await this.setObject(key, value);
+  }
+
+  /**
+   * 验证缓存是否为永久存储
+   * @param key 缓存键
+   * @returns 是否为永久存储
+   */
+  async isPermanentCache(key: string): Promise<boolean> {
+    // 检查 Redis 中的 TTL
+    const ttl = await this.redis.ttl(key);
+    // TTL = -1 表示永不过期（Redis 原生）
+    return ttl === -1;
+  }
+
+  /**
+   * 测试永久存储功能
+   * @param key 测试键
+   * @param value 测试值
+   * @returns 测试结果
+   */
+  async testPermanentStorage(
+    key: string,
+    value: any
+  ): Promise<{
+    success: boolean;
+    ttl: number;
+    isPermanent: boolean;
+    message: string;
+  }> {
+    try {
+      // 设置永久存储
+      await this.setPermanentCache(key, value);
+
+      // 检查 TTL
+      const ttl = await this.redis.ttl(key);
+      const isPermanent = await this.isPermanentCache(key);
+
+      return {
+        success: true,
+        ttl,
+        isPermanent,
+        message: `永久存储测试完成。TTL: ${ttl}, 是否永久: ${isPermanent}`
+      };
+    } catch (error) {
+      return {
+        success: false,
+        ttl: -2,
+        isPermanent: false,
+        message: `测试失败: ${error.message}`
+      };
+    }
   }
 
   /**

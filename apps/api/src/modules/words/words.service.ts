@@ -138,7 +138,7 @@ export class WordsService {
     });
 
     if (user) {
-      await this.redisService.setCache(
+      await this.redisService.setPermanentCache(
         `${user.id}:words:${languageId}:${categoryId}`,
         {
           page,

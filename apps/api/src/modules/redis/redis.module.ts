@@ -8,12 +8,7 @@ import { RedisService } from './redis.service';
   imports: [
     RedisModule.forRoot({
       type: 'single',
-      url: process.env.REDIS_URL,
-      options: {
-        retryStrategy: times => {
-          return Math.min(times * 50, 1000);
-        }
-      }
+      url: process.env.REDIS_URL
     })
   ],
   controllers: [],

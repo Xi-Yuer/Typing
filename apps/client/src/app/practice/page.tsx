@@ -77,13 +77,13 @@ function PracticePageContent() {
           // 初始加载，替换所有数据
           setWords(wordList);
           setCurrentWordIndex(0);
+          setTotal(response.data.total); // 只在初始加载时设置 total
         } else {
           // 预加载，追加数据
           setWords(prev => [...prev, ...wordList]);
         }
 
         setCurrentPage(page);
-        setTotal(response.data.total);
       }
     },
     [languageId, categoryId]
@@ -181,8 +181,7 @@ function PracticePageContent() {
   return (
     <div
       className='bg-slate-950 min-h-screen w-screen relative py-4 flex flex-col'
-      ref={ref}
-    >
+      ref={ref}>
       {/* 主要内容区域 */}
       <div className='flex flex-col'>
         {/* 进度指示器 */}
@@ -199,7 +198,7 @@ function PracticePageContent() {
           <div className='text-sm text-gray-300'>
             <span>
               {words?.[currentWordIndex]?.language.name} -
-              {words?.[currentWordIndex]?.category.name}(
+              {words?.[currentWordIndex]?.category.name} (
               {(currentPage - 1) * pageSize + currentWordIndex + 1} / {total})
             </span>
           </div>
@@ -299,8 +298,7 @@ export default function PracticePage() {
         <div className='bg-slate-950 min-h-screen w-screen flex items-center justify-center text-white'>
           Loading...
         </div>
-      }
-    >
+      }>
       <PracticePageContent />
     </Suspense>
   );

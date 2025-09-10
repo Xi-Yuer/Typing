@@ -38,7 +38,8 @@ import { RedisCacheModule } from './modules/redis/redis.module';
             }),
             createKeyv(process.env.REDIS_URL)
           ],
-          ttl: 1000 * 60 * 60 * 24
+          // 移除全局 TTL，让每个操作自己决定 TTL
+          // ttl: 1000 * 60 * 60 * 24
         };
       },
       isGlobal: true
