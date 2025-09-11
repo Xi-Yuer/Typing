@@ -52,6 +52,12 @@ jobs:
       - name: Build admin resources
         run: |
           pnpm install
+          # 先构建依赖包
+          pnpm packages:build
+          # 检查 common 包是否构建成功
+          echo "检查 common 包构建结果:"
+          ls -la packages/common/dist/
+          # 再构建 admin 应用
           pnpm --filter admin build
           
           # 创建 admin 资源压缩包
