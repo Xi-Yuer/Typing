@@ -53,13 +53,25 @@ jobs:
         run: |
           pnpm install
           # 先构建依赖包
-          pnpm packages:build
+          echo "构建依赖包..."
+          if ! pnpm packages:build; then
+            echo "依赖包构建失败"
+            exit 1
+          fi
+          echo "依赖包构建完成"
           # 检查 common 包是否构建成功
           echo "检查 common 包构建结果:"
           ls -la packages/common/dist/
           # 再构建 admin 应用
           echo "开始构建 admin 应用..."
-          pnpm --filter admin build
+          # 设置环境变量
+          export NODE_ENV=production
+          export VITE_API_URL=/api
+          # 构建 admin 应用，如果失败则退出
+          if ! pnpm --filter admin build; then
+            echo "admin 应用构建失败"
+            exit 1
+          fi
           echo "admin 应用构建完成"
           
           # 检查 admin 构建结果
@@ -75,22 +87,40 @@ jobs:
           # 创建 admin 资源压缩包
           echo "创建 admin 资源压缩包..."
           cd apps/admin
+          echo "当前目录: $(pwd)"
+          echo "dist 目录内容:"
+          ls -la dist/
           if [ -d "dist" ]; then
+            echo "开始创建压缩包..."
             tar -czf ../../admin-dist.tar.gz -C dist .
-            echo "压缩包创建成功"
+            echo "压缩包创建完成"
+            echo "检查压缩包是否创建成功:"
+            ls -la ../../admin-dist.tar.gz
           else
             echo "错误: dist 目录不存在，无法创建压缩包"
+            echo "apps/admin 目录内容:"
+            ls -la
             exit 1
           fi
           cd ../..
+          echo "回到项目根目录: $(pwd)"
           
           # 显示构建结果
           echo "Admin archive created:"
-          ls -la admin-dist.tar.gz
-          echo "Current directory:"
-          pwd
-          echo "Files in project root:"
-          ls -la
+          if [ -f "admin-dist.tar.gz" ]; then
+            ls -la admin-dist.tar.gz
+            echo "压缩包大小:"
+            du -h admin-dist.tar.gz
+          else
+            echo "错误: admin-dist.tar.gz 文件不存在"
+            echo "当前目录:"
+            pwd
+            echo "Files in project root:"
+            ls -la
+            echo "查找所有 .tar.gz 文件:"
+            find . -name "*.tar.gz" -type f
+            exit 1
+          fi
 
       # 设置 Docker Buildx
       - name: Set up Docker Buildx
