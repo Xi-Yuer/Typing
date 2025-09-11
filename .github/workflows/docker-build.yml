@@ -63,12 +63,17 @@ jobs:
           # 创建 admin 资源压缩包
           cd apps/admin
           tar -czf ../../admin-dist.tar.gz -C dist .
+          cd ../..
           
           # 显示构建结果
           echo "Admin build completed:"
           ls -la dist/
           echo "Admin archive created:"
           ls -la ../../admin-dist.tar.gz
+          echo "Current directory:"
+          pwd
+          echo "Files in project root:"
+          ls -la
 
       # 设置 Docker Buildx
       - name: Set up Docker Buildx
@@ -141,6 +146,17 @@ jobs:
       # 部署到服务器
       - name: Deploy to server
         run: |
+          # 检查 admin 资源文件是否存在
+          if [ ! -f "admin-dist.tar.gz" ]; then
+            echo "错误: admin-dist.tar.gz 文件不存在"
+            echo "当前目录文件列表:"
+            ls -la
+            exit 1
+          fi
+          
+          echo "Admin 资源文件大小:"
+          ls -lh admin-dist.tar.gz
+          
           # 上传 admin 资源到服务器
           scp admin-dist.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.PROJECT_PATH }}/
           
