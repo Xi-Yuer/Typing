@@ -15,7 +15,12 @@
  *
  * **Do not edit the file manually.**
  */
-import type { Alova, AlovaMethodCreateConfig, AlovaGenerics, Method } from 'alova';
+import type {
+  Alova,
+  AlovaMethodCreateConfig,
+  AlovaGenerics,
+  Method
+} from 'alova';
 import type { $$userConfigMap, alovaInstance } from '.';
 import type apiDefinitions from './apiDefinitions';
 
@@ -37,7 +42,16 @@ type Alova2MethodConfig<Responded> =
   >
     ? Omit<
         AlovaMethodCreateConfig<
-          AlovaGenerics<Responded, any, RequestConfig, Response, ResponseHeader, L1Cache, L2Cache, SE>,
+          AlovaGenerics<
+            Responded,
+            any,
+            RequestConfig,
+            Response,
+            ResponseHeader,
+            L1Cache,
+            L2Cache,
+            SE
+          >,
           any,
           Responded
         >,
@@ -50,7 +64,9 @@ type ExtractUserDefinedTransformed<
   DefinitionKey extends keyof typeof apiDefinitions,
   Default
 > = DefinitionKey extends keyof UserMethodConfigMap
-  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (...args: any[]) => any
+  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (
+      ...args: any[]
+    ) => any
     ? Awaited<ReturnType<UserMethodConfigMap[DefinitionKey]['transform']>>
     : Default
   : Default;
@@ -216,28 +232,6 @@ export interface CreateWordDto {
    * 图片链接
    */
   imageUrl?: string;
-}
-export interface SaveUserWordsProgressDto {
-  /**
-   * 语言 ID
-   */
-  languageId: string;
-  /**
-   * 分类 ID
-   */
-  categoryId: string;
-  /**
-   * 分页大小
-   */
-  pageSize: number;
-  /**
-   * 分页号
-   */
-  page: number;
-  /**
-   * 当前单词索引
-   */
-  currentWordIndex: number;
 }
 export interface CreateSentenceDto {
   /**
@@ -704,10 +698,6 @@ export interface GetUserWordsProgressDto {
    * 分页号
    */
   page: number;
-  /**
-   * 当前单词索引
-   */
-  currentWordIndex: number;
 }
 export interface Sentence {
   /**
@@ -2676,7 +2666,11 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<ApiResponseDto, 'general.LanguagesController_remove', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.LanguagesController_remove',
+        Config
+      >;
       /**
        * ---
        *
@@ -3746,9 +3740,15 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getDifficultyStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
+      CorpusCategoriesController_getDifficultyStats<
+        Config extends Alova2MethodConfig<ApiResponseDto>
+      >(
         config?: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getDifficultyStats', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_getDifficultyStats',
+        Config
+      >;
       /**
        * ---
        *
@@ -3774,9 +3774,15 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getLanguageStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
+      CorpusCategoriesController_getLanguageStats<
+        Config extends Alova2MethodConfig<ApiResponseDto>
+      >(
         config?: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getLanguageStats', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_getLanguageStats',
+        Config
+      >;
       /**
        * ---
        *
@@ -3945,7 +3951,11 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_remove', Config>;
+      ): Alova2Method<
+        ApiResponseDto,
+        'general.CorpusCategoriesController_remove',
+        Config
+      >;
       /**
        * ---
        *
@@ -4863,8 +4873,6 @@ declare global {
        *     pageSize: number
        *     // 分页号
        *     page: number
-       *     // 当前单词索引
-       *     currentWordIndex: number
        *   }
        *   // 时间戳
        *   timestamp: number
@@ -4929,45 +4937,6 @@ declare global {
         'general.WordsController_getUserWordsProgress',
         Config
       >;
-      /**
-       * ---
-       *
-       * [POST] 保存用户分页查询单词的进度
-       *
-       * **path:** /api/words/progress
-       *
-       * ---
-       *
-       * **RequestBody**
-       * ```ts
-       * type RequestBody = {
-       *   // 语言 ID
-       *   languageId: string
-       *   // 分类 ID
-       *   categoryId: string
-       *   // 分页大小
-       *   pageSize: number
-       *   // 分页号
-       *   page: number
-       *   // 当前单词索引
-       *   currentWordIndex: number
-       * }
-       * ```
-       *
-       * ---
-       *
-       * **Response**
-       * ```ts
-       * type Response = null
-       * ```
-       */
-      WordsController_saveUserWordsProgress<
-        Config extends Alova2MethodConfig<null> & {
-          data: SaveUserWordsProgressDto;
-        }
-      >(
-        config: Config
-      ): Alova2Method<null, 'general.WordsController_saveUserWordsProgress', Config>;
       /**
        * ---
        *

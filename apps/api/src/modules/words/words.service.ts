@@ -2,8 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException,
-  Logger
+  BadRequestException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
@@ -18,7 +17,6 @@ import { JwtPayload } from '../auth/auth.service';
 
 @Injectable()
 export class WordsService {
-  private readonly logger = new Logger(WordsService.name);
   constructor(
     @InjectRepository(Word)
     private readonly wordRepository: Repository<Word>,
@@ -358,7 +356,6 @@ export class WordsService {
     categoryId: string,
     userId?: number
   ): Promise<GetUserWordsProgressDto> {
-    console.log(userId);
     if (!userId) {
       return new GetUserWordsProgressDto({ userId });
     }
@@ -366,12 +363,6 @@ export class WordsService {
       const progress = await this.redisService.getCache(
         `${userId}:words:${languageId}:${categoryId}`
       );
-      console.log('progress', progress);
-      console.log(
-        '`${userId}:words:${languageId}:${categoryId}`',
-        `${userId}:words:${languageId}:${categoryId}`
-      );
-
       return new GetUserWordsProgressDto(progress);
     } catch {
       return new GetUserWordsProgressDto({ userId });

@@ -1,15 +1,10 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Injectable } from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import { Redis } from 'ioredis';
-import type { Cache } from 'cache-manager';
 
 @Injectable()
 export class RedisService {
-  constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    @InjectRedis() private readonly redis: Redis
-  ) {}
+  constructor(@InjectRedis() private readonly redis: Redis) {}
 
   /**
    * 使用 Cache Manager 设置缓存
@@ -18,12 +13,13 @@ export class RedisService {
    * @param ttl 过期时间（毫秒），不传则永久存储
    */
   async setCache(key: string, value: any, ttl?: number): Promise<void> {
-    if (!ttl) {
-      // 永久存储：直接使用 Redis 避免 cache-manager 的 TTL 问题
-      await this.setObject(key, value);
+    const stringValue = JSON.stringify(value);
+    if (ttl) {
+      // 使用 'PX' 参数设置过期时间（毫秒）
+      await this.redis.set(key, stringValue, 'PX', ttl);
     } else {
-      // 有 TTL 时使用 cache-manager
-      await this.cacheManager.set(key, value, ttl);
+      // 不传 TTL 则永久存储
+      await this.redis.set(key, stringValue);
     }
   }
 
@@ -33,7 +29,8 @@ export class RedisService {
    * @returns 缓存值
    */
   async getCache<T = any>(key: string): Promise<T | undefined> {
-    return await this.cacheManager.get<T>(key);
+    const value = await this.redis.get(key);
+    return value ? (JSON.parse(value) as T) : undefined;
   }
 
   /**
@@ -41,7 +38,7 @@ export class RedisService {
    * @param key 缓存键
    */
   async deleteCache(key: string): Promise<void> {
-    await this.cacheManager.del(key);
+    await this.redis.del(key);
   }
 
   /**
@@ -50,7 +47,6 @@ export class RedisService {
    * @param value 缓存值
    */
   async setPermanentCache(key: string, value: any): Promise<void> {
-    // 直接使用 Redis 设置永久存储，避免 cache-manager 的 TTL 问题
     await this.setObject(key, value);
   }
 
@@ -64,45 +60,6 @@ export class RedisService {
     const ttl = await this.redis.ttl(key);
     // TTL = -1 表示永不过期（Redis 原生）
     return ttl === -1;
-  }
-
-  /**
-   * 测试永久存储功能
-   * @param key 测试键
-   * @param value 测试值
-   * @returns 测试结果
-   */
-  async testPermanentStorage(
-    key: string,
-    value: any
-  ): Promise<{
-    success: boolean;
-    ttl: number;
-    isPermanent: boolean;
-    message: string;
-  }> {
-    try {
-      // 设置永久存储
-      await this.setPermanentCache(key, value);
-
-      // 检查 TTL
-      const ttl = await this.redis.ttl(key);
-      const isPermanent = await this.isPermanentCache(key);
-
-      return {
-        success: true,
-        ttl,
-        isPermanent,
-        message: `永久存储测试完成。TTL: ${ttl}, 是否永久: ${isPermanent}`
-      };
-    } catch (error) {
-      return {
-        success: false,
-        ttl: -2,
-        isPermanent: false,
-        message: `测试失败: ${error.message}`
-      };
-    }
   }
 
   /**

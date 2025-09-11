@@ -37,7 +37,7 @@ import { RedisCacheModule } from './modules/redis/redis.module';
               store: new CacheableMemory({ ttl: 60000, lruSize: 5000 })
             }),
             createKeyv(process.env.REDIS_URL)
-          ],
+          ]
           // 移除全局 TTL，让每个操作自己决定 TTL
           // ttl: 1000 * 60 * 60 * 24
         };

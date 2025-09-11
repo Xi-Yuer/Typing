@@ -42,6 +42,7 @@ function PracticePageContent() {
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [globalWordIndex, setGlobalWordIndex] = useState(0); // 全局单词索引
   const [isErrorReportModalOpen, setIsErrorReportModalOpen] = useState(false);
   const ref = useRef(null);
   const [isFullscreen, { toggleFullscreen }] = useFullscreen(ref);
@@ -106,6 +107,10 @@ function PracticePageContent() {
           setCurrentPage(progressData.page);
           setPageSize(progressData.pageSize);
 
+          // 计算全局单词索引：基于用户进度
+          const globalIndex = (progressData.page - 1) * progressData.pageSize;
+          setGlobalWordIndex(globalIndex);
+
           // 使用获取到的分页信息加载练习数据
           await loadPracticeData(progressData.page, progressData.pageSize);
         } catch {
@@ -137,6 +142,7 @@ function PracticePageContent() {
     if (currentWordIndex < words.length - 1) {
       const nextIndex = currentWordIndex + 1;
       setCurrentWordIndex(nextIndex);
+      setGlobalWordIndex(prev => prev + 1); // 更新全局索引
 
       // 当接近数据末尾时触发预加载
       if (nextIndex >= words.length - 3) {
@@ -151,6 +157,7 @@ function PracticePageContent() {
   const handlePrevWord = useCallback(() => {
     if (currentWordIndex > 0) {
       setCurrentWordIndex(currentWordIndex - 1);
+      setGlobalWordIndex(prev => prev - 1); // 更新全局索引
     }
   }, [currentWordIndex]);
 
@@ -181,7 +188,8 @@ function PracticePageContent() {
   return (
     <div
       className='bg-slate-950 min-h-screen w-screen relative py-4 flex flex-col'
-      ref={ref}>
+      ref={ref}
+    >
       {/* 主要内容区域 */}
       <div className='flex flex-col'>
         {/* 进度指示器 */}
@@ -189,7 +197,7 @@ function PracticePageContent() {
           <div
             className='bg-purple-500 h-1 rounded-full transition-all duration-300'
             style={{
-              width: `${(((currentPage - 1) * pageSize + currentWordIndex + 1) / total) * 100}%`
+              width: `${((globalWordIndex + currentWordIndex + 1) / total) * 100}%`
             }}
           />
         </div>
@@ -199,7 +207,7 @@ function PracticePageContent() {
             <span>
               {words?.[currentWordIndex]?.language.name} -
               {words?.[currentWordIndex]?.category.name} (
-              {(currentPage - 1) * pageSize + currentWordIndex + 1} / {total})
+              {globalWordIndex + currentWordIndex + 1} / {total})
             </span>
           </div>
           {/* 功能区域 */}
@@ -298,7 +306,8 @@ export default function PracticePage() {
         <div className='bg-slate-950 min-h-screen w-screen flex items-center justify-center text-white'>
           Loading...
         </div>
-      }>
+      }
+    >
       <PracticePageContent />
     </Suspense>
   );
