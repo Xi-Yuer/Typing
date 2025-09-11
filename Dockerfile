@@ -67,7 +67,7 @@ COPY --from=builder /app/apps/admin/dist ./apps/admin/dist
 
 # 创建nginx html目录并复制admin静态文件
 RUN mkdir -p /usr/share/nginx/html/admin
-COPY --from=builder /app/apps/admin/dist/* /usr/share/nginx/html/admin/
+COPY --from=builder /app/apps/admin/dist/ /usr/share/nginx/html/admin/
 COPY mobile.html /usr/share/nginx/html/
 
 # 复制必要的配置文件
