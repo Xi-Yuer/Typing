@@ -46,6 +46,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '23'
+          cache: 'pnpm'
+
+      # 构建 admin 资源
+      - name: Build admin resources
+        run: |
+          pnpm install
+          pnpm --filter admin build
+          
+          # 创建 admin 资源压缩包
+          cd apps/admin
+          tar -czf ../../admin-dist.tar.gz -C dist .
+          
+          # 显示构建结果
+          echo "Admin build completed:"
+          ls -la dist/
+          echo "Admin archive created:"
+          ls -la ../../admin-dist.tar.gz
 
       # 设置 Docker Buildx
       - name: Set up Docker Buildx
@@ -118,11 +135,22 @@ jobs:
       # 部署到服务器
       - name: Deploy to server
         run: |
+          # 上传 admin 资源到服务器
+          scp admin-dist.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.PROJECT_PATH }}/
+          
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             # 进入项目目录
             cd ${{ secrets.PROJECT_PATH }}
             
-            # 使用项目自带的部署脚本（会自动构建 admin 资源）
+            # 解压 admin 资源
+            echo "解压 admin 资源..."
+            sudo rm -rf /usr/share/nginx/html/admin/*
+            sudo tar -xzf admin-dist.tar.gz -C /usr/share/nginx/html/admin/
+            sudo chown -R nginx:nginx /usr/share/nginx/html/admin
+            rm admin-dist.tar.gz
+            echo "Admin 资源部署完成"
+            
+            # 使用项目自带的部署脚本
             ./deploy.sh pull
             ./deploy.sh restart
             

@@ -101,42 +101,20 @@ pull_code() {
     git pull origin main
 }
 
-# 构建 admin 资源
-build_admin() {
-    print_message $BLUE "构建 admin 管理后台..."
+# 部署 admin 资源（从压缩包）
+deploy_admin() {
+    print_message $BLUE "部署 admin 管理后台..."
     
-    # 检查 Node.js 和 pnpm
-    if ! command -v node &> /dev/null; then
-        print_message $RED "错误: Node.js 未安装，请先安装 Node.js"
-        exit 1
-    fi
-    
-    if ! command -v pnpm &> /dev/null; then
-        print_message $RED "错误: pnpm 未安装，请先安装 pnpm"
-        exit 1
-    fi
-    
-    # 安装依赖
-    print_message $BLUE "安装依赖..."
-    pnpm install
-    
-    # 构建 admin 应用
-    print_message $BLUE "构建 admin 应用..."
-    pnpm --filter admin build
-    
-    # 检查构建结果
-    if [ -d "apps/admin/dist" ] && [ "$(ls -A apps/admin/dist)" ]; then
-        print_message $GREEN "✓ admin 构建成功"
-        
-        # 创建 nginx admin 目录
-        print_message $BLUE "部署 admin 资源到 nginx..."
-        sudo mkdir -p /usr/share/nginx/html/admin
-        sudo cp -r apps/admin/dist/* /usr/share/nginx/html/admin/
+    if [ -f "admin-dist.tar.gz" ]; then
+        print_message $BLUE "解压 admin 资源..."
+        sudo rm -rf /usr/share/nginx/html/admin/*
+        sudo tar -xzf admin-dist.tar.gz -C /usr/share/nginx/html/admin/
         sudo chown -R nginx:nginx /usr/share/nginx/html/admin
+        rm admin-dist.tar.gz
         print_message $GREEN "✓ admin 资源部署完成"
     else
-        print_message $RED "错误: admin 构建失败"
-        exit 1
+        print_message $YELLOW "警告: admin-dist.tar.gz 不存在，跳过 admin 资源部署"
+        print_message $YELLOW "admin 资源将通过 GitHub Actions 自动部署"
     fi
 }
 
@@ -150,8 +128,8 @@ pull_image() {
     pull_code
     print_message $GREEN "✓ 代码拉取完成"
     
-    # 构建并部署 admin 资源
-    build_admin
+    # 部署 admin 资源（如果存在压缩包）
+    deploy_admin
 }
 
 # 停止服务
@@ -223,7 +201,7 @@ show_help() {
     echo "  status   - 查看服务状态"
     echo "  clean    - 清理环境 (删除所有数据)"
     echo "  pull     - 拉取最新的预构建镜像"
-    echo "  admin    - 构建并部署 admin 管理后台"
+    echo "  admin    - 部署 admin 管理后台（从压缩包）"
     echo "  help     - 显示此帮助信息"
     echo ""
     echo "示例:"
@@ -276,7 +254,7 @@ main() {
             pull_image
             ;;
         admin)
-            build_admin
+            deploy_admin
             ;;
         help|--help|-h)
             show_help

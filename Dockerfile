@@ -27,7 +27,7 @@ COPY . .
 ENV NEXT_PUBLIC_BASE_URL=/api
 ENV VITE_API_URL=/api
 
-# 构建项目（不包含 admin，admin 在服务器上构建）
+# 构建项目（不包含 admin，admin 在 GitHub Actions 中构建）
 RUN pnpm packages:build && pnpm --filter api build && pnpm --filter client build
 
 # 阶段2: 生产阶段
