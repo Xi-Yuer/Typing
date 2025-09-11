@@ -30,6 +30,9 @@ ENV VITE_API_URL=/api
 # 构建项目
 RUN pnpm run build
 
+# 确保 admin 应用被正确构建
+RUN ls -la /app/apps/admin/dist/ || echo "Admin dist directory not found"
+
 # 阶段2: 生产阶段
 FROM node:23-alpine AS production
 
@@ -75,7 +78,7 @@ COPY apps/api/nest-cli.json ./apps/api/
 COPY apps/client/next.config.ts ./apps/client/
 COPY apps/client/alova.config.ts ./apps/client/
 COPY apps/admin/alova.config.ts ./apps/admin/
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx-app.conf /etc/nginx/nginx.conf
 
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /app/start.sh && \
