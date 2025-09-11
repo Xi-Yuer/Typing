@@ -48,79 +48,6 @@ jobs:
           node-version: '23'
           cache: 'pnpm'
 
-      # 构建 admin 资源
-      - name: Build admin resources
-        run: |
-          pnpm install
-          # 先构建依赖包
-          echo "构建依赖包..."
-          if ! pnpm packages:build; then
-            echo "依赖包构建失败"
-            exit 1
-          fi
-          echo "依赖包构建完成"
-          # 检查 common 包是否构建成功
-          echo "检查 common 包构建结果:"
-          ls -la packages/common/dist/
-          # 再构建 admin 应用
-          echo "开始构建 admin 应用..."
-          # 设置环境变量
-          export NODE_ENV=production
-          export VITE_API_URL=/api
-          # 构建 admin 应用，如果失败则退出
-          if ! pnpm --filter admin build; then
-            echo "admin 应用构建失败"
-            exit 1
-          fi
-          echo "admin 应用构建完成"
-          
-          # 检查 admin 构建结果
-          echo "检查 admin 构建结果:"
-          if [ -d "apps/admin/dist" ]; then
-            ls -la apps/admin/dist/
-          else
-            echo "错误: apps/admin/dist 目录不存在"
-            echo "apps/admin 目录内容:"
-            ls -la apps/admin/
-          fi
-          
-          # 创建 admin 资源压缩包
-          echo "创建 admin 资源压缩包..."
-          cd apps/admin
-          echo "当前目录: $(pwd)"
-          echo "dist 目录内容:"
-          ls -la dist/
-          if [ -d "dist" ]; then
-            echo "开始创建压缩包..."
-            tar -czf ../../admin-dist.tar.gz -C dist .
-            echo "压缩包创建完成"
-            echo "检查压缩包是否创建成功:"
-            ls -la ../../admin-dist.tar.gz
-          else
-            echo "错误: dist 目录不存在，无法创建压缩包"
-            echo "apps/admin 目录内容:"
-            ls -la
-            exit 1
-          fi
-          cd ../..
-          echo "回到项目根目录: $(pwd)"
-          
-          # 显示构建结果
-          echo "Admin archive created:"
-          if [ -f "admin-dist.tar.gz" ]; then
-            ls -la admin-dist.tar.gz
-            echo "压缩包大小:"
-            du -h admin-dist.tar.gz
-          else
-            echo "错误: admin-dist.tar.gz 文件不存在"
-            echo "当前目录:"
-            pwd
-            echo "Files in project root:"
-            ls -la
-            echo "查找所有 .tar.gz 文件:"
-            find . -name "*.tar.gz" -type f
-            exit 1
-          fi
 
       # 设置 Docker Buildx
       - name: Set up Docker Buildx
@@ -193,31 +120,9 @@ jobs:
       # 部署到服务器
       - name: Deploy to server
         run: |
-          # 检查 admin 资源文件是否存在
-          if [ ! -f "admin-dist.tar.gz" ]; then
-            echo "错误: admin-dist.tar.gz 文件不存在"
-            echo "当前目录文件列表:"
-            ls -la
-            exit 1
-          fi
-          
-          echo "Admin 资源文件大小:"
-          ls -lh admin-dist.tar.gz
-          
-          # 上传 admin 资源到服务器
-          scp admin-dist.tar.gz ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.PROJECT_PATH }}/
-          
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
             # 进入项目目录
             cd ${{ secrets.PROJECT_PATH }}
-            
-            # 解压 admin 资源
-            echo "解压 admin 资源..."
-            sudo rm -rf /usr/share/nginx/html/admin/*
-            sudo tar -xzf admin-dist.tar.gz -C /usr/share/nginx/html/admin/
-            sudo chown -R nginx:nginx /usr/share/nginx/html/admin
-            rm admin-dist.tar.gz
-            echo "Admin 资源部署完成"
             
             # 使用项目自带的部署脚本
             ./deploy.sh pull

@@ -101,22 +101,6 @@ pull_code() {
     git pull origin main
 }
 
-# 部署 admin 资源（从压缩包）
-deploy_admin() {
-    print_message $BLUE "部署 admin 管理后台..."
-    
-    if [ -f "admin-dist.tar.gz" ]; then
-        print_message $BLUE "解压 admin 资源..."
-        sudo rm -rf /usr/share/nginx/html/admin/*
-        sudo tar -xzf admin-dist.tar.gz -C /usr/share/nginx/html/admin/
-        sudo chown -R nginx:nginx /usr/share/nginx/html/admin
-        rm admin-dist.tar.gz
-        print_message $GREEN "✓ admin 资源部署完成"
-    else
-        print_message $YELLOW "警告: admin-dist.tar.gz 不存在，跳过 admin 资源部署"
-        print_message $YELLOW "admin 资源将通过 GitHub Actions 自动部署"
-    fi
-}
 
 # 拉取最新镜像
 pull_image() {
@@ -127,9 +111,6 @@ pull_image() {
     print_message $BLUE "拉取最新代码..."
     pull_code
     print_message $GREEN "✓ 代码拉取完成"
-    
-    # 部署 admin 资源（如果存在压缩包）
-    deploy_admin
 }
 
 # 停止服务
@@ -201,7 +182,6 @@ show_help() {
     echo "  status   - 查看服务状态"
     echo "  clean    - 清理环境 (删除所有数据)"
     echo "  pull     - 拉取最新的预构建镜像"
-    echo "  admin    - 部署 admin 管理后台（从压缩包）"
     echo "  help     - 显示此帮助信息"
     echo ""
     echo "示例:"
@@ -218,7 +198,7 @@ main() {
     # 解析参数
     while [[ $# -gt 0 ]]; do
         case $1 in
-            start|stop|restart|logs|status|clean|pull|admin|help|--help|-h)
+            start|stop|restart|logs|status|clean|pull|help|--help|-h)
                 command=$1
                 shift
                 ;;
@@ -252,9 +232,6 @@ main() {
             ;;
         pull)
             pull_image
-            ;;
-        admin)
-            deploy_admin
             ;;
         help|--help|-h)
             show_help
