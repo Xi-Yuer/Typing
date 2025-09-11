@@ -34,7 +34,7 @@ RUN pnpm run build
 FROM node:23-alpine AS production
 
 # 安装必要的系统依赖
-RUN apk add --no-cache dumb-init netcat-openbsd
+RUN apk add --no-cache dumb-init netcat-openbsd nginx
 
 # 创建非 root 用户
 RUN addgroup -g 1001 -S nodejs && \
@@ -65,11 +65,17 @@ COPY --from=builder /app/packages/common/dist ./packages/common/dist
 COPY --from=builder /app/packages/utils/dist ./packages/utils/dist
 COPY --from=builder /app/apps/admin/dist ./apps/admin/dist
 
+# 创建nginx html目录并复制admin静态文件
+RUN mkdir -p /usr/share/nginx/html/admin
+COPY --from=builder /app/apps/admin/dist/* /usr/share/nginx/html/admin/
+COPY mobile.html /usr/share/nginx/html/
+
 # 复制必要的配置文件
 COPY apps/api/nest-cli.json ./apps/api/
 COPY apps/client/next.config.ts ./apps/client/
 COPY apps/client/alova.config.ts ./apps/client/
 COPY apps/admin/alova.config.ts ./apps/admin/
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /app/start.sh && \
@@ -101,8 +107,13 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo 'cd /app/apps/client && PORT=$FRONTEND_PORT pnpm start &' >> /app/start.sh && \
     echo 'CLIENT_PID=$!' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
+    echo '# 启动nginx' >> /app/start.sh && \
+    echo 'echo "启动nginx..."' >> /app/start.sh && \
+    echo 'nginx -g "daemon off;" &' >> /app/start.sh && \
+    echo 'NGINX_PID=$!' >> /app/start.sh && \
+    echo '' >> /app/start.sh && \
     echo '# 等待任一服务退出' >> /app/start.sh && \
-    echo 'wait $API_PID $CLIENT_PID' >> /app/start.sh && \
+    echo 'wait $API_PID $CLIENT_PID $NGINX_PID' >> /app/start.sh && \
     chmod +x /app/start.sh
 
 # 更改文件所有权
@@ -110,7 +121,7 @@ RUN chown -R nextjs:nodejs /app
 USER nextjs
 
 # 暴露端口
-EXPOSE 3001 3000
+EXPOSE 3001 3000 80
 
 # 设置环境变量
 ENV NODE_ENV=production
