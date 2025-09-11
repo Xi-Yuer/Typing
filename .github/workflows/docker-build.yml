@@ -58,18 +58,35 @@ jobs:
           echo "检查 common 包构建结果:"
           ls -la packages/common/dist/
           # 再构建 admin 应用
+          echo "开始构建 admin 应用..."
           pnpm --filter admin build
+          echo "admin 应用构建完成"
+          
+          # 检查 admin 构建结果
+          echo "检查 admin 构建结果:"
+          if [ -d "apps/admin/dist" ]; then
+            ls -la apps/admin/dist/
+          else
+            echo "错误: apps/admin/dist 目录不存在"
+            echo "apps/admin 目录内容:"
+            ls -la apps/admin/
+          fi
           
           # 创建 admin 资源压缩包
+          echo "创建 admin 资源压缩包..."
           cd apps/admin
-          tar -czf ../../admin-dist.tar.gz -C dist .
+          if [ -d "dist" ]; then
+            tar -czf ../../admin-dist.tar.gz -C dist .
+            echo "压缩包创建成功"
+          else
+            echo "错误: dist 目录不存在，无法创建压缩包"
+            exit 1
+          fi
           cd ../..
           
           # 显示构建结果
-          echo "Admin build completed:"
-          ls -la dist/
           echo "Admin archive created:"
-          ls -la ../../admin-dist.tar.gz
+          ls -la admin-dist.tar.gz
           echo "Current directory:"
           pwd
           echo "Files in project root:"
