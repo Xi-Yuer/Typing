@@ -101,15 +101,57 @@ pull_code() {
     git pull origin main
 }
 
+# 构建 admin 资源
+build_admin() {
+    print_message $BLUE "构建 admin 管理后台..."
+    
+    # 检查 Node.js 和 pnpm
+    if ! command -v node &> /dev/null; then
+        print_message $RED "错误: Node.js 未安装，请先安装 Node.js"
+        exit 1
+    fi
+    
+    if ! command -v pnpm &> /dev/null; then
+        print_message $RED "错误: pnpm 未安装，请先安装 pnpm"
+        exit 1
+    fi
+    
+    # 安装依赖
+    print_message $BLUE "安装依赖..."
+    pnpm install
+    
+    # 构建 admin 应用
+    print_message $BLUE "构建 admin 应用..."
+    pnpm --filter admin build
+    
+    # 检查构建结果
+    if [ -d "apps/admin/dist" ] && [ "$(ls -A apps/admin/dist)" ]; then
+        print_message $GREEN "✓ admin 构建成功"
+        
+        # 创建 nginx admin 目录
+        print_message $BLUE "部署 admin 资源到 nginx..."
+        sudo mkdir -p /usr/share/nginx/html/admin
+        sudo cp -r apps/admin/dist/* /usr/share/nginx/html/admin/
+        sudo chown -R nginx:nginx /usr/share/nginx/html/admin
+        print_message $GREEN "✓ admin 资源部署完成"
+    else
+        print_message $RED "错误: admin 构建失败"
+        exit 1
+    fi
+}
+
 # 拉取最新镜像
 pull_image() {
     print_message $BLUE "拉取最新的预构建镜像..."
     check_prod_config
     docker-compose -f docker-compose.prod.yml pull app
     print_message $GREEN "✓ 镜像拉取完成"
-    print_message $GREEN "拉取最近代码..."
+    print_message $BLUE "拉取最新代码..."
     pull_code
     print_message $GREEN "✓ 代码拉取完成"
+    
+    # 构建并部署 admin 资源
+    build_admin
 }
 
 # 停止服务
@@ -181,6 +223,7 @@ show_help() {
     echo "  status   - 查看服务状态"
     echo "  clean    - 清理环境 (删除所有数据)"
     echo "  pull     - 拉取最新的预构建镜像"
+    echo "  admin    - 构建并部署 admin 管理后台"
     echo "  help     - 显示此帮助信息"
     echo ""
     echo "示例:"
@@ -197,7 +240,7 @@ main() {
     # 解析参数
     while [[ $# -gt 0 ]]; do
         case $1 in
-            start|stop|restart|logs|status|clean|pull|help|--help|-h)
+            start|stop|restart|logs|status|clean|pull|admin|help|--help|-h)
                 command=$1
                 shift
                 ;;
@@ -231,6 +274,9 @@ main() {
             ;;
         pull)
             pull_image
+            ;;
+        admin)
+            build_admin
             ;;
         help|--help|-h)
             show_help

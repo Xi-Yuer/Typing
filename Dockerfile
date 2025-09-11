@@ -27,8 +27,8 @@ COPY . .
 ENV NEXT_PUBLIC_BASE_URL=/api
 ENV VITE_API_URL=/api
 
-# 构建项目
-RUN pnpm run build
+# 构建项目（不包含 admin，admin 在服务器上构建）
+RUN pnpm packages:build && pnpm --filter api build && pnpm --filter client build
 
 # 阶段2: 生产阶段
 FROM node:23-alpine AS production
@@ -63,11 +63,9 @@ COPY --from=builder /app/apps/client/.next ./apps/client/.next
 COPY --from=builder /app/apps/client/public ./apps/client/public
 COPY --from=builder /app/packages/common/dist ./packages/common/dist
 COPY --from=builder /app/packages/utils/dist ./packages/utils/dist
-COPY --from=builder /app/apps/admin/dist ./apps/admin/dist
 
-# 创建nginx html目录并复制admin静态文件
+# 创建nginx html目录（admin 资源在服务器上构建）
 RUN mkdir -p /usr/share/nginx/html/admin
-COPY --from=builder /app/apps/admin/dist/ /usr/share/nginx/html/admin/
 COPY mobile.html /usr/share/nginx/html/
 
 # 复制必要的配置文件

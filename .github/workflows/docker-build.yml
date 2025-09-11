@@ -122,7 +122,7 @@ jobs:
             # 进入项目目录
             cd ${{ secrets.PROJECT_PATH }}
             
-            # 使用项目自带的部署脚本
+            # 使用项目自带的部署脚本（会自动构建 admin 资源）
             ./deploy.sh pull
             ./deploy.sh restart
             
