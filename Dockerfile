@@ -78,7 +78,7 @@ COPY apps/api/nest-cli.json ./apps/api/
 COPY apps/client/next.config.ts ./apps/client/
 COPY apps/client/alova.config.ts ./apps/client/
 COPY apps/admin/alova.config.ts ./apps/admin/
-COPY nginx-app.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /app/start.sh && \
