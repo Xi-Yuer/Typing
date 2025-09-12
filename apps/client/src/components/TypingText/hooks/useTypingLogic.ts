@@ -130,6 +130,7 @@ export const useTypingLogic = ({
         }
       }
     } else {
+      onComplete?.(false);
       playErrorSound();
       hasErrorRef.current = true;
       setWordError(currentWordIndex, true);

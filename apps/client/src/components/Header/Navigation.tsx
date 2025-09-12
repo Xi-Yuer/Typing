@@ -13,8 +13,8 @@ const defaultNavItems: NavItem[] = [
     href: '/list'
   },
   {
-    name: '关于',
-    href: '/about'
+    name: '主页',
+    href: '/dashboard'
   }
 ];
 

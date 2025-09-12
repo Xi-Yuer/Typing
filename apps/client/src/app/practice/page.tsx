@@ -138,6 +138,8 @@ function PracticePageContent() {
     async (_isCorrect: boolean) => {
       if (_isCorrect) {
         await correctWord(words[currentWordIndex].id);
+      } else {
+        // 记录错误
       }
     },
     [currentWordIndex, words]
@@ -196,8 +198,7 @@ function PracticePageContent() {
   return (
     <div
       className='bg-slate-950 min-h-screen w-screen relative py-4 flex flex-col'
-      ref={ref}
-    >
+      ref={ref}>
       {/* 主要内容区域 */}
       <div className='flex flex-col'>
         {/* 进度指示器 */}
@@ -314,8 +315,7 @@ export default function PracticePage() {
         <div className='bg-slate-950 min-h-screen w-screen flex items-center justify-center text-white'>
           Loading...
         </div>
-      }
-    >
+      }>
       <PracticePageContent />
     </Suspense>
   );
