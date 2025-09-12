@@ -218,5 +218,41 @@ export default {
   'general.WordErrorReportsController_remove': [
     'DELETE',
     '/api/word-error-reports/{id}'
+  ],
+  'general.WordErrorRecordsController_recordWordError': [
+    'POST',
+    '/api/word-error-records'
+  ],
+  'general.WordErrorRecordsController_getUserErrorRecords': [
+    'GET',
+    '/api/word-error-records'
+  ],
+  'general.WordErrorRecordsController_getCategoriesWithErrors': [
+    'GET',
+    '/api/word-error-records/categories'
+  ],
+  'general.WordErrorRecordsController_getErrorStatistics': [
+    'GET',
+    '/api/word-error-records/statistics'
+  ],
+  'general.WordErrorRecordsController_getUnPracticedErrorRecords': [
+    'GET',
+    '/api/word-error-records/unpracticed'
+  ],
+  'general.WordErrorRecordsController_getErrorRecordsByCategory': [
+    'GET',
+    '/api/word-error-records/category/{categoryId}'
+  ],
+  'general.WordErrorRecordsController_findOne': [
+    'GET',
+    '/api/word-error-records/{wordId}'
+  ],
+  'general.WordErrorRecordsController_remove': [
+    'DELETE',
+    '/api/word-error-records/{wordId}'
+  ],
+  'general.WordErrorRecordsController_removeBatch': [
+    'DELETE',
+    '/api/word-error-records/batch'
   ]
 };

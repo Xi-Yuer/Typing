@@ -271,6 +271,20 @@ export interface CreateWordErrorReportDto {
    */
   errorDescription: string;
 }
+export interface CreateWordErrorRecordDto {
+  /**
+   * 单词 ID
+   */
+  wordId: string;
+  /**
+   * 分类 ID
+   */
+  categoryId: string;
+  /**
+   * 语言 ID
+   */
+  languageId: string;
+}
 export interface User {
   /**
    * 用户ID
@@ -879,6 +893,90 @@ export interface WordErrorReport {
    * 处理管理员信息
    */
   processor?: User;
+}
+export interface WordErrorRecordResponseDto {
+  /**
+   * 错词记录 ID
+   */
+  id: string;
+  /**
+   * 用户 ID
+   */
+  userId: string;
+  /**
+   * 单词 ID
+   */
+  wordId: string;
+  /**
+   * 分类 ID
+   */
+  categoryId: string;
+  /**
+   * 语言 ID
+   */
+  languageId: string;
+  /**
+   * 错误次数
+   */
+  errorCount: number;
+  /**
+   * 最后错误时间
+   */
+  lastErrorTime: string;
+  /**
+   * 首次错误时间
+   */
+  firstErrorTime: string;
+  /**
+   * 是否已练习过
+   */
+  isPracticed: boolean;
+  /**
+   * 练习次数
+   */
+  practiceCount: number;
+  /**
+   * 最后练习时间
+   */
+  lastPracticeTime?: string;
+  /**
+   * 创建时间
+   */
+  createdAt: string;
+  /**
+   * 更新时间
+   */
+  updatedAt: string;
+  /**
+   * 单词信息
+   */
+  word: object;
+  /**
+   * 分类信息
+   */
+  category: object;
+}
+export interface WordErrorRecordListResponseDto {
+  /**
+   * 错词记录列表
+   */
+  list: WordErrorRecordResponseDto[];
+  /**
+   * 总数量
+   */
+  total: number;
+  /**
+   * 当前页码
+   */
+  page: number;
+  /**
+   * 每页数量
+   */
+  pageSize: number;
+  /**
+   * 总页数
+   */
+  totalPages: number;
 }
 declare global {
   interface Apis {
@@ -11754,6 +11852,569 @@ declare global {
           path: string;
         },
         'general.WordErrorReportsController_remove',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 记录单词错误
+       *
+       * **path:** /api/word-error-records
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 单词 ID
+       *   wordId: string
+       *   // 分类 ID
+       *   categoryId: string
+       *   // 语言 ID
+       *   languageId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 错词记录 ID
+       *   id: string
+       *   // 用户 ID
+       *   userId: string
+       *   // 单词 ID
+       *   wordId: string
+       *   // 分类 ID
+       *   categoryId: string
+       *   // 语言 ID
+       *   languageId: string
+       *   // 错误次数
+       *   errorCount: number
+       *   // 最后错误时间
+       *   lastErrorTime: string
+       *   // 首次错误时间
+       *   firstErrorTime: string
+       *   // 是否已练习过
+       *   isPracticed: boolean
+       *   // 练习次数
+       *   practiceCount: number
+       *   // 最后练习时间
+       *   lastPracticeTime?: string
+       *   // 创建时间
+       *   createdAt: string
+       *   // 更新时间
+       *   updatedAt: string
+       *   // 单词信息
+       *   word: object
+       *   // 分类信息
+       *   category: object
+       * }
+       * ```
+       */
+      WordErrorRecordsController_recordWordError<
+        Config extends Alova2MethodConfig<WordErrorRecordResponseDto> & {
+          data: CreateWordErrorRecordDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        WordErrorRecordResponseDto,
+        'general.WordErrorRecordsController_recordWordError',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取用户错词记录列表
+       *
+       * **path:** /api/word-error-records
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 分类 ID
+       *   categoryId?: string
+       *   // 语言 ID
+       *   languageId?: string
+       *   // 是否已练习过
+       *   isPracticed?: boolean
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       *   // 排序字段
+       *   sortBy?: string
+       *   // 排序方向
+       *   sortOrder?: 'ASC' | 'DESC'
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 错词记录列表
+       *   // [items] start
+       *   // [items] end
+       *   list: Array<{
+       *     // 错词记录 ID
+       *     id: string
+       *     // 用户 ID
+       *     userId: string
+       *     // 单词 ID
+       *     wordId: string
+       *     // 分类 ID
+       *     categoryId: string
+       *     // 语言 ID
+       *     languageId: string
+       *     // 错误次数
+       *     errorCount: number
+       *     // 最后错误时间
+       *     lastErrorTime: string
+       *     // 首次错误时间
+       *     firstErrorTime: string
+       *     // 是否已练习过
+       *     isPracticed: boolean
+       *     // 练习次数
+       *     practiceCount: number
+       *     // 最后练习时间
+       *     lastPracticeTime?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 单词信息
+       *     word: object
+       *     // 分类信息
+       *     category: object
+       *   }>
+       *   // 总数量
+       *   total: number
+       *   // 当前页码
+       *   page: number
+       *   // 每页数量
+       *   pageSize: number
+       *   // 总页数
+       *   totalPages: number
+       * }
+       * ```
+       */
+      WordErrorRecordsController_getUserErrorRecords<
+        Config extends Alova2MethodConfig<WordErrorRecordListResponseDto> & {
+          params: {
+            /**
+             * 分类 ID
+             */
+            categoryId?: string;
+            /**
+             * 语言 ID
+             */
+            languageId?: string;
+            /**
+             * 是否已练习过
+             */
+            isPracticed?: boolean;
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+            /**
+             * 排序字段
+             */
+            sortBy?: string;
+            /**
+             * 排序方向
+             */
+            sortOrder?: 'ASC' | 'DESC';
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        WordErrorRecordListResponseDto,
+        'general.WordErrorRecordsController_getUserErrorRecords',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取有错词的分类列表
+       *
+       * **path:** /api/word-error-records/categories
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = null
+       * ```
+       */
+      WordErrorRecordsController_getCategoriesWithErrors<
+        Config extends Alova2MethodConfig<null>
+      >(
+        config?: Config
+      ): Alova2Method<
+        null,
+        'general.WordErrorRecordsController_getCategoriesWithErrors',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取错词统计信息
+       *
+       * **path:** /api/word-error-records/statistics
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = null
+       * ```
+       */
+      WordErrorRecordsController_getErrorStatistics<
+        Config extends Alova2MethodConfig<null>
+      >(
+        config?: Config
+      ): Alova2Method<
+        null,
+        'general.WordErrorRecordsController_getErrorStatistics',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取未练习的错词记录（用于练习模式）
+       *
+       * **path:** /api/word-error-records/unpracticed
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   categoryId: string
+       *   limit: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = Array<{
+       *   // 错词记录 ID
+       *   id: string
+       *   // 用户 ID
+       *   userId: string
+       *   // 单词 ID
+       *   wordId: string
+       *   // 分类 ID
+       *   categoryId: string
+       *   // 语言 ID
+       *   languageId: string
+       *   // 错误次数
+       *   errorCount: number
+       *   // 最后错误时间
+       *   lastErrorTime: string
+       *   // 首次错误时间
+       *   firstErrorTime: string
+       *   // 是否已练习过
+       *   isPracticed: boolean
+       *   // 练习次数
+       *   practiceCount: number
+       *   // 最后练习时间
+       *   lastPracticeTime?: string
+       *   // 创建时间
+       *   createdAt: string
+       *   // 更新时间
+       *   updatedAt: string
+       *   // 单词信息
+       *   word: object
+       *   // 分类信息
+       *   category: object
+       * }>
+       * ```
+       */
+      WordErrorRecordsController_getUnPracticedErrorRecords<
+        Config extends Alova2MethodConfig<WordErrorRecordResponseDto[]> & {
+          params: {
+            categoryId: string;
+            limit: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        WordErrorRecordResponseDto[],
+        'general.WordErrorRecordsController_getUnPracticedErrorRecords',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 按分类获取错词记录
+       *
+       * **path:** /api/word-error-records/category/{categoryId}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   categoryId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 分类 ID
+       *   categoryId?: string
+       *   // 语言 ID
+       *   languageId?: string
+       *   // 是否已练习过
+       *   isPracticed?: boolean
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   pageSize?: number
+       *   // 排序字段
+       *   sortBy?: string
+       *   // 排序方向
+       *   sortOrder?: 'ASC' | 'DESC'
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 错词记录列表
+       *   // [items] start
+       *   // [items] end
+       *   list: Array<{
+       *     // 错词记录 ID
+       *     id: string
+       *     // 用户 ID
+       *     userId: string
+       *     // 单词 ID
+       *     wordId: string
+       *     // 分类 ID
+       *     categoryId: string
+       *     // 语言 ID
+       *     languageId: string
+       *     // 错误次数
+       *     errorCount: number
+       *     // 最后错误时间
+       *     lastErrorTime: string
+       *     // 首次错误时间
+       *     firstErrorTime: string
+       *     // 是否已练习过
+       *     isPracticed: boolean
+       *     // 练习次数
+       *     practiceCount: number
+       *     // 最后练习时间
+       *     lastPracticeTime?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 单词信息
+       *     word: object
+       *     // 分类信息
+       *     category: object
+       *   }>
+       *   // 总数量
+       *   total: number
+       *   // 当前页码
+       *   page: number
+       *   // 每页数量
+       *   pageSize: number
+       *   // 总页数
+       *   totalPages: number
+       * }
+       * ```
+       */
+      WordErrorRecordsController_getErrorRecordsByCategory<
+        Config extends Alova2MethodConfig<WordErrorRecordListResponseDto> & {
+          pathParams: {
+            categoryId: string;
+          };
+          params: {
+            /**
+             * 分类 ID
+             */
+            categoryId?: string;
+            /**
+             * 语言 ID
+             */
+            languageId?: string;
+            /**
+             * 是否已练习过
+             */
+            isPracticed?: boolean;
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            pageSize?: number;
+            /**
+             * 排序字段
+             */
+            sortBy?: string;
+            /**
+             * 排序方向
+             */
+            sortOrder?: 'ASC' | 'DESC';
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        WordErrorRecordListResponseDto,
+        'general.WordErrorRecordsController_getErrorRecordsByCategory',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取单个错词记录详情
+       *
+       * **path:** /api/word-error-records/{wordId}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   wordId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 错词记录 ID
+       *   id: string
+       *   // 用户 ID
+       *   userId: string
+       *   // 单词 ID
+       *   wordId: string
+       *   // 分类 ID
+       *   categoryId: string
+       *   // 语言 ID
+       *   languageId: string
+       *   // 错误次数
+       *   errorCount: number
+       *   // 最后错误时间
+       *   lastErrorTime: string
+       *   // 首次错误时间
+       *   firstErrorTime: string
+       *   // 是否已练习过
+       *   isPracticed: boolean
+       *   // 练习次数
+       *   practiceCount: number
+       *   // 最后练习时间
+       *   lastPracticeTime?: string
+       *   // 创建时间
+       *   createdAt: string
+       *   // 更新时间
+       *   updatedAt: string
+       *   // 单词信息
+       *   word: object
+       *   // 分类信息
+       *   category: object
+       * }
+       * ```
+       */
+      WordErrorRecordsController_findOne<
+        Config extends Alova2MethodConfig<WordErrorRecordResponseDto> & {
+          pathParams: {
+            wordId: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        WordErrorRecordResponseDto,
+        'general.WordErrorRecordsController_findOne',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [DELETE] 删除错词记录
+       *
+       * **path:** /api/word-error-records/{wordId}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   wordId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = null
+       * ```
+       */
+      WordErrorRecordsController_remove<
+        Config extends Alova2MethodConfig<null> & {
+          pathParams: {
+            wordId: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        null,
+        'general.WordErrorRecordsController_remove',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [DELETE] 批量删除错词记录
+       *
+       * **path:** /api/word-error-records/batch
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = null
+       * ```
+       */
+      WordErrorRecordsController_removeBatch<
+        Config extends Alova2MethodConfig<null>
+      >(
+        config?: Config
+      ): Alova2Method<
+        null,
+        'general.WordErrorRecordsController_removeBatch',
         Config
       >;
     };

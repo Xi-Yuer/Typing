@@ -64,3 +64,18 @@ export const correctWord = (id: string) => {
     }
   });
 };
+
+// 单词错误记录
+export const createWordErrorRecord = (
+  categoryId: string,
+  languageId: string,
+  wordId: string
+) => {
+  return Apis.general.WordErrorRecordsController_recordWordError({
+    data: {
+      wordId: wordId,
+      categoryId,
+      languageId
+    }
+  });
+};

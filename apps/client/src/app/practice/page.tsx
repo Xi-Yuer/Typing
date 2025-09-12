@@ -10,6 +10,7 @@ import { useFullscreen } from 'ahooks';
 import { useSearchParams } from 'next/navigation';
 import {
   correctWord,
+  createWordErrorRecord,
   getUserWordsProgress,
   getWordsByCategoryId,
   reportWordError
@@ -140,6 +141,11 @@ function PracticePageContent() {
         await correctWord(words[currentWordIndex].id);
       } else {
         // 记录错误
+        await createWordErrorRecord(
+          words[currentWordIndex].category.id.toString(),
+          words[currentWordIndex].language.id.toString(),
+          words[currentWordIndex].id
+        );
       }
     },
     [currentWordIndex, words]
@@ -198,7 +204,8 @@ function PracticePageContent() {
   return (
     <div
       className='bg-slate-950 min-h-screen w-screen relative py-4 flex flex-col'
-      ref={ref}>
+      ref={ref}
+    >
       {/* 主要内容区域 */}
       <div className='flex flex-col'>
         {/* 进度指示器 */}
@@ -315,7 +322,8 @@ export default function PracticePage() {
         <div className='bg-slate-950 min-h-screen w-screen flex items-center justify-center text-white'>
           Loading...
         </div>
-      }>
+      }
+    >
       <PracticePageContent />
     </Suspense>
   );

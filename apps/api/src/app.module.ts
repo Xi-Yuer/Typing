@@ -13,6 +13,7 @@ import { SentencesModule } from './modules/sentences/sentences.module';
 import { CorpusCategoriesModule } from './modules/corpus-categories/corpus-categories.module';
 import { SpeechModule } from './modules/speech/speech.module';
 import { WordErrorReportsModule } from './modules/word-errors/word-errors.module';
+import { WordErrorRecordsModule } from './modules/word-error-record/word-error-records.module';
 import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor';
 import { RedisCacheModule } from './modules/redis/redis.module';
 
@@ -29,6 +30,7 @@ import { RedisCacheModule } from './modules/redis/redis.module';
     SentencesModule,
     SpeechModule,
     WordErrorReportsModule,
+    WordErrorRecordsModule,
     CacheModule.registerAsync({
       useFactory: () => {
         return {
