@@ -124,7 +124,7 @@ RUN chown -R nextjs:nodejs /app
 USER nextjs
 
 # 暴露端口
-EXPOSE 3001 3000 80
+EXPOSE 3001 3000 80 8080
 
 # 设置环境变量
 ENV NODE_ENV=production

@@ -65,6 +65,7 @@ services:
     expose:
       - "3001"
       - "3000"
+      - "8080"
     environment:
       # 应用环境
       NODE_ENV: production
