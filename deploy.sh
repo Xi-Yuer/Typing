@@ -71,9 +71,10 @@ start_services() {
     docker-compose -f $compose_file ps
     
     print_message $GREEN "\n🎉 部署完成！"
-    print_message $GREEN "前端应用: http://localhost:$FRONTEND_PORT"
-    print_message $GREEN "后端 API: http://localhost:$BACKEND_PORT"
-    print_message $GREEN "API 文档: http://localhost:$BACKEND_PORT/doc"
+    print_message $GREEN "前端应用: http://localhost/"
+    print_message $GREEN "Admin 后台: http://localhost:8080"
+    print_message $GREEN "后端 API: http://localhost/api"
+    print_message $GREEN "API 文档: http://localhost/api/doc"
     print_message $YELLOW "\n提示: 使用 './deploy.sh logs' 查看日志"
 }
 

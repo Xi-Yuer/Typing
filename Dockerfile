@@ -37,7 +37,12 @@ RUN ls -la /app/apps/admin/dist/ || echo "Admin dist directory not found"
 FROM node:23-alpine AS production
 
 # 安装必要的系统依赖
-RUN apk add --no-cache dumb-init netcat-openbsd nginx
+RUN apk add --no-cache dumb-init netcat-openbsd nginx su-exec
+
+# 创建nginx必要的目录并设置权限
+RUN mkdir -p /var/log/nginx /var/run /var/lib/nginx/logs && \
+    chown -R nginx:nginx /var/log/nginx /var/run /var/lib/nginx && \
+    chmod -R 755 /var/log/nginx /var/run /var/lib/nginx
 
 # 创建非 root 用户
 RUN addgroup -g 1001 -S nodejs && \
@@ -72,6 +77,16 @@ COPY --from=builder /app/apps/admin/dist ./apps/admin/dist
 RUN mkdir -p /usr/share/nginx/html/admin
 COPY --from=builder /app/apps/admin/dist/ /usr/share/nginx/html/admin/
 COPY mobile.html /usr/share/nginx/html/
+
+# 验证admin静态文件复制
+RUN echo "Verifying admin static files:" && \
+    ls -la /usr/share/nginx/html/admin/ && \
+    if [ -f "/usr/share/nginx/html/admin/index.html" ]; then \
+        echo "✓ Admin index.html copied successfully"; \
+    else \
+        echo "✗ Admin index.html not found"; \
+        exit 1; \
+    fi
 
 # 复制必要的配置文件
 COPY apps/api/nest-cli.json ./apps/api/
@@ -112,7 +127,8 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo '' >> /app/start.sh && \
     echo '# 启动nginx' >> /app/start.sh && \
     echo 'echo "启动nginx..."' >> /app/start.sh && \
-    echo 'nginx -g "daemon off;" &' >> /app/start.sh && \
+    echo 'chown -R nginx:nginx /usr/share/nginx/html /var/log/nginx /var/run /var/lib/nginx' >> /app/start.sh && \
+    echo 'su-exec nginx nginx -g "daemon off;" &' >> /app/start.sh && \
     echo 'NGINX_PID=$!' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
     echo '# 等待任一服务退出' >> /app/start.sh && \

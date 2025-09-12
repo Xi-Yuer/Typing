@@ -46,8 +46,8 @@ check_admin_access() {
     # 等待服务完全启动
     sleep 5
     
-    # 检查 admin 路由
-    local admin_response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/admin || echo "000")
+    # 检查 admin 在8080端口的访问
+    local admin_response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080 || echo "000")
     
     if [ "$admin_response" = "200" ]; then
         print_message $GREEN "✓ admin 应用可以正常访问 (HTTP 200)"
@@ -80,12 +80,13 @@ check_admin_assets() {
 check_nginx_config() {
     print_message $BLUE "检查 nginx 配置..."
     
-    # 检查 nginx 配置语法
-    if docker exec typing-app nginx -t > /dev/null 2>&1; then
+    # 检查 nginx 配置语法（以root用户运行以避免权限问题）
+    if docker exec --user root typing-app nginx -t > /dev/null 2>&1; then
         print_message $GREEN "✓ nginx 配置语法正确"
     else
         print_message $RED "✗ nginx 配置语法错误"
-        docker exec typing-app nginx -t
+        print_message $BLUE "详细错误信息:"
+        docker exec --user root typing-app nginx -t
         return 1
     fi
 }
@@ -94,7 +95,7 @@ check_nginx_config() {
 show_access_info() {
     print_message $GREEN "\n🎉 Admin 后台管理系统部署验证完成！"
     print_message $BLUE "访问地址:"
-    print_message $BLUE "  - Admin 后台: http://localhost/admin"
+    print_message $BLUE "  - Admin 后台: http://localhost:8080"
     print_message $BLUE "  - 前端应用: http://localhost/"
     print_message $BLUE "  - API 接口: http://localhost/api"
     print_message $BLUE "  - API 文档: http://localhost/api/doc"
