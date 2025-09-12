@@ -328,4 +328,81 @@ export class RedisService {
   async flushall(): Promise<void> {
     await this.redis.flushall();
   }
+
+  /**
+   * 有序集合操作 - 添加成员
+   * @param key 有序集合键
+   * @param member 成员
+   * @param score 分数
+   * @returns 添加的成员数量
+   */
+  async zadd(key: string, member: string, score: number): Promise<number> {
+    return await this.redis.zadd(key, score, member);
+  }
+
+  /**
+   * 有序集合操作 - 增加成员分数
+   * @param key 有序集合键
+   * @param member 成员
+   * @param score 分数
+   * @returns 增加的分数
+   */
+  async zincrby(key: string, score: number, member: string): Promise<string> {
+    return await this.redis.zincrby(key, score, member);
+  }
+
+  /**
+   * 有序集合操作 - 获取排名范围（降序）
+   * @param key 有序集合键
+   * @param start 开始排名（0开始）
+   * @param stop 结束排名（-1表示到最后）
+   * @returns 成员和分数数组
+   */
+  async zrevrange(key: string, start: number, stop: number): Promise<string[]> {
+    return await this.redis.zrevrange(key, start, stop);
+  }
+
+  /**
+   * 有序集合操作 - 获取排名范围带分数（降序）
+   * @param key 有序集合键
+   * @param start 开始排名（0开始）
+   * @param stop 结束排名（-1表示到最后）
+   * @returns 成员和分数数组
+   */
+  async zrevrangeWithScores(
+    key: string,
+    start: number,
+    stop: number
+  ): Promise<string[]> {
+    return await this.redis.zrevrange(key, start, stop, 'WITHSCORES');
+  }
+
+  /**
+   * 有序集合操作 - 获取成员排名（降序）
+   * @param key 有序集合键
+   * @param member 成员
+   * @returns 排名（0开始），-1表示不存在
+   */
+  async zrevrank(key: string, member: string): Promise<number | null> {
+    return await this.redis.zrevrank(key, member);
+  }
+
+  /**
+   * 有序集合操作 - 获取成员分数
+   * @param key 有序集合键
+   * @param member 成员
+   * @returns 分数，null表示不存在
+   */
+  async zscore(key: string, member: string): Promise<string | null> {
+    return await this.redis.zscore(key, member);
+  }
+
+  /**
+   * 有序集合操作 - 获取集合大小
+   * @param key 有序集合键
+   * @returns 集合大小
+   */
+  async zcard(key: string): Promise<number> {
+    return await this.redis.zcard(key);
+  }
 }

@@ -9,6 +9,7 @@ import React, {
 import { useFullscreen } from 'ahooks';
 import { useSearchParams } from 'next/navigation';
 import {
+  correctWord,
   getUserWordsProgress,
   getWordsByCategoryId,
   reportWordError
@@ -133,7 +134,14 @@ function PracticePageContent() {
   /**
    * 处理单词完成事件
    */
-  const handleWordComplete = useCallback((_isCorrect: boolean) => {}, []);
+  const handleWordComplete = useCallback(
+    async (_isCorrect: boolean) => {
+      if (_isCorrect) {
+        await correctWord(words[currentWordIndex].id);
+      }
+    },
+    [currentWordIndex, words]
+  );
 
   /**
    * 切换到下一个单词

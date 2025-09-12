@@ -233,6 +233,12 @@ export interface CreateWordDto {
    */
   imageUrl?: string;
 }
+export interface CreateCorrectDto {
+  /**
+   * 单词 ID
+   */
+  id: string;
+}
 export interface CreateSentenceDto {
   /**
    * 所属语言 ID
@@ -698,6 +704,47 @@ export interface GetUserWordsProgressDto {
    * 分页号
    */
   page: number;
+}
+export type String = object;
+export interface RankingItemDto {
+  /**
+   * 用户ID
+   */
+  userId: number;
+  /**
+   * 用户名
+   */
+  userName: string;
+  /**
+   * 用户邮箱
+   */
+  userEmail: string;
+  /**
+   * 分数
+   */
+  score: number;
+  /**
+   * 排名
+   */
+  rank: number;
+}
+export interface RankingResponseDto {
+  /**
+   * 排行榜类型
+   */
+  type: string;
+  /**
+   * 排行榜数据
+   */
+  rankings: RankingItemDto[];
+  /**
+   * 当前用户排名
+   */
+  currentUserRank?: number;
+  /**
+   * 当前用户分数
+   */
+  currentUserScore?: number;
 }
 export interface Sentence {
   /**
@@ -5629,6 +5676,201 @@ declare global {
           path: string;
         },
         'general.WordsController_searchWordsPaginated',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 单词正确记录（防重复）
+       *
+       * **path:** /api/words/correct
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 单词 ID
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: object
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      WordsController_correctWord<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: String;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          data: CreateCorrectDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: String;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.WordsController_correctWord',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取单词排行榜
+       *
+       * **path:** /api/words/ranking
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 排行榜类型
+       *   type?: 'total' | 'daily' | 'weekly'
+       *   // 返回数量限制
+       *   limit?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 排行榜类型
+       *     type: string
+       *     // 排行榜数据
+       *     // [items] start
+       *     // [items] end
+       *     rankings: Array<{
+       *       // 用户ID
+       *       userId: number
+       *       // 用户名
+       *       userName: string
+       *       // 用户邮箱
+       *       userEmail: string
+       *       // 分数
+       *       score: number
+       *       // 排名
+       *       rank: number
+       *     }>
+       *     // 当前用户排名
+       *     currentUserRank?: number
+       *     // 当前用户分数
+       *     currentUserScore?: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      WordsController_getRanking<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: RankingResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          params: {
+            /**
+             * 排行榜类型
+             */
+            type?: 'total' | 'daily' | 'weekly';
+            /**
+             * 返回数量限制
+             */
+            limit?: number;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: RankingResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.WordsController_getRanking',
         Config
       >;
       /**

@@ -14,9 +14,9 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiBearerAuth
+  ApiBearerAuth,
+  ApiBody
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '@/common/guards/roles.guard';
 import { Roles } from '@/common/decorators/premission.decorator';
 import { Role } from 'common';
@@ -38,15 +38,18 @@ import {
   GetLanguageStatusDto
 } from './dto/getlanguage-status.dto';
 import { GetUserWordsProgressDto } from './dto/get-user-words-progress.dto';
+import { RankingResponseDto } from './dto/ranking.dto';
+import { CreateCorrectDto } from './dto/create-correct-dto';
 
 @ApiTags('单词管理')
 @Controller('words')
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class WordsController {
   constructor(private readonly wordsService: WordsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '创建单词（仅管理员）' })
   @ApiCreatedResponse(Word, { description: '创建单词成功' })
@@ -55,6 +58,7 @@ export class WordsController {
   }
 
   @Get('paginated')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '分页查询单词（仅管理员）' })
   @ApiPaginationResponse<Word>(Word, {
@@ -205,6 +209,48 @@ export class WordsController {
     );
   }
 
+  // 记录单词排行榜
+  @Post('correct')
+  @OptionalAuth()
+  @ApiOperation({ summary: '单词正确记录（防重复）' })
+  @ApiBody({ type: CreateCorrectDto })
+  @ApiSuccessResponse<any>(String, {
+    description:
+      '单词正确记录结果: success(首次正确记录成功) 或 already_correct(该单词已正确输入过) 或 no_user(未登录用户)'
+  })
+  correctWord(@Body() correctWordDto: CreateCorrectDto, @Req() req?: any) {
+    return this.wordsService.correctWord(correctWordDto, req?.user?.id);
+  }
+
+  // 获取单词排行榜
+  @Get('ranking')
+  @OptionalAuth()
+  @ApiOperation({ summary: '获取单词排行榜' })
+  @ApiQuery({
+    name: 'type',
+    description: '排行榜类型',
+    enum: ['total', 'daily', 'weekly'],
+    required: false,
+    example: 'total'
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: '返回数量限制',
+    type: Number,
+    required: false,
+    example: 10
+  })
+  @ApiSuccessResponse<RankingResponseDto>(RankingResponseDto, {
+    description: '获取单词排行榜成功'
+  })
+  getRanking(
+    @Query('type') type: 'total' | 'daily' | 'weekly' = 'total',
+    @Query('limit') limit: number = 10,
+    @Req() req?: any
+  ) {
+    return this.wordsService.getRanking(type, limit, req.user?.id);
+  }
+
   @Get('random')
   @NoCache()
   @ApiOperation({ summary: '随机获取单词（用于练习）' })
@@ -265,7 +311,7 @@ export class WordsController {
   }
 
   @Post(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '更新单词（仅管理员）' })
   @ApiParam({ name: 'id', description: '单词 ID', type: String })
@@ -275,7 +321,7 @@ export class WordsController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @ApiOperation({ summary: '删除单词（仅管理员）' })
   @ApiParam({ name: 'id', description: '单词 ID', type: String })

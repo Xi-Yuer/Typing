@@ -120,6 +120,8 @@ export default {
     'GET',
     '/api/words/search/paginated'
   ],
+  'general.WordsController_correctWord': ['POST', '/api/words/correct'],
+  'general.WordsController_getRanking': ['GET', '/api/words/ranking'],
   'general.WordsController_getRandomWords': ['GET', '/api/words/random'],
   'general.WordsController_getLanguageStats': [
     'GET',

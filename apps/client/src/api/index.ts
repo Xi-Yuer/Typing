@@ -55,3 +55,12 @@ export const reportWordError = (wordId: string, errorDescription: string) => {
     }
   });
 };
+
+// 单词正确记录
+export const correctWord = (id: string) => {
+  return Apis.general.WordsController_correctWord({
+    data: {
+      id: id
+    }
+  });
+};

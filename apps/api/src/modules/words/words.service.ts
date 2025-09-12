@@ -14,13 +14,17 @@ import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { PaginationResponseDto } from '../../common/dto/api-response.dto';
 import { RedisService } from '../redis/redis.service';
 import { JwtPayload } from '../auth/auth.service';
+import { RankingResponseDto, RankingItemDto } from './dto/ranking.dto';
+import { UserService } from '../user/user.service';
+import { CreateCorrectDto } from './dto/create-correct-dto';
 
 @Injectable()
 export class WordsService {
   constructor(
     @InjectRepository(Word)
     private readonly wordRepository: Repository<Word>,
-    private readonly redisService: RedisService
+    private readonly redisService: RedisService,
+    private readonly userService: UserService
   ) {}
 
   /**
@@ -367,5 +371,111 @@ export class WordsService {
     } catch {
       return new GetUserWordsProgressDto({ userId });
     }
+  }
+  /**
+   * 单词正确记录
+   */
+  async correctWord(correctWordDto: CreateCorrectDto, userId?: number) {
+    const word = await this.wordRepository.findOne({
+      where: { id: correctWordDto.id }
+    });
+    if (!word) {
+      throw new NotFoundException('单词不存在');
+    }
+
+    // 如果没有用户ID，直接返回成功但不记录分数
+    if (!userId) {
+      return 'no_user';
+    }
+
+    // 检查用户是否已经正确输入过这个单词
+    const userWordKey = `user:${userId}:correct:${correctWordDto.id}`;
+    const alreadyCorrect = await this.redisService.exists(userWordKey);
+
+    if (alreadyCorrect) {
+      // 如果已经正确输入过，返回提示信息
+      return 'already_correct';
+    }
+
+    // 记录用户已正确输入此单词
+    await this.redisService.setPermanentCache(userWordKey, {
+      wordId: correctWordDto.id,
+      userId: userId,
+      correctTime: new Date().toISOString()
+    });
+
+    // 更新排行榜分数
+    await this.redisService.zincrby(`rank:total`, 1, `user:${userId}`);
+    await this.redisService.zincrby(`rank:daily`, 1, `user:${userId}`);
+    await this.redisService.zincrby(`rank:weekly`, 1, `user:${userId}`);
+
+    return 'success';
+  }
+
+  /**
+   * 获取单词排行榜
+   */
+  async getRanking(
+    type: 'total' | 'daily' | 'weekly' = 'total',
+    limit: number = 10,
+    userId?: number
+  ): Promise<RankingResponseDto> {
+    const rankingKey = `rank:${type}`;
+
+    // 获取排行榜数据（带分数）
+    const rankingsWithScores = await this.redisService.zrevrangeWithScores(
+      rankingKey,
+      0,
+      limit - 1
+    );
+
+    const rankings: RankingItemDto[] = [];
+
+    // 处理排行榜数据
+    for (let i = 0; i < rankingsWithScores.length; i += 2) {
+      const member = rankingsWithScores[i];
+      const score = parseInt(rankingsWithScores[i + 1]);
+
+      // 从member中提取用户ID
+      const userIdFromMember = parseInt(member.replace('user:', ''));
+
+      try {
+        // 获取用户信息
+        const user = await this.userService.findOne(userIdFromMember);
+
+        rankings.push({
+          userId: user.id,
+          userName: user.name,
+          userEmail: user.email,
+          score: score,
+          rank: Math.floor(i / 2) + 1
+        });
+      } catch {
+        // 如果用户不存在，跳过该记录
+        console.warn(`用户 ${userIdFromMember} 不存在，跳过排行榜记录`);
+      }
+    }
+
+    // 获取当前用户信息（如果提供了userId）
+    let currentUserRank: number | undefined;
+    let currentUserScore: number | undefined;
+
+    if (userId) {
+      const userMember = `user:${userId}`;
+      const rank = await this.redisService.zrevrank(rankingKey, userMember);
+      const score = await this.redisService.zscore(rankingKey, userMember);
+
+      if (rank !== null && score !== null) {
+        currentUserRank = rank + 1; // Redis排名从0开始，转换为从1开始
+        currentUserScore = parseInt(score);
+      }
+    }
+
+    return {
+      type,
+      rankings,
+      currentUserRank,
+      currentUserScore
+    };
   }
 }
