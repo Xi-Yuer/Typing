@@ -47,6 +47,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+      - "8080:8080"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       # 移动端静态资源
