@@ -44,7 +44,7 @@ services:
   admin-init:
     image: ghcr.io/xi-yuer/typing:latest
     container_name: typing-admin-init
-    command: sh -c "mkdir -p /shared/admin && cp -r /app/apps/admin/dist/* /shared/admin/ && ls -la /shared/admin/"
+    command: sh -c "mkdir -p /shared/admin && cp -r /app/apps/admin/dist/* /shared/admin/ && chmod -R 755 /shared/admin && ls -la /shared/admin/"
     volumes:
       - admin_static:/shared/admin
     depends_on:
@@ -62,6 +62,7 @@ services:
       - "8080:8080"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx-init.sh:/nginx-init.sh:ro
       # 移动端静态资源
       - ./mobile.html:/usr/share/nginx/html/mobile.html:ro
       # Admin 后台管理静态资源（从主应用容器复制）
@@ -70,6 +71,8 @@ services:
       - admin-init
     networks:
       - typing-network
+    # 使用自定义启动脚本
+    command: ["sh", "/nginx-init.sh"]
 
   # 主应用（前端 + 后端）
   app:

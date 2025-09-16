@@ -58,17 +58,27 @@ start_services() {
     check_env_file
     check_prod_config
     
+    # 设置nginx初始化脚本权限
+    if [ -f "nginx-init.sh" ]; then
+        chmod +x nginx-init.sh
+        print_message $GREEN "✓ nginx初始化脚本权限已设置"
+    fi
+    
     # 启动服务
     print_message $BLUE "启动所有服务..."
     docker-compose -f $compose_file up -d
     
     # 等待服务启动
     print_message $BLUE "等待服务启动..."
-    sleep 10
+    sleep 15
     
     # 检查服务状态
     print_message $BLUE "检查服务状态..."
     docker-compose -f $compose_file ps
+    
+    # 等待nginx完全启动
+    print_message $BLUE "等待nginx完全启动..."
+    sleep 10
     
     print_message $GREEN "\n🎉 部署完成！"
     print_message $GREEN "前端应用: http://localhost/"
