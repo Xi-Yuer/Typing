@@ -117,7 +117,7 @@ pull_code() {
 pull_image() {
     print_message $BLUE "拉取最新的预构建镜像..."
     check_prod_config
-    docker-compose -f docker-compose.prod.yml pull app
+    docker-compose -f docker-compose.prod.yml pull
     print_message $GREEN "✓ 镜像拉取完成"
     print_message $BLUE "拉取最新代码..."
     pull_code

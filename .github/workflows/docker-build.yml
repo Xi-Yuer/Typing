@@ -48,7 +48,6 @@ jobs:
           node-version: '23'
           cache: 'pnpm'
 
-
       # 设置 Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -61,9 +60,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 提取元数据
-      - name: Extract metadata
-        id: meta
+      # 提取主应用镜像元数据
+      - name: Extract app metadata
+        id: app-meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}
@@ -75,24 +74,54 @@ jobs:
             type=semver,pattern={{major}}
             type=raw,value=latest,enable={{is_default_branch}}
 
-      # 构建并推送 Docker 镜像
-      - name: Build and push Docker image
-        id: build
+      # 提取Nginx镜像元数据
+      - name: Extract nginx metadata
+        id: nginx-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}-nginx
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # 构建并推送主应用 Docker 镜像
+      - name: Build and push app Docker image
+        id: app-build
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.app-meta.outputs.tags }}
+          labels: ${{ steps.app-meta.outputs.labels }}
+
+      # 构建并推送 Nginx Docker 镜像
+      - name: Build and push nginx Docker image
+        id: nginx-build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.nginx
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.nginx-meta.outputs.tags }}
+          labels: ${{ steps.nginx-meta.outputs.labels }}
 
       # 输出镜像信息
       - name: Output image info
         run: |
-          echo "Image tags:"
-          echo "${{ steps.meta.outputs.tags }}"
-          echo "Image digest: ${{ steps.build.outputs.digest }}"
+          echo "App Image tags:"
+          echo "${{ steps.app-meta.outputs.tags }}"
+          echo "App Image digest: ${{ steps.app-build.outputs.digest }}"
+          echo ""
+          echo "Nginx Image tags:"
+          echo "${{ steps.nginx-meta.outputs.tags }}"
+          echo "Nginx Image digest: ${{ steps.nginx-build.outputs.digest }}"
 
   # 自动部署到服务器
   deploy:
@@ -124,8 +153,10 @@ jobs:
             # 进入项目目录
             cd ${{ secrets.PROJECT_PATH }}
             
-            # 使用项目自带的部署脚本
-            ./deploy.sh pull
+            # 拉取最新的镜像（包括nginx）
+            docker-compose -f docker-compose.prod.yml pull
+            
+            # 重启服务
             ./deploy.sh restart
             
             # 清理旧镜像

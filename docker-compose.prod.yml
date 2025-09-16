@@ -42,9 +42,7 @@ services:
 
   # Nginx 反向代理（包含admin静态资源）
   nginx:
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
+    image: ghcr.io/xi-yuer/typing-nginx:latest
     container_name: typing-nginx
     restart: unless-stopped
     ports:
