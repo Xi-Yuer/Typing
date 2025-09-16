@@ -73,6 +73,8 @@ services:
       - typing-network
     # 使用自定义启动脚本
     command: ["sh", "/nginx-init.sh"]
+    # 以root用户运行避免权限问题
+    user: "0:0"
 
   # 主应用（前端 + 后端）
   app:
