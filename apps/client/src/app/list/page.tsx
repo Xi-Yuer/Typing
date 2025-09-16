@@ -13,7 +13,7 @@ import { getDifficultyStyle } from '@/utils';
  * 语言分类列表页面组件
  * 展示可用的语言类别和子分类
  */
-export default function page() {
+export default function Page() {
   const router = useRouter();
   const [languages, setLanguages] = useState<Language[]>([]);
   const [categorySubCategories, setCategorySubCategories] = useState<
@@ -72,7 +72,7 @@ export default function page() {
   };
 
   return (
-    <div className='bg-slate-950 min-h-screen w-screen relative'>
+    <div className='bg-slate-950 min-h-screen w-screen relative pb-16'>
       {/* 背景动画层 */}
       <div className='fixed inset-0 z-0 backdrop-blur-3xl'>
         <PlasmaWaveV2

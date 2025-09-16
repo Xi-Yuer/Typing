@@ -5,5 +5,6 @@ export default {
       platform: 'swagger',
       output: './src/request'
     }
-  ]
+  ],
+  autoUpdate: false
 };

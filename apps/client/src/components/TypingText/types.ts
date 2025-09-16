@@ -39,6 +39,7 @@ export type WordAction =
 export interface ShortcutConfig {
   keys: readonly string[];
   label: string;
+  onClick?: () => void;
 }
 
 // 音频播放配置类型

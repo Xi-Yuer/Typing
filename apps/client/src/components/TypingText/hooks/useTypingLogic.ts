@@ -69,7 +69,7 @@ export const useTypingLogic = ({
         // 静默处理错误
       }
     }
-  }, [word?.word]);
+  }, [word]);
 
   // 处理输入变化
   const handleInputChange = useCallback(
@@ -92,7 +92,7 @@ export const useTypingLogic = ({
       // 更新当前单词的用户输入
       updateWordInput(currentWordIndex, value);
     },
-    [words, currentWordIndex, updateWordInput, setWordError, playErrorSound]
+    [currentWordIndex, updateWordInput, setWordError]
   );
 
   // 提交答案
@@ -258,6 +258,7 @@ export const useTypingLogic = ({
 
   // 键盘处理器
   const keyboardHandlers = useKeyboardHandlers({
+    inputRef,
     words,
     currentWordIndex,
     inputValue,
@@ -292,6 +293,14 @@ export const useTypingLogic = ({
       playWordPronunciation();
     }
   }, [word, mode, processedWord, initializeWords, playWordPronunciation]);
+
+  const onResetExercise = useCallback(() => {
+    resetExercise();
+  }, [resetExercise]);
+
+  const onToggleHint = useCallback(() => {
+    toggleHint();
+  }, [toggleHint]);
 
   // 自动聚焦
   useEffect(() => {
@@ -333,6 +342,10 @@ export const useTypingLogic = ({
     handleCompositionEnd: keyboardHandlers.handleCompositionEnd,
     preventCursorMove,
     onNext,
-    onPrev
+    onPrev,
+    onResetExercise,
+    playWordPronunciation,
+    onToggleHint,
+    submitAnswer
   };
 };

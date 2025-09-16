@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { TypingTextProps } from './types';
 import { useTypingLogic } from './hooks/useTypingLogic';
 import { WordDisplay } from './components/WordDisplay';
@@ -32,7 +32,11 @@ const TypingText = function ({
     handleGlobalKeyDown,
     handleCompositionStart,
     handleCompositionEnd,
-    preventCursorMove
+    preventCursorMove,
+    onResetExercise,
+    playWordPronunciation,
+    onToggleHint,
+    submitAnswer
   } = useTypingLogic({ mode, word, onComplete, onNext, onPrev });
 
   // 确保容器可以接收键盘事件
@@ -41,6 +45,12 @@ const TypingText = function ({
       containerRef.current.focus();
     }
   }, [isAllCorrect]);
+
+  const focusInput = useCallback(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputRef]);
 
   function showMean(word?: Word) {
     // 翻译模式下，显示单词
@@ -93,7 +103,15 @@ const TypingText = function ({
       )}
 
       {/* 快捷键提示 */}
-      <ShortcutHints onPrev={onPrev} onNext={onNext} />
+      <ShortcutHints
+        focusInput={focusInput}
+        onPrev={onPrev}
+        onNext={onNext}
+        onResetExercise={onResetExercise}
+        playWordPronunciation={playWordPronunciation}
+        onToggleHint={onToggleHint}
+        submitAnswer={submitAnswer}
+      />
     </div>
   );
 };

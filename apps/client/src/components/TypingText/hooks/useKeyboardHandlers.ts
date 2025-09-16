@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { RefObject, useCallback, useRef } from 'react';
 import { specialKeys } from '@/constant';
 import { playWordAudio } from '@/hooks/useSpeech';
 import { useTypingSound } from '@/hooks/useTypingSound';
@@ -7,6 +7,7 @@ import { UseKeyboardHandlersReturn, WordState } from '../types';
 import { Word } from '@/request/globals';
 
 interface UseKeyboardHandlersProps {
+  inputRef: RefObject<HTMLInputElement | null>;
   words: WordState[];
   currentWordIndex: number;
   inputValue: string;
@@ -26,6 +27,7 @@ interface UseKeyboardHandlersProps {
 }
 
 export const useKeyboardHandlers = ({
+  inputRef,
   words,
   currentWordIndex,
   inputValue,
@@ -56,7 +58,7 @@ export const useKeyboardHandlers = ({
         // 静默处理错误
       }
     }
-  }, [word?.word]);
+  }, [word]);
 
   // 处理退格键逻辑
   const handleBackspace = useCallback(
@@ -98,8 +100,9 @@ export const useKeyboardHandlers = ({
 
       // 正常提交答案
       onSubmitAnswer();
+      inputRef.current?.focus();
     },
-    [onInputChange, onSubmitAnswer]
+    [onInputChange, onSubmitAnswer, inputRef]
   );
 
   // 主键盘事件处理器
@@ -124,17 +127,21 @@ export const useKeyboardHandlers = ({
           case KEYBOARD_SHORTCUTS.RESET_EXERCISE:
             e.preventDefault();
             onResetExercise();
+            inputRef.current?.focus();
             return;
           case KEYBOARD_SHORTCUTS.TOGGLE_HINT:
             e.preventDefault();
             onToggleHint();
+            inputRef.current?.focus();
             return;
           case KEYBOARD_SHORTCUTS.PRONUNCIATION:
             e.preventDefault();
             playWordPronunciation();
+            inputRef.current?.focus();
             return;
           case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.BACKSPACE:
             handleBackspace(e, true);
+            inputRef.current?.focus();
             return;
         }
       }
@@ -144,11 +151,13 @@ export const useKeyboardHandlers = ({
         if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.PREV) {
           e.preventDefault();
           onNext?.();
+          inputRef.current?.focus();
           return;
         }
         if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.NEXT) {
           e.preventDefault();
           onPrev?.();
+          inputRef.current?.focus();
           return;
         }
       }
@@ -161,21 +170,26 @@ export const useKeyboardHandlers = ({
           onNavigateWord(
             e.key === KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.LEFT ? 'left' : 'right'
           );
+          inputRef.current?.focus();
           return;
         case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.HOME:
           e.preventDefault();
           onJumpToFirst();
+          inputRef.current?.focus();
           return;
         case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.END:
           e.preventDefault();
           onJumpToLast();
+          inputRef.current?.focus();
           return;
         case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.ESCAPE:
           e.preventDefault();
           onClearInput();
+          inputRef.current?.focus();
           return;
         case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.BACKSPACE:
           handleBackspace(e, false);
+          inputRef.current?.focus();
           return;
       }
 
@@ -187,6 +201,7 @@ export const useKeyboardHandlers = ({
         !isAllCorrect
       ) {
         handleSubmitKeys(e);
+        inputRef.current?.focus();
         return;
       }
     },
@@ -195,18 +210,20 @@ export const useKeyboardHandlers = ({
       currentWordIndex,
       inputValue,
       isComposing,
+      isAllCorrect,
       playTypingSound,
+      onResetExercise,
+      inputRef,
+      onToggleHint,
       playWordPronunciation,
       handleBackspace,
-      handleSubmitKeys,
-      onResetExercise,
-      onToggleHint,
+      onNext,
+      onPrev,
       onNavigateWord,
       onJumpToFirst,
       onJumpToLast,
       onClearInput,
-      onNext,
-      onPrev
+      handleSubmitKeys
     ]
   );
 
@@ -230,14 +247,17 @@ export const useKeyboardHandlers = ({
           case KEYBOARD_SHORTCUTS.RESET_EXERCISE:
             e.preventDefault();
             onResetExercise();
+            inputRef.current?.focus();
             return;
           case KEYBOARD_SHORTCUTS.TOGGLE_HINT:
             e.preventDefault();
             onToggleHint();
+            inputRef.current?.focus();
             return;
           case KEYBOARD_SHORTCUTS.PRONUNCIATION:
             e.preventDefault();
             playWordPronunciation();
+            inputRef.current?.focus();
             return;
         }
       }
@@ -247,11 +267,13 @@ export const useKeyboardHandlers = ({
         if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.PREV) {
           e.preventDefault();
           onPrev?.();
+          inputRef.current?.focus();
           return;
         }
         if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.NEXT) {
           e.preventDefault();
           onNext?.();
+          inputRef.current?.focus();
           return;
         }
       }
@@ -263,11 +285,13 @@ export const useKeyboardHandlers = ({
         ) {
           e.preventDefault();
           onNext?.();
+          inputRef.current?.focus();
           return;
         }
       }
     },
     [
+      inputRef,
       onResetExercise,
       onToggleHint,
       playWordPronunciation,
