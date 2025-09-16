@@ -40,6 +40,18 @@ services:
       interval: 10s
       start_period: 30s
 
+  # Admin 静态资源初始化容器
+  admin-init:
+    image: ghcr.io/xi-yuer/typing:latest
+    container_name: typing-admin-init
+    command: sh -c "cp -r /app/apps/admin/dist/* /shared/admin/"
+    volumes:
+      - admin_static:/shared/admin
+    depends_on:
+      - app
+    networks:
+      - typing-network
+
   # Nginx 反向代理
   nginx:
     image: nginx:alpine
@@ -52,9 +64,10 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       # 移动端静态资源
       - ./mobile.html:/usr/share/nginx/html/mobile.html:ro
-      # 注意：admin 静态资源现在包含在主应用镜像中，无需单独挂载
+      # Admin 后台管理静态资源（从主应用容器复制）
+      - admin_static:/usr/share/nginx/html/admin:ro
     depends_on:
-      - app
+      - admin-init
     networks:
       - typing-network
 
@@ -132,6 +145,8 @@ volumes:
   mysql_data:
     driver: local
   redis_data:
+    driver: local
+  admin_static:
     driver: local
 
 networks:
