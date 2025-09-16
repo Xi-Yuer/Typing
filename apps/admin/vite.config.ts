@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       // 将环境变量注入到客户端代码中
-      'process.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '/api')
+      'process.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '/')
     }
   };
 });

@@ -86,8 +86,8 @@ services:
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
       
       # 前端配置
-      NEXT_PUBLIC_BASE_URL: /api
-      VITE_API_URL: ${VITE_API_URL:-/api}
+      NEXT_PUBLIC_BASE_URL: /
+      VITE_API_URL: ${VITE_API_URL:-/}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
       
       # 功能开关
