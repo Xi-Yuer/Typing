@@ -44,7 +44,7 @@ services:
   admin-init:
     image: ghcr.io/xi-yuer/typing:latest
     container_name: typing-admin-init
-    command: sh -c "cp -r /app/apps/admin/dist/* /shared/admin/"
+    command: sh -c "mkdir -p /shared/admin && cp -r /app/apps/admin/dist/* /shared/admin/ && ls -la /shared/admin/"
     volumes:
       - admin_static:/shared/admin
     depends_on:
