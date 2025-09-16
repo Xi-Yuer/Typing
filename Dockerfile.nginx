@@ -24,7 +24,7 @@ COPY packages/common ./packages/common/
 COPY packages/utils ./packages/utils/
 
 # 设置构建时环境变量
-ENV VITE_API_URL=/api
+ENV VITE_API_URL=/
 
 # 构建admin项目
 RUN cd apps/admin && pnpm run build
