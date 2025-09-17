@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import IconFont from '@/components/IconFont';
 
 interface NavItem {
@@ -45,7 +46,27 @@ const navItems: NavItem[] = [
 ];
 
 const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState('home'); // 默认选中主页
+  const pathname = usePathname();
+  const [activeItem, setActiveItem] = useState('home');
+
+  // 根据当前路径设置激活状态
+  useEffect(() => {
+    const currentPath = pathname;
+
+    // 查找匹配的导航项
+    const matchedItem = navItems.find(item => {
+      if (item.href === '/dashboard/main' && currentPath === '/dashboard') {
+        return true; // 主页特殊处理
+      }
+      return currentPath === item.href;
+    });
+
+    if (matchedItem) {
+      setActiveItem(matchedItem.id);
+    } else if (currentPath === '/dashboard') {
+      setActiveItem('home'); // 默认主页
+    }
+  }, [pathname]);
 
   return (
     <div className='w-64 bg-slate-900 h-fit border-r border-slate-700 flex flex-col rounded-xl'>
@@ -60,8 +81,7 @@ const Sidebar = () => {
                 activeItem === item.id
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
+              }`}>
               <IconFont type={item.icon} size={24} />
               <span className='font-medium'>{item.name}</span>
             </Link>
@@ -72,8 +92,7 @@ const Sidebar = () => {
       <div className='px-4 py-2 border-t border-slate-700'>
         <Link
           href='/settings'
-          className='flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-slate-800 transition-colors duration-200'
-        >
+          className='flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-slate-800 transition-colors duration-200'>
           <IconFont type='icon-setting' size={24} />
           <span className='font-medium'>设置</span>
         </Link>

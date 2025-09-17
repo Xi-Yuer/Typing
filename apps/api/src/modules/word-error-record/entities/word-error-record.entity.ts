@@ -13,6 +13,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../user/entities/user.entity';
 import { Word } from '../../words/entities/word.entity';
 import { CorpusCategory } from '../../corpus-categories/entities/corpus-category.entity';
+// import { Language } from '../../languages/entities/language.entity';
 
 @Entity('word_error_records')
 @Unique(['userId', 'wordId']) // 确保每个用户对每个单词只有一条记录
@@ -96,4 +97,9 @@ export class WordErrorRecord {
   @JoinColumn({ name: 'category_id' })
   @ApiProperty({ description: '分类信息', type: () => CorpusCategory })
   category: CorpusCategory;
+
+  // @ManyToOne(() => Language, { eager: true })
+  // @JoinColumn({ name: 'language_id' })
+  // @ApiProperty({ description: '语言信息', type: () => Language })
+  // language: Language;
 }

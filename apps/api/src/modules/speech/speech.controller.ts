@@ -9,9 +9,11 @@ import { SpeechService } from './speech.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiSuccessResponse } from '@/common/decorators/api-response.decorator';
 import { Speech } from './entities/speech.entity';
+import { CacheTTL } from '@nestjs/cache-manager';
 
 @Controller('speech')
 @ApiTags('语音')
+@CacheTTL(24 * 60 * 60 * 1000) // 24小时
 export class SpeechController {
   constructor(private readonly speechService: SpeechService) {}
 

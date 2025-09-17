@@ -41,6 +41,14 @@ export default function RootLayout({
                 colorBorder: '#4b5563',
                 activeBorderColor: '#4b5563',
                 activeShadow: 'none'
+              },
+              Segmented: {
+                colorBorder: '#4b5563',
+                colorBorderSecondary: '#4b5563',
+                colorBgContainer: '#141414',
+                itemSelectedBg: '#7d26cd',
+                itemSelectedColor: '#fff',
+                itemColor: '#fff'
               }
             }
           }}

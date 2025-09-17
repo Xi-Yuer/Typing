@@ -4,7 +4,7 @@ import { playWordAudio } from '@/hooks/useSpeech';
 import { useTypingSound } from '@/hooks/useTypingSound';
 import { useWordState } from './useWordState';
 import { useKeyboardHandlers } from './useKeyboardHandlers';
-import { isWord } from '@/utils';
+import { isWord, debounce } from '@/utils';
 import { GameMode } from '@/components/GameModeModal/types';
 
 interface UseTypingLogicProps {
@@ -60,8 +60,8 @@ export const useTypingLogic = ({
     findPrevIncompleteWord
   } = useWordState(processedWord);
 
-  // 播放单词发音
-  const playWordPronunciation = useCallback(async () => {
+  // 播放单词发音的实际函数
+  const playWordAudioInternal = useCallback(async () => {
     if (word?.word) {
       try {
         await playWordAudio(word);
@@ -70,6 +70,12 @@ export const useTypingLogic = ({
       }
     }
   }, [word]);
+
+  // 使用 debounce 包装播放函数
+  const playWordPronunciation = useMemo(
+    () => debounce(playWordAudioInternal, 500),
+    [playWordAudioInternal]
+  );
 
   // 处理输入变化
   const handleInputChange = useCallback(

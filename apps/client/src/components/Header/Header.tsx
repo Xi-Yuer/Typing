@@ -59,13 +59,13 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
 
       // 检查响应结构
       if (!response || !response.data) {
-        throw new Error('API响应格式错误');
+        throw new Error(response.data.message);
       }
 
       const { accessToken, user } = response.data;
 
       if (!accessToken || !user) {
-        throw new Error('登录响应数据不完整');
+        throw new Error(response.data.message);
       }
 
       // 保存token到localStorage

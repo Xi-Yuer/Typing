@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
-import { createKeyv, Keyv } from '@keyv/redis';
-import { CacheableMemory } from 'cacheable';
+import { createKeyv } from '@keyv/redis';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from './modules/config/config.module';
 import { DatabaseModule } from './modules/database/database.module';
@@ -34,14 +33,8 @@ import { RedisCacheModule } from './modules/redis/redis.module';
     CacheModule.registerAsync({
       useFactory: () => {
         return {
-          stores: [
-            new Keyv({
-              store: new CacheableMemory({ ttl: 60000, lruSize: 5000 })
-            }),
-            createKeyv(process.env.REDIS_URL)
-          ]
-          // 移除全局 TTL，让每个操作自己决定 TTL
-          // ttl: 1000 * 60 * 60 * 24
+          stores: [createKeyv(process.env.REDIS_URL)],
+          ttl: 12 * 60 * 1000 // 12分钟
         };
       },
       isGlobal: true

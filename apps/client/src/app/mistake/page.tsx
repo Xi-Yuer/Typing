@@ -4,16 +4,15 @@ import React, {
   useState,
   useCallback,
   useRef,
-  useMemo,
-  Suspense
+  Suspense,
+  useMemo
 } from 'react';
 import { useFullscreen } from 'ahooks';
 import { useSearchParams } from 'next/navigation';
 import {
   correctWord,
   createWordErrorRecord,
-  getUserWordsProgress,
-  getWordsByCategoryId,
+  getUserErrorRecordsByCategoryList,
   reportWordError
 } from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
@@ -43,10 +42,9 @@ function PracticePageContent() {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [words, setWords] = useState<Word[]>([]);
   const [total, setTotal] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [globalWordIndex, setGlobalWordIndex] = useState(0); // 全局单词索引
   const [isErrorReportModalOpen, setIsErrorReportModalOpen] = useState(false);
   const ref = useRef(null);
   const [isFullscreen, { toggleFullscreen }] = useFullscreen(ref);
@@ -69,23 +67,35 @@ function PracticePageContent() {
     async (page: number = 1, pageSize: number = 10) => {
       if (!languageId || !categoryId) return;
 
-      const response = await getWordsByCategoryId(
-        parseInt(languageId as string),
-        parseInt(categoryId as string),
+      const response = await getUserErrorRecordsByCategoryList(
+        categoryId as string,
         page,
         pageSize
       );
 
       if (response && response.data && response.data.list) {
-        const wordList = response.data.list;
+        const wordList = response.data.list.map(item => {
+          return {
+            ...item.word,
+            category: item.category,
+            language: item.language
+          };
+        });
         if (page === 1) {
           // 初始加载，替换所有数据
-          setWords(wordList);
+          setWords(wordList as Word[]);
           setCurrentWordIndex(0);
           setTotal(response.data.total); // 只在初始加载时设置 total
         } else {
           // 预加载，追加数据
-          setWords(prev => [...prev, ...wordList]);
+          setWords(prev => [
+            ...prev,
+            ...wordList.map(item => ({
+              ...item,
+              category: item.category,
+              language: item.language
+            }))
+          ]);
         }
 
         setCurrentPage(page);
@@ -101,22 +111,8 @@ function PracticePageContent() {
     if (languageId && categoryId) {
       const initializePracticeData = async () => {
         try {
-          // 先获取用户进度
-          const { data: progressData } = await getUserWordsProgress(
-            languageId as string,
-            categoryId as string
-          );
-
-          // 设置用户进度信息
-          setCurrentPage(progressData.page);
-          setPageSize(progressData.pageSize);
-
-          // 计算全局单词索引：基于用户进度
-          const globalIndex = (progressData.page - 1) * progressData.pageSize;
-          setGlobalWordIndex(globalIndex);
-
           // 使用获取到的分页信息加载练习数据
-          await loadPracticeData(progressData.page, progressData.pageSize);
+          await loadPracticeData(currentPage, pageSize);
         } catch {
           // 如果获取用户进度失败，使用默认分页加载数据
           await loadPracticeData(1, 10);
@@ -125,7 +121,7 @@ function PracticePageContent() {
 
       initializePracticeData();
     }
-  }, [languageId, categoryId, loadPracticeData]);
+  }, [languageId, categoryId, loadPracticeData, currentPage, pageSize]);
 
   /**
    * 预加载下一批数据
@@ -160,8 +156,6 @@ function PracticePageContent() {
     if (currentWordIndex < words.length - 1) {
       const nextIndex = currentWordIndex + 1;
       setCurrentWordIndex(nextIndex);
-      setGlobalWordIndex(prev => prev + 1); // 更新全局索引
-
       // 当接近数据末尾时触发预加载
       if (nextIndex >= words.length - 3) {
         preloadNextBatch();
@@ -175,7 +169,6 @@ function PracticePageContent() {
   const handlePrevWordInternal = useCallback(() => {
     if (currentWordIndex > 0) {
       setCurrentWordIndex(currentWordIndex - 1);
-      setGlobalWordIndex(prev => prev - 1); // 更新全局索引
     }
   }, [currentWordIndex]);
 
@@ -231,7 +224,7 @@ function PracticePageContent() {
           <div
             className='bg-purple-500 h-1 rounded-full transition-all duration-300'
             style={{
-              width: `${((globalWordIndex + currentWordIndex + 1) / total) * 100}%`
+              width: `${(((currentPage - 1) * pageSize + currentWordIndex + 1) / total) * 100}%`
             }}
           />
         </div>
@@ -241,7 +234,7 @@ function PracticePageContent() {
             <span>
               {words?.[currentWordIndex]?.language.name} -
               {words?.[currentWordIndex]?.category.name} (
-              {globalWordIndex + currentWordIndex + 1} / {total})
+              {(currentPage - 1) * pageSize + currentWordIndex + 1} / {total})
             </span>
           </div>
           {/* 功能区域 */}

@@ -27,6 +27,10 @@ import {
   WordErrorRecordListResponseDto
 } from './dto/word-error-record-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ApiPaginationResponse } from '@/common/decorators/api-response.decorator';
+import { CategoryWithErrorsDto } from './dto/category-with-errors.dto';
+import { PaginationResponseDto } from '@/common/dto/api-response.dto';
+import { NoCache } from '@/common/decorators/no-cache.decorator';
 
 @ApiTags('错词记录管理')
 @ApiBearerAuth()
@@ -75,10 +79,19 @@ export class WordErrorRecordsController {
 
   @Get('categories')
   @ApiOperation({ summary: '获取有错词的分类列表' })
-  @ApiResponse({ status: 200, description: '成功获取分类错词统计' })
-  async getCategoriesWithErrors(@Request() req: any) {
+  @ApiPaginationResponse<CategoryWithErrorsDto>(CategoryWithErrorsDto, {
+    description: '成功获取分类错词统计'
+  })
+  @NoCache()
+  async getCategoriesWithErrors(
+    @Request() req: any,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number
+  ): Promise<PaginationResponseDto<CategoryWithErrorsDto>> {
     return this.wordErrorRecordsService.getCategoriesWithErrors(
-      req.user.id.toString()
+      req.user.id.toString(),
+      page,
+      pageSize
     );
   }
 
@@ -93,39 +106,45 @@ export class WordErrorRecordsController {
 
   @Get('unpracticed')
   @ApiOperation({ summary: '获取未练习的错词记录（用于练习模式）' })
-  @ApiResponse({
-    status: 200,
-    description: '成功获取未练习的错词记录',
-    type: [WordErrorRecordResponseDto]
-  })
+  @ApiPaginationResponse<WordErrorRecordResponseDto>(
+    WordErrorRecordResponseDto,
+    {
+      description: '成功获取未练习的错词记录'
+    }
+  )
   async getUnPracticedErrorRecords(
     @Request() req: any,
     @Query('categoryId') categoryId?: string,
-    @Query('limit') limit?: number
-  ): Promise<WordErrorRecordResponseDto[]> {
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number
+  ): Promise<PaginationResponseDto<WordErrorRecordResponseDto>> {
     return this.wordErrorRecordsService.getUnPracticedErrorRecords(
       req.user.id.toString(),
       categoryId,
-      limit || 20
+      page,
+      pageSize
     );
   }
 
   @Get('category/:categoryId')
   @ApiOperation({ summary: '按分类获取错词记录' })
-  @ApiResponse({
-    status: 200,
-    description: '成功获取分类错词记录',
-    type: WordErrorRecordListResponseDto
-  })
+  @ApiPaginationResponse<WordErrorRecordResponseDto>(
+    WordErrorRecordResponseDto,
+    {
+      description: '成功获取分类错词记录'
+    }
+  )
   async getErrorRecordsByCategory(
     @Param('categoryId') categoryId: string,
-    @Query() queryDto: QueryWordErrorRecordDto,
-    @Request() req: any
-  ): Promise<WordErrorRecordListResponseDto> {
+    @Request() req: any,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number
+  ): Promise<PaginationResponseDto<WordErrorRecordResponseDto>> {
     return this.wordErrorRecordsService.getErrorRecordsByCategory(
       req.user.id.toString(),
       categoryId,
-      queryDto
+      page,
+      pageSize
     );
   }
 

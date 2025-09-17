@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { WordErrorRecord } from '../entities/word-error-record.entity';
+import { Word } from '@/modules/words/entities/word.entity';
+import { CorpusCategory } from '@/modules/corpus-categories/entities/corpus-category.entity';
+import { Language } from '@/modules/languages/entities/language.entity';
 
 export class WordErrorRecordResponseDto {
   @ApiProperty({ description: '错词记录 ID', example: '1' })
@@ -46,10 +49,13 @@ export class WordErrorRecordResponseDto {
   updatedAt: Date;
 
   @ApiProperty({ description: '单词信息' })
-  word: any;
+  word: Word;
 
   @ApiProperty({ description: '分类信息' })
-  category: any;
+  category: CorpusCategory;
+
+  @ApiProperty({ description: '语言信息' })
+  language: Language;
 
   constructor(record: WordErrorRecord) {
     this.id = record.id;
@@ -67,6 +73,7 @@ export class WordErrorRecordResponseDto {
     this.updatedAt = record.updatedAt;
     this.word = record.word;
     this.category = record.category;
+    this.language = record.category?.language;
   }
 }
 

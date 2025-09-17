@@ -950,11 +950,15 @@ export interface WordErrorRecordResponseDto {
   /**
    * 单词信息
    */
-  word: object;
+  word: Word;
   /**
    * 分类信息
    */
-  category: object;
+  category: CorpusCategory;
+  /**
+   * 语言信息
+   */
+  language: Language;
 }
 export interface WordErrorRecordListResponseDto {
   /**
@@ -977,6 +981,44 @@ export interface WordErrorRecordListResponseDto {
    * 总页数
    */
   totalPages: number;
+}
+export interface CategoryWithErrorsDto {
+  /**
+   * 分类 ID
+   */
+  id: string;
+  /**
+   * 分类名称
+   */
+  name: string;
+  /**
+   * 分类描述
+   */
+  description: string;
+  /**
+   * 难度等级
+   */
+  difficulty: number;
+  /**
+   * 语言 ID
+   */
+  languageId: string;
+  /**
+   * 语言名称
+   */
+  languageName: string;
+  /**
+   * 错误次数总计
+   */
+  errorCount: number;
+  /**
+   * 错词数量
+   */
+  wordCount: number;
+  /**
+   * 未练习的错词数量
+   */
+  unPracticedCount: number;
 }
 declare global {
   interface Apis {
@@ -11907,9 +11949,152 @@ declare global {
        *   // 更新时间
        *   updatedAt: string
        *   // 单词信息
-       *   word: object
+       *   word: {
+       *     // 单词 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
        *   // 分类信息
-       *   category: object
+       *   category: {
+       *     // 分类 ID
+       *     id: string
+       *     // 对应语言 ID
+       *     languageId: string
+       *     // 分类名称（旅游、商务、日常会话）
+       *     name: string
+       *     // 分类描述
+       *     description?: string
+       *     // 难度等级（1-5）
+       *     difficulty: number
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *     // 关联的语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }
+       *   // 语言信息
+       *   language: {
+       *     // 语言 ID
+       *     id: number
+       *     // 语言名称（English, 日本語, Français）
+       *     name: string
+       *     // 语言代码（en, ja, fr）
+       *     code: string
+       *     // 文字体系（Latin, Kanji, Cyrillic）
+       *     script: string
+       *     // 是否启用
+       *     isActive: boolean
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *   }
        * }
        * ```
        */
@@ -11989,9 +12174,152 @@ declare global {
        *     // 更新时间
        *     updatedAt: string
        *     // 单词信息
-       *     word: object
+       *     word: {
+       *       // 单词 ID
+       *       id: string
+       *       // 所属语言 ID
+       *       languageId: string
+       *       // 所属分类 ID
+       *       categoryId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 所属分类
+       *       category: {
+       *         // 分类 ID
+       *         id: string
+       *         // 对应语言 ID
+       *         languageId: string
+       *         // 分类名称（旅游、商务、日常会话）
+       *         name: string
+       *         // 分类描述
+       *         description?: string
+       *         // 难度等级（1-5）
+       *         difficulty: number
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *         // 关联的语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *       }
+       *     }
        *     // 分类信息
-       *     category: object
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *     // 语言信息
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
        *   }>
        *   // 总数量
        *   total: number
@@ -12053,17 +12381,145 @@ declare global {
        *
        * ---
        *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   page: number
+       *   pageSize: number
+       * }
+       * ```
+       *
+       * ---
+       *
        * **Response**
        * ```ts
-       * type Response = null
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 分类 ID
+       *       id: string
+       *       // 分类名称
+       *       name: string
+       *       // 分类描述
+       *       description: string
+       *       // 难度等级
+       *       difficulty: number
+       *       // 语言 ID
+       *       languageId: string
+       *       // 语言名称
+       *       languageName: string
+       *       // 错误次数总计
+       *       errorCount: number
+       *       // 错词数量
+       *       wordCount: number
+       *       // 未练习的错词数量
+       *       unPracticedCount: number
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
        * ```
        */
       WordErrorRecordsController_getCategoriesWithErrors<
-        Config extends Alova2MethodConfig<null>
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CategoryWithErrorsDto[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          params: {
+            page: number;
+            pageSize: number;
+          };
+        }
       >(
-        config?: Config
+        config: Config
       ): Alova2Method<
-        null,
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CategoryWithErrorsDto[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
         'general.WordErrorRecordsController_getCategoriesWithErrors',
         Config
       >;
@@ -12103,7 +12559,8 @@ declare global {
        * ```ts
        * type QueryParameters = {
        *   categoryId: string
-       *   limit: number
+       *   page: number
+       *   pageSize: number
        * }
        * ```
        *
@@ -12111,51 +12568,289 @@ declare global {
        *
        * **Response**
        * ```ts
-       * type Response = Array<{
-       *   // 错词记录 ID
-       *   id: string
-       *   // 用户 ID
-       *   userId: string
-       *   // 单词 ID
-       *   wordId: string
-       *   // 分类 ID
-       *   categoryId: string
-       *   // 语言 ID
-       *   languageId: string
-       *   // 错误次数
-       *   errorCount: number
-       *   // 最后错误时间
-       *   lastErrorTime: string
-       *   // 首次错误时间
-       *   firstErrorTime: string
-       *   // 是否已练习过
-       *   isPracticed: boolean
-       *   // 练习次数
-       *   practiceCount: number
-       *   // 最后练习时间
-       *   lastPracticeTime?: string
-       *   // 创建时间
-       *   createdAt: string
-       *   // 更新时间
-       *   updatedAt: string
-       *   // 单词信息
-       *   word: object
-       *   // 分类信息
-       *   category: object
-       * }>
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 错词记录 ID
+       *       id: string
+       *       // 用户 ID
+       *       userId: string
+       *       // 单词 ID
+       *       wordId: string
+       *       // 分类 ID
+       *       categoryId: string
+       *       // 语言 ID
+       *       languageId: string
+       *       // 错误次数
+       *       errorCount: number
+       *       // 最后错误时间
+       *       lastErrorTime: string
+       *       // 首次错误时间
+       *       firstErrorTime: string
+       *       // 是否已练习过
+       *       isPracticed: boolean
+       *       // 练习次数
+       *       practiceCount: number
+       *       // 最后练习时间
+       *       lastPracticeTime?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 单词信息
+       *       word: {
+       *         // 单词 ID
+       *         id: string
+       *         // 所属语言 ID
+       *         languageId: string
+       *         // 所属分类 ID
+       *         categoryId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 所属分类
+       *         category: {
+       *           // 分类 ID
+       *           id: string
+       *           // 对应语言 ID
+       *           languageId: string
+       *           // 分类名称（旅游、商务、日常会话）
+       *           name: string
+       *           // 分类描述
+       *           description?: string
+       *           // 难度等级（1-5）
+       *           difficulty: number
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *           // 关联的语言
+       *           language: {
+       *             // 语言 ID
+       *             id: number
+       *             // 语言名称（English, 日本語, Français）
+       *             name: string
+       *             // 语言代码（en, ja, fr）
+       *             code: string
+       *             // 文字体系（Latin, Kanji, Cyrillic）
+       *             script: string
+       *             // 是否启用
+       *             isActive: boolean
+       *             // 创建时间
+       *             createTime: string
+       *             // 更新时间
+       *             updateTime: string
+       *             // 删除时间
+       *             deleteTime?: string
+       *           }
+       *         }
+       *       }
+       *       // 分类信息
+       *       category: {
+       *         // 分类 ID
+       *         id: string
+       *         // 对应语言 ID
+       *         languageId: string
+       *         // 分类名称（旅游、商务、日常会话）
+       *         name: string
+       *         // 分类描述
+       *         description?: string
+       *         // 难度等级（1-5）
+       *         difficulty: number
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *         // 关联的语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *       }
+       *       // 语言信息
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
        * ```
        */
       WordErrorRecordsController_getUnPracticedErrorRecords<
-        Config extends Alova2MethodConfig<WordErrorRecordResponseDto[]> & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorRecordResponseDto[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           params: {
             categoryId: string;
-            limit: number;
+            page: number;
+            pageSize: number;
           };
         }
       >(
         config: Config
       ): Alova2Method<
-        WordErrorRecordResponseDto[],
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorRecordResponseDto[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
         'general.WordErrorRecordsController_getUnPracticedErrorRecords',
         Config
       >;
@@ -12180,20 +12875,8 @@ declare global {
        * **Query Parameters**
        * ```ts
        * type QueryParameters = {
-       *   // 分类 ID
-       *   categoryId?: string
-       *   // 语言 ID
-       *   languageId?: string
-       *   // 是否已练习过
-       *   isPracticed?: boolean
-       *   // 页码
-       *   page?: number
-       *   // 每页数量
-       *   pageSize?: number
-       *   // 排序字段
-       *   sortBy?: string
-       *   // 排序方向
-       *   sortOrder?: 'ASC' | 'DESC'
+       *   page: number
+       *   pageSize: number
        * }
        * ```
        *
@@ -12202,92 +12885,290 @@ declare global {
        * **Response**
        * ```ts
        * type Response = {
-       *   // 错词记录列表
-       *   // [items] start
-       *   // [items] end
-       *   list: Array<{
-       *     // 错词记录 ID
-       *     id: string
-       *     // 用户 ID
-       *     userId: string
-       *     // 单词 ID
-       *     wordId: string
-       *     // 分类 ID
-       *     categoryId: string
-       *     // 语言 ID
-       *     languageId: string
-       *     // 错误次数
-       *     errorCount: number
-       *     // 最后错误时间
-       *     lastErrorTime: string
-       *     // 首次错误时间
-       *     firstErrorTime: string
-       *     // 是否已练习过
-       *     isPracticed: boolean
-       *     // 练习次数
-       *     practiceCount: number
-       *     // 最后练习时间
-       *     lastPracticeTime?: string
-       *     // 创建时间
-       *     createdAt: string
-       *     // 更新时间
-       *     updatedAt: string
-       *     // 单词信息
-       *     word: object
-       *     // 分类信息
-       *     category: object
-       *   }>
-       *   // 总数量
-       *   total: number
-       *   // 当前页码
-       *   page: number
-       *   // 每页数量
-       *   pageSize: number
-       *   // 总页数
-       *   totalPages: number
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 错词记录 ID
+       *       id: string
+       *       // 用户 ID
+       *       userId: string
+       *       // 单词 ID
+       *       wordId: string
+       *       // 分类 ID
+       *       categoryId: string
+       *       // 语言 ID
+       *       languageId: string
+       *       // 错误次数
+       *       errorCount: number
+       *       // 最后错误时间
+       *       lastErrorTime: string
+       *       // 首次错误时间
+       *       firstErrorTime: string
+       *       // 是否已练习过
+       *       isPracticed: boolean
+       *       // 练习次数
+       *       practiceCount: number
+       *       // 最后练习时间
+       *       lastPracticeTime?: string
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 单词信息
+       *       word: {
+       *         // 单词 ID
+       *         id: string
+       *         // 所属语言 ID
+       *         languageId: string
+       *         // 所属分类 ID
+       *         categoryId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 所属分类
+       *         category: {
+       *           // 分类 ID
+       *           id: string
+       *           // 对应语言 ID
+       *           languageId: string
+       *           // 分类名称（旅游、商务、日常会话）
+       *           name: string
+       *           // 分类描述
+       *           description?: string
+       *           // 难度等级（1-5）
+       *           difficulty: number
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *           // 关联的语言
+       *           language: {
+       *             // 语言 ID
+       *             id: number
+       *             // 语言名称（English, 日本語, Français）
+       *             name: string
+       *             // 语言代码（en, ja, fr）
+       *             code: string
+       *             // 文字体系（Latin, Kanji, Cyrillic）
+       *             script: string
+       *             // 是否启用
+       *             isActive: boolean
+       *             // 创建时间
+       *             createTime: string
+       *             // 更新时间
+       *             updateTime: string
+       *             // 删除时间
+       *             deleteTime?: string
+       *           }
+       *         }
+       *       }
+       *       // 分类信息
+       *       category: {
+       *         // 分类 ID
+       *         id: string
+       *         // 对应语言 ID
+       *         languageId: string
+       *         // 分类名称（旅游、商务、日常会话）
+       *         name: string
+       *         // 分类描述
+       *         description?: string
+       *         // 难度等级（1-5）
+       *         difficulty: number
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *         // 关联的语言
+       *         language: {
+       *           // 语言 ID
+       *           id: number
+       *           // 语言名称（English, 日本語, Français）
+       *           name: string
+       *           // 语言代码（en, ja, fr）
+       *           code: string
+       *           // 文字体系（Latin, Kanji, Cyrillic）
+       *           script: string
+       *           // 是否启用
+       *           isActive: boolean
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *       }
+       *       // 语言信息
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
        * }
        * ```
        */
       WordErrorRecordsController_getErrorRecordsByCategory<
-        Config extends Alova2MethodConfig<WordErrorRecordListResponseDto> & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorRecordResponseDto[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           pathParams: {
             categoryId: string;
           };
           params: {
-            /**
-             * 分类 ID
-             */
-            categoryId?: string;
-            /**
-             * 语言 ID
-             */
-            languageId?: string;
-            /**
-             * 是否已练习过
-             */
-            isPracticed?: boolean;
-            /**
-             * 页码
-             */
-            page?: number;
-            /**
-             * 每页数量
-             */
-            pageSize?: number;
-            /**
-             * 排序字段
-             */
-            sortBy?: string;
-            /**
-             * 排序方向
-             */
-            sortOrder?: 'ASC' | 'DESC';
+            page: number;
+            pageSize: number;
           };
         }
       >(
         config: Config
       ): Alova2Method<
-        WordErrorRecordListResponseDto,
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: WordErrorRecordResponseDto[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
         'general.WordErrorRecordsController_getErrorRecordsByCategory',
         Config
       >;
@@ -12339,9 +13220,152 @@ declare global {
        *   // 更新时间
        *   updatedAt: string
        *   // 单词信息
-       *   word: object
+       *   word: {
+       *     // 单词 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
        *   // 分类信息
-       *   category: object
+       *   category: {
+       *     // 分类 ID
+       *     id: string
+       *     // 对应语言 ID
+       *     languageId: string
+       *     // 分类名称（旅游、商务、日常会话）
+       *     name: string
+       *     // 分类描述
+       *     description?: string
+       *     // 难度等级（1-5）
+       *     difficulty: number
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *     // 关联的语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }
+       *   // 语言信息
+       *   language: {
+       *     // 语言 ID
+       *     id: number
+       *     // 语言名称（English, 日本語, Français）
+       *     name: string
+       *     // 语言代码（en, ja, fr）
+       *     code: string
+       *     // 文字体系（Latin, Kanji, Cyrillic）
+       *     script: string
+       *     // 是否启用
+       *     isActive: boolean
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *   }
        * }
        * ```
        */

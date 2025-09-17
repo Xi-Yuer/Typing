@@ -14,6 +14,8 @@ import {
   WordErrorRecordResponseDto,
   WordErrorRecordListResponseDto
 } from './dto/word-error-record-response.dto';
+import { CategoryWithErrorsDto } from './dto/category-with-errors.dto';
+import { PaginationResponseDto } from '@/common/dto/api-response.dto';
 
 @Injectable()
 export class WordErrorRecordsService {
@@ -147,29 +149,31 @@ export class WordErrorRecordsService {
   /**
    * 获取用户有错词的分类列表
    */
-  async getCategoriesWithErrors(userId: string): Promise<
-    Array<{
-      categoryId: string;
-      categoryName: string;
-      categoryDescription: string;
-      difficulty: number;
-      languageId: string;
-      languageName: string;
-      errorCount: number;
-      wordCount: number;
-      unPracticedCount: number;
-    }>
-  > {
+  async getCategoriesWithErrors(
+    userId: string,
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<PaginationResponseDto<CategoryWithErrorsDto>> {
+    // 查询总数 - 使用 INNER JOIN 确保分类存在
+    const totalQuery = this.wordErrorRecordRepository
+      .createQueryBuilder('record')
+      .innerJoin('record.category', 'category')
+      .select('COUNT(DISTINCT record.categoryId)', 'total')
+      .where('record.userId = :userId', { userId });
+
+    const { total } = await totalQuery.getRawOne();
+
+    // 查询分页数据 - 使用 INNER JOIN 确保分类和语言都存在
     const categoriesWithErrors = await this.wordErrorRecordRepository
       .createQueryBuilder('record')
-      .leftJoin('record.category', 'category')
-      .leftJoin('category.language', 'language')
+      .innerJoin('record.category', 'category')
+      .innerJoin('category.language', 'language')
       .select([
         'record.categoryId as categoryId',
         'category.name as categoryName',
         'category.description as categoryDescription',
         'category.difficulty as difficulty',
-        'record.languageId as languageId',
+        'category.languageId as languageId',
         'language.name as languageName',
         'SUM(record.errorCount) as errorCount',
         'COUNT(DISTINCT record.wordId) as wordCount',
@@ -177,22 +181,24 @@ export class WordErrorRecordsService {
       ])
       .where('record.userId = :userId', { userId })
       .groupBy(
-        'record.categoryId, category.name, category.description, category.difficulty, record.languageId, language.name'
+        'record.categoryId, category.name, category.description, category.difficulty, category.languageId, language.name'
       )
       .orderBy('errorCount', 'DESC')
+      .offset((page - 1) * pageSize)
+      .limit(pageSize)
       .getRawMany();
 
-    return categoriesWithErrors.map(cat => ({
-      categoryId: cat.categoryId,
-      categoryName: cat.categoryName,
-      categoryDescription: cat.categoryDescription,
-      difficulty: parseInt(cat.difficulty),
-      languageId: cat.languageId,
-      languageName: cat.languageName,
-      errorCount: parseInt(cat.errorCount),
-      wordCount: parseInt(cat.wordCount),
-      unPracticedCount: parseInt(cat.unPracticedCount)
-    }));
+    // 转换为 DTO 对象
+    const categoryDtos = categoriesWithErrors.map(
+      data => new CategoryWithErrorsDto(data)
+    );
+
+    return new PaginationResponseDto<CategoryWithErrorsDto>(
+      categoryDtos,
+      parseInt(total),
+      page,
+      pageSize
+    );
   }
 
   /**
@@ -201,15 +207,33 @@ export class WordErrorRecordsService {
   async getErrorRecordsByCategory(
     userId: string,
     categoryId: string,
-    queryDto?: Partial<QueryWordErrorRecordDto>
-  ): Promise<WordErrorRecordListResponseDto> {
-    const queryWithCategory = {
-      ...queryDto,
-      categoryId
-    };
-    return this.getUserErrorRecords(
-      userId,
-      queryWithCategory as QueryWordErrorRecordDto
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<PaginationResponseDto<WordErrorRecordResponseDto>> {
+    const result = await this.wordErrorRecordRepository.find({
+      where: {
+        userId,
+        categoryId
+      },
+      relations: ['word', 'category', 'category.language'],
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      order: {
+        errorCount: 'DESC',
+        lastErrorTime: 'DESC'
+      }
+    });
+    const total = await this.wordErrorRecordRepository.count({
+      where: {
+        userId,
+        categoryId
+      }
+    });
+    return new PaginationResponseDto<WordErrorRecordResponseDto>(
+      result.map(record => new WordErrorRecordResponseDto(record)),
+      total,
+      page,
+      pageSize
     );
   }
 
@@ -219,8 +243,9 @@ export class WordErrorRecordsService {
   async getUnPracticedErrorRecords(
     userId: string,
     categoryId?: string,
-    limit: number = 20
-  ): Promise<WordErrorRecordResponseDto[]> {
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<PaginationResponseDto<WordErrorRecordResponseDto>> {
     const queryBuilder = this.wordErrorRecordRepository
       .createQueryBuilder('record')
       .leftJoinAndSelect('record.word', 'word')
@@ -235,10 +260,17 @@ export class WordErrorRecordsService {
     queryBuilder
       .orderBy('record.errorCount', 'DESC')
       .addOrderBy('record.lastErrorTime', 'DESC')
-      .limit(limit);
+      .limit(pageSize)
+      .offset((page - 1) * pageSize);
 
     const records = await queryBuilder.getMany();
-    return records.map(record => new WordErrorRecordResponseDto(record));
+    const total = await queryBuilder.getCount();
+    return new PaginationResponseDto<WordErrorRecordResponseDto>(
+      records.map(record => new WordErrorRecordResponseDto(record)),
+      total,
+      page,
+      pageSize
+    );
   }
 
   /**
@@ -321,7 +353,7 @@ export class WordErrorRecordsService {
   ): Promise<WordErrorRecordResponseDto> {
     const record = await this.wordErrorRecordRepository.findOne({
       where: { userId, wordId },
-      relations: ['word', 'category']
+      relations: ['word', 'category', 'category.language']
     });
 
     if (!record) {
@@ -374,7 +406,7 @@ export class WordErrorRecordsService {
   ): Promise<WordErrorRecordResponseDto> {
     const record = await this.wordErrorRecordRepository.findOne({
       where: { userId, wordId },
-      relations: ['word', 'category']
+      relations: ['word', 'category', 'category.language']
     });
 
     if (!record) {

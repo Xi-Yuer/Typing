@@ -405,4 +405,24 @@ export class RedisService {
   async zcard(key: string): Promise<number> {
     return await this.redis.zcard(key);
   }
+
+  /**
+   * 有序集合操作 - 增加成员分数并设置过期时间
+   * @param key 有序集合键
+   * @param member 成员
+   * @param score 分数
+   * @param ttl 过期时间（秒）
+   * @returns 增加的分数
+   */
+  async zincrbyWithExpire(
+    key: string,
+    score: number,
+    member: string,
+    ttl: number
+  ): Promise<string> {
+    const result = await this.redis.zincrby(key, score, member);
+    // 设置过期时间，如果键不存在则不会设置
+    await this.redis.expire(key, ttl);
+    return result;
+  }
 }

@@ -79,3 +79,45 @@ export const createWordErrorRecord = (
     }
   });
 };
+
+// 获取单词排行榜
+export const getWordRanking = (
+  type: 'total' | 'daily' | 'weekly',
+  limit: number
+) => {
+  return Apis.general.WordsController_getRanking({
+    params: {
+      type,
+      limit
+    }
+  });
+};
+
+// 获取用户错词记录分类列表
+export const getUserErrorRecordsCategories = (
+  page: number = 1,
+  pageSize: number = 10
+) => {
+  return Apis.general.WordErrorRecordsController_getCategoriesWithErrors({
+    params: {
+      page,
+      pageSize
+    }
+  });
+};
+// 获取用户错词记录列表
+export const getUserErrorRecordsByCategoryList = (
+  categoryId: string,
+  page: number = 1,
+  pageSize: number = 10
+) => {
+  return Apis.general.WordErrorRecordsController_getErrorRecordsByCategory({
+    pathParams: {
+      categoryId
+    },
+    params: {
+      page,
+      pageSize
+    }
+  });
+};

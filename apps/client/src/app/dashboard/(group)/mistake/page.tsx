@@ -1,3 +1,92 @@
+'use client';
+import { getUserErrorRecordsCategories } from '@/api';
+import { useEffect, useState } from 'react';
+import { CategoryWithErrorsDto } from '@/request/globals';
+import { getDifficultyStyle } from '@/utils';
+import { useGameModeContext } from '@/contexts/GameModeContext';
+import GameModeModal from '@/components/GameModeModal';
+import { useRouter } from 'next/navigation';
 export default function Mistake() {
-  return <div>Mistake</div>;
+  const router = useRouter();
+  const [categories, setCategories] = useState<CategoryWithErrorsDto[]>([]);
+  const [currentCategory, setCurrentCategory] =
+    useState<CategoryWithErrorsDto | null>(null);
+  const {
+    openModeModal,
+    isModalOpen,
+    closeModeModal,
+    currentMode,
+    changeMode
+  } = useGameModeContext();
+
+  useEffect(() => {
+    getUserErrorRecordsCategories(1, 100).then(res => {
+      setCategories(res.data.list);
+    });
+  }, []);
+
+  return (
+    <div className='grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+      {categories.map(category => {
+        const difficultyStyle = getDifficultyStyle(category.difficulty);
+
+        return (
+          <div
+            key={category.id}
+            className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'
+          >
+            {/* 右上角难度标签 */}
+            <div
+              className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${
+                difficultyStyle.bg
+              } ${difficultyStyle.text} ${difficultyStyle.border} border`}
+            >
+              {difficultyStyle.label}
+            </div>
+
+            {/* 标题 */}
+            <h3 className='text-lg font-semibold text-white mb-2 pr-16'>
+              {category.name}
+            </h3>
+
+            <p className='text-gray-300 text-sm mb-4'>{category.description}</p>
+            <span
+              className='flex items-center text-purple-400'
+              onClick={() => {
+                setCurrentCategory(category);
+                openModeModal();
+              }}
+            >
+              <span className='text-sm'>开始练习</span>
+              <svg
+                className='w-4 h-4 ml-2'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M9 5l7 7-7 7'
+                />
+              </svg>
+            </span>
+          </div>
+        );
+      })}
+      {/* 游戏模式选择弹窗 */}
+      <GameModeModal
+        isOpen={isModalOpen}
+        onClose={closeModeModal}
+        currentMode={currentMode}
+        onModeChange={mode => {
+          router.push(
+            `/mistake?categoryId=${currentCategory?.id}&languageId=${currentCategory?.languageId}`
+          );
+          changeMode(mode);
+        }}
+      />
+    </div>
+  );
 }

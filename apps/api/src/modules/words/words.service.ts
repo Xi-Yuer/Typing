@@ -406,8 +406,20 @@ export class WordsService {
 
     // 更新排行榜分数
     await this.redisService.zincrby(`rank:total`, 1, `user:${userId}`);
-    await this.redisService.zincrby(`rank:daily`, 1, `user:${userId}`);
-    await this.redisService.zincrby(`rank:weekly`, 1, `user:${userId}`);
+    // 日榜：24小时过期（86400秒）
+    await this.redisService.zincrbyWithExpire(
+      `rank:daily`,
+      1,
+      `user:${userId}`,
+      24 * 60 * 60
+    );
+    // 周榜：7天过期（604800秒）
+    await this.redisService.zincrbyWithExpire(
+      `rank:weekly`,
+      1,
+      `user:${userId}`,
+      7 * 24 * 60 * 60
+    );
 
     return 'success';
   }

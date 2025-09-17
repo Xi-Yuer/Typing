@@ -58,6 +58,30 @@ export const getWordsClassNames = (word: WordState): string => {
 };
 
 /**
+ * 防抖函数
+ * @param func 要防抖的函数
+ * @param delay 延迟时间（毫秒）
+ * @returns 防抖后的函数
+ */
+export const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  delay: number
+): ((...args: Parameters<T>) => void) => {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  return (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func(...args);
+      timeoutId = null;
+    }, delay);
+  };
+};
+
+/**
  * 根据难度等级获取对应的样式
  * @param difficulty 难度等级
  * @returns 样式对象
