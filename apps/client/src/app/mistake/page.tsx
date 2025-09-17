@@ -13,6 +13,7 @@ import {
   correctWord,
   createWordErrorRecord,
   getUserErrorRecordsByCategoryList,
+  markWordErrorRecordAsPracticed,
   reportWordError
 } from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
@@ -136,7 +137,8 @@ function PracticePageContent() {
   const handleWordComplete = useCallback(
     async (_isCorrect: boolean) => {
       if (_isCorrect) {
-        await correctWord(words[currentWordIndex].id);
+        correctWord(words[currentWordIndex].id); // 正确单词
+        markWordErrorRecordAsPracticed(words[currentWordIndex].id); // 标记错词记录为已练习
       } else {
         // 记录错误
         await createWordErrorRecord(

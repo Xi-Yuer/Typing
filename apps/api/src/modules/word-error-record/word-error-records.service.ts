@@ -16,6 +16,7 @@ import {
 } from './dto/word-error-record-response.dto';
 import { CategoryWithErrorsDto } from './dto/category-with-errors.dto';
 import { PaginationResponseDto } from '@/common/dto/api-response.dto';
+import { WordErrorStatisticsDto } from './dto/word-error-statistics.dto';
 
 @Injectable()
 export class WordErrorRecordsService {
@@ -276,21 +277,7 @@ export class WordErrorRecordsService {
   /**
    * 获取错词统计信息
    */
-  async getErrorStatistics(userId: string): Promise<{
-    totalErrors: number;
-    categoryStats: Array<{
-      categoryId: string;
-      categoryName: string;
-      errorCount: number;
-      wordCount: number;
-    }>;
-    languageStats: Array<{
-      languageId: string;
-      languageName: string;
-      errorCount: number;
-      wordCount: number;
-    }>;
-  }> {
+  async getErrorStatistics(userId: string): Promise<WordErrorStatisticsDto> {
     // 获取总错误数
     const totalErrors = await this.wordErrorRecordRepository
       .createQueryBuilder('record')

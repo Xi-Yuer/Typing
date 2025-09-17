@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <DisplayHeader activeItem='/dashboard' />
       <div className='flex h-screen w-full max-w-7xl mx-auto'>
         <Sidebar />
-        <div className='flex-1 mx-3 p-4 rounded-xl text-white bg-slate-900 border border-slate-700 h-full'>
+        <div className='flex-1 mx-3 p-4 rounded-xl text-white bg-slate-900 border border-slate-700 h-fit'>
           {children}
         </div>
       </div>

@@ -247,9 +247,17 @@ export default {
     'GET',
     '/api/word-error-records/{wordId}'
   ],
+  'general.WordErrorRecordsController_create': [
+    'POST',
+    '/api/word-error-records/{wordId}'
+  ],
   'general.WordErrorRecordsController_remove': [
     'DELETE',
     '/api/word-error-records/{wordId}'
+  ],
+  'general.WordErrorRecordsController_markAsPracticed': [
+    'POST',
+    '/api/word-error-records/practice/{wordId}'
   ],
   'general.WordErrorRecordsController_removeBatch': [
     'DELETE',

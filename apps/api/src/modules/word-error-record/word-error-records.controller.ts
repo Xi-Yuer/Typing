@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -27,10 +26,17 @@ import {
   WordErrorRecordListResponseDto
 } from './dto/word-error-record-response.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { ApiPaginationResponse } from '@/common/decorators/api-response.decorator';
+import {
+  ApiPaginationResponse,
+  ApiSuccessResponse
+} from '@/common/decorators/api-response.decorator';
 import { CategoryWithErrorsDto } from './dto/category-with-errors.dto';
 import { PaginationResponseDto } from '@/common/dto/api-response.dto';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
+import {
+  WordErrorStatisticsDto,
+  WordErrorStatisticsResponseDto
+} from './dto/word-error-statistics.dto';
 
 @ApiTags('错词记录管理')
 @ApiBearerAuth()
@@ -97,9 +103,14 @@ export class WordErrorRecordsController {
 
   @Get('statistics')
   @ApiOperation({ summary: '获取错词统计信息' })
-  @ApiResponse({ status: 200, description: '成功获取错词统计信息' })
-  async getErrorStatistics(@Request() req: any) {
-    return this.wordErrorRecordsService.getErrorStatistics(
+  @ApiSuccessResponse(WordErrorStatisticsResponseDto, {
+    description: '成功获取错词统计信息'
+  })
+  @NoCache()
+  async getErrorStatistics(
+    @Request() req: any
+  ): Promise<WordErrorStatisticsDto> {
+    return await this.wordErrorRecordsService.getErrorStatistics(
       req.user.id.toString()
     );
   }
@@ -163,7 +174,7 @@ export class WordErrorRecordsController {
     return this.wordErrorRecordsService.findOne(req.user.id.toString(), wordId);
   }
 
-  @Patch(':wordId/practice')
+  @Post('/practice/:wordId')
   @ApiOperation({ summary: '标记错词为已练习' })
   @ApiResponse({
     status: 200,
@@ -181,20 +192,20 @@ export class WordErrorRecordsController {
     );
   }
 
-  @Patch(':wordId')
-  @ApiOperation({ summary: '更新错词记录' })
+  @Post(':wordId')
+  @ApiOperation({ summary: '创建错词记录' })
   @ApiResponse({
     status: 200,
-    description: '成功更新错词记录',
+    description: '成功创建错词记录',
     type: WordErrorRecordResponseDto
   })
   @ApiResponse({ status: 404, description: '错词记录不存在' })
-  async update(
+  async create(
     @Param('wordId') wordId: string,
     @Body() updateWordErrorRecordDto: UpdateWordErrorRecordDto,
     @Request() req: any
   ): Promise<WordErrorRecordResponseDto> {
-    // 这里可以根据需要实现更新逻辑
+    // 这里可以根据需要实现创建逻辑
     // 目前主要使用 markAsPracticed 方法
     return this.wordErrorRecordsService.markAsPracticed(
       req.user.id.toString(),

@@ -493,6 +493,75 @@ export interface ReportStatsDto {
     count?: number;
   }>;
 }
+export interface CategoryStatDto {
+  /**
+   * 分类ID
+   */
+  categoryId: string;
+  /**
+   * 分类名称
+   */
+  categoryName: string;
+  /**
+   * 错误次数
+   */
+  errorCount: number;
+  /**
+   * 错误单词数
+   */
+  wordCount: number;
+}
+export interface LanguageStatDto {
+  /**
+   * 语言ID
+   */
+  languageId: string;
+  /**
+   * 语言名称
+   */
+  languageName: string;
+  /**
+   * 错误次数
+   */
+  errorCount: number;
+  /**
+   * 错误单词数
+   */
+  wordCount: number;
+}
+export interface WordErrorStatisticsDto {
+  /**
+   * 总错误次数
+   */
+  totalErrors: number;
+  categoryStats: CategoryStatDto[];
+  /**
+   * 语言统计
+   */
+  languageStats: LanguageStatDto[];
+}
+export interface WordErrorStatisticsResponseDto {
+  /**
+   * 状态码
+   */
+  code: number;
+  /**
+   * 响应消息
+   */
+  message: string;
+  /**
+   * 统计数据
+   */
+  data: WordErrorStatisticsDto;
+  /**
+   * 时间戳
+   */
+  timestamp: number;
+  /**
+   * 请求路径
+   */
+  path: string;
+}
 export interface UpdateLanguageDto {
   /**
    * 语言名称
@@ -578,6 +647,32 @@ export interface UpdateSentenceDto {
    * 句子音频 URL
    */
   audioUrl?: string;
+}
+export interface UpdateWordErrorRecordDto {
+  /**
+   * 单词 ID
+   */
+  wordId?: string;
+  /**
+   * 分类 ID
+   */
+  categoryId?: string;
+  /**
+   * 语言 ID
+   */
+  languageId?: string;
+  /**
+   * 错误次数
+   */
+  errorCount?: number;
+  /**
+   * 是否已练习过
+   */
+  isPracticed?: boolean;
+  /**
+   * 练习次数
+   */
+  practiceCount?: number;
 }
 export interface UserResponseDto {
   /**
@@ -12534,15 +12629,100 @@ declare global {
        *
        * **Response**
        * ```ts
-       * type Response = null
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 状态码
+       *     code: number
+       *     // 响应消息
+       *     message: string
+       *     // 统计数据
+       *     data: {
+       *       // 总错误次数
+       *       totalErrors: number
+       *       // [items] start
+       *       // [items] end
+       *       categoryStats: Array<{
+       *         // 分类ID
+       *         categoryId: string
+       *         // 分类名称
+       *         categoryName: string
+       *         // 错误次数
+       *         errorCount: number
+       *         // 错误单词数
+       *         wordCount: number
+       *       }>
+       *       // 语言统计
+       *       // [items] start
+       *       // [items] end
+       *       languageStats: Array<{
+       *         // 语言ID
+       *         languageId: string
+       *         // 语言名称
+       *         languageName: string
+       *         // 错误次数
+       *         errorCount: number
+       *         // 错误单词数
+       *         wordCount: number
+       *       }>
+       *     }
+       *     // 时间戳
+       *     timestamp: number
+       *     // 请求路径
+       *     path: string
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
        * ```
        */
       WordErrorRecordsController_getErrorStatistics<
-        Config extends Alova2MethodConfig<null>
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorStatisticsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
       >(
         config?: Config
       ): Alova2Method<
-        null,
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: WordErrorStatisticsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
         'general.WordErrorRecordsController_getErrorStatistics',
         Config
       >;
@@ -13385,6 +13565,237 @@ declare global {
       /**
        * ---
        *
+       * [POST] 创建错词记录
+       *
+       * **path:** /api/word-error-records/{wordId}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   wordId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 单词 ID
+       *   wordId?: string
+       *   // 分类 ID
+       *   categoryId?: string
+       *   // 语言 ID
+       *   languageId?: string
+       *   // 错误次数
+       *   errorCount?: number
+       *   // 是否已练习过
+       *   isPracticed?: boolean
+       *   // 练习次数
+       *   practiceCount?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 错词记录 ID
+       *   id: string
+       *   // 用户 ID
+       *   userId: string
+       *   // 单词 ID
+       *   wordId: string
+       *   // 分类 ID
+       *   categoryId: string
+       *   // 语言 ID
+       *   languageId: string
+       *   // 错误次数
+       *   errorCount: number
+       *   // 最后错误时间
+       *   lastErrorTime: string
+       *   // 首次错误时间
+       *   firstErrorTime: string
+       *   // 是否已练习过
+       *   isPracticed: boolean
+       *   // 练习次数
+       *   practiceCount: number
+       *   // 最后练习时间
+       *   lastPracticeTime?: string
+       *   // 创建时间
+       *   createdAt: string
+       *   // 更新时间
+       *   updatedAt: string
+       *   // 单词信息
+       *   word: {
+       *     // 单词 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
+       *   // 分类信息
+       *   category: {
+       *     // 分类 ID
+       *     id: string
+       *     // 对应语言 ID
+       *     languageId: string
+       *     // 分类名称（旅游、商务、日常会话）
+       *     name: string
+       *     // 分类描述
+       *     description?: string
+       *     // 难度等级（1-5）
+       *     difficulty: number
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *     // 关联的语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }
+       *   // 语言信息
+       *   language: {
+       *     // 语言 ID
+       *     id: number
+       *     // 语言名称（English, 日本語, Français）
+       *     name: string
+       *     // 语言代码（en, ja, fr）
+       *     code: string
+       *     // 文字体系（Latin, Kanji, Cyrillic）
+       *     script: string
+       *     // 是否启用
+       *     isActive: boolean
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *   }
+       * }
+       * ```
+       */
+      WordErrorRecordsController_create<
+        Config extends Alova2MethodConfig<WordErrorRecordResponseDto> & {
+          pathParams: {
+            wordId: string;
+          };
+          data: UpdateWordErrorRecordDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        WordErrorRecordResponseDto,
+        'general.WordErrorRecordsController_create',
+        Config
+      >;
+      /**
+       * ---
+       *
        * [DELETE] 删除错词记录
        *
        * **path:** /api/word-error-records/{wordId}
@@ -13416,6 +13827,216 @@ declare global {
       ): Alova2Method<
         null,
         'general.WordErrorRecordsController_remove',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 标记错词为已练习
+       *
+       * **path:** /api/word-error-records/practice/{wordId}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   wordId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 错词记录 ID
+       *   id: string
+       *   // 用户 ID
+       *   userId: string
+       *   // 单词 ID
+       *   wordId: string
+       *   // 分类 ID
+       *   categoryId: string
+       *   // 语言 ID
+       *   languageId: string
+       *   // 错误次数
+       *   errorCount: number
+       *   // 最后错误时间
+       *   lastErrorTime: string
+       *   // 首次错误时间
+       *   firstErrorTime: string
+       *   // 是否已练习过
+       *   isPracticed: boolean
+       *   // 练习次数
+       *   practiceCount: number
+       *   // 最后练习时间
+       *   lastPracticeTime?: string
+       *   // 创建时间
+       *   createdAt: string
+       *   // 更新时间
+       *   updatedAt: string
+       *   // 单词信息
+       *   word: {
+       *     // 单词 ID
+       *     id: string
+       *     // 所属语言 ID
+       *     languageId: string
+       *     // 所属分类 ID
+       *     categoryId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 所属分类
+       *     category: {
+       *       // 分类 ID
+       *       id: string
+       *       // 对应语言 ID
+       *       languageId: string
+       *       // 分类名称（旅游、商务、日常会话）
+       *       name: string
+       *       // 分类描述
+       *       description?: string
+       *       // 难度等级（1-5）
+       *       difficulty: number
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *       // 关联的语言
+       *       language: {
+       *         // 语言 ID
+       *         id: number
+       *         // 语言名称（English, 日本語, Français）
+       *         name: string
+       *         // 语言代码（en, ja, fr）
+       *         code: string
+       *         // 文字体系（Latin, Kanji, Cyrillic）
+       *         script: string
+       *         // 是否启用
+       *         isActive: boolean
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *     }
+       *   }
+       *   // 分类信息
+       *   category: {
+       *     // 分类 ID
+       *     id: string
+       *     // 对应语言 ID
+       *     languageId: string
+       *     // 分类名称（旅游、商务、日常会话）
+       *     name: string
+       *     // 分类描述
+       *     description?: string
+       *     // 难度等级（1-5）
+       *     difficulty: number
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *     // 关联的语言
+       *     language: {
+       *       // 语言 ID
+       *       id: number
+       *       // 语言名称（English, 日本語, Français）
+       *       name: string
+       *       // 语言代码（en, ja, fr）
+       *       code: string
+       *       // 文字体系（Latin, Kanji, Cyrillic）
+       *       script: string
+       *       // 是否启用
+       *       isActive: boolean
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *   }
+       *   // 语言信息
+       *   language: {
+       *     // 语言 ID
+       *     id: number
+       *     // 语言名称（English, 日本語, Français）
+       *     name: string
+       *     // 语言代码（en, ja, fr）
+       *     code: string
+       *     // 文字体系（Latin, Kanji, Cyrillic）
+       *     script: string
+       *     // 是否启用
+       *     isActive: boolean
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *     // 删除时间
+       *     deleteTime?: string
+       *   }
+       * }
+       * ```
+       */
+      WordErrorRecordsController_markAsPracticed<
+        Config extends Alova2MethodConfig<WordErrorRecordResponseDto> & {
+          pathParams: {
+            wordId: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        WordErrorRecordResponseDto,
+        'general.WordErrorRecordsController_markAsPracticed',
         Config
       >;
       /**

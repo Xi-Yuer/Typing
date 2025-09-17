@@ -119,12 +119,10 @@ export default function Rangking() {
       {ranking && !loading && (
         <div>
           {/* 完整排行榜 */}
-          <div className='bg-slate-800/30 rounded-lg shadow-xl border border-slate-600 backdrop-blur-sm'>
-            <div className='space-y-2'>
-              {ranking.rankings.map(item => (
-                <RankingItem key={item.userId} item={item} />
-              ))}
-            </div>
+          <div className='space-y-2'>
+            {ranking.rankings.map(item => (
+              <RankingItem key={item.userId} item={item} />
+            ))}
           </div>
         </div>
       )}

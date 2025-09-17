@@ -121,3 +121,17 @@ export const getUserErrorRecordsByCategoryList = (
     }
   });
 };
+
+// 标记错词记录为已练习
+export const markWordErrorRecordAsPracticed = (id: string) => {
+  return Apis.general.WordErrorRecordsController_markAsPracticed({
+    pathParams: {
+      wordId: id
+    }
+  });
+};
+
+// 获取错词统计信息
+export const getWordErrorStatistics = () => {
+  return Apis.general.WordErrorRecordsController_getErrorStatistics();
+};
