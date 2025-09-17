@@ -12,7 +12,6 @@ RUN npm install -g pnpm@10.7.0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
-COPY apps/admin/package.json ./apps/admin/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
@@ -50,7 +49,6 @@ RUN npm install -g pnpm@10.7.0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
-COPY apps/admin/package.json ./apps/admin/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 # 安装所有依赖
@@ -61,7 +59,6 @@ RUN --mount=type=cache,target=/root/.pnpm-store \
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/client/.next ./apps/client/.next
 COPY --from=builder /app/apps/client/public ./apps/client/public
-COPY --from=builder /app/apps/admin/dist ./apps/admin/dist
 COPY --from=builder /app/packages/common/dist ./packages/common/dist
 COPY --from=builder /app/packages/utils/dist ./packages/utils/dist
 
@@ -117,6 +114,7 @@ ENV BACKEND_PORT=3001
 ENV FRONTEND_PORT=3000
 ENV NEXT_PUBLIC_BASE_URL=/
 ENV VITE_API_URL=/
+ENV NEXT_PUBLIC_GITHUB_SSO_URL=http://backend/api/auth/github/callback
 ENV FRONTEND_URL=http://localhost
 ENV DB_HOST=mysql
 ENV DB_PORT=3306
