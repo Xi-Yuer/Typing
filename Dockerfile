@@ -12,6 +12,7 @@ RUN npm install -g pnpm@10.7.0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
+COPY apps/admin/package.json ./apps/admin/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
@@ -45,15 +46,16 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm@10.7.0
 
-# 复制 package.json 和 pnpm 相关文件
+# 复制必要的 package.json 和 lockfile（仅用于运行时）
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
-# 安装所有依赖
+
+# 安装生产依赖（仅运行时需要的依赖）
 RUN --mount=type=cache,target=/root/.pnpm-store \
-    pnpm install
+    pnpm install --prod --frozen-lockfile
 
 # 从构建阶段复制构建产物
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
