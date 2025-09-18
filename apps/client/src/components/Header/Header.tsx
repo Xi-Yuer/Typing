@@ -21,17 +21,22 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
 
   // 初始化时检查localStorage中的用户信息
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userInfo = localStorage.getItem('userInfo');
+    // 检查是否在浏览器环境中
+    if (typeof window === 'undefined') return;
 
-    if (token && userInfo) {
-      try {
+    try {
+      const token = localStorage.getItem('token');
+      const userInfo = localStorage.getItem('userInfo');
+
+      if (token && userInfo) {
         const parsedUser = JSON.parse(userInfo);
         setUser(parsedUser);
         setToken(token);
         setIsLoggedIn(true);
-      } catch {
-        // 如果解析失败，清除无效数据
+      }
+    } catch {
+      // 如果解析失败，清除无效数据
+      if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
         localStorage.removeItem('userInfo');
       }
@@ -59,20 +64,22 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
 
       // 检查响应结构
       if (!response || !response.data) {
-        throw new Error(response.data.message);
+        throw new Error(response?.data?.message || '响应数据格式错误');
       }
 
-      const { accessToken, user } = response.data;
+      // 后端返回的是统一响应格式，实际数据在 response.data 中
+      const authData = response.data;
+      const { accessToken, user } = authData;
 
       if (!accessToken || !user) {
-        throw new Error(response.data.message);
+        throw new Error(authData.message || '登录数据不完整');
       }
 
       // 保存token到localStorage
-      localStorage.setItem('token', accessToken);
-
-      // 保存用户信息到localStorage
-      localStorage.setItem('userInfo', JSON.stringify(user));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', accessToken);
+        localStorage.setItem('userInfo', JSON.stringify(user));
+      }
 
       // 更新状态
       setUser(user);
@@ -85,10 +92,19 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
       return response;
     } catch (error: any) {
       // 处理错误
-      const errorMessage =
-        error?.response?.data?.message ||
-        error?.message ||
-        (isLogin ? '登录失败' : '注册失败');
+      let errorMessage = isLogin ? '登录失败' : '注册失败';
+
+      if (error?.response?.data) {
+        // 检查是否是统一响应格式的错误
+        if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data.data?.message) {
+          errorMessage = error.response.data.data.message;
+        }
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
       messageApi.error(errorMessage);
       throw error;
     }
@@ -96,8 +112,10 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
 
   const handleLogout = () => {
     // 清除localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
+    }
 
     // 清除状态
     setUser(null);
@@ -121,8 +139,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
         <Link
           href='/'
-          className='flex items-center space-x-2 text-white transition-colors duration-200'
-        >
+          className='flex items-center space-x-2 text-white transition-colors duration-200'>
           <div className='w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-white text-black'>
             T
           </div>

@@ -27,7 +27,7 @@ export default function Mistake() {
 
   return (
     <div className='grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 min-h-[500px] relative'>
-      {categories.map(category => {
+      {categories?.map(category => {
         const difficultyStyle = getDifficultyStyle(category.difficulty);
 
         return (
@@ -75,7 +75,7 @@ export default function Mistake() {
           </div>
         );
       })}
-      {categories.length === 0 && (
+      {categories?.length === 0 && (
         <div className='text-gray-300 w-full h-full flex items-center justify-center absolute top-0 left-0'>
           暂无错词记录
         </div>
