@@ -61,7 +61,7 @@ COPY packages/utils/package.json ./packages/utils/
 
 # 安装生产依赖（仅运行时需要的依赖）
 RUN --mount=type=cache,target=/app/.pnpm-store \
-    pnpm install --prod --frozen-lockfile
+    pnpm install
 
 # 从构建阶段复制构建产物
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
