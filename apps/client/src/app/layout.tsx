@@ -51,8 +51,7 @@ export default function RootLayout({
                 itemColor: '#fff'
               }
             }
-          }}
-        >
+          }}>
           <GameModeProvider>{children}</GameModeProvider>
         </ConfigProvider>
       </body>

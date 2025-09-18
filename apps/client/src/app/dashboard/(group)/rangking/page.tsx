@@ -50,8 +50,7 @@ export default function Rangking() {
 
     return (
       <div
-        className={`flex items-center justify-between p-4 rounded-lg ${isFirst ? 'text-yellow-400' : isSecond ? 'text-gray-400' : isThird ? 'text-[#c18240]' : 'text-purple-400'}`}
-      >
+        className={`flex items-center justify-between p-4 rounded-lg ${isFirst ? 'text-yellow-400' : isSecond ? 'text-gray-400' : isThird ? 'text-[#c18240]' : 'text-purple-400'}`}>
         <div className='flex items-center space-x-4'>
           {/* 排名图标 */}
           <div>{getRankIcon(item.rank)}</div>

@@ -35,8 +35,7 @@ const Navigation = ({
               activeItem === item.href.toLowerCase()
                 ? 'active-link opacity-100'
                 : 'opacity-80'
-            }
-          >
+            }>
             {item.name}
           </Link>
         ))}

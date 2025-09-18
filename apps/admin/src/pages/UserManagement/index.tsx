@@ -167,16 +167,14 @@ const UserManagement: React.FC = () => {
           <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          >
+            onClick={() => handleEdit(record)}>
             编辑
           </Button>
           <Popconfirm
             title='确定要删除这个用户吗？'
             onConfirm={() => handleDelete(record.id)}
             okText='确定'
-            cancelText='取消'
-          >
+            cancelText='取消'>
             <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
@@ -194,8 +192,7 @@ const UserManagement: React.FC = () => {
             marginBottom: 16,
             display: 'flex',
             justifyContent: 'space-between'
-          }}
-        >
+          }}>
           <Space>
             <AntInput
               placeholder='搜索用户...'
@@ -231,14 +228,12 @@ const UserManagement: React.FC = () => {
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
-        width={600}
-      >
+        width={600}>
         <Form form={form} layout='vertical' initialValues={{ role: 'user' }}>
           <Form.Item
             name='name'
             label='用户名'
-            rules={[{ required: true, message: '请输入用户名' }]}
-          >
+            rules={[{ required: true, message: '请输入用户名' }]}>
             <Input placeholder='请输入用户名' />
           </Form.Item>
 
@@ -248,8 +243,7 @@ const UserManagement: React.FC = () => {
             rules={[
               { required: true, message: '请输入邮箱' },
               { type: 'email', message: '请输入有效的邮箱地址' }
-            ]}
-          >
+            ]}>
             <Input placeholder='请输入邮箱' />
           </Form.Item>
 
@@ -257,8 +251,7 @@ const UserManagement: React.FC = () => {
             <Form.Item
               name='password'
               label='密码'
-              rules={[{ required: true, message: '请输入密码' }]}
-            >
+              rules={[{ required: true, message: '请输入密码' }]}>
               <Input.Password placeholder='请输入密码' />
             </Form.Item>
           )}
@@ -266,8 +259,7 @@ const UserManagement: React.FC = () => {
           <Form.Item
             name='role'
             label='角色'
-            rules={[{ required: true, message: '请选择角色' }]}
-          >
+            rules={[{ required: true, message: '请选择角色' }]}>
             <Select placeholder='请选择角色'>
               <Select.Option value='user'>用户</Select.Option>
               <Select.Option value='admin'>管理员</Select.Option>

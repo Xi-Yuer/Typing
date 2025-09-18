@@ -8,6 +8,9 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm@10.7.0
 
+# 设置pnpm store位置为全局位置，避免用户切换问题
+RUN pnpm config set store-dir /app/.pnpm-store --global
+
 # 复制 package.json 和 pnpm 相关文件（优化缓存层）
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
@@ -17,7 +20,7 @@ COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
 # 安装依赖（包括开发依赖，用于构建）
-RUN --mount=type=cache,target=/root/.pnpm-store \
+RUN --mount=type=cache,target=/app/.pnpm-store \
     pnpm install
 
 # 复制源代码
@@ -46,6 +49,9 @@ WORKDIR /app
 # 安装 pnpm
 RUN npm install -g pnpm@10.7.0
 
+# 设置pnpm store位置为全局位置，避免用户切换问题
+RUN pnpm config set store-dir /app/.pnpm-store --global
+
 # 复制必要的 package.json 和 lockfile（仅用于运行时）
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/
@@ -54,7 +60,7 @@ COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
 
 # 安装生产依赖（仅运行时需要的依赖）
-RUN --mount=type=cache,target=/root/.pnpm-store \
+RUN --mount=type=cache,target=/app/.pnpm-store \
     pnpm install --prod --frozen-lockfile
 
 # 从构建阶段复制构建产物
@@ -105,7 +111,10 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
 
 # 更改文件所有权
 RUN chown -R nextjs:nodejs /app
+
+# 确保nextjs用户也能使用相同的pnpm store配置
 USER nextjs
+RUN pnpm config set store-dir /app/.pnpm-store --global
 
 # 暴露端口
 EXPOSE 3001 3000

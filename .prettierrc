@@ -8,16 +8,8 @@
     "arrowParens": "avoid",
     "endOfLine": "auto",
     "jsxSingleQuote": true,
-    "jsxBracketSameLine": true,
+    "bracketSameLine": true,
     "plugins": [
         "prettier-plugin-ember-template-tag"
-    ],
-    "overrides": [
-        {
-            "files": "*.{js,jsx,ts,tsx}",
-            "options": {
-                "singleQuote": true
-            }
-        }
     ]
 }

@@ -113,8 +113,7 @@ const AppLayout: React.FC<LayoutProps> = ({ children }) => {
             justifyContent: 'center',
             color: 'white',
             fontWeight: 'bold'
-          }}
-        >
+          }}>
           {collapsed ? 'T' : 'Typing Admin'}
         </div>
         <Menu
@@ -134,8 +133,7 @@ const AppLayout: React.FC<LayoutProps> = ({ children }) => {
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingRight: 24
-          }}
-        >
+          }}>
           <Button
             type='text'
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -149,16 +147,14 @@ const AppLayout: React.FC<LayoutProps> = ({ children }) => {
           <Dropdown
             menu={{ items: userMenuItems }}
             placement='bottomRight'
-            arrow
-          >
+            arrow>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 cursor: 'pointer',
                 gap: 8
-              }}
-            >
+              }}>
               <Avatar icon={<UserOutlined />} />
               <span>{user?.name || '管理员'}</span>
             </div>
@@ -171,8 +167,7 @@ const AppLayout: React.FC<LayoutProps> = ({ children }) => {
             minHeight: 280,
             background: colorBgContainer,
             borderRadius: borderRadiusLG
-          }}
-        >
+          }}>
           {children}
         </Content>
       </Layout>

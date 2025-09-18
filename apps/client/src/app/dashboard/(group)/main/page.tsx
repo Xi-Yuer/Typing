@@ -107,8 +107,7 @@ export default function Main() {
               {statistics.languageStats.map(language => (
                 <tr
                   key={language.languageId}
-                  className='hover:bg-slate-700/30 transition-colors duration-200'
-                >
+                  className='hover:bg-slate-700/30 transition-colors duration-200'>
                   <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-white'>
                     {language.languageName}
                   </td>
@@ -155,8 +154,7 @@ export default function Main() {
               {statistics.categoryStats.map(category => (
                 <tr
                   key={category.categoryId}
-                  className='hover:bg-slate-700/30 transition-colors duration-200'
-                >
+                  className='hover:bg-slate-700/30 transition-colors duration-200'>
                   <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-white'>
                     {category.categoryName}
                   </td>

@@ -305,8 +305,7 @@ export default function PlasmaWaveV2({
         width: '100vw',
         height: '100vh',
         zIndex: 0
-      }}
-    >
+      }}>
       <div
         style={{
           position: 'absolute',

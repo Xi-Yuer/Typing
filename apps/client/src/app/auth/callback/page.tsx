@@ -64,8 +64,7 @@ const AuthCallback = () => {
             <p className='text-white text-lg'>正在加载...</p>
           </div>
         </div>
-      }
-    >
+      }>
       <AuthCallbackContent />
     </Suspense>
   );

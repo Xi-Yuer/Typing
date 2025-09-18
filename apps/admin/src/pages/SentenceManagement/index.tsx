@@ -200,8 +200,7 @@ const SentenceManagement: React.FC = () => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
-          }}
-        >
+          }}>
           {text}
         </div>
       )
@@ -218,8 +217,7 @@ const SentenceManagement: React.FC = () => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
-          }}
-        >
+          }}>
           {meaning}
         </div>
       )
@@ -258,16 +256,14 @@ const SentenceManagement: React.FC = () => {
           <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          >
+            onClick={() => handleEdit(record)}>
             编辑
           </Button>
           <Popconfirm
             title='确定要删除这个句子吗？'
             onConfirm={() => handleDelete(record.id)}
             okText='确定'
-            cancelText='取消'
-          >
+            cancelText='取消'>
             <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
@@ -330,8 +326,7 @@ const SentenceManagement: React.FC = () => {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: 16
-          }}
-        >
+          }}>
           <Space wrap>
             <AntInput
               placeholder='搜索句子...'
@@ -350,8 +345,7 @@ const SentenceManagement: React.FC = () => {
                 }
               }}
               style={{ width: 150 }}
-              allowClear
-            >
+              allowClear>
               {languages.map(language => (
                 <Select.Option key={language.id} value={language.id.toString()}>
                   {language.name}
@@ -363,8 +357,7 @@ const SentenceManagement: React.FC = () => {
               value={selectedCategory}
               onChange={setSelectedCategory}
               style={{ width: 150 }}
-              allowClear
-            >
+              allowClear>
               {categories.map(category => (
                 <Select.Option key={category.id} value={category.id}>
                   {category.name}
@@ -399,14 +392,12 @@ const SentenceManagement: React.FC = () => {
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
-        width={800}
-      >
+        width={800}>
         <Form form={form} layout='vertical'>
           <Form.Item
             name='sentence'
             label='句子内容'
-            rules={[{ required: true, message: '请输入句子内容' }]}
-          >
+            rules={[{ required: true, message: '请输入句子内容' }]}>
             <Input.TextArea
               rows={3}
               placeholder='请输入句子内容'
@@ -418,8 +409,7 @@ const SentenceManagement: React.FC = () => {
           <Form.Item
             name='meaning'
             label='翻译'
-            rules={[{ required: true, message: '请输入翻译' }]}
-          >
+            rules={[{ required: true, message: '请输入翻译' }]}>
             <Input.TextArea
               rows={2}
               placeholder='请输入翻译'
@@ -431,8 +421,7 @@ const SentenceManagement: React.FC = () => {
           <Form.Item
             name='languageId'
             label='所属语言'
-            rules={[{ required: true, message: '请选择语言' }]}
-          >
+            rules={[{ required: true, message: '请选择语言' }]}>
             <Select placeholder='请选择语言'>
               {languages.map(language => (
                 <Select.Option key={language.id} value={language.id.toString()}>
@@ -445,8 +434,7 @@ const SentenceManagement: React.FC = () => {
           <Form.Item
             name='categoryId'
             label='所属分类'
-            rules={[{ required: true, message: '请选择分类' }]}
-          >
+            rules={[{ required: true, message: '请选择分类' }]}>
             <Select placeholder='请选择分类'>
               {categories.map(category => (
                 <Select.Option key={category.id} value={category.id}>

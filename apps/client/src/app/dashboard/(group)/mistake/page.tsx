@@ -33,14 +33,12 @@ export default function Mistake() {
         return (
           <div
             key={category.id}
-            className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'
-          >
+            className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
             {/* 右上角难度标签 */}
             <div
               className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${
                 difficultyStyle.bg
-              } ${difficultyStyle.text} ${difficultyStyle.border} border`}
-            >
+              } ${difficultyStyle.text} ${difficultyStyle.border} border`}>
               {difficultyStyle.label}
             </div>
 
@@ -55,15 +53,13 @@ export default function Mistake() {
               onClick={() => {
                 setCurrentCategory(category);
                 openModeModal();
-              }}
-            >
+              }}>
               <span className='text-sm'>开始练习</span>
               <svg
                 className='w-4 h-4 ml-2'
                 fill='none'
                 stroke='currentColor'
-                viewBox='0 0 24 24'
-              >
+                viewBox='0 0 24 24'>
                 <path
                   strokeLinecap='round'
                   strokeLinejoin='round'

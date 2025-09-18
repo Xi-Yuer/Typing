@@ -268,16 +268,14 @@ const WordManagement: React.FC = () => {
           <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          >
+            onClick={() => handleEdit(record)}>
             编辑
           </Button>
           <Popconfirm
             title='确定要删除这个单词吗？'
             onConfirm={() => handleDelete(record.id)}
             okText='确定'
-            cancelText='取消'
-          >
+            cancelText='取消'>
             <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
@@ -340,8 +338,7 @@ const WordManagement: React.FC = () => {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: 16
-          }}
-        >
+          }}>
           <Space wrap>
             <AntInput
               placeholder='搜索单词...'
@@ -358,8 +355,7 @@ const WordManagement: React.FC = () => {
                 fetchCategories(value);
               }}
               style={{ width: 150 }}
-              allowClear
-            >
+              allowClear>
               {languages.map(language => (
                 <Select.Option key={language.id} value={language.id.toString()}>
                   {language.name}
@@ -371,8 +367,7 @@ const WordManagement: React.FC = () => {
               value={selectedCategory}
               onChange={setSelectedCategory}
               style={{ width: 150 }}
-              allowClear
-            >
+              allowClear>
               {categories.map(category => (
                 <Select.Option key={category.id} value={category.id}>
                   {category.name}
@@ -406,53 +401,46 @@ const WordManagement: React.FC = () => {
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
-        width={600}
-      >
+        width={600}>
         <Form form={form} layout='vertical'>
           <Form.Item
             name='word'
             label='单词'
-            rules={[{ required: true, message: '请输入单词' }]}
-          >
+            rules={[{ required: true, message: '请输入单词' }]}>
             <Input placeholder='请输入单词' />
           </Form.Item>
 
           <Form.Item
             name='meaning'
             label='翻译'
-            rules={[{ required: true, message: '请输入翻译' }]}
-          >
+            rules={[{ required: true, message: '请输入翻译' }]}>
             <Input.TextArea placeholder='请输入翻译' rows={3} />
           </Form.Item>
           <Form.Item
             name='meaningShort'
             label='短翻译'
-            rules={[{ required: true, message: '请输入短翻译' }]}
-          >
+            rules={[{ required: true, message: '请输入短翻译' }]}>
             <Input.TextArea placeholder='请输入短翻译' rows={2} />
           </Form.Item>
 
           <Form.Item
             name='usPhonetic'
             label='美式发音'
-            rules={[{ required: true, message: '请输入发音' }]}
-          >
+            rules={[{ required: true, message: '请输入发音' }]}>
             <Input placeholder='请输入美式发音，如：/ˈhæpi/' />
           </Form.Item>
 
           <Form.Item
             name='ukPhonetic'
             label='英式发音'
-            rules={[{ required: true, message: '请输入英式发音' }]}
-          >
+            rules={[{ required: true, message: '请输入英式发音' }]}>
             <Input placeholder='请输入英式发音，如：/ˈhæpi/' />
           </Form.Item>
 
           <Form.Item
             name='languageId'
             label='所属语言'
-            rules={[{ required: true, message: '请选择语言' }]}
-          >
+            rules={[{ required: true, message: '请选择语言' }]}>
             <Select placeholder='请选择语言'>
               {languages.map(language => (
                 <Select.Option key={language.id} value={language.id}>
@@ -465,8 +453,7 @@ const WordManagement: React.FC = () => {
           <Form.Item
             name='categoryId'
             label='所属分类'
-            rules={[{ required: true, message: '请选择分类' }]}
-          >
+            rules={[{ required: true, message: '请选择分类' }]}>
             <Select placeholder='请选择分类'>
               {categories.map(category => (
                 <Select.Option key={category.id} value={category.id}>

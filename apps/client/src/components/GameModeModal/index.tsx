@@ -100,8 +100,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
         body: {
           padding: '20px'
         }
-      }}
-    >
+      }}>
       <div className='space-y-3'>
         {gameModes.map(mode => (
           <div
@@ -115,8 +114,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
                   : 'border-white/10 bg-white/5 hover:border-purple-400/30 hover:bg-white/10'
               }
               ${mode.disabled ? '!cursor-not-allowed opacity-50' : ''}
-            `}
-          >
+            `}>
             {/* 选中状态指示器 */}
             {currentMode === mode.key && (
               <div className='absolute top-3 right-3 w-3 h-3 bg-purple-500 rounded-full shadow-lg shadow-purple-500/50'></div>
@@ -126,8 +124,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
             <h3
               className={`text-base font-medium mb-2 transition-colors duration-300 ${
                 currentMode === mode.key ? 'text-purple-300' : 'text-white'
-              }`}
-            >
+              }`}>
               {mode.title}
               {mode.disabled && (
                 <span className='ml-2 text-xs text-red-500'>开发中</span>
@@ -140,8 +137,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
                 currentMode === mode.key
                   ? 'text-purple-200/80'
                   : 'text-gray-400'
-              }`}
-            >
+              }`}>
               {mode.description}
             </p>
           </div>

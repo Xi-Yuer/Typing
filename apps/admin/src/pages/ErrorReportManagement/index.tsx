@@ -275,8 +275,7 @@ const ErrorReportManagement: React.FC = () => {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
-          }}
-        >
+          }}>
           {description}
         </div>
       )
@@ -297,16 +296,14 @@ const ErrorReportManagement: React.FC = () => {
           <Button
             type='link'
             icon={<EyeOutlined />}
-            onClick={() => handleView(record)}
-          >
+            onClick={() => handleView(record)}>
             查看
           </Button>
           <Popconfirm
             title='确定要删除这个报告吗？'
             onConfirm={() => handleDelete(record.id)}
             okText='确定'
-            cancelText='取消'
-          >
+            cancelText='取消'>
             <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
@@ -398,8 +395,7 @@ const ErrorReportManagement: React.FC = () => {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: 16
-          }}
-        >
+          }}>
           <Space wrap>
             <AntInput
               placeholder='搜索报告...'
@@ -437,8 +433,7 @@ const ErrorReportManagement: React.FC = () => {
             关闭
           </Button>
         ]}
-        width={800}
-      >
+        width={800}>
         {selectedReport && (
           <Descriptions column={2} bordered>
             <Descriptions.Item label='报告ID' span={2}>

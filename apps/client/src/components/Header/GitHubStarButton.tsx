@@ -39,14 +39,12 @@ const GitHubStarButton = ({
       style={{
         animationDuration: '6s'
       }}
-      href={href}
-    >
+      href={href}>
       <span>Star On GitHub</span>
       <div
         ref={starCountRef}
         style={{ opacity: 1 }}
-        className='flex items-center justify-center space-x-2 bg-slate-950 py-3 px-5 rounded-4xl'
-      >
+        className='flex items-center justify-center space-x-2 bg-slate-950 py-3 px-5 rounded-4xl'>
         <Image src={star} alt='Star Icon' width={16} height={16} />
         <span>{stars}</span>
       </div>

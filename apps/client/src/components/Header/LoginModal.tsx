@@ -162,8 +162,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
         mask: {
           backdropFilter: 'blur(8px)'
         }
-      }}
-    >
+      }}>
       <div className='p-10 relative'>
         {/* 背景装饰 */}
         <div className='absolute inset-0 bg-gradient-to-br from-slate-800/20 via-blue-900/10 to-indigo-900/20 backdrop-blur-sm pointer-events-none'></div>
@@ -330,8 +329,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
 
           <button
             type='submit'
-            className='w-full h-12 mt-6 bg-gradient-to-r from-[#8b5cf6] via-[#a855f7] to-[#c084fc] text-white font-semibold rounded-2xl hover:shadow-2xl hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group'
-          >
+            className='w-full h-12 mt-6 bg-gradient-to-r from-[#8b5cf6] via-[#a855f7] to-[#c084fc] text-white font-semibold rounded-2xl hover:shadow-2xl hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group'>
             <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
             <span className='relative z-10 text-lg'>
               {isRegisterMode ? '注册' : '登录'}
@@ -349,8 +347,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
         {/* GitHub登录按钮 */}
         <Link
           href={process.env.NEXT_PUBLIC_GITHUB_SSO_URL as string}
-          className='w-full h-12 bg-gradient-to-r from-[#24292e] to-[#1a1e22] hover:from-[#1a1e22] hover:to-[#0d1117] !text-white font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:ring-offset-2 focus:ring-offset-transparent flex items-center justify-center gap-3 hover:shadow-xl hover:shadow-gray-900/30 hover:scale-[1.02] active:scale-[0.98] relative z-10 group overflow-hidden'
-        >
+          className='w-full h-12 bg-gradient-to-r from-[#24292e] to-[#1a1e22] hover:from-[#1a1e22] hover:to-[#0d1117] !text-white font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:ring-offset-2 focus:ring-offset-transparent flex items-center justify-center gap-3 hover:shadow-xl hover:shadow-gray-900/30 hover:scale-[1.02] active:scale-[0.98] relative z-10 group overflow-hidden'>
           <div className='absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
           <GithubOutlined className='text-xl relative z-10' />
           <span className='relative z-10'>使用 GitHub 登录</span>
@@ -366,8 +363,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                 // 清除错误信息
                 setLoginErrors({ email: '', password: '' });
                 setRegisterErrors({});
-              }}
-            >
+              }}>
               {isRegisterMode ? '登录' : '注册'}
             </span>
           </p>

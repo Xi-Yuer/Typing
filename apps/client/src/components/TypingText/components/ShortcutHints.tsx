@@ -62,8 +62,7 @@ export const ShortcutHints: React.FC<ShortcutHintsProps> = ({
         onClick={() => {
           shortcut.onClick?.();
           focusInput?.();
-        }}
-      >
+        }}>
         {keys.map((key, keyIndex) => (
           <div key={keyIndex}>
             {keyIndex > 0 && (

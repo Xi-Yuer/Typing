@@ -67,8 +67,7 @@ const WordErrorReportModal: React.FC<WordErrorReportModalProps> = ({
         body: {
           padding: '20px'
         }
-      }}
-    >
+      }}>
       <div className='text-gray-300'>
         {word && (
           <div className='mb-6 p-4 bg-slate-800 rounded-lg border border-gray-600'>
@@ -103,8 +102,7 @@ const WordErrorReportModal: React.FC<WordErrorReportModalProps> = ({
           form={form}
           layout='vertical'
           onFinish={handleSubmit}
-          className='word-error-report-form'
-        >
+          className='word-error-report-form'>
           <Form.Item
             name='errorDescription'
             label={<span className='text-gray-300'>错误描述</span>}
@@ -112,8 +110,7 @@ const WordErrorReportModal: React.FC<WordErrorReportModalProps> = ({
               { required: true, message: '请描述您发现的错误' },
               { min: 5, message: '错误描述至少需要5个字符' },
               { max: 500, message: '错误描述不能超过500个字符' }
-            ]}
-          >
+            ]}>
             <Input.TextArea
               rows={6}
               placeholder='请详细描述您发现的错误，例如：发音标注有误、释义不准确、拼写错误等...'

@@ -19,16 +19,14 @@ const UserSection = ({
               label: (
                 <span
                   onClick={onLogoutClick}
-                  className='cursor-pointer inline-block mx-3'
-                >
+                  className='cursor-pointer inline-block mx-3'>
                   退出登录
                 </span>
               ),
               key: 'logout'
             }
           ]
-        }}
-      >
+        }}>
         <div className='flex items-center justify-center p-3 px-6 rounded-4xl backdrop-blur-2xl text-white border border-white/10 cursor-pointer hover:bg-white/10 transition-colors'>
           <UserOutlined className='mr-2' />
           <span>{user.name}</span>
@@ -40,8 +38,7 @@ const UserSection = ({
   return (
     <div
       onClick={onLoginClick}
-      className='flex items-center justify-center p-3 px-6 rounded-4xl backdrop-blur-2xl text-white border border-white/10 cursor-pointer hover:bg-white/10 transition-colors'
-    >
+      className='flex items-center justify-center p-3 px-6 rounded-4xl backdrop-blur-2xl text-white border border-white/10 cursor-pointer hover:bg-white/10 transition-colors'>
       <UserOutlined className='mr-2' />
       <span>登录</span>
     </div>

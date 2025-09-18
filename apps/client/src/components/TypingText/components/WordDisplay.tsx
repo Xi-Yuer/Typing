@@ -48,13 +48,11 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
               )} ${!isFocused ? STYLES.BORDER.BLUR : ''}
             }
               `}
-              style={{ minWidth: `${getWordWidth(word.text)}ch` }}
-            >
+              style={{ minWidth: `${getWordWidth(word.text)}ch` }}>
               <span
                 className={
                   word.incorrect ? STYLES.COLORS.ERROR : STYLES.COLORS.NORMAL
-                }
-              >
+                }>
                 {word.userInput}
               </span>
               {showAnswerTip && word.userInput.length < word.text.length && (
@@ -66,8 +64,7 @@ export const WordDisplay: React.FC<WordDisplayProps> = ({
           ) : (
             <div
               key={index}
-              className={`${STYLES.WORD_HEIGHT} rounded-sm ${STYLES.WORD_TEXT_SIZE} leading-none transition-all ${STYLES.COLORS.NORMAL}`}
-            >
+              className={`${STYLES.WORD_HEIGHT} rounded-sm ${STYLES.WORD_TEXT_SIZE} leading-none transition-all ${STYLES.COLORS.NORMAL}`}>
               {word.text}
             </div>
           )

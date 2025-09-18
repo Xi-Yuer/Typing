@@ -161,16 +161,14 @@ const LanguageManagement: React.FC = () => {
           <Button
             type='link'
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          >
+            onClick={() => handleEdit(record)}>
             编辑
           </Button>
           <Popconfirm
             title='确定要删除这个语言吗？'
             onConfirm={() => handleDelete(record.id)}
             okText='确定'
-            cancelText='取消'
-          >
+            cancelText='取消'>
             <Button type='link' danger icon={<DeleteOutlined />}>
               删除
             </Button>
@@ -188,8 +186,7 @@ const LanguageManagement: React.FC = () => {
             marginBottom: 16,
             display: 'flex',
             justifyContent: 'space-between'
-          }}
-        >
+          }}>
           <Space>
             <AntInput
               placeholder='搜索语言...'
@@ -224,22 +221,19 @@ const LanguageManagement: React.FC = () => {
         open={modalVisible}
         onOk={handleModalOk}
         onCancel={() => setModalVisible(false)}
-        width={600}
-      >
+        width={600}>
         <Form form={form} layout='vertical' initialValues={{ isActive: true }}>
           <Form.Item
             name='name'
             label='语言名称'
-            rules={[{ required: true, message: '请输入语言名称' }]}
-          >
+            rules={[{ required: true, message: '请输入语言名称' }]}>
             <Input placeholder='请输入语言名称，如：英语' />
           </Form.Item>
 
           <Form.Item
             name='code'
             label='语言代码'
-            rules={[{ required: true, message: '请输入语言代码' }]}
-          >
+            rules={[{ required: true, message: '请输入语言代码' }]}>
             <Input placeholder='请输入语言代码，如：en' />
           </Form.Item>
 
