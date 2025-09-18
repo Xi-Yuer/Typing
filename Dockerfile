@@ -29,6 +29,12 @@ COPY . .
 # 设置构建时环境变量
 ENV NEXT_PUBLIC_BASE_URL=/
 ENV VITE_API_URL=/
+ENV NEXT_PUBLIC_GITHUB_SSO_URL=http://backend/api/auth/github/callback
+ENV FRONTEND_URL=http://frontend
+ENV DB_HOST=mysql
+ENV DB_PORT=3306
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
 
 # 构建项目
 RUN pnpm run build
@@ -126,8 +132,11 @@ ENV FRONTEND_PORT=3000
 ENV NEXT_PUBLIC_BASE_URL=/
 ENV VITE_API_URL=/
 ENV NEXT_PUBLIC_GITHUB_SSO_URL=http://backend/api/auth/github/callback
-ENV FRONTEND_URL=http://localhost
+ENV FRONTEND_URL=http://frontend
 ENV DB_HOST=mysql
+ENV DB_NAME=typing_db
+ENV DB_USER=typing_user
+ENV DB_PASSWORD=typing_password
 ENV DB_PORT=3306
 ENV REDIS_HOST=redis
 ENV REDIS_PORT=6379
