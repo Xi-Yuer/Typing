@@ -33,7 +33,7 @@ export const isWord = (text: string): boolean => {
 
 // 获取单词宽度
 export const getWordWidth = (word: string): number => {
-  return Math.max(word.length, 4);
+  return Math.max(word.length + 0.5, 4);
 };
 
 // 获取单词样式类名
@@ -48,9 +48,16 @@ export const getWordsClassNames = (word: WordState): string => {
     return 'text-fuchsia-500 border-b-fuchsia-500';
   }
 
-  // 已完成的单词显示灰色
+  // 已完成的单词：如果正确完成则保持紫色，否则显示灰色
   if (word.completed) {
-    return 'text-gray-300 border-b-gray-300';
+    // 检查是否输入正确（用户输入长度等于单词长度且没有错误）
+    const isCorrectlyCompleted =
+      word.userInput.length === word.text.length && !word.incorrect;
+    if (isCorrectlyCompleted) {
+      return 'text-fuchsia-500 border-b-fuchsia-500';
+    } else {
+      return 'text-gray-300 border-b-gray-300';
+    }
   }
 
   // 默认状态
@@ -65,19 +72,24 @@ export const getWordsClassNames = (word: WordState): string => {
  */
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
-  delay: number
+  delay: number,
+  immediate: boolean = true
 ): ((...args: Parameters<T>) => void) => {
   let timeoutId: NodeJS.Timeout | null = null;
 
   return (...args: Parameters<T>) => {
+    const callNow = immediate && !timeoutId;
+
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
     timeoutId = setTimeout(() => {
-      func(...args);
       timeoutId = null;
+      if (!immediate) func(...args); // 非立即执行模式
     }, delay);
+
+    if (callNow) func(...args); // 立即执行模式
   };
 };
 
