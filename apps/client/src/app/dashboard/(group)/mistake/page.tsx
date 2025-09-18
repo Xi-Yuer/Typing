@@ -11,6 +11,7 @@ export default function Mistake() {
   const [categories, setCategories] = useState<CategoryWithErrorsDto[]>([]);
   const [currentCategory, setCurrentCategory] =
     useState<CategoryWithErrorsDto | null>(null);
+  const [error, setError] = useState<string>('');
   const {
     openModeModal,
     isModalOpen,
@@ -21,19 +22,23 @@ export default function Mistake() {
 
   useEffect(() => {
     getUserErrorRecordsCategories(1, 100).then(res => {
-      setCategories(res.data.list);
+      if (res && res.code === 200) {
+        setCategories(res.data.list);
+      } else {
+        setError(res?.message || '获取错词记录分类列表失败');
+      }
     });
   }, []);
 
   return (
-    <div className='grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 min-h-[500px] relative'>
+    <div className='grid md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 min-h-[200px] relative'>
       {categories?.map(category => {
         const difficultyStyle = getDifficultyStyle(category.difficulty);
 
         return (
           <div
             key={category.id}
-            className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
+            className='bg-white/10 !h-[150px] overflow-hidden backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
             {/* 右上角难度标签 */}
             <div
               className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${
@@ -43,11 +48,13 @@ export default function Mistake() {
             </div>
 
             {/* 标题 */}
-            <h3 className='text-lg font-semibold text-white mb-2 pr-16'>
+            <h3 className='text-lg font-semibold text-white mb-2 pr-16 line-clamp-1'>
               {category.name}
             </h3>
 
-            <p className='text-gray-300 text-sm mb-4'>{category.description}</p>
+            <p className='text-gray-300 text-sm mb-4 line-clamp-2'>
+              {category.description}
+            </p>
             <span
               className='flex items-center text-purple-400'
               onClick={() => {
@@ -72,8 +79,8 @@ export default function Mistake() {
         );
       })}
       {categories?.length === 0 && (
-        <div className='text-gray-300 w-full h-full flex items-center justify-center absolute top-0 left-0'>
-          暂无错词记录
+        <div className='text-purple-400 text-lg w-full h-full flex items-center justify-center absolute top-0 left-0'>
+          错误: {error}
         </div>
       )}
       {/* 游戏模式选择弹窗 */}
