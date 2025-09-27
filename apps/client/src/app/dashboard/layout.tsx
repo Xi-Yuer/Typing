@@ -1,5 +1,6 @@
 import DisplayHeader from '@/components/Header/Header';
 import Sidebar from './components/Sidebar/Sidebar';
+import '@ant-design/v5-patch-for-react-19';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>

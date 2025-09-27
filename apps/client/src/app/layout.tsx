@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { ConfigProvider } from 'antd';
 import { GameModeProvider } from '@/contexts/GameModeContext';
+import '@ant-design/v5-patch-for-react-19';
 import '@/assets/styles/global.css';
 
 const freaoka = localFont({
@@ -27,10 +28,11 @@ export default function RootLayout({
             token: {
               colorPrimary: '#7d26cd',
               colorText: '#fff',
-              colorBgContainer: '#141414',
-              colorBgElevated: '#141414',
+              colorBgContainer: '#8c21f120',
+              colorBgElevated: '#8c21f120',
               colorError: '#7d26cd',
-              colorErrorText: '#7d26cd'
+              colorErrorText: '#7d26cd',
+              colorSuccess: '#7d26cd'
             },
             components: {
               Button: {
@@ -49,6 +51,37 @@ export default function RootLayout({
                 itemSelectedBg: '#7d26cd',
                 itemSelectedColor: '#fff',
                 itemColor: '#fff'
+              },
+              Select: {
+                colorBorder: 'transparent',
+                activeBorderColor: 'transparent',
+                activeOutlineColor: 'transparent',
+                colorBgContainer: '#1e293b',
+                colorBgElevated: '#1e293b',
+                colorText: '#e2e8f0',
+                colorTextPlaceholder: '#94a3b8',
+                colorTextQuaternary: '#94a3b8',
+                colorBgTextActive: '#7d26cd',
+                colorBgTextHover: '#334155',
+                optionSelectedBg: '#7d26cd',
+                optionActiveBg: '#334155'
+              },
+              Message: {
+                colorInfo: '#7d26cd',
+                colorInfoText: '#7d26cd',
+                colorSuccess: '#7d26cd',
+                colorSuccessText: '#7d26cd',
+                colorError: '#7d26cd',
+                colorErrorText: '#7d26cd',
+                colorWarning: '#7d26cd',
+                colorWarningText: '#7d26cd'
+              },
+              Slider: {
+                railBg: '#8c21f150',
+                railHoverBg: '#8c21f150',
+                dotBorderColor: '#8c21f1',
+                handleColor: '#8c21f1',
+                trackBg: '#8c21f1'
               }
             }
           }}>
