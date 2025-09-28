@@ -20,111 +20,108 @@ import {
   ReloadOutlined
 } from '@ant-design/icons';
 import '@ant-design/v5-patch-for-react-19';
+import { getUserSettings, updateUserSettings, resetUserSettings } from '@/api';
+import { UserSettings } from '@/types';
 
 const { Option } = Select;
 
-interface CustomSettings {
-  voiceType: '0' | '1';
-  pronunciationVolume: number;
-  typingSoundVolume: number;
-  soundEnabled: boolean;
-  resetExercise: {
-    key: string;
-    modifiers: string[];
-  };
-  toggleHint: {
-    key: string;
-    modifiers: string[];
-  };
-  pronunciation: {
-    key: string;
-    modifiers: string[];
-  };
-  wordNavigation: {
-    prev: {
-      key: string;
-      modifiers: string[];
-    };
-    next: {
-      key: string;
-      modifiers: string[];
-    };
-  };
-  autoPlayPronunciation: boolean;
-  showShortcutHints: boolean;
-}
+// 修饰键映射
+const MODIFIER_MAP = {
+  control: 'ctrl',
+  meta: 'meta', // Mac 上 Meta 键（Command 键）
+  alt: 'option', // Mac 上 Alt 对应 Option
+  shift: 'shift',
+  option: 'option'
+} as const;
 
-const defaultSettings: CustomSettings = {
-  voiceType: '1',
-  pronunciationVolume: 100,
-  typingSoundVolume: 100,
-  soundEnabled: true,
-  resetExercise: {
-    key: 'r',
-    modifiers: ['ctrl']
-  },
-  toggleHint: {
-    key: 'h',
-    modifiers: ['ctrl']
-  },
-  pronunciation: {
-    key: 'p',
-    modifiers: ['ctrl']
-  },
-  wordNavigation: {
-    prev: {
-      key: 'arrowleft',
-      modifiers: ['ctrl']
-    },
-    next: {
-      key: 'arrowright',
-      modifiers: ['ctrl']
-    }
-  },
-  autoPlayPronunciation: true,
-  showShortcutHints: true
-};
+// 修饰键显示映射
+const MODIFIER_DISPLAY = {
+  ctrl: 'Ctrl',
+  meta: '⌘', // Mac 上 Meta 键显示为 ⌘
+  alt: 'Alt',
+  shift: 'Shift',
+  option: '⌥'
+} as const;
 
 export default function Custom() {
   const [form] = Form.useForm();
-  const [settings, setSettings] = useState<CustomSettings>(defaultSettings);
+  const [settings, setSettings] = useState<UserSettings>();
   const [isLoading, setIsLoading] = useState(false);
   const [listeningKey, setListeningKey] = useState<string | null>(null);
   const [pressedModifiers, setPressedModifiers] = useState<string[]>([]);
   const [messageApi, contextHolder] = message.useMessage();
 
+  // 加载用户设置
+  const loadSettings = useCallback(async () => {
+    try {
+      const res = await getUserSettings();
+      const userSettings = res.data.settings as UserSettings;
+      setSettings(userSettings);
+      form.setFieldsValue(userSettings);
+    } catch {
+      messageApi.error('加载设置失败');
+    }
+  }, [form, messageApi]);
+
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
+
   const handleSave = async () => {
     try {
       setIsLoading(true);
-      const values = await form.validateFields();
+      await form.validateFields();
 
-      const newSettings = { ...settings, ...values };
-      setSettings(newSettings);
+      // 合并表单值和快捷键配置
+      const saveData = {
+        ...form.getFieldsValue(),
+        shortcuts: settings?.shortcuts
+      };
 
-      messageApi.success('设置保存成功！');
+      updateUserSettings(saveData).then(res => {
+        if (res.code === 200) {
+          const newSettings = res.data.settings as UserSettings;
+          setSettings(newSettings);
+
+          messageApi.success('设置保存成功！');
+        } else {
+          messageApi.error(res.message);
+        }
+      });
     } catch {
-      messageApi.error('保存设置失败，请检查输入');
+      messageApi.error('保存设置失败');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleReset = () => {
-    setSettings(defaultSettings);
-    form.setFieldsValue(defaultSettings);
-    messageApi.success('设置已重置为默认值');
+  const handleReset = async () => {
+    try {
+      resetUserSettings().then(res => {
+        if (res.code === 200) {
+          const newSettings = res.data.settings as UserSettings;
+          setSettings(newSettings);
+          form.setFieldsValue(newSettings);
+
+          messageApi.success('设置已重置为默认值');
+        } else {
+          messageApi.error(res.message);
+        }
+      });
+    } catch {
+      messageApi.error('重置设置失败');
+    }
   };
 
-  // 开始监听按键
-  const startListening = (keyName: string) => {
-    setListeningKey(keyName);
-    setPressedModifiers([]);
-  };
-
-  // 停止监听按键
-  const stopListening = () => {
-    setListeningKey(null);
-    setPressedModifiers([]);
+  // 快捷键监听控制
+  const toggleListening = (keyName?: string) => {
+    if (listeningKey === keyName) {
+      setListeningKey(null);
+      setPressedModifiers([]);
+    } else if (keyName) {
+      setListeningKey(keyName);
+      setPressedModifiers([]);
+    }
   };
 
   // 处理按键按下事件
@@ -135,92 +132,82 @@ export default function Custom() {
       e.stopPropagation();
 
       // 检查是否是修饰键
-      const isModifier = [
-        'Control',
-        'Meta',
-        'Alt',
-        'Shift',
-        'Option',
-        'Command'
-      ].includes(e.key);
+      const isModifier = ['Control', 'Meta', 'Alt', 'Shift', 'Option'].includes(
+        e.key
+      );
 
       if (isModifier) {
-        // 处理修饰键按下
-        const modifier = e.key.toLowerCase();
-        if (modifier === 'control') {
+        const modifier =
+          MODIFIER_MAP[e.key.toLowerCase() as keyof typeof MODIFIER_MAP];
+        if (modifier) {
           setPressedModifiers(prev =>
-            prev.includes('ctrl') ? prev : [...prev, 'ctrl']
-          );
-        } else if (modifier === 'meta') {
-          setPressedModifiers(prev =>
-            prev.includes('meta') ? prev : [...prev, 'meta']
-          );
-        } else if (modifier === 'alt') {
-          setPressedModifiers(prev =>
-            prev.includes('alt') ? prev : [...prev, 'alt']
-          );
-        } else if (modifier === 'shift') {
-          setPressedModifiers(prev =>
-            prev.includes('shift') ? prev : [...prev, 'shift']
-          );
-        } else if (modifier === 'option') {
-          setPressedModifiers(prev =>
-            prev.includes('option') ? prev : [...prev, 'option']
-          );
-        } else if (modifier === 'command') {
-          setPressedModifiers(prev =>
-            prev.includes('command') ? prev : [...prev, 'command']
+            prev.includes(modifier) ? prev : [...prev, modifier]
           );
         }
         return;
       }
 
       // 处理主键按下
-      const mainKey = e.key.toLowerCase();
+      let mainKey = e.key.toLowerCase();
+
+      // 在 Mac 上，Option + 其他键会产生特殊字符，使用 code 属性
+      if (pressedModifiers.includes('option')) {
+        const keyCode = e.code;
+        if (keyCode.startsWith('Key')) {
+          mainKey = keyCode.replace('Key', '').toLowerCase();
+        } else if (keyCode.startsWith('Digit')) {
+          mainKey = keyCode.replace('Digit', '');
+        } else if (keyCode.startsWith('Arrow')) {
+          mainKey = keyCode.replace('Arrow', '').toLowerCase();
+        } else {
+          const specialKeys: Record<string, string> = {
+            Space: 'space',
+            Enter: 'enter',
+            Escape: 'escape'
+          };
+          mainKey = specialKeys[keyCode] || e.key.toLowerCase();
+        }
+      }
       // 更新设置
+      if (!settings?.shortcuts) return;
+
+      const shortcutConfig = { key: mainKey, modifiers: [...pressedModifiers] };
       const newSettings = { ...settings };
-      const shortcutConfig = {
-        key: mainKey,
-        modifiers: [...pressedModifiers]
+
+      // 快捷键映射
+      const shortcutMap: Record<
+        string,
+        (config: typeof shortcutConfig) => void
+      > = {
+        resetExercise: config => {
+          newSettings.shortcuts.resetExercise = config;
+        },
+        toggleHint: config => {
+          newSettings.shortcuts.toggleHint = config;
+        },
+        pronunciation: config => {
+          newSettings.shortcuts.pronunciation = config;
+        },
+        wordNavigationPrev: config => {
+          newSettings.shortcuts.wordNavigation.prev = config;
+        },
+        wordNavigationNext: config => {
+          newSettings.shortcuts.wordNavigation.next = config;
+        }
       };
 
-      if (listeningKey === 'resetExercise') {
-        newSettings.resetExercise = shortcutConfig;
-      } else if (listeningKey === 'toggleHint') {
-        newSettings.toggleHint = shortcutConfig;
-      } else if (listeningKey === 'pronunciation') {
-        newSettings.pronunciation = shortcutConfig;
-      } else if (listeningKey === 'wordNavigationPrev') {
-        newSettings.wordNavigation.prev = shortcutConfig;
-      } else if (listeningKey === 'wordNavigationNext') {
-        newSettings.wordNavigation.next = shortcutConfig;
-      }
+      shortcutMap[listeningKey]?.(shortcutConfig);
 
-      setSettings(newSettings);
+      setSettings(newSettings as UserSettings);
       form.setFieldsValue(newSettings);
 
       // 显示快捷键
       const modifierText =
         pressedModifiers.length > 0
           ? pressedModifiers
-              .map(m => {
-                switch (m) {
-                  case 'ctrl':
-                    return 'Ctrl';
-                  case 'meta':
-                    return '⌘';
-                  case 'alt':
-                    return 'Alt';
-                  case 'shift':
-                    return 'Shift';
-                  case 'option':
-                    return 'Option';
-                  case 'command':
-                    return '⌘';
-                  default:
-                    return m;
-                }
-              })
+              .map(
+                m => MODIFIER_DISPLAY[m as keyof typeof MODIFIER_DISPLAY] || m
+              )
               .join(' + ') + ' + '
           : '';
 
@@ -245,30 +232,14 @@ export default function Custom() {
     (e: KeyboardEvent) => {
       if (!listeningKey) return;
 
-      // 检查是否是修饰键释放
-      const isModifier = [
-        'Control',
-        'Meta',
-        'Alt',
-        'Shift',
-        'Option',
-        'Command'
-      ].includes(e.key);
-
+      const isModifier = ['Control', 'Meta', 'Alt', 'Shift', 'Option'].includes(
+        e.key
+      );
       if (isModifier) {
-        const modifier = e.key.toLowerCase();
-        if (modifier === 'control') {
-          setPressedModifiers(prev => prev.filter(m => m !== 'ctrl'));
-        } else if (modifier === 'meta') {
-          setPressedModifiers(prev => prev.filter(m => m !== 'meta'));
-        } else if (modifier === 'alt') {
-          setPressedModifiers(prev => prev.filter(m => m !== 'alt'));
-        } else if (modifier === 'shift') {
-          setPressedModifiers(prev => prev.filter(m => m !== 'shift'));
-        } else if (modifier === 'option') {
-          setPressedModifiers(prev => prev.filter(m => m !== 'option'));
-        } else if (modifier === 'command') {
-          setPressedModifiers(prev => prev.filter(m => m !== 'command'));
+        const modifier =
+          MODIFIER_MAP[e.key.toLowerCase() as keyof typeof MODIFIER_MAP];
+        if (modifier) {
+          setPressedModifiers(prev => prev.filter(m => m !== modifier));
         }
       }
     },
@@ -292,24 +263,7 @@ export default function Custom() {
     const modifierText =
       shortcut.modifiers.length > 0
         ? shortcut.modifiers
-            .map(m => {
-              switch (m) {
-                case 'ctrl':
-                  return 'Ctrl';
-                case 'meta':
-                  return '⌘';
-                case 'alt':
-                  return 'Alt';
-                case 'shift':
-                  return 'Shift';
-                case 'option':
-                  return 'Option';
-                case 'command':
-                  return 'Command';
-                default:
-                  return m;
-              }
-            })
+            .map(m => MODIFIER_DISPLAY[m as keyof typeof MODIFIER_DISPLAY] || m)
             .join(' + ') + ' + '
         : '';
 
@@ -339,9 +293,7 @@ export default function Custom() {
       <div className='flex flex-col space-y-3'>
         <Button
           type={isListening ? 'primary' : 'dashed'}
-          onClick={() =>
-            isListening ? stopListening() : startListening(keyName)
-          }
+          onClick={() => toggleListening(keyName)}
           className={`min-w-[180px] h-12 text-base font-medium transition-all duration-300 ${
             isListening
               ? 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 border-0 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40'
@@ -463,7 +415,15 @@ export default function Custom() {
                       max={100}
                       className='slider-purple'
                       tooltip={{ placement: 'top' }}
-                      defaultValue={settings.pronunciationVolume}
+                      value={settings?.pronunciationVolume}
+                      onChange={value => {
+                        form.setFieldValue('pronunciationVolume', value);
+                        setSettings(prev =>
+                          prev
+                            ? { ...prev, pronunciationVolume: value }
+                            : undefined
+                        );
+                      }}
                     />
                   </div>
                 </Form.Item>
@@ -486,7 +446,15 @@ export default function Custom() {
                       max={100}
                       className='slider-purple'
                       tooltip={{ placement: 'top' }}
-                      defaultValue={settings.typingSoundVolume}
+                      value={settings?.typingSoundVolume}
+                      onChange={value => {
+                        form.setFieldValue('typingSoundVolume', value);
+                        setSettings(prev =>
+                          prev
+                            ? { ...prev, typingSoundVolume: value }
+                            : undefined
+                        );
+                      }}
                     />
                   </div>
                 </Form.Item>
@@ -532,7 +500,12 @@ export default function Custom() {
                   }>
                   <ShortcutButton
                     keyName='resetExercise'
-                    currentShortcut={settings.resetExercise}
+                    currentShortcut={
+                      settings?.shortcuts.resetExercise || {
+                        key: '',
+                        modifiers: []
+                      }
+                    }
                   />
                 </Form.Item>
               </Col>
@@ -548,7 +521,12 @@ export default function Custom() {
                   }>
                   <ShortcutButton
                     keyName='toggleHint'
-                    currentShortcut={settings.toggleHint}
+                    currentShortcut={
+                      settings?.shortcuts.toggleHint || {
+                        key: '',
+                        modifiers: []
+                      }
+                    }
                   />
                 </Form.Item>
               </Col>
@@ -564,7 +542,12 @@ export default function Custom() {
                   }>
                   <ShortcutButton
                     keyName='pronunciation'
-                    currentShortcut={settings.pronunciation}
+                    currentShortcut={
+                      settings?.shortcuts.pronunciation || {
+                        key: '',
+                        modifiers: []
+                      }
+                    }
                   />
                 </Form.Item>
               </Col>
@@ -587,7 +570,12 @@ export default function Custom() {
                   }>
                   <ShortcutButton
                     keyName='wordNavigationPrev'
-                    currentShortcut={settings.wordNavigation.prev}
+                    currentShortcut={
+                      settings?.shortcuts.wordNavigation.prev || {
+                        key: '',
+                        modifiers: []
+                      }
+                    }
                   />
                 </Form.Item>
               </Col>
@@ -603,7 +591,12 @@ export default function Custom() {
                   }>
                   <ShortcutButton
                     keyName='wordNavigationNext'
-                    currentShortcut={settings.wordNavigation.next}
+                    currentShortcut={
+                      settings?.shortcuts.wordNavigation.next || {
+                        key: '',
+                        modifiers: []
+                      }
+                    }
                   />
                 </Form.Item>
               </Col>

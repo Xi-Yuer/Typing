@@ -285,6 +285,74 @@ export interface CreateWordErrorRecordDto {
    */
   languageId: string;
 }
+export interface ShortcutConfigDto {
+  /**
+   * 快捷键主键
+   */
+  key: string;
+  /**
+   * 修饰键数组
+   */
+  modifiers: string[];
+}
+export interface WordNavigationDto {
+  /**
+   * 上一个单词快捷键
+   */
+  prev: ShortcutConfigDto;
+  /**
+   * 下一个单词快捷键
+   */
+  next: ShortcutConfigDto;
+}
+export interface ShortcutsDto {
+  /**
+   * 重置练习快捷键
+   */
+  resetExercise: ShortcutConfigDto;
+  /**
+   * 切换提示快捷键
+   */
+  toggleHint: ShortcutConfigDto;
+  /**
+   * 播放发音快捷键
+   */
+  pronunciation: ShortcutConfigDto;
+  /**
+   * 单词导航快捷键
+   */
+  wordNavigation: WordNavigationDto;
+}
+export interface UpdateUserSettingsDto {
+  /**
+   * 发音音色
+   */
+  voiceType: '0' | '1';
+  /**
+   * 发音音量
+   */
+  pronunciationVolume: number;
+  /**
+   * 打字音效音量
+   */
+  typingSoundVolume: number;
+  /**
+   * 是否启用音效
+   */
+  soundEnabled: boolean;
+  /**
+   * 是否自动播放发音
+   */
+  autoPlayPronunciation: boolean;
+  /**
+   * 是否显示快捷键提示
+   */
+  showShortcutHints: boolean;
+  /**
+   * 快捷键配置
+   */
+  shortcuts: ShortcutsDto;
+}
 export interface User {
   /**
    * 用户ID
@@ -561,6 +629,28 @@ export interface WordErrorStatisticsResponseDto {
    * 请求路径
    */
   path: string;
+}
+export interface UserSettingsResponseDto {
+  /**
+   * 设置ID
+   */
+  id: number;
+  /**
+   * 用户ID
+   */
+  userId: number;
+  /**
+   * 用户设置数据
+   */
+  settings: Record<string, any>;
+  /**
+   * 创建时间
+   */
+  createTime: string;
+  /**
+   * 更新时间
+   */
+  updateTime: string;
 }
 export interface UpdateLanguageDto {
   /**
@@ -14060,6 +14150,399 @@ declare global {
       ): Alova2Method<
         null,
         'general.WordErrorRecordsController_removeBatch',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取用户设置
+       *
+       * **path:** /api/user-settings
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 设置ID
+       *     id: number
+       *     // 用户ID
+       *     userId: number
+       *     // 用户设置数据
+       *     settings: Record<string, any>
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      UserSettingsController_getUserSettings<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
+      >(
+        config?: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.UserSettingsController_getUserSettings',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [DELETE] 重置用户设置为默认值
+       *
+       * **path:** /api/user-settings
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 设置ID
+       *     id: number
+       *     // 用户ID
+       *     userId: number
+       *     // 用户设置数据
+       *     settings: Record<string, any>
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      UserSettingsController_resetUserSettings<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
+      >(
+        config?: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.UserSettingsController_resetUserSettings',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 更新用户设置
+       *
+       * **path:** /api/user-settings/update
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 发音音色
+       *   voiceType: '0' | '1'
+       *   // 发音音量
+       *   pronunciationVolume: number
+       *   // 打字音效音量
+       *   typingSoundVolume: number
+       *   // 是否启用音效
+       *   soundEnabled: boolean
+       *   // 是否自动播放发音
+       *   autoPlayPronunciation: boolean
+       *   // 是否显示快捷键提示
+       *   showShortcutHints: boolean
+       *   // 快捷键配置
+       *   shortcuts: {
+       *     // 重置练习快捷键
+       *     resetExercise: {
+       *       // 快捷键主键
+       *       key: string
+       *       // 修饰键数组
+       *       // [items] start
+       *       // [items] end
+       *       modifiers: string[]
+       *     }
+       *     // 切换提示快捷键
+       *     toggleHint: {
+       *       // 快捷键主键
+       *       key: string
+       *       // 修饰键数组
+       *       // [items] start
+       *       // [items] end
+       *       modifiers: string[]
+       *     }
+       *     // 播放发音快捷键
+       *     pronunciation: {
+       *       // 快捷键主键
+       *       key: string
+       *       // 修饰键数组
+       *       // [items] start
+       *       // [items] end
+       *       modifiers: string[]
+       *     }
+       *     // 单词导航快捷键
+       *     wordNavigation: {
+       *       // 上一个单词快捷键
+       *       prev: {
+       *         // 快捷键主键
+       *         key: string
+       *         // 修饰键数组
+       *         // [items] start
+       *         // [items] end
+       *         modifiers: string[]
+       *       }
+       *       // 下一个单词快捷键
+       *       next: {
+       *         // 快捷键主键
+       *         key: string
+       *         // 修饰键数组
+       *         // [items] start
+       *         // [items] end
+       *         modifiers: string[]
+       *       }
+       *     }
+       *   }
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 设置ID
+       *     id: number
+       *     // 用户ID
+       *     userId: number
+       *     // 用户设置数据
+       *     settings: Record<string, any>
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      UserSettingsController_updateUserSettings<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          data: UpdateUserSettingsDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.UserSettingsController_updateUserSettings',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取默认设置
+       *
+       * **path:** /api/user-settings/defaults
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 设置ID
+       *     id: number
+       *     // 用户ID
+       *     userId: number
+       *     // 用户设置数据
+       *     settings: Record<string, any>
+       *     // 创建时间
+       *     createTime: string
+       *     // 更新时间
+       *     updateTime: string
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      UserSettingsController_getDefaultSettings<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
+      >(
+        config?: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: UserSettingsResponseDto;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.UserSettingsController_getDefaultSettings',
         Config
       >;
     };

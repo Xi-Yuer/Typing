@@ -262,5 +262,21 @@ export default {
   'general.WordErrorRecordsController_removeBatch': [
     'DELETE',
     '/api/word-error-records/batch'
+  ],
+  'general.UserSettingsController_getUserSettings': [
+    'GET',
+    '/api/user-settings'
+  ],
+  'general.UserSettingsController_resetUserSettings': [
+    'DELETE',
+    '/api/user-settings'
+  ],
+  'general.UserSettingsController_updateUserSettings': [
+    'POST',
+    '/api/user-settings/update'
+  ],
+  'general.UserSettingsController_getDefaultSettings': [
+    'GET',
+    '/api/user-settings/defaults'
   ]
 };

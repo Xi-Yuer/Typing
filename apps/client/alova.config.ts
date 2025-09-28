@@ -3,7 +3,8 @@ export default {
     {
       input: 'http://localhost:3001/api/doc-json',
       platform: 'swagger',
-      output: './src/request'
+      output: './src/request',
+      type: 'typescript'
     }
   ],
   autoUpdate: false

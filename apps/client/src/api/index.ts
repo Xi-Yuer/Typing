@@ -135,3 +135,19 @@ export const markWordErrorRecordAsPracticed = (id: string) => {
 export const getWordErrorStatistics = () => {
   return Apis.general.WordErrorRecordsController_getErrorStatistics();
 };
+
+// 获取用户设置
+export const getUserSettings = () => {
+  return Apis.general.UserSettingsController_getUserSettings();
+};
+
+// 更新用户设置
+export const updateUserSettings = (data: any) => {
+  return Apis.general.UserSettingsController_updateUserSettings({
+    data: data
+  });
+};
+// 重置用户设置
+export const resetUserSettings = () => {
+  return Apis.general.UserSettingsController_resetUserSettings();
+};

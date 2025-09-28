@@ -1,5 +1,8 @@
 'use client';
 
-export default function Home() {
-  return <div>Home</div>;
+interface Props {
+  children: React.ReactNode;
+}
+export default function Home({ children }: Props) {
+  return <div>{children}</div>;
 }
