@@ -13,6 +13,7 @@ export type { WordState, TypingTextProps } from './types';
 const TypingText = function ({
   word,
   mode,
+  userSettings,
   onComplete,
   onNext,
   onPrev
@@ -37,7 +38,7 @@ const TypingText = function ({
     playWordPronunciation,
     onToggleHint,
     submitAnswer
-  } = useTypingLogic({ mode, word, onComplete, onNext, onPrev });
+  } = useTypingLogic({ mode, word, userSettings, onComplete, onNext, onPrev });
 
   // 确保容器可以接收键盘事件
   useEffect(() => {
@@ -110,6 +111,7 @@ const TypingText = function ({
         playWordPronunciation={playWordPronunciation}
         onToggleHint={onToggleHint}
         submitAnswer={submitAnswer}
+        userSettings={userSettings}
       />
     </div>
   );

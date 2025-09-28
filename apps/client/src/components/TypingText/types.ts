@@ -16,6 +16,7 @@ export interface TypingTextProps {
   word?: Word;
   mode?: GameMode;
   className?: string;
+  userSettings?: import('@/types').UserSettings;
   onComplete?: (isCorrect: boolean) => void;
   onNext?: () => void;
   onPrev?: () => void;

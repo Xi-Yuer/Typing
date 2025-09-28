@@ -8,13 +8,30 @@ import { Welcome } from '@/components/Welcome';
 import { INITAIL_WORD } from '@/constant';
 import { DoubleRightOutlined } from '@ant-design/icons';
 import MoreAction from '@/components/MoreAction';
+import { getUserSettings } from '@/api';
+import { UserSettings } from '@/types';
 
 export default function Page() {
   const [showTyping, setShowTyping] = useState(false);
+  const [userSettings, setUserSettings] = useState<UserSettings>();
   const welcomeRef = useRef<HTMLDivElement>(null);
   const typingRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const plasmaRef = useRef<HTMLDivElement>(null);
+
+  // 加载用户设置
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      try {
+        const res = await getUserSettings();
+        const settings = res.data.settings as UserSettings;
+        setUserSettings(settings);
+      } catch {
+        // 静默处理错误，使用默认设置
+      }
+    };
+    loadUserSettings();
+  }, []);
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -113,7 +130,11 @@ export default function Page() {
         <div className='h-screen flex-col mt-16 flex items-center relative justify-center'>
           {showTyping && (
             <div ref={typingRef} style={{ opacity: 0 }}>
-              <TypingText word={INITAIL_WORD} mode='dictation' />
+              <TypingText
+                word={INITAIL_WORD}
+                mode='dictation'
+                userSettings={userSettings}
+              />
             </div>
           )}
           {showTyping && (

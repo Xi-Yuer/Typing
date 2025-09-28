@@ -6,10 +6,12 @@ import { useWordState } from './useWordState';
 import { useKeyboardHandlers } from './useKeyboardHandlers';
 import { isWord, debounce } from '@/utils';
 import { GameMode } from '@/components/GameModeModal/types';
+import { UserSettings } from '@/types';
 
 interface UseTypingLogicProps {
   mode?: GameMode;
   word?: Word;
+  userSettings?: UserSettings;
   onComplete?: (isCorrect: boolean) => void;
   onNext?: () => void;
   onPrev?: () => void;
@@ -18,6 +20,7 @@ interface UseTypingLogicProps {
 export const useTypingLogic = ({
   mode = 'dictation',
   word,
+  userSettings,
   onComplete,
   onNext,
   onPrev
@@ -194,7 +197,6 @@ export const useTypingLogic = ({
       if (direction === 'left') {
         targetIndex = findPrevIncompleteWord(currentWordIndex);
       } else {
-        // 查找下一个单词（不限于未完成）
         for (let i = currentWordIndex + 1; i < words.length; i++) {
           if (isWord(words[i].text)) {
             targetIndex = i;
@@ -207,6 +209,8 @@ export const useTypingLogic = ({
         setActiveWord(targetIndex);
         setInputValue(words[targetIndex].userInput);
         hasErrorRef.current = false;
+      } else {
+        console.log('no target word found');
       }
     },
     [currentWordIndex, words, findPrevIncompleteWord, setActiveWord]
@@ -271,6 +275,7 @@ export const useTypingLogic = ({
     word,
     isComposing,
     isAllCorrect,
+    userSettings,
     onInputChange: (value: string) => {
       setInputValue(value);
       updateWordInput(currentWordIndex, value);

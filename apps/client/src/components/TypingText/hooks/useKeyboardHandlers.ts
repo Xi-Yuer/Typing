@@ -2,9 +2,11 @@ import { RefObject, useCallback, useRef, useMemo } from 'react';
 import { specialKeys } from '@/constant';
 import { playWordAudio } from '@/hooks/useSpeech';
 import { useTypingSound } from '@/hooks/useTypingSound';
-import { KEYBOARD_SHORTCUTS, IS_MAC } from '../constants';
+import { useUserShortcuts } from '@/hooks/useUserShortcuts';
+import { KEYBOARD_SHORTCUTS } from '../constants';
 import { UseKeyboardHandlersReturn, WordState } from '../types';
 import { Word } from '@/request/globals';
+import { UserSettings } from '@/types';
 import { debounce } from '@/utils';
 
 interface UseKeyboardHandlersProps {
@@ -15,6 +17,7 @@ interface UseKeyboardHandlersProps {
   word?: Word;
   isComposing: boolean;
   isAllCorrect: boolean;
+  userSettings?: UserSettings;
   onInputChange: (value: string) => void;
   onSubmitAnswer: () => void;
   onResetExercise: () => void;
@@ -35,6 +38,7 @@ export const useKeyboardHandlers = ({
   word,
   isComposing,
   isAllCorrect,
+  userSettings,
   onInputChange,
   onSubmitAnswer,
   onResetExercise,
@@ -61,39 +65,17 @@ export const useKeyboardHandlers = ({
     }
   }, [word]);
 
-  // 使用 debounce 包装播放函数
-  const playWordPronunciation = useMemo(
-    () => debounce(playWordAudioInternal, 500),
-    [playWordAudioInternal]
-  );
-
-  // 防抖版本的快捷键处理函数
-  const debouncedResetExercise = useMemo(
-    () =>
-      debounce(() => {
-        onResetExercise();
-        inputRef.current?.focus();
-      }, 300),
-    [onResetExercise, inputRef]
-  );
-
-  const debouncedToggleHint = useMemo(
-    () =>
-      debounce(() => {
-        onToggleHint();
-        inputRef.current?.focus();
-      }, 300),
-    [onToggleHint, inputRef]
-  );
-
-  const debouncedNavigateWord = useMemo(
-    () =>
-      debounce((direction: 'left' | 'right') => {
-        onNavigateWord(direction);
-        inputRef.current?.focus();
-      }, 200),
-    [onNavigateWord, inputRef]
-  );
+  // 使用用户自定义快捷键
+  useUserShortcuts({
+    settings: userSettings,
+    onResetExercise,
+    onToggleHint,
+    onPlayPronunciation: playWordAudioInternal,
+    onNavigateWord,
+    onNext,
+    onPrev,
+    inputRef
+  });
 
   const debouncedJumpToFirst = useMemo(
     () =>
@@ -129,15 +111,6 @@ export const useKeyboardHandlers = ({
         inputRef.current?.focus();
       }, 300),
     [onNext, inputRef]
-  );
-
-  const debouncedPrevWord = useMemo(
-    () =>
-      debounce(() => {
-        onPrev?.();
-        inputRef.current?.focus();
-      }, 300),
-    [onPrev, inputRef]
   );
 
   // 处理退格键逻辑
@@ -199,54 +172,8 @@ export const useKeyboardHandlers = ({
         playTypingSound();
       }
 
-      // 处理快捷键 (根据系统使用Ctrl或Cmd键)
-      const isModifierPressed = IS_MAC ? e.metaKey : e.ctrlKey;
-
-      if (isModifierPressed) {
-        switch (e.key) {
-          case KEYBOARD_SHORTCUTS.RESET_EXERCISE:
-            e.preventDefault();
-            debouncedResetExercise();
-            return;
-          case KEYBOARD_SHORTCUTS.TOGGLE_HINT:
-            e.preventDefault();
-            debouncedToggleHint();
-            return;
-          case KEYBOARD_SHORTCUTS.PRONUNCIATION:
-            e.preventDefault();
-            playWordPronunciation();
-            inputRef.current?.focus();
-            return;
-          case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.BACKSPACE:
-            handleBackspace(e, true);
-            inputRef.current?.focus();
-            return;
-        }
-      }
-
-      // Command/Ctrl组合键处理（根据操作系统）
-      if (isModifierPressed) {
-        if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.PREV) {
-          e.preventDefault();
-          debouncedNextWord();
-          return;
-        }
-        if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.NEXT) {
-          e.preventDefault();
-          debouncedPrevWord();
-          return;
-        }
-      }
-
-      // 导航键处理
+      // 基础导航键处理（无修饰键）
       switch (e.key) {
-        case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.LEFT:
-        case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.RIGHT:
-          e.preventDefault();
-          debouncedNavigateWord(
-            e.key === KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.LEFT ? 'left' : 'right'
-          );
-          return;
         case KEYBOARD_SHORTCUTS.NAVIGATION_KEYS.HOME:
           e.preventDefault();
           debouncedJumpToFirst();
@@ -284,13 +211,7 @@ export const useKeyboardHandlers = ({
       isComposing,
       isAllCorrect,
       playTypingSound,
-      debouncedResetExercise,
-      debouncedToggleHint,
-      playWordPronunciation,
       handleBackspace,
-      debouncedNextWord,
-      debouncedPrevWord,
-      debouncedNavigateWord,
       debouncedJumpToFirst,
       debouncedJumpToLast,
       debouncedClearInput,
@@ -311,40 +232,6 @@ export const useKeyboardHandlers = ({
   // 全局键盘事件处理器（用于容器div）
   const handleGlobalKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
-      // 处理快捷键 (根据系统使用Ctrl或Cmd键)
-      const isModifierPressed = IS_MAC ? e.metaKey : e.ctrlKey;
-
-      if (isModifierPressed) {
-        switch (e.key) {
-          case KEYBOARD_SHORTCUTS.RESET_EXERCISE:
-            e.preventDefault();
-            debouncedResetExercise();
-            return;
-          case KEYBOARD_SHORTCUTS.TOGGLE_HINT:
-            e.preventDefault();
-            debouncedToggleHint();
-            return;
-          case KEYBOARD_SHORTCUTS.PRONUNCIATION:
-            e.preventDefault();
-            playWordPronunciation();
-            inputRef.current?.focus();
-            return;
-        }
-      }
-
-      // Shift组合键处理
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.PREV) {
-          e.preventDefault();
-          debouncedPrevWord();
-          return;
-        }
-        if (e.key === KEYBOARD_SHORTCUTS.WORD_NAVIGATION.NEXT) {
-          e.preventDefault();
-          debouncedNextWord();
-          return;
-        }
-      }
       // 全部完成的时候空格键或者回车，切换到下一个单词
       if (isAllCorrect) {
         if (
@@ -357,15 +244,7 @@ export const useKeyboardHandlers = ({
         }
       }
     },
-    [
-      debouncedResetExercise,
-      debouncedToggleHint,
-      playWordPronunciation,
-      debouncedNextWord,
-      debouncedPrevWord,
-      isAllCorrect,
-      inputRef
-    ]
+    [debouncedNextWord, isAllCorrect]
   );
 
   return {

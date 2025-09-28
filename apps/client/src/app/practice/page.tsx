@@ -14,13 +14,15 @@ import {
   createWordErrorRecord,
   getUserWordsProgress,
   getWordsByCategoryId,
-  reportWordError
+  reportWordError,
+  getUserSettings
 } from '@/api';
 import { useGameModeContext } from '@/contexts/GameModeContext';
 import { Button, Tooltip } from 'antd';
 import TypingText from '@/components/TypingText';
 import GameModeModal from '@/components/GameModeModal';
 import WordErrorReportModal from '@/components/WordErrorReportModal';
+import { UserSettings } from '@/types';
 import { Word } from '@/request/globals';
 import IconFont from '@/components/IconFont';
 import { useRouter } from 'next/navigation';
@@ -48,6 +50,7 @@ function PracticePageContent() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [globalWordIndex, setGlobalWordIndex] = useState(0); // 全局单词索引
   const [isErrorReportModalOpen, setIsErrorReportModalOpen] = useState(false);
+  const [userSettings, setUserSettings] = useState<UserSettings>();
   const ref = useRef(null);
   const [isFullscreen, { toggleFullscreen }] = useFullscreen(ref);
   const router = useRouter();
@@ -61,6 +64,22 @@ function PracticePageContent() {
     setLanguageId(langId);
     setCategoryId(catId);
   }, [searchParams]);
+
+  /**
+   * 加载用户设置
+   */
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      try {
+        const res = await getUserSettings();
+        const settings = res.data.settings as UserSettings;
+        setUserSettings(settings);
+      } catch {
+        // 静默处理错误，使用默认设置
+      }
+    };
+    loadUserSettings();
+  }, []);
 
   /**
    * 加载练习数据
@@ -303,6 +322,7 @@ function PracticePageContent() {
         <TypingText
           word={words[currentWordIndex]}
           mode={currentMode}
+          userSettings={userSettings}
           onComplete={handleWordComplete}
           onNext={handleNextWord}
           onPrev={handlePrevWord}
