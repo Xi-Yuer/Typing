@@ -47,6 +47,7 @@ jobs:
         with:
           node-version: '23'
           cache: 'pnpm'
+          cache-dependency-path: ./pnpm-lock.yaml
 
       # 设置 Docker Buildx
       - name: Set up Docker Buildx
