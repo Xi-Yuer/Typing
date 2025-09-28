@@ -26,10 +26,13 @@ RUN --mount=type=cache,target=/app/.pnpm-store \
 # 复制源代码
 COPY . .
 
+# 声明构建参数
+ARG SERVER_URL=http://localhost
+
 # 设置构建时环境变量
 ENV NEXT_PUBLIC_BASE_URL=/
 ENV VITE_API_URL=/
-ENV NEXT_PUBLIC_GITHUB_SSO_URL=${SERVER_URL:-http://localhost}/api/auth/github/callback
+ENV NEXT_PUBLIC_GITHUB_SSO_URL=${SERVER_URL}/api/auth/github/callback
 ENV FRONTEND_URL=http://frontend
 ENV DB_HOST=mysql
 ENV DB_PORT=3306
@@ -125,13 +128,16 @@ RUN pnpm config set store-dir /app/.pnpm-store --global
 # 暴露端口
 EXPOSE 3001 3000
 
+# 声明构建参数
+ARG SERVER_URL=http://localhost
+
 # 设置环境变量
 ENV NODE_ENV=production
 ENV BACKEND_PORT=3001
 ENV FRONTEND_PORT=3000
 ENV NEXT_PUBLIC_BASE_URL=/
 ENV VITE_API_URL=/
-ENV NEXT_PUBLIC_GITHUB_SSO_URL=${SERVER_URL:-http://localhost}/api/auth/github/callback
+ENV NEXT_PUBLIC_GITHUB_SSO_URL=${SERVER_URL}/api/auth/github/callback
 ENV FRONTEND_URL=http://frontend
 ENV DB_HOST=mysql
 ENV DB_NAME=typing_db

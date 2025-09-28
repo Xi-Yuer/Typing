@@ -98,6 +98,8 @@ jobs:
           push: true
           tags: ${{ steps.app-meta.outputs.tags }}
           labels: ${{ steps.app-meta.outputs.labels }}
+          build-args: |
+            SERVER_URL=${{ secrets.SERVER_URL || 'http://localhost' }}
 
       # 构建并推送 Nginx Docker 镜像
       - name: Build and push nginx Docker image
