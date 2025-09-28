@@ -64,6 +64,9 @@ start_services() {
         print_message $GREEN "✓ nginx初始化脚本权限已设置"
     fi
     
+    # 停止服务
+    stop_services
+
     # 启动服务
     print_message $BLUE "启动所有服务..."
     docker-compose -f $compose_file up -d
