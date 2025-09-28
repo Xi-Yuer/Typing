@@ -8,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -16,7 +16,7 @@ services:
     networks:
       - typing-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
       timeout: 20s
       retries: 10
       interval: 10s
@@ -28,13 +28,13 @@ services:
     container_name: typing-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     networks:
       - typing-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       timeout: 3s
       retries: 5
       interval: 10s
@@ -46,8 +46,8 @@ services:
     container_name: typing-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "8080:8080"
+      - '80:80'
+      - '8080:8080'
     depends_on:
       - app
     networks:
@@ -59,15 +59,15 @@ services:
     container_name: typing-app
     restart: unless-stopped
     expose:
-      - "3001"
-      - "3000"
-      - "8080"
+      - '3001'
+      - '3000'
+      - '8080'
     environment:
       # 应用环境
       NODE_ENV: production
       BACKEND_PORT: 3001
       FRONTEND_PORT: 3000
-      
+
       # 数据库配置
       DB_HOST: mysql
       DB_PORT: 3306
@@ -75,38 +75,38 @@ services:
       DB_USER: ${DB_USER:-typing_user}
       DB_PASSWORD: ${DB_PASSWORD}
       DATABASE_URL: mysql://${DB_USER:-typing_user}:${DB_PASSWORD}@mysql:3306/${DB_NAME:-typing_db}
-      
+
       # Redis 配置
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_URL: redis://redis:6379
-      
+
       # JWT 配置
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
-      
+
       # 前端配置
       NEXT_PUBLIC_BASE_URL: /
       VITE_API_URL: ${VITE_API_URL:-/}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
-      NEXT_PUBLIC_GITHUB_SSO_URL: http://backend/api/auth/github/callback
-      
+      NEXT_PUBLIC_GITHUB_SSO_URL: ${SERVER_URL:-http://localhost}/api/auth/github/callback
+
       # 功能开关
       ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}
       ENABLE_GUEST_MODE: ${ENABLE_GUEST_MODE:-true}
       ENABLE_SWAGGER: ${ENABLE_SWAGGER:-false}
       ENABLE_CORS: ${ENABLE_CORS:-true}
-      
+
       # GitHub OAuth (可选)
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
       GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-/api/auth/github/callback}
-      
+
       # QQ OAuth (可选)
       QQ_CLIENT_ID: ${QQ_CLIENT_ID:-}
       QQ_CLIENT_SECRET: ${QQ_CLIENT_SECRET:-}
       QQ_CALLBACK_URL: ${QQ_CALLBACK_URL:-/api/auth/qq/callback}
-      
+
       # 语音服务 (可选)
       YOUDAO_APP_KEY: ${YOUDAO_APP_KEY:-}
       YOUDAO_APP_SECRET: ${YOUDAO_APP_SECRET:-}
@@ -118,7 +118,7 @@ services:
     networks:
       - typing-network
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "3001"]
+      test: ['CMD', 'nc', '-z', 'localhost', '3001']
       timeout: 10s
       retries: 5
       interval: 30s

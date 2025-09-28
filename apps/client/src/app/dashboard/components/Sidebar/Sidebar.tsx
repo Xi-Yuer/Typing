@@ -12,7 +12,12 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: 'home', name: '主页', href: '/dashboard/main', icon: 'icon-home' },
+  {
+    id: 'home',
+    name: '数据概览',
+    href: '/dashboard/main',
+    icon: 'icon-dashboard'
+  },
   {
     id: 'rangking',
     name: '排行榜',

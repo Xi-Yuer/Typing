@@ -92,29 +92,29 @@ export default function Main() {
   }
 
   // 计算统计数据
-  const totalErrors = statistics.totalErrors;
-  const totalLanguages = statistics.languageStats.length;
-  const totalCategories = statistics.categoryStats.length;
+  const totalErrors = statistics.totalErrors || 0;
+  const totalLanguages = statistics.languageStats?.length || 0;
+  const totalCategories = statistics.categoryStats?.length || 0;
   const avgErrorsPerLanguage =
-    totalLanguages > 0 ? (totalErrors / totalLanguages).toFixed(1) : '0';
+    totalLanguages > 0 ? (totalErrors / totalLanguages).toFixed(1) : '0.0';
 
   // 找出错误最多的语言和分类
-  const topLanguage = statistics.languageStats.reduce(
+  const topLanguage = statistics.languageStats?.reduce(
     (max, lang) => (lang.errorCount > max.errorCount ? lang : max),
-    statistics.languageStats[0]
+    statistics.languageStats?.[0]
   );
-  const topCategory = statistics.categoryStats.reduce(
+  const topCategory = statistics.categoryStats?.reduce(
     (max, cat) => (cat.errorCount > max.errorCount ? cat : max),
-    statistics.categoryStats[0]
+    statistics.categoryStats?.[0]
   );
 
   // 准备图表数据
-  const languageChartData = statistics.languageStats.map(lang => ({
+  const languageChartData = statistics.languageStats?.map(lang => ({
     name: lang.languageName,
     value: lang.errorCount
   }));
 
-  const categoryChartData = statistics.categoryStats.map(cat => ({
+  const categoryChartData = statistics.categoryStats?.map(cat => ({
     name: cat.categoryName,
     value: cat.errorCount
   }));
@@ -282,13 +282,13 @@ export default function Main() {
                           <div className='text-sm text-gray-400'>
                             语言:{' '}
                             <span className='text-white font-medium'>
-                              {topLanguage.languageName}
+                              {topLanguage?.languageName || ''}
                             </span>
                           </div>
                           <div className='text-sm text-gray-400'>
                             分类:{' '}
                             <span className='text-white font-medium'>
-                              {topCategory.categoryName}
+                              {topCategory?.categoryName || ''}
                             </span>
                           </div>
                           <div className='text-xs text-red-400/80'>
@@ -406,13 +406,13 @@ export default function Main() {
                           </tr>
                         </thead>
                         <tbody>
-                          {statistics.languageStats.map(language => {
+                          {statistics?.languageStats?.map(language => {
                             const errorRate =
                               language.wordCount > 0
                                 ? language.errorCount / language.wordCount
                                 : 0;
                             const isTopError =
-                              language.errorCount === topLanguage.errorCount;
+                              language.errorCount === topLanguage?.errorCount;
                             return (
                               <tr
                                 key={language.languageId}
@@ -423,20 +423,20 @@ export default function Main() {
                                       <Award className='w-4 h-4 text-yellow-400' />
                                     )}
                                     <span className='font-medium text-white'>
-                                      {language.languageName}
+                                      {language?.languageName || ''}
                                     </span>
                                   </div>
                                 </td>
                                 <td className='py-4 px-4 text-gray-200'>
-                                  {language.errorCount.toLocaleString()}
+                                  {language?.errorCount.toLocaleString() || '0'}
                                 </td>
                                 <td className='py-4 px-4 text-gray-200'>
-                                  {language.wordCount.toLocaleString()}
+                                  {language?.wordCount.toLocaleString() || '0'}
                                 </td>
                                 <td className='py-4 px-4'>
                                   <div className='flex items-center space-x-2'>
                                     <div className='text-gray-200'>
-                                      {(errorRate * 100).toFixed(1)}%
+                                      {(errorRate * 100).toFixed(1) || '0.0'}%
                                     </div>
                                     <div
                                       className={`w-2 h-2 rounded-full ${errorRate > 0.1 ? 'bg-red-400' : errorRate > 0.05 ? 'bg-yellow-400' : 'bg-green-400'}`}></div>
@@ -518,13 +518,13 @@ export default function Main() {
                           </tr>
                         </thead>
                         <tbody>
-                          {statistics.categoryStats.map(category => {
+                          {statistics?.categoryStats?.map(category => {
                             const errorRate =
                               category.wordCount > 0
                                 ? category.errorCount / category.wordCount
                                 : 0;
                             const isTopError =
-                              category.errorCount === topCategory.errorCount;
+                              category.errorCount === topCategory?.errorCount;
                             return (
                               <tr
                                 key={category.categoryId}
@@ -535,20 +535,20 @@ export default function Main() {
                                       <Award className='w-4 h-4 text-yellow-400' />
                                     )}
                                     <span className='font-medium text-white'>
-                                      {category.categoryName}
+                                      {category?.categoryName || ''}
                                     </span>
                                   </div>
                                 </td>
                                 <td className='py-4 px-4 text-gray-200'>
-                                  {category.errorCount.toLocaleString()}
+                                  {category?.errorCount.toLocaleString() || '0'}
                                 </td>
                                 <td className='py-4 px-4 text-gray-200'>
-                                  {category.wordCount.toLocaleString()}
+                                  {category?.wordCount.toLocaleString() || '0'}
                                 </td>
                                 <td className='py-4 px-4'>
                                   <div className='flex items-center space-x-2'>
                                     <div className='text-gray-200'>
-                                      {(errorRate * 100).toFixed(1)}%
+                                      {(errorRate * 100).toFixed(1) || '0.0'}%
                                     </div>
                                     <div
                                       className={`w-2 h-2 rounded-full ${errorRate > 0.1 ? 'bg-red-400' : errorRate > 0.05 ? 'bg-yellow-400' : 'bg-green-400'}`}></div>
