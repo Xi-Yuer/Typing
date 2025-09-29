@@ -22,6 +22,8 @@ import {
 import '@ant-design/v5-patch-for-react-19';
 import { getUserSettings, updateUserSettings, resetUserSettings } from '@/api';
 import { UserSettings } from '@/types';
+import { playWordAudio } from '@/hooks/useSpeech';
+import { INITAIL_WORD } from '@/constant';
 
 const { Option } = Select;
 
@@ -67,12 +69,20 @@ export default function Custom() {
     loadSettings();
   }, [loadSettings]);
 
+  // 监听设置加载完成，初始化表单
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    if (settings && !isInitialized) {
+      form.setFieldsValue(settings);
+      setIsInitialized(true);
+    }
+  }, [settings, form, isInitialized]);
+
   const handleSave = async () => {
     try {
       setIsLoading(true);
       await form.validateFields();
-
-      // 合并表单值和快捷键配置
       const saveData = {
         ...form.getFieldsValue(),
         shortcuts: settings?.shortcuts
@@ -101,8 +111,7 @@ export default function Custom() {
         if (res.code === 200) {
           const newSettings = res.data.settings as UserSettings;
           setSettings(newSettings);
-          form.setFieldsValue(newSettings);
-
+          form.setFieldsValue(newSettings); // 直接更新表单值
           messageApi.success('设置已重置为默认值');
         } else {
           messageApi.error(res.message);
@@ -123,6 +132,45 @@ export default function Custom() {
       setPressedModifiers([]);
     }
   };
+
+  // 检测快捷键冲突
+  const checkShortcutConflict = useCallback(
+    (
+      newShortcut: { key: string; modifiers: string[] },
+      excludeKeyName?: string
+    ): { hasConflict: boolean; conflictWith?: string } => {
+      if (!settings?.shortcuts) return { hasConflict: false };
+
+      const shortcutEntries = [
+        { name: 'resetExercise', shortcut: settings.shortcuts.resetExercise },
+        { name: 'toggleHint', shortcut: settings.shortcuts.toggleHint },
+        { name: 'pronunciation', shortcut: settings.shortcuts.pronunciation },
+        {
+          name: 'wordNavigationPrev',
+          shortcut: settings.shortcuts.wordNavigation.prev
+        },
+        {
+          name: 'wordNavigationNext',
+          shortcut: settings.shortcuts.wordNavigation.next
+        }
+      ];
+
+      for (const { name, shortcut } of shortcutEntries) {
+        if (name === excludeKeyName) continue;
+
+        if (
+          shortcut.key === newShortcut.key &&
+          JSON.stringify(shortcut.modifiers.sort()) ===
+            JSON.stringify(newShortcut.modifiers.sort())
+        ) {
+          return { hasConflict: true, conflictWith: name };
+        }
+      }
+
+      return { hasConflict: false };
+    },
+    [settings]
+  );
 
   // 处理按键按下事件
   const handleKeyDown = useCallback(
@@ -172,6 +220,29 @@ export default function Custom() {
       if (!settings?.shortcuts) return;
 
       const shortcutConfig = { key: mainKey, modifiers: [...pressedModifiers] };
+
+      // 检查快捷键冲突
+      const conflictCheck = checkShortcutConflict(shortcutConfig, listeningKey);
+      if (conflictCheck.hasConflict) {
+        const conflictNames: Record<string, string> = {
+          resetExercise: '重置练习',
+          toggleHint: '切换提示',
+          pronunciation: '播放发音',
+          wordNavigationPrev: '上一个单词',
+          wordNavigationNext: '下一个单词'
+        };
+
+        const conflictDisplayName =
+          conflictNames[conflictCheck.conflictWith!] ||
+          conflictCheck.conflictWith;
+        messageApi.error(
+          `快捷键冲突！该快捷键已被 "${conflictDisplayName}" 使用，请选择其他快捷键。`
+        );
+        setListeningKey(null);
+        setPressedModifiers([]);
+        return;
+      }
+
       const newSettings = { ...settings };
 
       // 快捷键映射
@@ -224,7 +295,14 @@ export default function Custom() {
       setListeningKey(null);
       setPressedModifiers([]);
     },
-    [listeningKey, settings, pressedModifiers, form, messageApi]
+    [
+      listeningKey,
+      settings,
+      pressedModifiers,
+      form,
+      messageApi,
+      checkShortcutConflict
+    ]
   );
 
   // 处理按键释放事件
@@ -289,6 +367,11 @@ export default function Custom() {
   }) => {
     const isListening = listeningKey === keyName;
 
+    // 检查当前快捷键是否与其他快捷键冲突
+    const hasConflict =
+      currentShortcut.key &&
+      checkShortcutConflict(currentShortcut, keyName).hasConflict;
+
     return (
       <div className='flex flex-col space-y-3'>
         <Button
@@ -297,12 +380,17 @@ export default function Custom() {
           className={`min-w-[180px] h-12 text-base font-medium transition-all duration-300 ${
             isListening
               ? 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 border-0 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40'
-              : 'bg-slate-700/50 hover:bg-slate-600/50 border-slate-600 text-white hover:text-gray-100 shadow-md hover:shadow-lg'
+              : hasConflict
+                ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-0 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/40'
+                : 'bg-slate-700/50 hover:bg-slate-600/50 border-slate-600 text-white hover:text-gray-100 shadow-md hover:shadow-lg'
           }`}>
           {isListening
             ? `按住修饰键${pressedModifiers.length > 0 ? pressedModifiers.join(' + ') + ' + ' : ''}`
             : formatShortcut(currentShortcut)}
         </Button>
+        {hasConflict && (
+          <div className='text-red-400 text-sm text-center'>⚠️ 快捷键冲突</div>
+        )}
       </div>
     );
   };
@@ -342,6 +430,13 @@ export default function Custom() {
                     unCheckedChildren='关闭'
                     className='bg-slate-700'
                     size='default'
+                    onChange={value => {
+                      setSettings(prev =>
+                        prev
+                          ? { ...prev, autoPlayPronunciation: value }
+                          : undefined
+                      );
+                    }}
                   />
                 </Form.Item>
               </Col>
@@ -359,7 +454,16 @@ export default function Custom() {
                     className='bg-slate-800/50 border-slate-600 hover:border-purple-500 transition-colors'
                     placeholder='选择发音音色'
                     suffixIcon={<SoundOutlined className='text-purple-400' />}
-                    size='large'>
+                    size='large'
+                    onChange={value => {
+                      playWordAudio(INITAIL_WORD, {
+                        pronunciationVolume: 100,
+                        typingSoundVolume: 100,
+                        soundEnabled: true,
+                        autoPlayPronunciation: true,
+                        voiceType: value
+                      } as UserSettings);
+                    }}>
                     <Option value='0'>
                       <Space>
                         <span className='font-medium'>女声</span>
@@ -417,12 +521,14 @@ export default function Custom() {
                       tooltip={{ placement: 'top' }}
                       value={settings?.pronunciationVolume}
                       onChange={value => {
-                        form.setFieldValue('pronunciationVolume', value);
                         setSettings(prev =>
                           prev
                             ? { ...prev, pronunciationVolume: value }
                             : undefined
                         );
+                        form.setFieldsValue({
+                          pronunciationVolume: value
+                        });
                       }}
                     />
                   </div>
@@ -435,7 +541,7 @@ export default function Custom() {
                     <Space>
                       <KeyOutlined className='text-purple-400' />
                       <span className='text-gray-200 font-medium'>
-                        打字音效音量
+                        键盘音效音量
                       </span>
                     </Space>
                   }
@@ -448,12 +554,14 @@ export default function Custom() {
                       tooltip={{ placement: 'top' }}
                       value={settings?.typingSoundVolume}
                       onChange={value => {
-                        form.setFieldValue('typingSoundVolume', value);
                         setSettings(prev =>
                           prev
                             ? { ...prev, typingSoundVolume: value }
                             : undefined
                         );
+                        form.setFieldsValue({
+                          typingSoundVolume: value
+                        });
                       }}
                     />
                   </div>

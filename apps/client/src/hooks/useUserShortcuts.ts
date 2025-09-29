@@ -132,18 +132,32 @@ export const useUserShortcuts = ({
     }
   );
 
-  // 单词导航快捷键
-  const prevShortcut = settings?.shortcuts?.wordNavigation?.prev
-    ? formatShortcut(settings.shortcuts.wordNavigation.prev)
-    : 'ctrl+arrowleft';
-
+  // 上一个单词快捷键
   useHotkeys(
-    prevShortcut,
+    'arrowleft, up, arrowup',
     useCallback(
       event => {
         event.preventDefault();
         event.stopPropagation();
         onNavigateWord('left');
+        inputRef.current?.focus();
+      },
+      [onNavigateWord, inputRef]
+    ),
+    {
+      enableOnFormTags: true,
+      preventDefault: true
+    }
+  );
+
+  // 下一个单词快捷键
+  useHotkeys(
+    'arrowright, down, arrowdown',
+    useCallback(
+      event => {
+        event.preventDefault();
+        event.stopPropagation();
+        onNavigateWord('right');
         inputRef.current?.focus();
       },
       [onNavigateWord, inputRef]
@@ -164,23 +178,6 @@ export const useUserShortcuts = ({
       event => {
         event.preventDefault();
         event.stopPropagation();
-        onNavigateWord('right');
-        inputRef.current?.focus();
-      },
-      [onNavigateWord, inputRef]
-    ),
-    {
-      enableOnFormTags: true,
-      preventDefault: true
-    }
-  );
-
-  useHotkeys(
-    nextShortcut || '',
-    useCallback(
-      event => {
-        event.preventDefault();
-        event.stopPropagation();
         onNext?.();
         inputRef.current?.focus();
       },
@@ -192,8 +189,13 @@ export const useUserShortcuts = ({
     }
   );
 
+  // 单词导航快捷键
+  const prevShortcut = settings?.shortcuts?.wordNavigation?.prev
+    ? formatShortcut(settings.shortcuts.wordNavigation.prev)
+    : 'ctrl+arrowleft';
+
   useHotkeys(
-    prevShortcut || '',
+    prevShortcut,
     useCallback(
       event => {
         event.preventDefault();

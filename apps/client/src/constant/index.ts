@@ -4,6 +4,12 @@ import { Word } from '@/request/globals';
 export const specialKeys = [
   'ARROWLEFT',
   'ARROWRIGHT',
+  'ARROWUP',
+  'ARROWDOWN',
+  'UP',
+  'DOWN',
+  'LEFT',
+  'RIGHT',
   'HOME',
   'END',
   'ESCAPE',

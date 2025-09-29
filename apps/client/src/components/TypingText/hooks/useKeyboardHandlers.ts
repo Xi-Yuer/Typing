@@ -50,7 +50,7 @@ export const useKeyboardHandlers = ({
   onNext,
   onPrev
 }: UseKeyboardHandlersProps): UseKeyboardHandlersReturn => {
-  const { playTypingSound } = useTypingSound();
+  const { playTypingSound } = useTypingSound(userSettings);
   const hasErrorRef = useRef(false);
   const isComposingRef = useRef(false);
 
@@ -58,12 +58,12 @@ export const useKeyboardHandlers = ({
   const playWordAudioInternal = useCallback(async () => {
     if (word?.word) {
       try {
-        await playWordAudio(word);
+        await playWordAudio(word, userSettings);
       } catch {
         // 静默处理错误
       }
     }
-  }, [word]);
+  }, [word, userSettings]);
 
   // 使用用户自定义快捷键
   useUserShortcuts({

@@ -333,7 +333,7 @@ export interface UpdateUserSettingsDto {
    */
   pronunciationVolume: number;
   /**
-   * 打字音效音量
+   * 键盘音效音量
    */
   typingSoundVolume: number;
   /**
@@ -14328,7 +14328,7 @@ declare global {
        *   voiceType: '0' | '1'
        *   // 发音音量
        *   pronunciationVolume: number
-       *   // 打字音效音量
+       *   // 键盘音效音量
        *   typingSoundVolume: number
        *   // 是否启用音效
        *   soundEnabled: boolean

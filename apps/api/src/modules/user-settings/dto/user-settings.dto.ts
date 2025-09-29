@@ -83,7 +83,7 @@ export class UpdateUserSettingsDto {
   pronunciationVolume?: number;
 
   @ApiProperty({
-    description: '打字音效音量',
+    description: '键盘音效音量',
     example: 100,
     minimum: 0,
     maximum: 100

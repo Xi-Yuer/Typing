@@ -34,7 +34,7 @@ export const useTypingLogic = ({
   const hasErrorRef = useRef(false);
   const [hasShownError, setHasShownError] = useState(false);
 
-  const { playSuccessSound, playErrorSound } = useTypingSound();
+  const { playSuccessSound, playErrorSound } = useTypingSound(userSettings);
 
   // 处理翻译模式下的单词属性转换
   const processedWord = useMemo(() => {
@@ -67,12 +67,12 @@ export const useTypingLogic = ({
   const playWordAudioInternal = useCallback(async () => {
     if (word?.word) {
       try {
-        await playWordAudio(word);
+        await playWordAudio(word, userSettings);
       } catch {
         // 静默处理错误
       }
     }
-  }, [word]);
+  }, [word, userSettings]);
 
   // 使用 debounce 包装播放函数
   const playWordPronunciation = useMemo(
