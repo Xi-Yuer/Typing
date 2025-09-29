@@ -86,8 +86,6 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
           background:
             'linear-gradient(135deg, rgba(15, 20, 35, 0.95) 0%, rgba(25, 30, 50, 0.9) 100%)',
           border: '1px solid rgba(59, 130, 246, 0.2)',
-          boxShadow:
-            '0 25px 20px -12px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.05)',
           borderRadius: '12px',
           backdropFilter: 'blur(20px)'
         },

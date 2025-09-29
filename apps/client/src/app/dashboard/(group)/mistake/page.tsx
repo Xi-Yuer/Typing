@@ -80,7 +80,7 @@ export default function Mistake() {
       })}
       {categories?.length === 0 && (
         <div className='text-purple-400 text-lg w-full h-full flex items-center justify-center absolute top-0 left-0'>
-          错误: {error}
+          {error ? error : '暂无错词记录'}
         </div>
       )}
       {/* 游戏模式选择弹窗 */}
