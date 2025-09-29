@@ -1,94 +1,158 @@
 import React from 'react';
+import { Gamepad2, Puzzle, RotateCcw, Mic, BookOpen, Zap } from 'lucide-react';
 
 export default function MoreAction() {
   return (
-    <div className='min-h-screen bg-gradient-to-b from-black to-[#281450] p-8'>
-      <div className='max-w-4xl mx-auto'>
-        <h2 className='text-white text-3xl font-bold mb-8 text-center'>
-          更多内容
-        </h2>
-        <div className='space-y-8'>
-          <div className='bg-purple-800 rounded-lg p-6'>
-            <h3 className='text-white text-xl mb-4'>🚀 功能介绍</h3>
-            <div className='text-gray-300 space-y-3'>
-              <p>
-                • <strong>游戏化闯关</strong>
-                ：通过有趣的关卡设计，让英语学习变得像游戏一样上瘾
-              </p>
-              <p>
-                • <strong>独创长句拆解</strong>
-                ：将复杂句子拆解成易懂片段，循序渐进掌握语法结构
-              </p>
-              <p>
-                • <strong>海量重复练习</strong>
-                ：科学的重复机制，确保核心词汇深度记忆
-              </p>
-              <p>
-                • <strong>流利口语训练</strong>
-                ：结合发音练习，提升口语表达的流利度和准确性
-              </p>
-              <p>
-                • <strong>地道表达学习</strong>
-                ：涵盖中小学、四六级、考研雅思、商务英语等各类场景
-              </p>
+    <div className='min-h-screen bg-slate-950'>
+      <div className='max-w-6xl mx-auto px-6 py-16'>
+        {/* Header */}
+        <div className='text-center mb-16'>
+          <h1 className='text-4xl font-bold text-white mb-4'>功能特性</h1>
+          <p className='text-xl text-gray-300 max-w-2xl mx-auto'>
+            高效英语学习平台，让语言学习变得简单有趣
+          </p>
+        </div>
+
+        {/* Features Grid */}
+        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16'>
+          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
+            <div className='w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <Gamepad2 className='w-6 h-6 text-blue-400' />
             </div>
+            <h3 className='text-lg font-semibold text-white mb-2'>
+              游戏化学习
+            </h3>
+            <p className='text-gray-300 text-sm'>
+              通过关卡挑战，让英语学习像游戏一样有趣
+            </p>
           </div>
-          <div className='bg-purple-800 rounded-lg p-6'>
-            <h3 className='text-white text-xl mb-4'>📖 使用指南</h3>
-            <div className='text-gray-300 space-y-3'>
-              <p>
-                <strong>1. 选择学习目标</strong>
-              </p>
-              <p className='ml-4'>
-                根据需求选择中小学、四六级、考研雅思或商务英语等学习路径
-              </p>
-              <p>
-                <strong>2. 游戏化闯关</strong>
-              </p>
-              <p className='ml-4'>
-                通过有趣的关卡挑战，在游戏中自然掌握核心词汇和语法
-              </p>
-              <p>
-                <strong>3. 长句拆解练习</strong>
-              </p>
-              <p className='ml-4'>
-                利用独创的长句拆解功能，将复杂句子分解为易理解的片段
-              </p>
-              <p>
-                <strong>4. 重复强化记忆</strong>
-              </p>
-              <p className='ml-4'>
-                通过科学的重复练习机制，确保学习内容深度记忆
-              </p>
+
+          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
+            <div className='w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <Puzzle className='w-6 h-6 text-green-400' />
             </div>
+            <h3 className='text-lg font-semibold text-white mb-2'>长句拆解</h3>
+            <p className='text-gray-300 text-sm'>
+              将复杂句子拆解成易懂片段，循序渐进掌握语法
+            </p>
           </div>
-          <div className='bg-purple-800 rounded-lg p-6'>
-            <h3 className='text-white text-xl mb-4'>💡 学习技巧</h3>
-            <div className='text-gray-300 space-y-3'>
-              <p>
-                <strong>循序渐进</strong>
-                ：从基础词汇开始，逐步挑战更复杂的语法和表达
-              </p>
-              <p>
-                <strong>重复记忆</strong>
-                ：利用遗忘曲线原理，通过多次重复强化记忆效果
-              </p>
-              <p>
-                <strong>情境学习</strong>
-                ：在具体语境中学习单词和句型，提高实际应用能力
-              </p>
-              <p>
-                <strong>口语结合</strong>
-                ：边学边说，将文字学习与口语练习相结合
-              </p>
-              <p>
-                <strong>快捷键使用</strong>
-                ：⌘+R 重置练习、⌘+P 发音、⌘+H 提示、Space/Enter 提交答案
-              </p>
-              <p>
-                <strong>持续坚持</strong>
-                ：每天坚持学习，养成良好的英语学习习惯
-              </p>
+
+          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
+            <div className='w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <RotateCcw className='w-6 h-6 text-purple-400' />
+            </div>
+            <h3 className='text-lg font-semibold text-white mb-2'>科学重复</h3>
+            <p className='text-gray-300 text-sm'>
+              基于遗忘曲线的重复机制，确保深度记忆
+            </p>
+          </div>
+
+          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
+            <div className='w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <Mic className='w-6 h-6 text-orange-400' />
+            </div>
+            <h3 className='text-lg font-semibold text-white mb-2'>口语训练</h3>
+            <p className='text-gray-300 text-sm'>
+              结合发音练习，提升口语表达的流利度
+            </p>
+          </div>
+
+          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
+            <div className='w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <BookOpen className='w-6 h-6 text-red-400' />
+            </div>
+            <h3 className='text-lg font-semibold text-white mb-2'>
+              多场景学习
+            </h3>
+            <p className='text-gray-300 text-sm'>
+              涵盖中小学、四六级、考研雅思、商务英语等场景
+            </p>
+          </div>
+
+          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
+            <div className='w-12 h-12 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <Zap className='w-6 h-6 text-indigo-400' />
+            </div>
+            <h3 className='text-lg font-semibold text-white mb-2'>快捷操作</h3>
+            <p className='text-gray-300 text-sm'>
+              丰富的快捷键支持，提升学习效率
+            </p>
+          </div>
+        </div>
+
+        {/* Quick Start */}
+        <div className='bg-slate-800 rounded-2xl p-8'>
+          <h2 className='text-2xl font-bold text-white mb-6 text-center'>
+            快速开始
+          </h2>
+          <div className='grid md:grid-cols-2 gap-8'>
+            <div>
+              <h3 className='text-lg font-semibold text-white mb-4'>
+                学习流程
+              </h3>
+              <div className='space-y-3'>
+                <div className='flex items-start space-x-3'>
+                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
+                    1
+                  </div>
+                  <p className='text-gray-300 text-sm'>
+                    选择学习目标（中小学/四六级/考研雅思/商务英语）
+                  </p>
+                </div>
+                <div className='flex items-start space-x-3'>
+                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
+                    2
+                  </div>
+                  <p className='text-gray-300 text-sm'>
+                    通过游戏化关卡挑战掌握核心词汇
+                  </p>
+                </div>
+                <div className='flex items-start space-x-3'>
+                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
+                    3
+                  </div>
+                  <p className='text-gray-300 text-sm'>
+                    利用长句拆解功能理解复杂语法
+                  </p>
+                </div>
+                <div className='flex items-start space-x-3'>
+                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
+                    4
+                  </div>
+                  <p className='text-gray-300 text-sm'>
+                    重复练习强化记忆，持续提升
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 className='text-lg font-semibold text-white mb-4'>快捷键</h3>
+              <div className='space-y-2'>
+                <div className='flex justify-between items-center py-2 border-b border-slate-700'>
+                  <span className='text-gray-300 text-sm'>重置练习</span>
+                  <kbd className='px-2 py-1 bg-slate-700 text-gray-300 rounded text-xs'>
+                    ⌘ + R
+                  </kbd>
+                </div>
+                <div className='flex justify-between items-center py-2 border-b border-slate-700'>
+                  <span className='text-gray-300 text-sm'>发音</span>
+                  <kbd className='px-2 py-1 bg-slate-700 text-gray-300 rounded text-xs'>
+                    ⌘ + P
+                  </kbd>
+                </div>
+                <div className='flex justify-between items-center py-2 border-b border-slate-700'>
+                  <span className='text-gray-300 text-sm'>提示</span>
+                  <kbd className='px-2 py-1 bg-slate-700 text-gray-300 rounded text-xs'>
+                    ⌘ + H
+                  </kbd>
+                </div>
+                <div className='flex justify-between items-center py-2'>
+                  <span className='text-gray-300 text-sm'>提交答案</span>
+                  <kbd className='px-2 py-1 bg-slate-700 text-gray-300 rounded text-xs'>
+                    Space / Enter
+                  </kbd>
+                </div>
+              </div>
             </div>
           </div>
         </div>
