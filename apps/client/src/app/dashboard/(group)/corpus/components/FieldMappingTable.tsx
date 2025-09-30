@@ -14,23 +14,30 @@ interface FieldMappingTableProps {
 
 interface FieldMappingConfig {
   word: string;
-  translation: string;
-  pronunciation?: string;
+  meaning: string;
+  usPhonetic?: string;
+  ukPhonetic?: string;
 }
 
 const TARGET_FIELDS = [
   { key: 'word', label: '单词', required: true, description: '单词内容' },
   {
-    key: 'translation',
-    label: '翻译',
+    key: 'meaning',
+    label: '中文释义',
     required: true,
-    description: '单词翻译'
+    description: '单词中文释义'
   },
   {
-    key: 'pronunciation',
-    label: '音标',
+    key: 'usPhonetic',
+    label: '美式音标',
     required: false,
-    description: '音标'
+    description: '单词美式音标'
+  },
+  {
+    key: 'ukPhonetic',
+    label: '英式音标',
+    required: false,
+    description: '单词英式音标'
   }
 ];
 
@@ -42,8 +49,9 @@ export default function FieldMappingTable({
   const [mapping, setMapping] = useState<FieldMappingConfig>(
     initialMapping || {
       word: '',
-      translation: '',
-      pronunciation: ''
+      meaning: '',
+      usPhonetic: '',
+      ukPhonetic: ''
     }
   );
 

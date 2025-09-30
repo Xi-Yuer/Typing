@@ -7,8 +7,9 @@ interface ImportSummaryProps {
   data: any[];
   fieldMapping: {
     word: string;
-    translation: string;
-    pronunciation?: string;
+    meaning: string;
+    usPhonetic?: string;
+    ukPhonetic?: string;
     difficulty?: string;
     category?: string;
   };
@@ -23,13 +24,13 @@ export default function ImportSummary({
     const total = data.length;
     const valid = data.filter(row => {
       const word = row[fieldMapping.word];
-      const translation = row[fieldMapping.translation];
+      const meaning = row[fieldMapping.meaning];
       // 只有单词和翻译不能为空，其他字段可以为空
       return (
         word &&
         word.toString().trim() !== '' &&
-        translation &&
-        translation.toString().trim() !== ''
+        meaning &&
+        meaning.toString().trim() !== ''
       );
     }).length;
     const invalid = total - valid;

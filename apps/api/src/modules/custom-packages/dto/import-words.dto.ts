@@ -30,6 +30,16 @@ export class ImportWordItemDto {
   transliteration?: string;
 
   @ApiProperty({
+    description: '音标',
+    example: '/həˈloʊ/',
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: '音标必须是字符串' })
+  @MaxLength(255, { message: '音标长度不能超过255个字符' })
+  pronunciation?: string;
+
+  @ApiProperty({
     description: '美式音标',
     example: '/həˈloʊ/',
     required: false
@@ -57,6 +67,15 @@ export class ImportWordItemDto {
   @IsOptional()
   @IsString({ message: '中文释义必须是字符串' })
   meaning?: string;
+
+  @ApiProperty({
+    description: '翻译',
+    example: '你好；问候',
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: '翻译必须是字符串' })
+  translation?: string;
 
   @ApiProperty({
     description: '简短翻译',
@@ -107,6 +126,36 @@ export class ImportWordItemDto {
   @IsInt({ message: '排序权重必须是整数' })
   @Min(0, { message: '排序权重不能小于0' })
   sortOrder?: number;
+
+  @ApiProperty({
+    description: '难度等级',
+    example: 'medium',
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: '难度等级必须是字符串' })
+  @MaxLength(50, { message: '难度等级长度不能超过50个字符' })
+  difficulty?: string;
+
+  @ApiProperty({
+    description: '分类',
+    example: 'default',
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: '分类必须是字符串' })
+  @MaxLength(100, { message: '分类长度不能超过100个字符' })
+  category?: string;
+
+  @ApiProperty({
+    description: '学习包ID',
+    example: 'package-id-123',
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: '学习包ID必须是字符串' })
+  @MaxLength(255, { message: '学习包ID长度不能超过255个字符' })
+  packageId?: string;
 }
 
 export class ImportWordsDto {

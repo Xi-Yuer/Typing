@@ -13,6 +13,7 @@ import PageHeader from './components/PageHeader';
 import PackageList from './components/PackageList';
 import CreatePackageModal from './components/CreatePackageModal';
 import ImportWordsModal from './components/ImportWordsModal';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // 使用API类型定义
 type CustomPackage = ApiCustomPackage;
@@ -185,46 +186,52 @@ export default function Corpus() {
   };
 
   return (
-    <div className='p-6'>
-      {contextHolder}
-      <div className='max-w-7xl mx-auto'>
-        {/* 页面头部 */}
-        <PageHeader
-          packageType={packageType}
-          onPackageTypeChange={handlePackageTypeChange}
-          onCreatePackage={() => setCreateModalVisible(true)}
-        />
-
-        {/* 词库卡片列表 */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          <PackageList
-            packages={packages}
-            loading={loading}
+    <ErrorBoundary
+      onError={(error, errorInfo) => {
+        console.error('Corpus页面错误:', error, errorInfo);
+        messageApi.error('页面出现错误，请刷新重试');
+      }}>
+      <div className='p-6'>
+        {contextHolder}
+        <div className='max-w-7xl mx-auto'>
+          {/* 页面头部 */}
+          <PageHeader
             packageType={packageType}
-            onDelete={handleDeletePackage}
-            onImport={handleImportWords}
-            onStartPractice={handleStartPractice}
+            onPackageTypeChange={handlePackageTypeChange}
+            onCreatePackage={() => setCreateModalVisible(true)}
+          />
+
+          {/* 词库卡片列表 */}
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            <PackageList
+              packages={packages}
+              loading={loading}
+              packageType={packageType}
+              onDelete={handleDeletePackage}
+              onImport={handleImportWords}
+              onStartPractice={handleStartPractice}
+            />
+          </div>
+
+          {/* 创建词库模态框 */}
+          <CreatePackageModal
+            visible={createModalVisible}
+            onCancel={() => setCreateModalVisible(false)}
+            onSubmit={handleCreatePackage}
+          />
+
+          {/* 导入单词模态框 */}
+          <ImportWordsModal
+            visible={importModalVisible}
+            onCancel={() => {
+              setImportModalVisible(false);
+              setSelectedPackageId('');
+            }}
+            onImport={handleImportWordsData}
+            packageId={selectedPackageId}
           />
         </div>
-
-        {/* 创建词库模态框 */}
-        <CreatePackageModal
-          visible={createModalVisible}
-          onCancel={() => setCreateModalVisible(false)}
-          onSubmit={handleCreatePackage}
-        />
-
-        {/* 导入单词模态框 */}
-        <ImportWordsModal
-          visible={importModalVisible}
-          onCancel={() => {
-            setImportModalVisible(false);
-            setSelectedPackageId('');
-          }}
-          onImport={handleImportWordsData}
-          packageId={selectedPackageId}
-        />
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }

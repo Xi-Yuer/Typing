@@ -42,6 +42,10 @@ export class CustomPackage {
   @ApiProperty({ description: '是否公开', example: true })
   isPublic: boolean;
 
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  @ApiProperty({ description: '难度等级', example: 'medium' })
+  difficulty?: string;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   @ApiProperty({ description: '创建时间', example: '2024-01-01T00:00:00Z' })
   createdAt: Date;

@@ -143,7 +143,7 @@ export const getDifficultyStyle = (difficulty: string | number) => {
         bg: 'bg-gray-500/20',
         text: 'text-gray-400',
         border: 'border-gray-500/30',
-        label: String(difficulty) || '未知'
+        label: '未知'
       };
   }
 };

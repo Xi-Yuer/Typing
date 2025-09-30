@@ -251,10 +251,22 @@ export class CustomPackagesService {
 
     for (const wordData of words) {
       try {
-        const customWord = this.customWordRepository.create({
+        // 处理字段映射：translation -> meaning, pronunciation -> transliteration
+        const processedData = {
           ...wordData,
-          packageId
-        });
+          packageId,
+          // 如果提供了 translation 但没有 meaning，使用 translation 作为 meaning
+          meaning: wordData.meaning || wordData.translation,
+          // 如果提供了 pronunciation 但没有 transliteration，使用 pronunciation 作为 transliteration
+          transliteration: wordData.transliteration || wordData.pronunciation,
+          // 移除前端传递的额外字段，避免数据库错误
+          translation: undefined,
+          pronunciation: undefined,
+          difficulty: undefined,
+          category: undefined
+        };
+
+        const customWord = this.customWordRepository.create(processedData);
 
         await this.customWordRepository.save(customWord);
         success++;

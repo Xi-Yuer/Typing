@@ -31,4 +31,14 @@ export class CreateCustomPackageDto {
   @IsOptional()
   @IsBoolean({ message: '是否公开必须是布尔值' })
   isPublic?: boolean;
+
+  @ApiProperty({
+    description: '难度等级',
+    example: 'medium',
+    required: false
+  })
+  @IsOptional()
+  @IsString({ message: '难度等级必须是字符串' })
+  @MaxLength(50, { message: '难度等级长度不能超过50个字符' })
+  difficulty?: string;
 }

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Modal, Input, Button, Space, Form, Switch } from 'antd';
+import { Modal, Input, Button, Space, Form, Switch, Select } from 'antd';
 
 const { TextArea } = Input;
 
@@ -67,6 +67,19 @@ export default function CreatePackageModal({
           label='词库名称'
           rules={[{ required: true, message: '请输入词库名称' }]}>
           <Input placeholder='请输入词库名称' />
+        </Form.Item>
+
+        <Form.Item
+          name='difficulty'
+          label='难度等级'
+          rules={[{ required: true, message: '请选择难度等级' }]}>
+          <Select placeholder='请选择难度等级'>
+            <Select.Option value='1'>简单</Select.Option>
+            <Select.Option value='2'>普通</Select.Option>
+            <Select.Option value='3'>中等</Select.Option>
+            <Select.Option value='4'>困难</Select.Option>
+            <Select.Option value='5'>极难</Select.Option>
+          </Select>
         </Form.Item>
 
         <Form.Item name='description' label='词库描述'>

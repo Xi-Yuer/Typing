@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Popconfirm, Tooltip } from 'antd';
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import type { CustomPackage as ApiCustomPackage } from '@/request/globals';
+import { getDifficultyStyle } from '@/utils';
 
 type CustomPackage = ApiCustomPackage;
 
@@ -21,12 +22,7 @@ export default function PackageCard({
   onImport,
   onStartPractice
 }: PackageCardProps) {
-  const difficultyStyle = {
-    bg: 'bg-green-500/20',
-    text: 'text-green-300',
-    border: 'border-green-500/30',
-    label: '简单'
-  };
+  const difficultyStyle = getDifficultyStyle(pkg.difficulty);
 
   return (
     <div className='bg-white/10 !h-[150px] overflow-hidden backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>

@@ -21,8 +21,9 @@ interface ExcelData {
 
 interface FieldMappingConfig {
   word: string;
-  translation: string;
-  pronunciation?: string;
+  meaning: string;
+  usPhonetic?: string;
+  ukPhonetic?: string;
   difficulty?: string;
   category?: string;
 }
@@ -38,12 +39,14 @@ export default function ImportWordsModal({
   const [headers, setHeaders] = useState<string[]>([]);
   const [fieldMapping, setFieldMapping] = useState<FieldMappingConfig>({
     word: '',
-    translation: '',
-    pronunciation: '',
+    meaning: '',
+    usPhonetic: '',
+    ukPhonetic: '',
     difficulty: '',
     category: ''
   });
   const [loading, setLoading] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   // 重置状态
   const resetState = useCallback(() => {
@@ -52,12 +55,14 @@ export default function ImportWordsModal({
     setHeaders([]);
     setFieldMapping({
       word: '',
-      translation: '',
-      pronunciation: '',
+      meaning: '',
+      usPhonetic: '',
+      ukPhonetic: '',
       difficulty: '',
       category: ''
     });
     setLoading(false);
+    setImporting(false);
   }, []);
 
   // 处理文件上传
@@ -123,71 +128,90 @@ export default function ImportWordsModal({
 
   // 处理数据导入
   const handleImport = useCallback(async () => {
-    if (!fieldMapping.word || !fieldMapping.translation) {
+    if (!fieldMapping.word || !fieldMapping.meaning) {
       message.error('请至少映射单词和翻译字段');
       return;
     }
 
-    setLoading(true);
+    setImporting(true);
 
     try {
       // 转换数据格式
       const importData = excelData
         .map(row => ({
           word: row[fieldMapping.word] || '',
-          translation: row[fieldMapping.translation] || '',
-          pronunciation: fieldMapping.pronunciation
-            ? row[fieldMapping.pronunciation]
-            : '',
+          meaning: row[fieldMapping.meaning] || '',
+          usPhonetic: fieldMapping.usPhonetic
+            ? row[fieldMapping.usPhonetic]
+            : undefined,
+          ukPhonetic: fieldMapping.ukPhonetic
+            ? row[fieldMapping.ukPhonetic]
+            : undefined,
           difficulty: fieldMapping.difficulty
             ? row[fieldMapping.difficulty]
-            : 'medium',
+            : undefined,
           category: fieldMapping.category
             ? row[fieldMapping.category]
-            : 'default',
+            : undefined,
           packageId
         }))
         .filter(item => {
-          // 只有单词和翻译不能为空，其他字段可以为空
+          // 只有单词和释义不能为空，其他字段可以为空
           return (
             item.word &&
             item.word.toString().trim() !== '' &&
-            item.translation &&
-            item.translation.toString().trim() !== ''
+            item.meaning &&
+            item.meaning.toString().trim() !== ''
           );
         });
 
       // 调用导入接口
-      onImport(importData);
+      await onImport(importData);
 
       message.success(`成功导入 ${importData.length} 个单词`);
       resetState();
       onCancel();
     } catch (error) {
       console.error('导入失败:', error);
+      message.error('导入失败，请重试');
     } finally {
-      setLoading(false);
+      setImporting(false);
     }
   }, [excelData, fieldMapping, packageId, onImport, onCancel, resetState]);
 
   // 处理取消
   const handleCancel = useCallback(() => {
+    if (importing) {
+      message.warning('正在导入中，请稍候...');
+      return;
+    }
     resetState();
     onCancel();
-  }, [resetState, onCancel]);
+  }, [resetState, onCancel, importing]);
 
   // 上一步
   const handlePrev = useCallback(() => {
+    if (importing) {
+      message.warning('正在导入中，请稍候...');
+      return;
+    }
     setCurrentStep(currentStep - 1);
-  }, [currentStep]);
+  }, [currentStep, importing]);
 
   // 下一步
   const handleNext = useCallback(() => {
+    if (importing) {
+      message.warning('正在导入中，请稍候...');
+      return;
+    }
     setCurrentStep(currentStep + 1);
-  }, [currentStep]);
+  }, [currentStep, importing]);
 
   // 获取步骤标题
   const getStepTitle = () => {
+    if (importing) {
+      return '正在导入数据...';
+    }
     switch (currentStep) {
       case 0:
         return '选择数据源';
@@ -202,6 +226,9 @@ export default function ImportWordsModal({
 
   // 获取步骤描述
   const getStepDescription = () => {
+    if (importing) {
+      return '正在处理数据，请勿关闭页面或离开当前页面...';
+    }
     switch (currentStep) {
       case 0:
         return '选择要导入的 Excel 文件';
@@ -265,7 +292,7 @@ export default function ImportWordsModal({
               size='large'
               disabled={
                 currentStep === 1 &&
-                (!fieldMapping.word || !fieldMapping.translation)
+                (!fieldMapping.word || !fieldMapping.meaning)
               }
               className='px-6 py-2 h-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-0 shadow-lg shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed'
               icon={<ChevronRight className='w-4 h-4' />}>
@@ -275,11 +302,12 @@ export default function ImportWordsModal({
             <Button
               type='primary'
               onClick={handleImport}
-              loading={loading}
+              loading={importing}
               size='large'
-              className='px-6 py-2 h-auto bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-0 shadow-lg shadow-green-500/25'
+              disabled={importing}
+              className='px-6 py-2 h-auto bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-0 shadow-lg shadow-green-500/25 disabled:opacity-50 disabled:cursor-not-allowed'
               icon={<Database className='w-4 h-4' />}>
-              开始导入
+              {importing ? '正在导入中...' : '开始导入'}
             </Button>
           )}
         </Space>
@@ -298,7 +326,9 @@ export default function ImportWordsModal({
         </div>
       }
       open={visible}
-      onCancel={handleCancel}
+      onCancel={importing ? undefined : handleCancel}
+      closable={!importing}
+      maskClosable={!importing}
       footer={renderStepButtons()}
       width={1000}
       styles={{

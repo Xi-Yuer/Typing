@@ -366,6 +366,10 @@ export interface CreateCustomPackageDto {
    * 是否公开
    */
   isPublic?: boolean;
+  /**
+   * 难度等级
+   */
+  difficulty?: string;
 }
 export interface User {
   /**
@@ -758,6 +762,10 @@ export interface CustomPackage {
    */
   isPublic: boolean;
   /**
+   * 难度等级
+   */
+  difficulty: string;
+  /**
    * 创建时间
    */
   createdAt: string;
@@ -942,6 +950,10 @@ export interface ImportWordItemDto {
    */
   transliteration?: string;
   /**
+   * 音标
+   */
+  pronunciation?: string;
+  /**
    * 美式音标
    */
   usPhonetic?: string;
@@ -953,6 +965,10 @@ export interface ImportWordItemDto {
    * 中文释义
    */
   meaning?: string;
+  /**
+   * 翻译
+   */
+  translation?: string;
   /**
    * 简短翻译
    */
@@ -973,6 +989,18 @@ export interface ImportWordItemDto {
    * 排序权重
    */
   sortOrder?: number;
+  /**
+   * 难度等级
+   */
+  difficulty?: string;
+  /**
+   * 分类
+   */
+  category?: string;
+  /**
+   * 学习包ID
+   */
+  packageId?: string;
 }
 export interface ImportWordsDto {
   /**
@@ -14779,6 +14807,8 @@ declare global {
        *   description?: string
        *   // 是否公开
        *   isPublic?: boolean
+       *   // 难度等级
+       *   difficulty?: string
        * }
        * ```
        *
@@ -14786,16 +14816,150 @@ declare global {
        *
        * **Response**
        * ```ts
-       * type Response = null
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 自定义学习包 ID
+       *     id: string
+       *     // 创建用户 ID
+       *     userId: string
+       *     // 学习包名称
+       *     name: string
+       *     // 学习包描述
+       *     description: string
+       *     // 单词数量
+       *     wordCount: number
+       *     // 是否公开
+       *     isPublic: boolean
+       *     // 难度等级
+       *     difficulty: string
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 创建用户
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 包含的单词
+       *     // [items] start
+       *     // [items] end
+       *     words: Array<{
+       *       // 自定义单词 ID
+       *       id: string
+       *       // 所属学习包 ID
+       *       packageId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 排序权重
+       *       sortOrder: number
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属学习包
+       *       // [params1] start
+       *       // [cycle] $.data
+       *       // [params1] end
+       *       customPackage: CustomPackage
+       *     }>
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
        * ```
        */
       CustomPackagesController_create<
-        Config extends Alova2MethodConfig<null> & {
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomPackage;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
           data: CreateCustomPackageDto;
         }
       >(
         config: Config
-      ): Alova2Method<null, 'general.CustomPackagesController_create', Config>;
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomPackage;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_create',
+        Config
+      >;
       /**
        * ---
        *
@@ -14828,6 +14992,8 @@ declare global {
        *       wordCount: number
        *       // 是否公开
        *       isPublic: boolean
+       *       // 难度等级
+       *       difficulty: string
        *       // 创建时间
        *       createdAt: string
        *       // 更新时间
@@ -15027,6 +15193,8 @@ declare global {
        *       wordCount: number
        *       // 是否公开
        *       isPublic: boolean
+       *       // 难度等级
+       *       difficulty: string
        *       // 创建时间
        *       createdAt: string
        *       // 更新时间
@@ -15232,6 +15400,8 @@ declare global {
        *     wordCount: number
        *     // 是否公开
        *     isPublic: boolean
+       *     // 难度等级
+       *     difficulty: string
        *     // 创建时间
        *     createdAt: string
        *     // 更新时间
@@ -15396,6 +15566,8 @@ declare global {
        *     wordCount: number
        *     // 是否公开
        *     isPublic: boolean
+       *     // 难度等级
+       *     difficulty: string
        *     // 创建时间
        *     createdAt: string
        *     // 更新时间
@@ -15609,6 +15781,8 @@ declare global {
        *         wordCount: number
        *         // 是否公开
        *         isPublic: boolean
+       *         // 难度等级
+       *         difficulty: string
        *         // 创建时间
        *         createdAt: string
        *         // 更新时间
@@ -15858,6 +16032,8 @@ declare global {
        *       wordCount: number
        *       // 是否公开
        *       isPublic: boolean
+       *       // 难度等级
+       *       difficulty: string
        *       // 创建时间
        *       createdAt: string
        *       // 更新时间
@@ -16022,6 +16198,8 @@ declare global {
        *       wordCount: number
        *       // 是否公开
        *       isPublic: boolean
+       *       // 难度等级
+       *       difficulty: string
        *       // 创建时间
        *       createdAt: string
        *       // 更新时间
@@ -16144,12 +16322,16 @@ declare global {
        *     word: string
        *     // 罗马音/拼音
        *     transliteration?: string
+       *     // 音标
+       *     pronunciation?: string
        *     // 美式音标
        *     usPhonetic?: string
        *     // 英式音标
        *     ukPhonetic?: string
        *     // 中文释义
        *     meaning?: string
+       *     // 翻译
+       *     translation?: string
        *     // 简短翻译
        *     meaningShort?: string
        *     // 例句
@@ -16160,6 +16342,12 @@ declare global {
        *     imageUrl?: string
        *     // 排序权重
        *     sortOrder?: number
+       *     // 难度等级
+       *     difficulty?: string
+       *     // 分类
+       *     category?: string
+       *     // 学习包ID
+       *     packageId?: string
        *   }>
        * }
        * ```
@@ -16218,6 +16406,8 @@ declare global {
        *       wordCount: number
        *       // 是否公开
        *       isPublic: boolean
+       *       // 难度等级
+       *       difficulty: string
        *       // 创建时间
        *       createdAt: string
        *       // 更新时间
