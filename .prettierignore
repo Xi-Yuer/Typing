@@ -3,6 +3,3 @@
 dist
 pnpm-lock.yaml
 pnpm-workspace.yaml
-CHANGELOG.md
-packages/xingrong-courses/data
-packages/db/drizzle
