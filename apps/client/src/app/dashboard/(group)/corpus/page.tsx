@@ -5,7 +5,8 @@ import {
   getCustomPackages,
   getPublicCustomPackages,
   createCustomPackage,
-  deleteCustomPackage
+  deleteCustomPackage,
+  importCustomPackageWords
 } from '@/api';
 import type { CustomPackage as ApiCustomPackage } from '@/request/globals';
 import PageHeader from './components/PageHeader';
@@ -96,13 +97,82 @@ export default function Corpus() {
 
   // 处理单词导入
   const handleImportWordsData = async (wordsData: any[]) => {
+    if (!selectedPackageId) {
+      messageApi.error('请选择要导入的词库');
+      return;
+    }
+
     try {
-      // TODO: 调用导入单词的 API
-      console.log('导入单词数据:', wordsData);
-      messageApi.success(`成功导入 ${wordsData.length} 个单词`);
+      const batchSize = 100; // 每批最多导入100条
+      const totalBatches = Math.ceil(wordsData.length / batchSize);
+      let successCount = 0;
+      let errorCount = 0;
+
+      // 显示导入开始消息
+      messageApi.loading({
+        content: `开始导入 ${wordsData.length} 个单词，共 ${totalBatches} 批...`,
+        duration: 0,
+        key: 'import-progress'
+      });
+
+      // 分批导入
+      for (let i = 0; i < totalBatches; i++) {
+        const startIndex = i * batchSize;
+        const endIndex = Math.min(startIndex + batchSize, wordsData.length);
+        const batchData = wordsData.slice(startIndex, endIndex);
+
+        try {
+          const response = await importCustomPackageWords(selectedPackageId, {
+            words: batchData
+          });
+
+          if (response && (response as any).code === 200) {
+            successCount += batchData.length;
+            messageApi.loading({
+              content: `正在导入第 ${i + 1}/${totalBatches} 批，已成功导入 ${successCount} 个单词...`,
+              duration: 0,
+              key: 'import-progress'
+            });
+          } else {
+            errorCount += batchData.length;
+            console.error(
+              `第 ${i + 1} 批导入失败:`,
+              (response as any)?.message
+            );
+          }
+        } catch (error) {
+          errorCount += batchData.length;
+          console.error(`第 ${i + 1} 批导入失败:`, error);
+        }
+
+        // 添加短暂延迟，避免请求过于频繁
+        if (i < totalBatches - 1) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
+
+      // 关闭加载消息
+      messageApi.destroy('import-progress');
+
+      // 显示最终结果
+      if (errorCount === 0) {
+        messageApi.success(`成功导入 ${successCount} 个单词`);
+      } else if (successCount === 0) {
+        messageApi.error(`导入失败，${errorCount} 个单词未能导入`);
+      } else {
+        messageApi.warning(
+          `导入完成：成功 ${successCount} 个，失败 ${errorCount} 个`
+        );
+      }
+
+      // 关闭模态框并重置状态
       setImportModalVisible(false);
       setSelectedPackageId('');
+
+      // 重新加载词库列表以更新数据
+      loadPackages();
     } catch (error) {
+      messageApi.destroy('import-progress');
       console.error('导入失败:', error);
       messageApi.error('导入失败，请重试');
     }

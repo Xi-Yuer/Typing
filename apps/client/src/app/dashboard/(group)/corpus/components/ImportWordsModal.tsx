@@ -68,7 +68,10 @@ export default function ImportWordsModal({
     reader.onload = e => {
       try {
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: 'array' });
+        const workbook = XLSX.read(data, {
+          type: 'array',
+          codepage: 65001 // UTF-8 编码，解决中文乱码问题
+        });
 
         // 获取第一个工作表
         const firstSheetName = workbook.SheetNames[0];

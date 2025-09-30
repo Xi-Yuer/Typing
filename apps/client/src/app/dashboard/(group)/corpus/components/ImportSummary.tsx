@@ -1,16 +1,7 @@
 'use client';
 import React, { useMemo } from 'react';
-import { Card, Typography, Statistic, Row, Col } from 'antd';
-import {
-  CheckCircle2,
-  AlertTriangle,
-  FileText,
-  Database,
-  TrendingUp,
-  Info
-} from 'lucide-react';
-
-const { Text, Paragraph } = Typography;
+import { Card, Statistic, Row, Col } from 'antd';
+import { CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
 
 interface ImportSummaryProps {
   data: any[];
@@ -105,63 +96,6 @@ export default function ImportSummary({
           </Card>
         </Col>
       </Row>
-
-      {/* 数据质量分析 */}
-      {stats.total > 0 && (
-        <Card className=''>
-          <div className='flex items-start space-x-4'>
-            <div className='flex-shrink-0 w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center'>
-              <TrendingUp className='w-4 h-4 text-purple-400' />
-            </div>
-            <div className='space-y-2'>
-              <Text className='text-purple-300 font-semibold text-base block'>
-                数据质量分析
-              </Text>
-              <div className='space-y-2'>
-                <div className='flex items-center justify-between'>
-                  <Text className='text-sm text-gray-300'>数据有效率</Text>
-                  <Text className='text-sm font-medium text-white'>
-                    {((stats.valid / stats.total) * 100).toFixed(1)}%
-                  </Text>
-                </div>
-                <div className='w-full bg-slate-700/50 rounded-full h-2'>
-                  <div
-                    className='bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500'
-                    style={{ width: `${(stats.valid / stats.total) * 100}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* 导入说明 */}
-      <Card className=''>
-        <div className='flex items-start space-x-4'>
-          <div className='flex-shrink-0 w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center'>
-            <Database className='w-4 h-4 text-green-400' />
-          </div>
-          <div className='space-y-2'>
-            <Text className='text-green-300 font-semibold text-base block'>
-              准备导入
-            </Text>
-            <Paragraph className='text-sm text-gray-300 mb-0 leading-relaxed'>
-              确认无误后，点击"开始导入"按钮将{' '}
-              <span className='text-green-400 font-semibold'>
-                {stats.valid}
-              </span>{' '}
-              条有效数据导入到词库中。
-              {stats.invalid > 0 && (
-                <span className='block mt-2 text-yellow-300'>
-                  <Info className='w-4 h-4 inline mr-1' />有 {stats.invalid}{' '}
-                  条数据因缺少必填字段将被跳过
-                </span>
-              )}
-            </Paragraph>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 }
