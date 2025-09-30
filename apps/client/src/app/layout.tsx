@@ -32,7 +32,8 @@ export default function RootLayout({
               colorBgElevated: '#1e273a',
               colorError: '#7d26cd',
               colorErrorText: '#7d26cd',
-              colorSuccess: '#7d26cd'
+              colorSuccess: '#7d26cd',
+              colorBorderSecondary: '8c21f120'
             },
             components: {
               Button: {

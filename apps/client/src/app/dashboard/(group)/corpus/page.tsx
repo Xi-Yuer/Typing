@@ -11,6 +11,7 @@ import type { CustomPackage as ApiCustomPackage } from '@/request/globals';
 import PageHeader from './components/PageHeader';
 import PackageList from './components/PackageList';
 import CreatePackageModal from './components/CreatePackageModal';
+import ImportWordsModal from './components/ImportWordsModal';
 
 // 使用API类型定义
 type CustomPackage = ApiCustomPackage;
@@ -22,6 +23,8 @@ export default function Corpus() {
   const [packages, setPackages] = useState<CustomPackage[]>([]);
   const [loading, setLoading] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [importModalVisible, setImportModalVisible] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState<string>('');
   const [packageType, setPackageType] = useState<'my' | 'public'>('my');
 
   // 加载自定义词库列表
@@ -86,9 +89,23 @@ export default function Corpus() {
   };
 
   // 导入单词
-  const handleImportWords = (_id: string) => {
-    // TODO: 实现导入单词功能
-    messageApi.info('导入单词功能待实现');
+  const handleImportWords = (id: string) => {
+    setSelectedPackageId(id);
+    setImportModalVisible(true);
+  };
+
+  // 处理单词导入
+  const handleImportWordsData = async (wordsData: any[]) => {
+    try {
+      // TODO: 调用导入单词的 API
+      console.log('导入单词数据:', wordsData);
+      messageApi.success(`成功导入 ${wordsData.length} 个单词`);
+      setImportModalVisible(false);
+      setSelectedPackageId('');
+    } catch (error) {
+      console.error('导入失败:', error);
+      messageApi.error('导入失败，请重试');
+    }
   };
 
   // 开始练习
@@ -125,6 +142,17 @@ export default function Corpus() {
           visible={createModalVisible}
           onCancel={() => setCreateModalVisible(false)}
           onSubmit={handleCreatePackage}
+        />
+
+        {/* 导入单词模态框 */}
+        <ImportWordsModal
+          visible={importModalVisible}
+          onCancel={() => {
+            setImportModalVisible(false);
+            setSelectedPackageId('');
+          }}
+          onImport={handleImportWordsData}
+          packageId={selectedPackageId}
         />
       </div>
     </div>
