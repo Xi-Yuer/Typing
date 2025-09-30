@@ -151,3 +151,85 @@ export const updateUserSettings = (data: any) => {
 export const resetUserSettings = () => {
   return Apis.general.UserSettingsController_resetUserSettings();
 };
+
+// 获取自定义学习包列表
+export const getCustomPackages = () => {
+  return Apis.general.CustomPackagesController_findMyPackages();
+};
+
+// 获取公开的自定义学习包列表
+export const getPublicCustomPackages = () => {
+  return Apis.general.CustomPackagesController_findPublicPackages();
+};
+
+// 获取自定义学习包详情
+export const getCustomPackage = (id: string) => {
+  return Apis.general.CustomPackagesController_findOne({
+    pathParams: {
+      id
+    }
+  });
+};
+
+// 获取自定义学习包单词列表
+export const getCustomPackageWords = (
+  id: string,
+  page: number = 1,
+  pageSize: number = 10
+) => {
+  return Apis.general.CustomPackagesController_findWordsByPackage({
+    pathParams: {
+      id
+    },
+    params: {
+      page,
+      pageSize
+    }
+  });
+};
+
+// 创建自定义学习包
+export const createCustomPackage = (data: any) => {
+  return Apis.general.CustomPackagesController_create({
+    data: data
+  });
+};
+
+// 添加自定义学习包单词
+export const addCustomPackageWord = (id: string, data: any) => {
+  return Apis.general.CustomPackagesController_addWord({
+    pathParams: {
+      id
+    },
+    data: data
+  });
+};
+
+// 删除自定义学习包单词
+export const deleteCustomPackageWord = (id: string, wordId: string) => {
+  return Apis.general.CustomPackagesController_removeWord({
+    pathParams: {
+      id,
+      wordId
+    }
+  });
+};
+
+// 批量导入自定义学习包单词
+export const importCustomPackageWords = (id: string, data: any) => {
+  return Apis.general.CustomPackagesController_importWords({
+    pathParams: {
+      id
+    },
+    data: data
+  });
+};
+
+// 删除自定义学习包
+export const deleteCustomPackage = (id: string) => {
+  return Apis.general.CustomPackagesController_remove({
+    pathParams: {
+      id
+    }
+  });
+};

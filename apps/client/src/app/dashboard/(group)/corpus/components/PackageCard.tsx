@@ -1,0 +1,108 @@
+'use client';
+import React from 'react';
+import { Button, Popconfirm, Tooltip } from 'antd';
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import type { CustomPackage as ApiCustomPackage } from '@/request/globals';
+
+type CustomPackage = ApiCustomPackage;
+
+interface PackageCardProps {
+  pkg: CustomPackage;
+  packageType: 'my' | 'public';
+  onDelete: (id: string) => void;
+  onImport?: (id: string) => void;
+  onStartPractice?: (id: string) => void;
+}
+
+export default function PackageCard({
+  pkg,
+  packageType,
+  onDelete,
+  onImport,
+  onStartPractice
+}: PackageCardProps) {
+  const difficultyStyle = {
+    bg: 'bg-green-500/20',
+    text: 'text-green-300',
+    border: 'border-green-500/30',
+    label: '简单'
+  };
+
+  return (
+    <div className='bg-white/10 !h-[150px] overflow-hidden backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
+      {/* 右上角难度标签 */}
+      <div
+        className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${
+          difficultyStyle.bg
+        } ${difficultyStyle.text} ${difficultyStyle.border} border`}>
+        {difficultyStyle.label}
+      </div>
+
+      {/* 标题 */}
+      <h3 className='text-lg font-semibold text-white mb-2 pr-16 line-clamp-1'>
+        {pkg.name}
+      </h3>
+
+      <p className='text-gray-300 text-sm mb-4 line-clamp-2'>
+        {pkg.description}
+      </p>
+
+      <span
+        className='flex items-center text-purple-400'
+        onClick={() => onStartPractice?.(pkg.id)}>
+        <span className='text-sm'>开始练习</span>
+        <svg
+          className='w-4 h-4 ml-2'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'>
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth={2}
+            d='M9 5l7 7-7 7'
+          />
+        </svg>
+      </span>
+
+      {/* 操作按钮 */}
+      <div className='flex justify-end items-center'>
+        <div className='flex'>
+          {packageType === 'my' && (
+            <>
+              <Tooltip title='导入单词'>
+                <Button
+                  type='text'
+                  icon={<UploadOutlined />}
+                  className='text-green-400 hover:text-green-300 hover:bg-green-500/10'
+                  onClick={e => {
+                    e.stopPropagation();
+                    onImport?.(pkg.id);
+                  }}
+                />
+              </Tooltip>
+              <Popconfirm
+                title='确定要删除这个词库吗？'
+                description='删除后无法恢复，包含的所有单词也会被删除。'
+                onConfirm={e => {
+                  e?.stopPropagation();
+                  onDelete(pkg.id);
+                }}
+                okText='确定'
+                cancelText='取消'>
+                <Tooltip title='删除'>
+                  <Button
+                    type='text'
+                    icon={<DeleteOutlined />}
+                    onClick={e => e.stopPropagation()}
+                    className='text-red-400 hover:text-red-300 hover:bg-red-500/10'
+                  />
+                </Tooltip>
+              </Popconfirm>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

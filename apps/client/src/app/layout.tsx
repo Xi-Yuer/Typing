@@ -29,7 +29,7 @@ export default function RootLayout({
               colorPrimary: '#7d26cd',
               colorText: '#fff',
               colorBgContainer: '#8c21f120',
-              colorBgElevated: '#8c21f120',
+              colorBgElevated: '#1e273a',
               colorError: '#7d26cd',
               colorErrorText: '#7d26cd',
               colorSuccess: '#7d26cd'

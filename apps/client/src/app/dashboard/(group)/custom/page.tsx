@@ -1,31 +1,12 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Form,
-  Select,
-  Slider,
-  Switch,
-  Button,
-  Space,
-  Divider,
-  Row,
-  Col,
-  message
-} from 'antd';
-import {
-  SoundOutlined,
-  KeyOutlined,
-  AudioOutlined,
-  SaveOutlined,
-  ReloadOutlined
-} from '@ant-design/icons';
+import { Form, message } from 'antd';
 import '@ant-design/v5-patch-for-react-19';
 import { getUserSettings, updateUserSettings, resetUserSettings } from '@/api';
 import { UserSettings } from '@/types';
-import { playWordAudio } from '@/hooks/useSpeech';
-import { INITAIL_WORD } from '@/constant';
-
-const { Option } = Select;
+import AudioSettings from './components/AudioSettings';
+import ShortcutSettings from './components/ShortcutSettings';
+import ActionButtons from './components/ActionButtons';
 
 // 修饰键映射
 const MODIFIER_MAP = {
@@ -34,15 +15,6 @@ const MODIFIER_MAP = {
   alt: 'option', // Mac 上 Alt 对应 Option
   shift: 'shift',
   option: 'option'
-} as const;
-
-// 修饰键显示映射
-const MODIFIER_DISPLAY = {
-  ctrl: 'Ctrl',
-  meta: '⌘', // Mac 上 Meta 键显示为 ⌘
-  alt: 'Alt',
-  shift: 'Shift',
-  option: '⌥'
 } as const;
 
 export default function Custom() {
@@ -273,6 +245,14 @@ export default function Custom() {
       form.setFieldsValue(newSettings);
 
       // 显示快捷键
+      const MODIFIER_DISPLAY = {
+        ctrl: 'Ctrl',
+        meta: '⌘',
+        alt: 'Alt',
+        shift: 'Shift',
+        option: '⌥'
+      } as const;
+
       const modifierText =
         pressedModifiers.length > 0
           ? pressedModifiers
@@ -336,67 +316,13 @@ export default function Custom() {
     }
   }, [listeningKey, handleKeyDown, handleKeyUp]);
 
-  // 格式化快捷键显示
-  const formatShortcut = (shortcut: { key: string; modifiers: string[] }) => {
-    const modifierText =
-      shortcut.modifiers.length > 0
-        ? shortcut.modifiers
-            .map(m => MODIFIER_DISPLAY[m as keyof typeof MODIFIER_DISPLAY] || m)
-            .join(' + ') + ' + '
-        : '';
-
-    const keyText =
-      shortcut.key === 'space'
-        ? 'Space'
-        : shortcut.key.startsWith('arrow')
-          ? shortcut.key.replace('arrow', '')
-          : shortcut.key.startsWith('f')
-            ? shortcut.key.toUpperCase()
-            : shortcut.key.toUpperCase();
-
-    return `${modifierText}${keyText}`;
-  };
-
-  // 快捷键显示组件
-  const ShortcutButton = ({
-    keyName,
-    currentShortcut
-  }: {
-    keyName: string;
-    currentShortcut: { key: string; modifiers: string[] };
-  }) => {
-    const isListening = listeningKey === keyName;
-
-    // 检查当前快捷键是否与其他快捷键冲突
-    const hasConflict =
-      currentShortcut.key &&
-      checkShortcutConflict(currentShortcut, keyName).hasConflict;
-
-    return (
-      <div className='flex flex-col space-y-3'>
-        <Button
-          type={isListening ? 'primary' : 'dashed'}
-          onClick={() => toggleListening(keyName)}
-          className={`min-w-[180px] h-12 text-base font-medium transition-all duration-300 ${
-            isListening
-              ? 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 border-0 shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/40'
-              : hasConflict
-                ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 border-0 shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/40'
-                : 'bg-slate-700/50 hover:bg-slate-600/50 border-slate-600 text-white hover:text-gray-100 shadow-md hover:shadow-lg'
-          }`}>
-          {isListening
-            ? `按住修饰键${pressedModifiers.length > 0 ? pressedModifiers.join(' + ') + ' + ' : ''}`
-            : formatShortcut(currentShortcut)}
-        </Button>
-        {hasConflict && (
-          <div className='text-red-400 text-sm text-center'>⚠️ 快捷键冲突</div>
-        )}
-      </div>
-    );
+  // 处理设置变更
+  const handleSettingsChange = (newSettings: UserSettings) => {
+    setSettings(newSettings);
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6'>
+    <div className='bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6'>
       {contextHolder}
       <div className='max-w-5xl mx-auto'>
         <Form
@@ -405,335 +331,27 @@ export default function Custom() {
           className='space-y-12'
           initialValues={settings}>
           {/* 音频设置 */}
-          <div className='bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:shadow-slate-900/30 transition-all duration-300 p-8'>
-            <div className='mb-8'>
-              <Space>
-                <span className='text-white font-semibold text-lg'>
-                  音频设置
-                </span>
-              </Space>
-            </div>
-            <Row>
-              <Col xs={24} md={24}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        自动播放发音
-                      </span>
-                    </Space>
-                  }
-                  name='autoPlayPronunciation'
-                  valuePropName='checked'>
-                  <Switch
-                    checkedChildren='开启'
-                    unCheckedChildren='关闭'
-                    className='bg-slate-700'
-                    size='default'
-                    onChange={value => {
-                      setSettings(prev =>
-                        prev
-                          ? { ...prev, autoPlayPronunciation: value }
-                          : undefined
-                      );
-                    }}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={[32, 24]} className='flex items-end'>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        发音音色
-                      </span>
-                    </Space>
-                  }
-                  name='voiceType'>
-                  <Select
-                    className='bg-slate-800/50 border-slate-600 hover:border-purple-500 transition-colors'
-                    placeholder='选择发音音色'
-                    suffixIcon={<SoundOutlined className='text-purple-400' />}
-                    size='large'
-                    onChange={value => {
-                      playWordAudio(INITAIL_WORD, {
-                        pronunciationVolume: 100,
-                        typingSoundVolume: 100,
-                        soundEnabled: true,
-                        autoPlayPronunciation: true,
-                        voiceType: value
-                      } as UserSettings);
-                    }}>
-                    <Option value='0'>
-                      <Space>
-                        <span className='font-medium'>女声</span>
-                      </Space>
-                    </Option>
-                    <Option value='1'>
-                      <Space>
-                        <span className='font-medium'>男声</span>
-                      </Space>
-                    </Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <AudioOutlined className='text-purple-400' />
-                      <span className='text-gray-200 font-medium'>
-                        发音音量
-                      </span>
-                    </Space>
-                  }
-                  name='pronunciationVolume'>
-                  <div className='px-2'>
-                    <Slider
-                      min={0}
-                      max={100}
-                      className='slider-purple'
-                      tooltip={{ placement: 'top' }}
-                      value={settings?.pronunciationVolume}
-                      onChange={value => {
-                        setSettings(prev =>
-                          prev
-                            ? { ...prev, pronunciationVolume: value }
-                            : undefined
-                        );
-                        form.setFieldsValue({
-                          pronunciationVolume: value
-                        });
-                      }}
-                    />
-                  </div>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={[32, 24]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        启用音效
-                      </span>
-                    </Space>
-                  }
-                  name='soundEnabled'
-                  valuePropName='checked'>
-                  <Switch
-                    checkedChildren='开启'
-                    unCheckedChildren='关闭'
-                    className='bg-slate-700'
-                    size='default'
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={[32, 24]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <KeyOutlined className='text-purple-400' />
-                      <span className='text-gray-200 font-medium'>
-                        键盘音效音量
-                      </span>
-                    </Space>
-                  }
-                  name='typingSoundVolume'>
-                  <div className='px-2'>
-                    <Slider
-                      min={0}
-                      max={100}
-                      className='slider-purple'
-                      tooltip={{ placement: 'top' }}
-                      value={settings?.typingSoundVolume}
-                      onChange={value => {
-                        setSettings(prev =>
-                          prev
-                            ? { ...prev, typingSoundVolume: value }
-                            : undefined
-                        );
-                        form.setFieldsValue({
-                          typingSoundVolume: value
-                        });
-                      }}
-                    />
-                  </div>
-                </Form.Item>
-              </Col>
-            </Row>
-          </div>
+          <AudioSettings
+            settings={settings}
+            onSettingsChange={handleSettingsChange}
+            form={form}
+          />
 
           {/* 快捷键设置 */}
-          <div className='bg-slate-900/80 backdrop-blur-sm border border-slate-700/50 rounded-xl shadow-xl shadow-slate-900/20 hover:shadow-2xl hover:shadow-slate-900/30 transition-all duration-300 p-8'>
-            <div className='mb-8'>
-              <Space>
-                <span className='text-white font-semibold text-lg'>
-                  快捷键设置
-                </span>
-              </Space>
-            </div>
-            <Form.Item
-              label={
-                <Space>
-                  <span className='text-gray-200 font-medium'>
-                    显示快捷键提示
-                  </span>
-                </Space>
-              }
-              name='showShortcutHints'
-              valuePropName='checked'>
-              <Switch
-                checkedChildren='显示'
-                unCheckedChildren='隐藏'
-                className='bg-slate-700'
-                size='default'
-              />
-            </Form.Item>
-            <Row gutter={[24, 20]}>
-              <Col xs={24} md={8}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        重置练习
-                      </span>
-                    </Space>
-                  }>
-                  <ShortcutButton
-                    keyName='resetExercise'
-                    currentShortcut={
-                      settings?.shortcuts.resetExercise || {
-                        key: '',
-                        modifiers: []
-                      }
-                    }
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} md={8}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        切换提示
-                      </span>
-                    </Space>
-                  }>
-                  <ShortcutButton
-                    keyName='toggleHint'
-                    currentShortcut={
-                      settings?.shortcuts.toggleHint || {
-                        key: '',
-                        modifiers: []
-                      }
-                    }
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} md={8}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        播放发音
-                      </span>
-                    </Space>
-                  }>
-                  <ShortcutButton
-                    keyName='pronunciation'
-                    currentShortcut={
-                      settings?.shortcuts.pronunciation || {
-                        key: '',
-                        modifiers: []
-                      }
-                    }
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Divider
-              className='border-purple-500 my-6'
-              style={{ borderColor: '#732cc550' }}
-            />
-
-            <Row gutter={[24, 20]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        上一个单词
-                      </span>
-                    </Space>
-                  }>
-                  <ShortcutButton
-                    keyName='wordNavigationPrev'
-                    currentShortcut={
-                      settings?.shortcuts.wordNavigation.prev || {
-                        key: '',
-                        modifiers: []
-                      }
-                    }
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        下一个单词
-                      </span>
-                    </Space>
-                  }>
-                  <ShortcutButton
-                    keyName='wordNavigationNext'
-                    currentShortcut={
-                      settings?.shortcuts.wordNavigation.next || {
-                        key: '',
-                        modifiers: []
-                      }
-                    }
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </div>
+          <ShortcutSettings
+            settings={settings}
+            listeningKey={listeningKey}
+            pressedModifiers={pressedModifiers}
+            onToggleListening={toggleListening}
+            checkShortcutConflict={checkShortcutConflict}
+          />
 
           {/* 操作按钮 */}
-          <Row justify='center' gutter={24} className='mt-10'>
-            <Col>
-              <Button
-                type='primary'
-                icon={<SaveOutlined />}
-                onClick={handleSave}
-                loading={isLoading}
-                size='large'
-                className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 h-12 px-8 text-lg font-medium'>
-                保存设置
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                icon={<ReloadOutlined />}
-                onClick={handleReset}
-                size='large'
-                className='bg-slate-700/50 hover:bg-slate-600/50 border-slate-600 text-white hover:text-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 h-12 px-8 text-lg font-medium'>
-                重置默认
-              </Button>
-            </Col>
-          </Row>
+          <ActionButtons
+            onSave={handleSave}
+            onReset={handleReset}
+            isLoading={isLoading}
+          />
         </Form>
       </div>
     </div>

@@ -278,5 +278,38 @@ export default {
   'general.UserSettingsController_getDefaultSettings': [
     'GET',
     '/api/user-settings/defaults'
+  ],
+  'general.CustomPackagesController_create': ['POST', '/api/custom-packages'],
+  'general.CustomPackagesController_findMyPackages': [
+    'GET',
+    '/api/custom-packages/my'
+  ],
+  'general.CustomPackagesController_findPublicPackages': [
+    'GET',
+    '/api/custom-packages/public'
+  ],
+  'general.CustomPackagesController_findOne': [
+    'GET',
+    '/api/custom-packages/{id}'
+  ],
+  'general.CustomPackagesController_remove': [
+    'DELETE',
+    '/api/custom-packages/{id}'
+  ],
+  'general.CustomPackagesController_findWordsByPackage': [
+    'GET',
+    '/api/custom-packages/{id}/words'
+  ],
+  'general.CustomPackagesController_addWord': [
+    'POST',
+    '/api/custom-packages/{id}/words'
+  ],
+  'general.CustomPackagesController_removeWord': [
+    'DELETE',
+    '/api/custom-packages/{id}/words/{wordId}'
+  ],
+  'general.CustomPackagesController_importWords': [
+    'POST',
+    '/api/custom-packages/{id}/words/import'
   ]
 };

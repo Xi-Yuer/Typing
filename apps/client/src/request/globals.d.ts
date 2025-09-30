@@ -353,6 +353,20 @@ export interface UpdateUserSettingsDto {
    */
   shortcuts: ShortcutsDto;
 }
+export interface CreateCustomPackageDto {
+  /**
+   * 学习包名称
+   */
+  name: string;
+  /**
+   * 学习包描述
+   */
+  description?: string;
+  /**
+   * 是否公开
+   */
+  isPublic?: boolean;
+}
 export interface User {
   /**
    * 用户ID
@@ -652,6 +666,118 @@ export interface UserSettingsResponseDto {
    */
   updateTime: string;
 }
+export interface CustomWord {
+  /**
+   * 自定义单词 ID
+   */
+  id: string;
+  /**
+   * 所属学习包 ID
+   */
+  packageId: string;
+  /**
+   * 单词原文
+   */
+  word: string;
+  /**
+   * 罗马音/拼音
+   */
+  transliteration?: string;
+  /**
+   * 美式音标
+   */
+  usPhonetic?: string;
+  /**
+   * 英式音标
+   */
+  ukPhonetic?: string;
+  /**
+   * 中文释义
+   */
+  meaning: string;
+  /**
+   * 简短翻译
+   */
+  meaningShort: string;
+  /**
+   * 例句
+   */
+  example: string;
+  /**
+   * 发音音频链接
+   */
+  audioUrl?: string;
+  /**
+   * 图片链接
+   */
+  imageUrl?: string;
+  /**
+   * 排序权重
+   */
+  sortOrder: number;
+  /**
+   * 创建时间
+   */
+  createdAt: string;
+  /**
+   * 更新时间
+   */
+  updatedAt: string;
+  /**
+   * 删除时间
+   */
+  deletedAt?: string;
+  /**
+   * 所属学习包
+   */
+  customPackage: CustomPackage;
+}
+export interface CustomPackage {
+  /**
+   * 自定义学习包 ID
+   */
+  id: string;
+  /**
+   * 创建用户 ID
+   */
+  userId: string;
+  /**
+   * 学习包名称
+   */
+  name: string;
+  /**
+   * 学习包描述
+   */
+  description: string;
+  /**
+   * 单词数量
+   */
+  wordCount: number;
+  /**
+   * 是否公开
+   */
+  isPublic: boolean;
+  /**
+   * 创建时间
+   */
+  createdAt: string;
+  /**
+   * 更新时间
+   */
+  updatedAt: string;
+  /**
+   * 删除时间
+   */
+  deletedAt?: string;
+  /**
+   * 创建用户
+   */
+  user: User;
+  /**
+   * 包含的单词
+   */
+  words: CustomWord[];
+}
 export interface UpdateLanguageDto {
   /**
    * 语言名称
@@ -763,6 +889,96 @@ export interface UpdateWordErrorRecordDto {
    * 练习次数
    */
   practiceCount?: number;
+}
+export interface CreateCustomWordDto {
+  /**
+   * 单词原文
+   */
+  word: string;
+  /**
+   * 罗马音/拼音
+   */
+  transliteration?: string;
+  /**
+   * 美式音标
+   */
+  usPhonetic?: string;
+  /**
+   * 英式音标
+   */
+  ukPhonetic?: string;
+  /**
+   * 中文释义
+   */
+  meaning?: string;
+  /**
+   * 简短翻译
+   */
+  meaningShort?: string;
+  /**
+   * 例句
+   */
+  example?: string;
+  /**
+   * 发音音频链接
+   */
+  audioUrl?: string;
+  /**
+   * 图片链接
+   */
+  imageUrl?: string;
+  /**
+   * 排序权重
+   */
+  sortOrder?: number;
+}
+export interface ImportWordItemDto {
+  /**
+   * 单词原文
+   */
+  word: string;
+  /**
+   * 罗马音/拼音
+   */
+  transliteration?: string;
+  /**
+   * 美式音标
+   */
+  usPhonetic?: string;
+  /**
+   * 英式音标
+   */
+  ukPhonetic?: string;
+  /**
+   * 中文释义
+   */
+  meaning?: string;
+  /**
+   * 简短翻译
+   */
+  meaningShort?: string;
+  /**
+   * 例句
+   */
+  example?: string;
+  /**
+   * 发音音频链接
+   */
+  audioUrl?: string;
+  /**
+   * 图片链接
+   */
+  imageUrl?: string;
+  /**
+   * 排序权重
+   */
+  sortOrder?: number;
+}
+export interface ImportWordsDto {
+  /**
+   * 要导入的单词列表
+   */
+  words: ImportWordItemDto[];
 }
 export interface UserResponseDto {
   /**
@@ -14543,6 +14759,1556 @@ declare global {
           path: string;
         },
         'general.UserSettingsController_getDefaultSettings',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 创建自定义学习包
+       *
+       * **path:** /api/custom-packages
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 学习包名称
+       *   name: string
+       *   // 学习包描述
+       *   description?: string
+       *   // 是否公开
+       *   isPublic?: boolean
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = null
+       * ```
+       */
+      CustomPackagesController_create<
+        Config extends Alova2MethodConfig<null> & {
+          data: CreateCustomPackageDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<null, 'general.CustomPackagesController_create', Config>;
+      /**
+       * ---
+       *
+       * [GET] 获取我的自定义学习包列表
+       *
+       * **path:** /api/custom-packages/my
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 自定义学习包 ID
+       *       id: string
+       *       // 创建用户 ID
+       *       userId: string
+       *       // 学习包名称
+       *       name: string
+       *       // 学习包描述
+       *       description: string
+       *       // 单词数量
+       *       wordCount: number
+       *       // 是否公开
+       *       isPublic: boolean
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 创建用户
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 包含的单词
+       *       // [items] start
+       *       // [items] end
+       *       words: Array<{
+       *         // 自定义单词 ID
+       *         id: string
+       *         // 所属学习包 ID
+       *         packageId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 排序权重
+       *         sortOrder: number
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属学习包
+       *         // [params1] start
+       *         // [cycle] $.data.list.[]
+       *         // [params1] end
+       *         customPackage: CustomPackage
+       *       }>
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_findMyPackages<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CustomPackage[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
+      >(
+        config?: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CustomPackage[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_findMyPackages',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取公开的自定义学习包列表
+       *
+       * **path:** /api/custom-packages/public
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 自定义学习包 ID
+       *       id: string
+       *       // 创建用户 ID
+       *       userId: string
+       *       // 学习包名称
+       *       name: string
+       *       // 学习包描述
+       *       description: string
+       *       // 单词数量
+       *       wordCount: number
+       *       // 是否公开
+       *       isPublic: boolean
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 创建用户
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 包含的单词
+       *       // [items] start
+       *       // [items] end
+       *       words: Array<{
+       *         // 自定义单词 ID
+       *         id: string
+       *         // 所属学习包 ID
+       *         packageId: string
+       *         // 单词原文
+       *         word: string
+       *         // 罗马音/拼音
+       *         transliteration?: string
+       *         // 美式音标
+       *         usPhonetic?: string
+       *         // 英式音标
+       *         ukPhonetic?: string
+       *         // 中文释义
+       *         meaning: string
+       *         // 简短翻译
+       *         meaningShort: string
+       *         // 例句
+       *         example: string
+       *         // 发音音频链接
+       *         audioUrl?: string
+       *         // 图片链接
+       *         imageUrl?: string
+       *         // 排序权重
+       *         sortOrder: number
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 所属学习包
+       *         // [params1] start
+       *         // [cycle] $.data.list.[]
+       *         // [params1] end
+       *         customPackage: CustomPackage
+       *       }>
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_findPublicPackages<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CustomPackage[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }>
+      >(
+        config?: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CustomPackage[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_findPublicPackages',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 根据ID获取自定义学习包详情
+       *
+       * **path:** /api/custom-packages/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 自定义学习包 ID
+       *     id: string
+       *     // 创建用户 ID
+       *     userId: string
+       *     // 学习包名称
+       *     name: string
+       *     // 学习包描述
+       *     description: string
+       *     // 单词数量
+       *     wordCount: number
+       *     // 是否公开
+       *     isPublic: boolean
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 创建用户
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 包含的单词
+       *     // [items] start
+       *     // [items] end
+       *     words: Array<{
+       *       // 自定义单词 ID
+       *       id: string
+       *       // 所属学习包 ID
+       *       packageId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 排序权重
+       *       sortOrder: number
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属学习包
+       *       // [params1] start
+       *       // [cycle] $.data
+       *       // [params1] end
+       *       customPackage: CustomPackage
+       *     }>
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_findOne<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomPackage;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            id: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomPackage;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_findOne',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [DELETE] 删除自定义学习包
+       *
+       * **path:** /api/custom-packages/{id}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 自定义学习包 ID
+       *     id: string
+       *     // 创建用户 ID
+       *     userId: string
+       *     // 学习包名称
+       *     name: string
+       *     // 学习包描述
+       *     description: string
+       *     // 单词数量
+       *     wordCount: number
+       *     // 是否公开
+       *     isPublic: boolean
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 创建用户
+       *     user: {
+       *       // 用户ID
+       *       id: number
+       *       // 用户名
+       *       name: string
+       *       // 邮箱
+       *       email: string
+       *       // 密码
+       *       password: string
+       *       // 是否激活
+       *       isActive: boolean
+       *       // 用户角色
+       *       role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *       // 用户状态
+       *       status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *       // 创建时间
+       *       createTime: string
+       *       // 更新时间
+       *       updateTime: string
+       *       // 删除时间
+       *       deleteTime?: string
+       *     }
+       *     // 包含的单词
+       *     // [items] start
+       *     // [items] end
+       *     words: Array<{
+       *       // 自定义单词 ID
+       *       id: string
+       *       // 所属学习包 ID
+       *       packageId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 排序权重
+       *       sortOrder: number
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属学习包
+       *       // [params1] start
+       *       // [cycle] $.data
+       *       // [params1] end
+       *       customPackage: CustomPackage
+       *     }>
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_remove<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomPackage;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            id: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomPackage;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_remove',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [GET] 获取学习包中的单词列表
+       *
+       * **path:** /api/custom-packages/{id}/words
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Query Parameters**
+       * ```ts
+       * type QueryParameters = {
+       *   // 页码
+       *   page?: number
+       *   // 每页数量
+       *   limit?: number
+       *   // 搜索关键词
+       *   search?: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // [items] start
+       *     // [items] end
+       *     list: Array<{
+       *       // 自定义单词 ID
+       *       id: string
+       *       // 所属学习包 ID
+       *       packageId: string
+       *       // 单词原文
+       *       word: string
+       *       // 罗马音/拼音
+       *       transliteration?: string
+       *       // 美式音标
+       *       usPhonetic?: string
+       *       // 英式音标
+       *       ukPhonetic?: string
+       *       // 中文释义
+       *       meaning: string
+       *       // 简短翻译
+       *       meaningShort: string
+       *       // 例句
+       *       example: string
+       *       // 发音音频链接
+       *       audioUrl?: string
+       *       // 图片链接
+       *       imageUrl?: string
+       *       // 排序权重
+       *       sortOrder: number
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 所属学习包
+       *       customPackage: {
+       *         // 自定义学习包 ID
+       *         id: string
+       *         // 创建用户 ID
+       *         userId: string
+       *         // 学习包名称
+       *         name: string
+       *         // 学习包描述
+       *         description: string
+       *         // 单词数量
+       *         wordCount: number
+       *         // 是否公开
+       *         isPublic: boolean
+       *         // 创建时间
+       *         createdAt: string
+       *         // 更新时间
+       *         updatedAt: string
+       *         // 删除时间
+       *         deletedAt?: string
+       *         // 创建用户
+       *         user: {
+       *           // 用户ID
+       *           id: number
+       *           // 用户名
+       *           name: string
+       *           // 邮箱
+       *           email: string
+       *           // 密码
+       *           password: string
+       *           // 是否激活
+       *           isActive: boolean
+       *           // 用户角色
+       *           role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *           // 用户状态
+       *           status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *           // 创建时间
+       *           createTime: string
+       *           // 更新时间
+       *           updateTime: string
+       *           // 删除时间
+       *           deleteTime?: string
+       *         }
+       *         // 包含的单词
+       *         // [items] start
+       *         // [cycle] $.data.list.[]
+       *         // [items] end
+       *         words: CustomWord[]
+       *       }
+       *     }>
+       *     // 总数量
+       *     total: number
+       *     // 当前页码
+       *     page: number
+       *     // 每页数量
+       *     pageSize: number
+       *     // 总页数
+       *     totalPages: number
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_findWordsByPackage<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CustomWord[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            id: string;
+          };
+          params: {
+            /**
+             * 页码
+             */
+            page?: number;
+            /**
+             * 每页数量
+             */
+            limit?: number;
+            /**
+             * 搜索关键词
+             */
+            search?: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: {
+            list: CustomWord[];
+            /**
+             * 总数量
+             */
+            total: number;
+            /**
+             * 当前页码
+             */
+            page: number;
+            /**
+             * 每页数量
+             */
+            pageSize: number;
+            /**
+             * 总页数
+             */
+            totalPages: number;
+          };
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_findWordsByPackage',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 向学习包添加单词
+       *
+       * **path:** /api/custom-packages/{id}/words
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 单词原文
+       *   word: string
+       *   // 罗马音/拼音
+       *   transliteration?: string
+       *   // 美式音标
+       *   usPhonetic?: string
+       *   // 英式音标
+       *   ukPhonetic?: string
+       *   // 中文释义
+       *   meaning?: string
+       *   // 简短翻译
+       *   meaningShort?: string
+       *   // 例句
+       *   example?: string
+       *   // 发音音频链接
+       *   audioUrl?: string
+       *   // 图片链接
+       *   imageUrl?: string
+       *   // 排序权重
+       *   sortOrder?: number
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 自定义单词 ID
+       *     id: string
+       *     // 所属学习包 ID
+       *     packageId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 排序权重
+       *     sortOrder: number
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属学习包
+       *     customPackage: {
+       *       // 自定义学习包 ID
+       *       id: string
+       *       // 创建用户 ID
+       *       userId: string
+       *       // 学习包名称
+       *       name: string
+       *       // 学习包描述
+       *       description: string
+       *       // 单词数量
+       *       wordCount: number
+       *       // 是否公开
+       *       isPublic: boolean
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 创建用户
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 包含的单词
+       *       // [items] start
+       *       // [cycle] $.data
+       *       // [items] end
+       *       words: CustomWord[]
+       *     }
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_addWord<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomWord;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            id: string;
+          };
+          data: CreateCustomWordDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomWord;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_addWord',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [DELETE] 删除学习包中的单词
+       *
+       * **path:** /api/custom-packages/{id}/words/{wordId}
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   id: string
+       *   wordId: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 自定义单词 ID
+       *     id: string
+       *     // 所属学习包 ID
+       *     packageId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 排序权重
+       *     sortOrder: number
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属学习包
+       *     customPackage: {
+       *       // 自定义学习包 ID
+       *       id: string
+       *       // 创建用户 ID
+       *       userId: string
+       *       // 学习包名称
+       *       name: string
+       *       // 学习包描述
+       *       description: string
+       *       // 单词数量
+       *       wordCount: number
+       *       // 是否公开
+       *       isPublic: boolean
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 创建用户
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 包含的单词
+       *       // [items] start
+       *       // [cycle] $.data
+       *       // [items] end
+       *       words: CustomWord[]
+       *     }
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_removeWord<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomWord;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            id: string;
+            wordId: string;
+          };
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomWord;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_removeWord',
+        Config
+      >;
+      /**
+       * ---
+       *
+       * [POST] 批量导入单词到学习包
+       *
+       * **path:** /api/custom-packages/{id}/words/import
+       *
+       * ---
+       *
+       * **Path Parameters**
+       * ```ts
+       * type PathParameters = {
+       *   id: string
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **RequestBody**
+       * ```ts
+       * type RequestBody = {
+       *   // 要导入的单词列表
+       *   // [items] start
+       *   // [items] end
+       *   words: Array<{
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning?: string
+       *     // 简短翻译
+       *     meaningShort?: string
+       *     // 例句
+       *     example?: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 排序权重
+       *     sortOrder?: number
+       *   }>
+       * }
+       * ```
+       *
+       * ---
+       *
+       * **Response**
+       * ```ts
+       * type Response = {
+       *   // 状态码
+       *   code: number
+       *   // 响应消息
+       *   message: string
+       *   data: {
+       *     // 自定义单词 ID
+       *     id: string
+       *     // 所属学习包 ID
+       *     packageId: string
+       *     // 单词原文
+       *     word: string
+       *     // 罗马音/拼音
+       *     transliteration?: string
+       *     // 美式音标
+       *     usPhonetic?: string
+       *     // 英式音标
+       *     ukPhonetic?: string
+       *     // 中文释义
+       *     meaning: string
+       *     // 简短翻译
+       *     meaningShort: string
+       *     // 例句
+       *     example: string
+       *     // 发音音频链接
+       *     audioUrl?: string
+       *     // 图片链接
+       *     imageUrl?: string
+       *     // 排序权重
+       *     sortOrder: number
+       *     // 创建时间
+       *     createdAt: string
+       *     // 更新时间
+       *     updatedAt: string
+       *     // 删除时间
+       *     deletedAt?: string
+       *     // 所属学习包
+       *     customPackage: {
+       *       // 自定义学习包 ID
+       *       id: string
+       *       // 创建用户 ID
+       *       userId: string
+       *       // 学习包名称
+       *       name: string
+       *       // 学习包描述
+       *       description: string
+       *       // 单词数量
+       *       wordCount: number
+       *       // 是否公开
+       *       isPublic: boolean
+       *       // 创建时间
+       *       createdAt: string
+       *       // 更新时间
+       *       updatedAt: string
+       *       // 删除时间
+       *       deletedAt?: string
+       *       // 创建用户
+       *       user: {
+       *         // 用户ID
+       *         id: number
+       *         // 用户名
+       *         name: string
+       *         // 邮箱
+       *         email: string
+       *         // 密码
+       *         password: string
+       *         // 是否激活
+       *         isActive: boolean
+       *         // 用户角色
+       *         role: ('super_admin' | 'admin' | 'user' | 'guest') | null
+       *         // 用户状态
+       *         status: 'active' | 'disabled' | 'pending' | 'deleted'
+       *         // 创建时间
+       *         createTime: string
+       *         // 更新时间
+       *         updateTime: string
+       *         // 删除时间
+       *         deleteTime?: string
+       *       }
+       *       // 包含的单词
+       *       // [items] start
+       *       // [cycle] $.data
+       *       // [items] end
+       *       words: CustomWord[]
+       *     }
+       *   }
+       *   // 时间戳
+       *   timestamp: number
+       *   // 请求路径
+       *   path: string
+       * }
+       * ```
+       */
+      CustomPackagesController_importWords<
+        Config extends Alova2MethodConfig<{
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomWord;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        }> & {
+          pathParams: {
+            id: string;
+          };
+          data: ImportWordsDto;
+        }
+      >(
+        config: Config
+      ): Alova2Method<
+        {
+          /**
+           * 状态码
+           */
+          code: number;
+          /**
+           * 响应消息
+           */
+          message: string;
+          data: CustomWord;
+          /**
+           * 时间戳
+           */
+          timestamp: number;
+          /**
+           * 请求路径
+           */
+          path: string;
+        },
+        'general.CustomPackagesController_importWords',
         Config
       >;
     };

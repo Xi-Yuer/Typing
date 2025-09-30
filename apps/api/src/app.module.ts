@@ -14,6 +14,7 @@ import { SpeechModule } from './modules/speech/speech.module';
 import { WordErrorReportsModule } from './modules/word-errors/word-errors.module';
 import { WordErrorRecordsModule } from './modules/word-error-record/word-error-records.module';
 import { UserSettingsModule } from './modules/user-settings/user-settings.module';
+import { CustomPackagesModule } from './modules/custom-packages/custom-packages.module';
 import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor';
 import { RedisCacheModule } from './modules/redis/redis.module';
 
@@ -32,6 +33,7 @@ import { RedisCacheModule } from './modules/redis/redis.module';
     WordErrorReportsModule,
     WordErrorRecordsModule,
     UserSettingsModule,
+    CustomPackagesModule,
     CacheModule.registerAsync({
       useFactory: () => {
         return {
