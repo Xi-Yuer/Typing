@@ -44,7 +44,7 @@ export async function playWordAudio(
     voiceType: '1'
   } as UserSettings
 ): Promise<void> {
-  if (!word || !word.word?.trim()) {
+  if (!word || !word.word?.trim() || !userSettings?.autoPlayPronunciation) {
     return;
   }
 
@@ -54,9 +54,6 @@ export async function playWordAudio(
       word,
       userSettings?.voiceType as '0' | '1' | undefined
     );
-    if (!userSettings?.autoPlayPronunciation) {
-      return;
-    }
     // 如果已有音频在播，先停止
     if (currentAudio) {
       currentAudio.pause();

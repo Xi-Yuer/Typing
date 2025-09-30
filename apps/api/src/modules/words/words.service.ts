@@ -361,13 +361,13 @@ export class WordsService {
     userId?: number
   ): Promise<GetUserWordsProgressDto> {
     if (!userId) {
-      return new GetUserWordsProgressDto({ userId });
+      return new GetUserWordsProgressDto({});
     }
     try {
       const progress = await this.redisService.getCache(
         `${userId}:words:${languageId}:${categoryId}`
       );
-      return new GetUserWordsProgressDto(progress);
+      return new GetUserWordsProgressDto({ ...progress, userId });
     } catch {
       return new GetUserWordsProgressDto({ userId });
     }

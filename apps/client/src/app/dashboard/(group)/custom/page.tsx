@@ -440,7 +440,9 @@ export default function Custom() {
                   />
                 </Form.Item>
               </Col>
-              <Col xs={24} md={24}>
+            </Row>
+            <Row gutter={[32, 24]} className='flex items-end'>
+              <Col xs={24} md={12}>
                 <Form.Item
                   label={
                     <Space>
@@ -477,31 +479,6 @@ export default function Custom() {
                   </Select>
                 </Form.Item>
               </Col>
-            </Row>
-
-            <Row gutter={[32, 24]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  label={
-                    <Space>
-                      <span className='text-gray-200 font-medium'>
-                        启用音效
-                      </span>
-                    </Space>
-                  }
-                  name='soundEnabled'
-                  valuePropName='checked'>
-                  <Switch
-                    checkedChildren='开启'
-                    unCheckedChildren='关闭'
-                    className='bg-slate-700'
-                    size='default'
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={[32, 24]}>
               <Col xs={24} md={12}>
                 <Form.Item
                   label={
@@ -534,7 +511,30 @@ export default function Custom() {
                   </div>
                 </Form.Item>
               </Col>
+            </Row>
+            <Row gutter={[32, 24]}>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label={
+                    <Space>
+                      <span className='text-gray-200 font-medium'>
+                        启用音效
+                      </span>
+                    </Space>
+                  }
+                  name='soundEnabled'
+                  valuePropName='checked'>
+                  <Switch
+                    checkedChildren='开启'
+                    unCheckedChildren='关闭'
+                    className='bg-slate-700'
+                    size='default'
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
+            <Row gutter={[32, 24]}>
               <Col xs={24} md={12}>
                 <Form.Item
                   label={

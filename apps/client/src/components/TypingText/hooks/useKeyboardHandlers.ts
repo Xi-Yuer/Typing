@@ -58,7 +58,10 @@ export const useKeyboardHandlers = ({
   const playWordAudioInternal = useCallback(async () => {
     if (word?.word) {
       try {
-        await playWordAudio(word, userSettings);
+        await playWordAudio(word, {
+          ...userSettings,
+          autoPlayPronunciation: true
+        } as UserSettings);
       } catch {
         // 静默处理错误
       }

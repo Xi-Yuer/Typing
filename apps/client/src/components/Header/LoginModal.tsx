@@ -151,8 +151,6 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
           backdropFilter: 'blur(25px)',
           border: '1px solid rgba(59, 130, 246, 0.2)',
           borderRadius: '28px',
-          boxShadow:
-            '0 25px 50px -12px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.05)',
           overflow: 'hidden',
           padding: 0
         },

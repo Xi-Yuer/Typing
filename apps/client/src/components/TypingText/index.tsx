@@ -53,18 +53,44 @@ const TypingText = function ({
     }
   }, [inputRef]);
 
+  function showPhonetic(word?: Word) {
+    if (word?.ukPhonetic || word?.usPhonetic) {
+      return (
+        <span className='text-2xl text-gray-400'>
+          /{word?.ukPhonetic || word?.usPhonetic}/
+        </span>
+      );
+    }
+    return <span className='text-2xl text-gray-400'>&nbsp;</span>;
+  }
+
   function showMean(word?: Word) {
     // 翻译模式下，显示单词
     if (mode === 'translation') {
-      return word?.word;
+      return (
+        <div className='flex flex-col items-center justify-center gap-y-2'>
+          <span>{word?.word}</span>
+          {showPhonetic(word)}
+        </div>
+      );
     }
     if (!word) {
       return '';
     }
     if (word.meaning?.length > 50) {
-      return word.meaningShort;
+      return (
+        <div className='flex flex-col items-center justify-center gap-y-2'>
+          <span>{word?.meaningShort}</span>
+          {showPhonetic(word)}
+        </div>
+      );
     } else {
-      return word.meaning;
+      return (
+        <div className='flex flex-col items-center justify-center gap-y-2'>
+          <span>{word?.meaning}</span>
+          {showPhonetic(word)}
+        </div>
+      );
     }
   }
 
@@ -82,7 +108,9 @@ const TypingText = function ({
             {/* 根据不同模式显示不同内容 */}
             {['dictation', 'translation', 'silentTranslation'].includes(
               mode as string
-            ) && <div className='text-3xl'>{showMean(word)}</div>}
+            ) && (
+              <div className='text-5xl font-bold mt-8'>{showMean(word)}</div>
+            )}
 
             {/* 单词显示区域 */}
             <WordDisplay

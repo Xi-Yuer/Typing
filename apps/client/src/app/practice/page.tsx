@@ -94,19 +94,17 @@ function PracticePageContent() {
         page,
         pageSize
       );
-
       if (response && response.data && response.data.list) {
         const wordList = response.data.list;
         if (page === 1) {
           // 初始加载，替换所有数据
           setWords(wordList);
           setCurrentWordIndex(0);
-          setTotal(response.data.total); // 只在初始加载时设置 total
         } else {
           // 预加载，追加数据
           setWords(prev => [...prev, ...wordList]);
         }
-
+        setTotal(response.data.total);
         setCurrentPage(page);
       }
     },
@@ -258,8 +256,8 @@ function PracticePageContent() {
           <div className='text-sm text-gray-300'>
             <span>
               {words?.[currentWordIndex]?.language.name} -
-              {words?.[currentWordIndex]?.category.name} (
-              {globalWordIndex + currentWordIndex + 1} / {total})
+              {words?.[currentWordIndex]?.category.name}
+              {globalWordIndex + currentWordIndex + 1} /{total}
             </span>
           </div>
           {/* 功能区域 */}

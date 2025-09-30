@@ -87,7 +87,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
             'linear-gradient(135deg, rgba(15, 20, 35, 0.95) 0%, rgba(25, 30, 50, 0.9) 100%)',
           border: '1px solid rgba(59, 130, 246, 0.2)',
           borderRadius: '12px',
-          backdropFilter: 'blur(20px)'
+          backdropFilter: 'blur(25px)'
         },
         header: {
           backgroundColor: 'transparent',
@@ -97,6 +97,9 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
         },
         body: {
           padding: '20px'
+        },
+        mask: {
+          backdropFilter: 'blur(8px)'
         }
       }}>
       <div className='space-y-3'>
