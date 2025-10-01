@@ -11,7 +11,6 @@ interface PackageListProps {
   packageType: 'my' | 'public';
   onDelete: (id: string) => void;
   onImport?: (id: string) => void;
-  onStartPractice?: (id: string) => void;
 }
 
 export default function PackageList({
@@ -19,8 +18,7 @@ export default function PackageList({
   loading,
   packageType,
   onDelete,
-  onImport,
-  onStartPractice
+  onImport
 }: PackageListProps) {
   if (loading) {
     return (
@@ -47,7 +45,6 @@ export default function PackageList({
           packageType={packageType}
           onDelete={onDelete}
           onImport={onImport}
-          onStartPractice={onStartPractice}
         />
       ))}
     </>

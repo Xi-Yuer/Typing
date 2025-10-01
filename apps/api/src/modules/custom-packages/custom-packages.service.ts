@@ -116,19 +116,17 @@ export class CustomPackagesService {
 
   // 获取学习包中的单词列表
   async findWordsByPackage(
-    packageId: string,
     userId: string,
     queryDto: QueryCustomWordDto
   ): Promise<PaginationResponseDto<CustomWord>> {
-    const { page = 1, limit = 10, search } = queryDto;
-    const skip = (page - 1) * limit;
-
+    const { page = 1, pageSize = 10, search, packageId } = queryDto;
+    const skip = (page - 1) * pageSize;
     // 先检查学习包是否存在且用户有权限访问
     await this.findOne(packageId, userId);
 
     const queryBuilder = this.customWordRepository
       .createQueryBuilder('word')
-      .where('word.packageId = :packageId', { packageId });
+      .where('word.packageId = :packageId', { packageId: packageId });
 
     if (search) {
       queryBuilder.andWhere(
@@ -140,12 +138,13 @@ export class CustomPackagesService {
     queryBuilder
       .orderBy('word.sortOrder', 'ASC')
       .addOrderBy('word.createdAt', 'ASC')
+      .leftJoinAndSelect('word.customPackage', 'customPackage')
       .skip(skip)
-      .take(limit);
+      .take(pageSize);
 
     const [data, total] = await queryBuilder.getManyAndCount();
 
-    return new PaginationResponseDto(data, total, page, limit);
+    return new PaginationResponseDto(data, total, page, pageSize);
   }
 
   // 向学习包添加单词

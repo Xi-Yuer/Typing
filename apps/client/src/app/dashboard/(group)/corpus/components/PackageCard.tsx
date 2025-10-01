@@ -1,9 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Popconfirm, Tooltip } from 'antd';
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import type { CustomPackage as ApiCustomPackage } from '@/request/globals';
 import { getDifficultyStyle } from '@/utils';
+import GameModeModal from '@/components/GameModeModal';
+import { useGameModeContext } from '@/contexts/GameModeContext';
+import { useRouter } from 'next/navigation';
 
 type CustomPackage = ApiCustomPackage;
 
@@ -12,17 +15,30 @@ interface PackageCardProps {
   packageType: 'my' | 'public';
   onDelete: (id: string) => void;
   onImport?: (id: string) => void;
-  onStartPractice?: (id: string) => void;
 }
 
 export default function PackageCard({
   pkg,
   packageType,
   onDelete,
-  onImport,
-  onStartPractice
+  onImport
 }: PackageCardProps) {
   const difficultyStyle = getDifficultyStyle(pkg.difficulty);
+  const { currentMode, changeMode } = useGameModeContext();
+  const router = useRouter();
+
+  // 每个 PackageCard 都有自己的弹窗状态
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 打开弹窗
+  const openModeModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  // 关闭弹窗
+  const closeModeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
   return (
     <div className='bg-white/10 !h-[150px] overflow-hidden backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
@@ -45,7 +61,7 @@ export default function PackageCard({
 
       <span
         className='flex items-center text-purple-400'
-        onClick={() => onStartPractice?.(pkg.id)}>
+        onClick={() => openModeModal()}>
         <span className='text-sm'>开始练习</span>
         <svg
           className='w-4 h-4 ml-2'
@@ -62,7 +78,7 @@ export default function PackageCard({
       </span>
 
       {/* 操作按钮 */}
-      <div className='flex justify-end items-center'>
+      <div className='flex justify-end items-center translate-x-5'>
         <div className='flex'>
           {packageType === 'my' && (
             <>
@@ -99,6 +115,16 @@ export default function PackageCard({
           )}
         </div>
       </div>
+      {/* 游戏模式选择弹窗 */}
+      <GameModeModal
+        isOpen={isModalOpen}
+        onClose={closeModeModal}
+        currentMode={currentMode}
+        onModeChange={mode => {
+          router.push(`/custom?packageId=${pkg.id}`);
+          changeMode(mode);
+        }}
+      />
     </div>
   );
 }

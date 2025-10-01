@@ -15,12 +15,7 @@
  *
  * **Do not edit the file manually.**
  */
-import type {
-  Alova,
-  AlovaMethodCreateConfig,
-  AlovaGenerics,
-  Method
-} from 'alova';
+import type { Alova, AlovaMethodCreateConfig, AlovaGenerics, Method } from 'alova';
 import type { $$userConfigMap, alovaInstance } from '.';
 import type apiDefinitions from './apiDefinitions';
 
@@ -42,16 +37,7 @@ type Alova2MethodConfig<Responded> =
   >
     ? Omit<
         AlovaMethodCreateConfig<
-          AlovaGenerics<
-            Responded,
-            any,
-            RequestConfig,
-            Response,
-            ResponseHeader,
-            L1Cache,
-            L2Cache,
-            SE
-          >,
+          AlovaGenerics<Responded, any, RequestConfig, Response, ResponseHeader, L1Cache, L2Cache, SE>,
           any,
           Responded
         >,
@@ -64,9 +50,7 @@ type ExtractUserDefinedTransformed<
   DefinitionKey extends keyof typeof apiDefinitions,
   Default
 > = DefinitionKey extends keyof UserMethodConfigMap
-  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (
-      ...args: any[]
-    ) => any
+  ? UserMethodConfigMap[DefinitionKey]['transform'] extends (...args: any[]) => any
     ? Awaited<ReturnType<UserMethodConfigMap[DefinitionKey]['transform']>>
     : Default
   : Default;
@@ -3282,11 +3266,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.LanguagesController_remove',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.LanguagesController_remove', Config>;
       /**
        * ---
        *
@@ -4356,15 +4336,9 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getDifficultyStats<
-        Config extends Alova2MethodConfig<ApiResponseDto>
-      >(
+      CorpusCategoriesController_getDifficultyStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
         config?: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_getDifficultyStats',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getDifficultyStats', Config>;
       /**
        * ---
        *
@@ -4390,15 +4364,9 @@ declare global {
        * }
        * ```
        */
-      CorpusCategoriesController_getLanguageStats<
-        Config extends Alova2MethodConfig<ApiResponseDto>
-      >(
+      CorpusCategoriesController_getLanguageStats<Config extends Alova2MethodConfig<ApiResponseDto>>(
         config?: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_getLanguageStats',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_getLanguageStats', Config>;
       /**
        * ---
        *
@@ -4567,11 +4535,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        ApiResponseDto,
-        'general.CorpusCategoriesController_remove',
-        Config
-      >;
+      ): Alova2Method<ApiResponseDto, 'general.CorpusCategoriesController_remove', Config>;
       /**
        * ---
        *
@@ -12533,11 +12497,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        WordErrorRecordResponseDto,
-        'general.WordErrorRecordsController_recordWordError',
-        Config
-      >;
+      ): Alova2Method<WordErrorRecordResponseDto, 'general.WordErrorRecordsController_recordWordError', Config>;
       /**
        * ---
        *
@@ -12796,11 +12756,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        WordErrorRecordListResponseDto,
-        'general.WordErrorRecordsController_getUserErrorRecords',
-        Config
-      >;
+      ): Alova2Method<WordErrorRecordListResponseDto, 'general.WordErrorRecordsController_getUserErrorRecords', Config>;
       /**
        * ---
        *
@@ -13891,11 +13847,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        WordErrorRecordResponseDto,
-        'general.WordErrorRecordsController_findOne',
-        Config
-      >;
+      ): Alova2Method<WordErrorRecordResponseDto, 'general.WordErrorRecordsController_findOne', Config>;
       /**
        * ---
        *
@@ -14122,11 +14074,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        WordErrorRecordResponseDto,
-        'general.WordErrorRecordsController_create',
-        Config
-      >;
+      ): Alova2Method<WordErrorRecordResponseDto, 'general.WordErrorRecordsController_create', Config>;
       /**
        * ---
        *
@@ -14158,11 +14106,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        null,
-        'general.WordErrorRecordsController_remove',
-        Config
-      >;
+      ): Alova2Method<null, 'general.WordErrorRecordsController_remove', Config>;
       /**
        * ---
        *
@@ -14368,11 +14312,7 @@ declare global {
         }
       >(
         config: Config
-      ): Alova2Method<
-        WordErrorRecordResponseDto,
-        'general.WordErrorRecordsController_markAsPracticed',
-        Config
-      >;
+      ): Alova2Method<WordErrorRecordResponseDto, 'general.WordErrorRecordsController_markAsPracticed', Config>;
       /**
        * ---
        *
@@ -14387,15 +14327,9 @@ declare global {
        * type Response = null
        * ```
        */
-      WordErrorRecordsController_removeBatch<
-        Config extends Alova2MethodConfig<null>
-      >(
+      WordErrorRecordsController_removeBatch<Config extends Alova2MethodConfig<null>>(
         config?: Config
-      ): Alova2Method<
-        null,
-        'general.WordErrorRecordsController_removeBatch',
-        Config
-      >;
+      ): Alova2Method<null, 'general.WordErrorRecordsController_removeBatch', Config>;
       /**
        * ---
        *
@@ -14794,7 +14728,7 @@ declare global {
        *
        * [POST] 创建自定义学习包
        *
-       * **path:** /api/custom-packages
+       * **path:** /api/custom-packages/create-package
        *
        * ---
        *
@@ -14965,7 +14899,7 @@ declare global {
        *
        * [GET] 获取我的自定义学习包列表
        *
-       * **path:** /api/custom-packages/my
+       * **path:** /api/custom-packages/get-my-packages
        *
        * ---
        *
@@ -15166,7 +15100,7 @@ declare global {
        *
        * [GET] 获取公开的自定义学习包列表
        *
-       * **path:** /api/custom-packages/public
+       * **path:** /api/custom-packages/get-public-packages
        *
        * ---
        *
@@ -15367,13 +15301,13 @@ declare global {
        *
        * [GET] 根据ID获取自定义学习包详情
        *
-       * **path:** /api/custom-packages/{id}
+       * **path:** /api/custom-packages/get-package-detail
        *
        * ---
        *
-       * **Path Parameters**
+       * **Query Parameters**
        * ```ts
-       * type PathParameters = {
+       * type QueryParameters = {
        *   id: string
        * }
        * ```
@@ -15499,7 +15433,7 @@ declare global {
            */
           path: string;
         }> & {
-          pathParams: {
+          params: {
             id: string;
           };
         }
@@ -15533,13 +15467,13 @@ declare global {
        *
        * [DELETE] 删除自定义学习包
        *
-       * **path:** /api/custom-packages/{id}
+       * **path:** /api/custom-packages/delete-package
        *
        * ---
        *
-       * **Path Parameters**
+       * **Query Parameters**
        * ```ts
-       * type PathParameters = {
+       * type QueryParameters = {
        *   id: string
        * }
        * ```
@@ -15665,7 +15599,7 @@ declare global {
            */
           path: string;
         }> & {
-          pathParams: {
+          params: {
             id: string;
           };
         }
@@ -15699,26 +15633,19 @@ declare global {
        *
        * [GET] 获取学习包中的单词列表
        *
-       * **path:** /api/custom-packages/{id}/words
-       *
-       * ---
-       *
-       * **Path Parameters**
-       * ```ts
-       * type PathParameters = {
-       *   id: string
-       * }
-       * ```
+       * **path:** /api/custom-packages/get-package-words
        *
        * ---
        *
        * **Query Parameters**
        * ```ts
        * type QueryParameters = {
+       *   // 学习包 ID
+       *   packageId: string
        *   // 页码
-       *   page?: number
+       *   page: number
        *   // 每页数量
-       *   limit?: number
+       *   pageSize: number
        *   // 搜索关键词
        *   search?: string
        * }
@@ -15873,18 +15800,19 @@ declare global {
            */
           path: string;
         }> & {
-          pathParams: {
-            id: string;
-          };
           params: {
+            /**
+             * 学习包 ID
+             */
+            packageId: string;
             /**
              * 页码
              */
-            page?: number;
+            page: number;
             /**
              * 每页数量
              */
-            limit?: number;
+            pageSize: number;
             /**
              * 搜索关键词
              */
@@ -15939,13 +15867,13 @@ declare global {
        *
        * [POST] 向学习包添加单词
        *
-       * **path:** /api/custom-packages/{id}/words
+       * **path:** /api/custom-packages/add-word-to-package
        *
        * ---
        *
-       * **Path Parameters**
+       * **Query Parameters**
        * ```ts
-       * type PathParameters = {
+       * type QueryParameters = {
        *   id: string
        * }
        * ```
@@ -16097,7 +16025,7 @@ declare global {
            */
           path: string;
         }> & {
-          pathParams: {
+          params: {
             id: string;
           };
           data: CreateCustomWordDto;
@@ -16132,13 +16060,13 @@ declare global {
        *
        * [DELETE] 删除学习包中的单词
        *
-       * **path:** /api/custom-packages/{id}/words/{wordId}
+       * **path:** /api/custom-packages/delete-package-word
        *
        * ---
        *
-       * **Path Parameters**
+       * **Query Parameters**
        * ```ts
-       * type PathParameters = {
+       * type QueryParameters = {
        *   id: string
        *   wordId: string
        * }
@@ -16263,7 +16191,7 @@ declare global {
            */
           path: string;
         }> & {
-          pathParams: {
+          params: {
             id: string;
             wordId: string;
           };
@@ -16298,13 +16226,13 @@ declare global {
        *
        * [POST] 批量导入单词到学习包
        *
-       * **path:** /api/custom-packages/{id}/words/import
+       * **path:** /api/custom-packages/import-words-to-package
        *
        * ---
        *
-       * **Path Parameters**
+       * **Query Parameters**
        * ```ts
-       * type PathParameters = {
+       * type QueryParameters = {
        *   id: string
        * }
        * ```
@@ -16471,7 +16399,7 @@ declare global {
            */
           path: string;
         }> & {
-          pathParams: {
+          params: {
             id: string;
           };
           data: ImportWordsDto;

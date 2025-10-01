@@ -179,12 +179,6 @@ export default function Corpus() {
     }
   };
 
-  // 开始练习
-  const handleStartPractice = (_id: string) => {
-    // TODO: 实现开始练习功能
-    messageApi.info('开始练习功能待实现');
-  };
-
   return (
     <ErrorBoundary
       onError={(error, errorInfo) => {
@@ -209,7 +203,6 @@ export default function Corpus() {
               packageType={packageType}
               onDelete={handleDeletePackage}
               onImport={handleImportWords}
-              onStartPractice={handleStartPractice}
             />
           </div>
 

@@ -94,6 +94,14 @@ const TypingText = function ({
     }
   }
 
+  if (!word?.word) {
+    return (
+      <div className='text-3xl font-bold text-purple-500 flex justify-center items-center h-screen'>
+        单词不存在
+      </div>
+    );
+  }
+
   return (
     <div
       ref={containerRef}

@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   Query,
   UseGuards,
@@ -34,7 +33,7 @@ import { NoCache } from '@/common/decorators/no-cache.decorator';
 export class CustomPackagesController {
   constructor(private readonly customPackagesService: CustomPackagesService) {}
 
-  @Post()
+  @Post('create-package')
   @ApiOperation({ summary: '创建自定义学习包' })
   @ApiSuccessResponse(CustomPackage, {
     description: '创建自定义学习包成功'
@@ -49,7 +48,7 @@ export class CustomPackagesController {
     );
   }
 
-  @Get('my')
+  @Get('get-my-packages')
   @ApiOperation({ summary: '获取我的自定义学习包列表' })
   @ApiPaginationResponse(CustomPackage, {
     description: '获取我的自定义学习包列表成功'
@@ -59,7 +58,7 @@ export class CustomPackagesController {
     return await this.customPackagesService.findAllByUser(req.user.id);
   }
 
-  @Get('public')
+  @Get('get-public-packages')
   @ApiOperation({ summary: '获取公开的自定义学习包列表' })
   @ApiPaginationResponse(CustomPackage, {
     description: '获取公开的自定义学习包列表成功'
@@ -69,23 +68,23 @@ export class CustomPackagesController {
     return await this.customPackagesService.findPublic();
   }
 
-  @Get(':id')
+  @Get('get-package-detail')
   @ApiOperation({ summary: '根据ID获取自定义学习包详情' })
   @ApiSuccessResponse(CustomPackage, {
     description: '获取自定义学习包详情成功'
   })
   @NoCache()
-  async findOne(@Param('id') id: string, @Request() req: any) {
+  async findOne(@Query('id') id: string, @Request() req: any) {
     return await this.customPackagesService.findOne(id, req.user.id);
   }
 
-  @Patch(':id')
+  @Patch('update-package')
   @ApiOperation({ summary: '更新自定义学习包' })
   @ApiSuccessResponse(CustomPackage, {
     description: '更新自定义学习包成功'
   })
   async update(
-    @Param('id') id: string,
+    @Query('id') id: string,
     @Body() updateCustomPackageDto: UpdateCustomPackageDto,
     @Request() req: any
   ) {
@@ -96,43 +95,39 @@ export class CustomPackagesController {
     );
   }
 
-  @Delete(':id')
+  @Delete('delete-package')
   @ApiOperation({ summary: '删除自定义学习包' })
   @ApiSuccessResponse(CustomPackage, {
     description: '删除自定义学习包成功'
   })
-  async remove(@Param('id') id: string, @Request() req: any) {
+  async remove(@Query('id') id: string, @Request() req: any) {
     await this.customPackagesService.remove(id, req.user.id);
     return { message: '删除成功' };
   }
 
-  @Get(':id/words')
+  @Get('get-package-words')
   @ApiOperation({ summary: '获取学习包中的单词列表' })
   @ApiPaginationResponse(CustomWord, {
     description: '获取学习包中的单词列表成功'
   })
-  @ApiSuccessResponse(CustomWord, {
-    description: '获取学习包中的单词列表成功'
-  })
   async findWordsByPackage(
-    @Param('id') packageId: string,
     @Query() queryDto: QueryCustomWordDto,
     @Request() req: any
   ) {
+    console.log('queryDto', queryDto);
     return await this.customPackagesService.findWordsByPackage(
-      packageId,
       req.user.id,
       queryDto
     );
   }
 
-  @Post(':id/words')
+  @Post('add-word-to-package')
   @ApiOperation({ summary: '向学习包添加单词' })
   @ApiSuccessResponse(CustomWord, {
     description: '向学习包添加单词成功'
   })
   async addWord(
-    @Param('id') packageId: string,
+    @Query('id') packageId: string,
     @Body() createCustomWordDto: CreateCustomWordDto,
     @Request() req: any
   ) {
@@ -143,14 +138,14 @@ export class CustomPackagesController {
     );
   }
 
-  @Patch(':id/words/:wordId')
+  @Patch('update-package-word')
   @ApiOperation({ summary: '更新学习包中的单词' })
   @ApiSuccessResponse(CustomWord, {
     description: '更新学习包中的单词成功'
   })
   async updateWord(
-    @Param('id') packageId: string,
-    @Param('wordId') wordId: string,
+    @Query('id') packageId: string,
+    @Query('wordId') wordId: string,
     @Body() updateCustomWordDto: UpdateCustomWordDto,
     @Request() req: any
   ) {
@@ -162,27 +157,27 @@ export class CustomPackagesController {
     );
   }
 
-  @Delete(':id/words/:wordId')
+  @Delete('delete-package-word')
   @ApiOperation({ summary: '删除学习包中的单词' })
   @ApiSuccessResponse(CustomWord, {
     description: '删除学习包中的单词成功'
   })
   async removeWord(
-    @Param('id') packageId: string,
-    @Param('wordId') wordId: string,
+    @Query('id') packageId: string,
+    @Query('wordId') wordId: string,
     @Request() req: any
   ) {
     await this.customPackagesService.removeWord(packageId, wordId, req.user.id);
     return { message: '删除成功' };
   }
 
-  @Post(':id/words/import')
+  @Post('import-words-to-package')
   @ApiOperation({ summary: '批量导入单词到学习包' })
   @ApiSuccessResponse(CustomWord, {
     description: '批量导入单词到学习包成功'
   })
   async importWords(
-    @Param('id') packageId: string,
+    @Query('id') packageId: string,
     @Body() importWordsDto: ImportWordsDto,
     @Request() req: any
   ) {

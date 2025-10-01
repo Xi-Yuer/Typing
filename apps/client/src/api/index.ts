@@ -165,7 +165,7 @@ export const getPublicCustomPackages = () => {
 // 获取自定义学习包详情
 export const getCustomPackage = (id: string) => {
   return Apis.general.CustomPackagesController_findOne({
-    pathParams: {
+    params: {
       id
     }
   });
@@ -173,15 +173,13 @@ export const getCustomPackage = (id: string) => {
 
 // 获取自定义学习包单词列表
 export const getCustomPackageWords = (
-  id: string,
+  packageId: string,
   page: number = 1,
   pageSize: number = 10
 ) => {
   return Apis.general.CustomPackagesController_findWordsByPackage({
-    pathParams: {
-      id
-    },
     params: {
+      packageId,
       page,
       pageSize
     }
@@ -198,7 +196,7 @@ export const createCustomPackage = (data: any) => {
 // 添加自定义学习包单词
 export const addCustomPackageWord = (id: string, data: any) => {
   return Apis.general.CustomPackagesController_addWord({
-    pathParams: {
+    params: {
       id
     },
     data: data
@@ -208,7 +206,7 @@ export const addCustomPackageWord = (id: string, data: any) => {
 // 删除自定义学习包单词
 export const deleteCustomPackageWord = (id: string, wordId: string) => {
   return Apis.general.CustomPackagesController_removeWord({
-    pathParams: {
+    params: {
       id,
       wordId
     }
@@ -218,7 +216,7 @@ export const deleteCustomPackageWord = (id: string, wordId: string) => {
 // 批量导入自定义学习包单词
 export const importCustomPackageWords = (id: string, data: any) => {
   return Apis.general.CustomPackagesController_importWords({
-    pathParams: {
+    params: {
       id
     },
     data: data
@@ -228,7 +226,7 @@ export const importCustomPackageWords = (id: string, data: any) => {
 // 删除自定义学习包
 export const deleteCustomPackage = (id: string) => {
   return Apis.general.CustomPackagesController_remove({
-    pathParams: {
+    params: {
       id
     }
   });
