@@ -24,6 +24,7 @@ export class UserSettingsService {
     soundEnabled: true,
     autoPlayPronunciation: true,
     showShortcutHints: true,
+    ignoreCase: false,
     shortcuts: {
       resetExercise: {
         key: 'r',

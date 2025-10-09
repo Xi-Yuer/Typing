@@ -55,7 +55,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
       // 默认错误 UI
       return (
-        <div className='bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen flex items-center justify-center p-4'>
+        <div className=' min-h-screen flex items-center justify-center p-4'>
           <div className='text-center space-y-6 max-w-md mx-auto'>
             <div className='w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto'>
               <AlertTriangle className='w-10 h-10 text-red-400' />

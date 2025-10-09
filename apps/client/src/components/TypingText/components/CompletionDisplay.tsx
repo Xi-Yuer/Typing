@@ -22,7 +22,7 @@ export const CompletionDisplay: React.FC<CompletionDisplayProps> = ({
 
       {/* 中文翻译 */}
       <div className={'text-3xl text-gray-300 mt-4'}>
-        {word?.meaning || word?.meaningShort || ''}
+        {word?.meaningShort || word?.meaning || ''}
       </div>
     </div>
   );

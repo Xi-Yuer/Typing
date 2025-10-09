@@ -322,7 +322,7 @@ export default function Custom() {
   };
 
   return (
-    <div className='bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6'>
+    <div className=' p-6'>
       {contextHolder}
       <div className='max-w-5xl mx-auto'>
         <Form

@@ -45,6 +45,21 @@ export default function ShortcutSettings({
           size='default'
         />
       </Form.Item>
+      <Form.Item
+        label={
+          <Space>
+            <span className='text-gray-200 font-medium'>是否忽略大小写</span>
+          </Space>
+        }
+        name='ignoreCase'
+        valuePropName='checked'>
+        <Switch
+          checkedChildren='是'
+          unCheckedChildren='否'
+          className='bg-slate-700'
+          size='default'
+        />
+      </Form.Item>
 
       <Row gutter={[24, 20]}>
         <Col xs={24} md={8}>

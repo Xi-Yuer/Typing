@@ -22,6 +22,7 @@ export interface UserSettingsData {
   soundEnabled: boolean;
   autoPlayPronunciation: boolean;
   showShortcutHints: boolean;
+  ignoreCase: boolean;
   shortcuts: {
     resetExercise: ShortcutConfig;
     toggleHint: ShortcutConfig;
@@ -55,6 +56,7 @@ export class UserSettings {
       soundEnabled: true,
       autoPlayPronunciation: true,
       showShortcutHints: true,
+      ignoreCase: false,
       shortcuts: {
         resetExercise: { key: 'r', modifiers: ['ctrl'] },
         toggleHint: { key: 'h', modifiers: ['ctrl'] },

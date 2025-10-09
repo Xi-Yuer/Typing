@@ -113,7 +113,20 @@ export const useTypingLogic = ({
       return;
     }
 
-    const isCorrect = inputValue.trim() === currentWord.text;
+    // 忽略大小写
+    let val: string = inputValue.trim();
+    if (userSettings?.ignoreCase) {
+      val = val.toLowerCase();
+      currentWord.text = currentWord.text.toLowerCase();
+    }
+    let isCorrect = false;
+
+    // 翻译模式模糊匹配即可
+    if (mode === 'translation') {
+      isCorrect = currentWord.text.includes(val);
+    } else {
+      isCorrect = val === currentWord.text;
+    }
 
     if (isCorrect) {
       hasErrorRef.current = false;
@@ -163,6 +176,7 @@ export const useTypingLogic = ({
     words,
     currentWordIndex,
     inputValue,
+    userSettings?.ignoreCase,
     setWordError,
     setWordCompleted,
     playSuccessSound,
@@ -171,7 +185,8 @@ export const useTypingLogic = ({
     setActiveWord,
     playErrorSound,
     hasShownError,
-    updateWordInput
+    updateWordInput,
+    mode
   ]);
 
   // 重置练习

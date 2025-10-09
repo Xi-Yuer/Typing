@@ -84,7 +84,7 @@ export default function Main() {
   }));
 
   return (
-    <div className='bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'>
+    <div>
       {/* 页面头部 */}
       <PageHeader />
 

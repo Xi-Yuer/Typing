@@ -6,6 +6,7 @@ export interface UserSettings {
   autoPlayPronunciation: boolean;
   showShortcutHints: boolean;
   shortcuts: Shortcuts;
+  ignoreCase: boolean;
 }
 
 export interface Shortcuts {

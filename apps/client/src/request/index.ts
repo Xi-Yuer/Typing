@@ -12,7 +12,11 @@ export const alovaInstance = createAlova({
   },
   responded: async res => {
     // 其他情况返回 JSON
-    return res.json();
+    const data = await res.json();
+    if (data.code === 401) {
+      localStorage.clear();
+    }
+    return data;
   }
 });
 

@@ -7,6 +7,7 @@ interface UserState {
   token: string | null;
   setUser: (user: UserResponseDto | null) => void;
   setToken: (token: string | null) => void;
+  clearUser: () => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -15,7 +16,8 @@ export const useUserStore = create<UserState>()(
       user: null,
       token: null,
       setUser: user => set({ user }),
-      setToken: token => set({ token })
+      setToken: token => set({ token }),
+      clearUser: () => set({ user: null, token: null })
     }),
     {
       name: 'user-storage',
@@ -26,3 +28,4 @@ export const useUserStore = create<UserState>()(
 
 export const useUser = () => useUserStore(state => state.user);
 export const useSetUser = () => useUserStore(state => state.setUser);
+export const useClearUser = () => useUserStore(state => state.clearUser);

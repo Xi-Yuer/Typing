@@ -123,6 +123,11 @@ export class UpdateUserSettingsDto {
   @ValidateNested()
   @Type(() => ShortcutsDto)
   shortcuts?: ShortcutsDto;
+
+  @ApiProperty({ description: '是否忽略大小写', example: false })
+  @IsOptional()
+  @IsBoolean()
+  ignoreCase?: boolean;
 }
 
 export class UserSettingsResponseDto {
@@ -144,6 +149,7 @@ export class UserSettingsResponseDto {
     soundEnabled: boolean;
     autoPlayPronunciation: boolean;
     showShortcutHints: boolean;
+    ignoreCase: boolean;
     shortcuts: {
       resetExercise: ShortcutConfigDto;
       toggleHint: ShortcutConfigDto;
