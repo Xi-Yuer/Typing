@@ -100,8 +100,49 @@ export const useTypingLogic = ({
 
       // 更新当前单词的用户输入
       updateWordInput(currentWordIndex, value);
+
+      // 在显示答案提示时，实时检查输入错误
+      if (showAnswerTip) {
+        const currentWord = words[currentWordIndex];
+        if (currentWord && value.length > 0) {
+          // 忽略大小写
+          let inputVal = value.trim();
+          let targetText = currentWord.text;
+          if (userSettings?.ignoreCase) {
+            inputVal = inputVal.toLowerCase();
+            targetText = targetText.toLowerCase();
+          }
+
+          // 检查输入是否错误
+          let isInputError = false;
+          if (mode === 'translation') {
+            // 翻译模式：检查输入是否包含在目标文本中
+            isInputError = !targetText.includes(inputVal);
+          } else {
+            // 听写模式：检查输入是否与目标文本匹配
+            isInputError = !targetText.startsWith(inputVal);
+          }
+
+          // 如果输入错误，立即显示错误状态
+          if (isInputError) {
+            hasErrorRef.current = true;
+            setWordError(currentWordIndex, true);
+          } else {
+            hasErrorRef.current = false;
+            setWordError(currentWordIndex, false);
+          }
+        }
+      }
     },
-    [currentWordIndex, updateWordInput, setWordError]
+    [
+      currentWordIndex,
+      updateWordInput,
+      setWordError,
+      showAnswerTip,
+      words,
+      userSettings?.ignoreCase,
+      mode
+    ]
   );
 
   // 提交答案

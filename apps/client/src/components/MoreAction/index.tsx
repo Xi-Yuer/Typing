@@ -1,5 +1,13 @@
 import React from 'react';
-import { Gamepad2, Puzzle, RotateCcw, Mic, BookOpen, Zap } from 'lucide-react';
+import {
+  Gamepad2,
+  Puzzle,
+  RotateCcw,
+  Mic,
+  BookOpen,
+  Zap,
+  Dot
+} from 'lucide-react';
 
 export default function MoreAction() {
   return (
@@ -92,33 +100,25 @@ export default function MoreAction() {
               </h3>
               <div className='space-y-3'>
                 <div className='flex items-start space-x-3'>
-                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
-                    1
-                  </div>
+                  <Dot className='w-6 h-6 text-blue-400' />
                   <p className='text-gray-300 text-sm'>
                     选择学习目标（中小学/四六级/考研雅思/商务英语）
                   </p>
                 </div>
                 <div className='flex items-start space-x-3'>
-                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
-                    2
-                  </div>
+                  <Dot className='w-6 h-6 text-blue-400' />
                   <p className='text-gray-300 text-sm'>
                     通过游戏化关卡挑战掌握核心词汇
                   </p>
                 </div>
                 <div className='flex items-start space-x-3'>
-                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
-                    3
-                  </div>
+                  <Dot className='w-6 h-6 text-blue-400' />
                   <p className='text-gray-300 text-sm'>
                     利用长句拆解功能理解复杂语法
                   </p>
                 </div>
                 <div className='flex items-start space-x-3'>
-                  <div className='w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5'>
-                    4
-                  </div>
+                  <Dot className='w-6 h-6 text-blue-400' />
                   <p className='text-gray-300 text-sm'>
                     重复练习强化记忆，持续提升
                   </p>

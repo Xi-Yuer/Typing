@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import IconFont from '@/components/IconFont';
+import { ShipWheel } from 'lucide-react';
 
 interface NavItem {
   id: string;
@@ -23,12 +24,6 @@ const navItems: NavItem[] = [
     name: '排行榜',
     href: '/dashboard/rangking',
     icon: 'icon-rangking'
-  },
-  {
-    id: 'review',
-    name: '单词复习',
-    href: '/dashboard/review',
-    icon: 'icon-review'
   },
   {
     id: 'mistake',
@@ -85,7 +80,7 @@ const Sidebar = () => {
               className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
                 activeItem === item.id
                   ? 'bg-purple-600 text-white'
-                  : 'text-gray-300 hover:text-white hover:bg-slate-800'
+                  : 'text-white hover:bg-slate-800'
               }`}>
               <IconFont type={item.icon} size={24} />
               <span className='font-medium'>{item.name}</span>
@@ -96,10 +91,15 @@ const Sidebar = () => {
 
       <div className='px-4 py-2 border-t border-slate-700'>
         <Link
-          href='/settings'
-          className='flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-slate-800 transition-colors duration-200'>
-          <IconFont type='icon-setting' size={24} />
-          <span className='font-medium'>设置</span>
+          href='/dashboard/about'
+          className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-slate-800 transition-colors duration-200 ${
+            activeItem === 'about'
+              ? 'bg-purple-600 text-white'
+              : 'text-white hover:bg-slate-800'
+          }`}
+          onClick={() => setActiveItem('about')}>
+          <ShipWheel className='w-6 h-6 text-white' />
+          <span className='font-medium'>关于</span>
         </Link>
       </div>
     </div>

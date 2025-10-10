@@ -31,8 +31,7 @@ export const useWordState = (_initialWord?: Word): UseWordStateReturn => {
           ? {
               ...word,
               userInput: input,
-              completed: input.trim() === word.text,
-              incorrect: false
+              completed: input.trim() === word.text
             }
           : word
       )

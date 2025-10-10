@@ -18,10 +18,6 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { user, setUser, setToken } = useUserStore();
   const [messageApi, messageContext] = message.useMessage();
-  console.log(
-    'process.env.NEXT_PUBLIC_GITHUB_SSO_URL',
-    process.env.NEXT_PUBLIC_GITHUB_SSO_URL
-  );
   // 初始化时检查localStorage中的用户信息
   useEffect(() => {
     // 检查是否在浏览器环境中
