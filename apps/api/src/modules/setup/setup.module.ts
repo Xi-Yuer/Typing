@@ -28,7 +28,7 @@ export class SetupModule {
       const document = SwaggerModule.createDocument(app, config);
       SwaggerModule.setup('/api/doc', app, document);
 
-      // 添加JSON文档端点
+      // 添加JSON文档端点（跳过速率限制）
       app.use('/api/doc-json', (req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.send(document);

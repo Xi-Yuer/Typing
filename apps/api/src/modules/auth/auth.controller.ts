@@ -27,6 +27,10 @@ import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { ApiSuccessResponse } from '@/common/decorators/api-response.decorator';
+import {
+  ThrottleLogin,
+  ThrottleRegister
+} from '@/common/decorators/throttle.decorator';
 
 @ApiTags('认证')
 @ApiExtraModels(AuthResponseDto, UserResponseDto, User)
@@ -38,6 +42,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @ThrottleRegister()
   @ApiOperation({ summary: '用户注册' })
   @ApiResponse({ status: 201, description: '注册成功', type: AuthResponseDto })
   @ApiResponse({ status: 409, description: '用户已存在' })
@@ -48,6 +53,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @ThrottleLogin()
   @UseGuards(AuthGuard('local'))
   @ApiOperation({ summary: '用户登录' })
   @ApiBody({ type: LoginDto })

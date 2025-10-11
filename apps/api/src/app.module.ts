@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from './modules/config/config.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { UserModule } from './modules/user/user.module';
@@ -17,10 +17,13 @@ import { UserSettingsModule } from './modules/user-settings/user-settings.module
 import { CustomPackagesModule } from './modules/custom-packages/custom-packages.module';
 import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor';
 import { RedisCacheModule } from './modules/redis/redis.module';
+import { ThrottlerModule } from './modules/throttler/throttler.module';
+import { CustomThrottlerGuard } from './common/guards/throttle.guard';
 
 @Module({
   imports: [
     RedisCacheModule,
+    ThrottlerModule,
     ConfigModule,
     DatabaseModule,
     UserModule,
@@ -49,6 +52,10 @@ import { RedisCacheModule } from './modules/redis/redis.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: CustomCacheInterceptor
+    },
+    {
+      provide: APP_GUARD,
+      useClass: CustomThrottlerGuard
     }
   ]
 })
