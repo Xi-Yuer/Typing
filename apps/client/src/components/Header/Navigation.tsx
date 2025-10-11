@@ -25,17 +25,17 @@ const Navigation = ({
   const navRef = useRef(null);
 
   return (
-    <nav className='flex items-center space-x-6' ref={navRef}>
-      <div className='flex items-center justify-between p-4 px-8 rounded-4xl backdrop-blur-2xl text-white gap-10 border border-white/10'>
+    <nav className='flex items-center' ref={navRef}>
+      <div className='flex items-center p-2 sm:p-3 lg:p-3.5 px-3 sm:px-6 lg:px-7 rounded-4xl backdrop-blur-2xl text-white gap-3 sm:gap-4 lg:gap-5 xl:gap-6 border border-white/10 whitespace-nowrap'>
         {navItems.map(item => (
           <Link
             key={item.name}
             href={item.href}
-            className={
+            className={`text-xs sm:text-sm lg:text-base transition-opacity duration-200 whitespace-nowrap ${
               activeItem === item.href.toLowerCase()
                 ? 'active-link opacity-100'
-                : 'opacity-80'
-            }>
+                : 'opacity-80 hover:opacity-100'
+            }`}>
             {item.name}
           </Link>
         ))}

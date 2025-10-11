@@ -8,6 +8,7 @@ import LoginModal from './LoginModal';
 import Navigation from './Navigation';
 import GitHubStarButton from './GitHubStarButton';
 import UserSection from './UserSection';
+import SearchBox from './SearchBox';
 import type { DisplayHeaderProps } from './types';
 import { useUserStore, useHydrateUserStore } from '@/store/user.store';
 import { LoginDto, RegisterDto } from '@/request/globals';
@@ -99,22 +100,35 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
     setIsLoginModalOpen(false);
   };
 
+  // 处理搜索结果点击
+  const handleSearchResultClick = (word: any) => {
+    // 这里可以添加跳转到单词详情页的逻辑
+    console.log('点击了单词:', word);
+  };
+
   return (
     <header className='pt-12 pb-2 z-100 w-screen backdrop-blur-md'>
       {messageContext}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between'>
+      <div className='max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4'>
         <Link
           href='/'
-          className='flex items-center space-x-2 text-white transition-colors duration-200'>
-          <div className='w-10 h-10 rounded-lg p-2 flex items-center justify-center font-bold text-sm bg-white text-black'>
+          className='flex items-center space-x-2 text-white transition-colors duration-200 flex-shrink-0'>
+          <div className='w-8 h-8 sm:w-10 sm:h-10 rounded-lg p-1.5 sm:p-2 flex items-center justify-center font-bold text-sm bg-white text-black'>
             <img src={logo.src} alt='logo' className='w-full h-full' />
           </div>
-          <span className='font-semibold text-lg hidden sm:block'>
+          <span className='font-semibold text-base sm:text-lg hidden lg:block'>
             咔西咔西
           </span>
         </Link>
 
-        <div className='flex items-center space-x-8'>
+        {/* 搜索功能 - 所有屏幕尺寸 */}
+        <SearchBox
+          className='flex-1 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-2 sm:mx-4 lg:mx-6'
+          placeholder='搜索单词...'
+          onResultClick={handleSearchResultClick}
+        />
+
+        <div className='flex items-center gap-1 sm:gap-2 lg:gap-3 xl:gap-4 flex-shrink-0'>
           <Navigation activeItem={activeItem} />
           <GitHubStarButton stars={stars} />
           <UserSection

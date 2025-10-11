@@ -4,6 +4,7 @@ export { default as LoginModal } from './LoginModal';
 export { default as Navigation } from './Navigation';
 export { default as GitHubStarButton } from './GitHubStarButton';
 export { default as UserSection } from './UserSection';
+export { default as SearchBox } from './SearchBox';
 
 // 类型导出
 export type {

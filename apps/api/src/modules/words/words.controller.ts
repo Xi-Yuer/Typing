@@ -150,6 +150,18 @@ export class WordsController {
   @ApiOperation({ summary: '搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
   @ApiQuery({
+    name: 'page',
+    description: '页码',
+    type: Number,
+    required: false
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    description: '每页数量',
+    type: Number,
+    required: false
+  })
+  @ApiQuery({
     name: 'languageId',
     description: '语言 ID',
     type: String,
@@ -164,10 +176,12 @@ export class WordsController {
   @ApiSuccessResponse<Word>(Word, { description: '搜索单词成功' })
   searchWords(
     @Query('keyword') keyword: string,
-    @Query() paginationQuery: PaginationQueryDto,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
     @Query('languageId') languageId?: string,
     @Query('categoryId') categoryId?: string
   ) {
+    const paginationQuery = { page: page || 1, pageSize: pageSize || 10 };
     return this.wordsService.searchWords(
       keyword,
       paginationQuery,
@@ -180,6 +194,18 @@ export class WordsController {
   @OptionalAuth()
   @ApiOperation({ summary: '分页搜索单词' })
   @ApiQuery({ name: 'keyword', description: '搜索关键词', type: String })
+  @ApiQuery({
+    name: 'page',
+    description: '页码',
+    type: Number,
+    required: false
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    description: '每页数量',
+    type: Number,
+    required: false
+  })
   @ApiQuery({
     name: 'languageId',
     description: '语言 ID',
@@ -197,10 +223,12 @@ export class WordsController {
   })
   searchWordsPaginated(
     @Query('keyword') keyword: string,
-    @Query() paginationQuery: PaginationQueryDto,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
     @Query('languageId') languageId?: string,
     @Query('categoryId') categoryId?: string
   ) {
+    const paginationQuery = { page: page || 1, pageSize: pageSize || 10 };
     return this.wordsService.searchWordsPaginated(
       keyword,
       paginationQuery,

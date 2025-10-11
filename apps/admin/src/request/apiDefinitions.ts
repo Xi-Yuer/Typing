@@ -2,9 +2,9 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Typing API - version 1.0
+ * 咔西咔西 API - version 1.0
  *
- * Typing应用的API文档
+ * 咔西咔西
  *
  * OpenAPI version: 3.0.0
  *
@@ -30,10 +30,7 @@ export default {
   'general.AuthController_qqCallback': ['GET', '/api/auth/qq/callback'],
   'general.AuthController_getProfile': ['GET', '/api/auth/profile'],
   'general.AuthController_bindGithub': ['GET', '/api/auth/bind/github'],
-  'general.AuthController_bindGithubManual': [
-    'POST',
-    '/api/auth/bind/github/manual'
-  ],
+  'general.AuthController_bindGithubManual': ['POST', '/api/auth/bind/github/manual'],
   'general.AuthController_unbindGithub': ['POST', '/api/auth/unbind/github'],
   'general.AuthController_bindQQ': ['GET', '/api/auth/bind/qq'],
   'general.AuthController_bindQQManual': ['POST', '/api/auth/bind/qq/manual'],
@@ -42,277 +39,100 @@ export default {
   'general.LanguagesController_create': ['POST', '/api/languages'],
   'general.LanguagesController_findAll': ['GET', '/api/languages'],
   'general.LanguagesController_findAllActive': ['GET', '/api/languages/active'],
-  'general.LanguagesController_findAllPaginated': [
-    'GET',
-    '/api/languages/paginated'
-  ],
-  'general.LanguagesController_findByCode': [
-    'GET',
-    '/api/languages/code/{code}'
-  ],
+  'general.LanguagesController_findAllPaginated': ['GET', '/api/languages/paginated'],
+  'general.LanguagesController_findByCode': ['GET', '/api/languages/code/{code}'],
   'general.LanguagesController_findOne': ['GET', '/api/languages/{id}'],
   'general.LanguagesController_update': ['POST', '/api/languages/{id}'],
   'general.LanguagesController_remove': ['DELETE', '/api/languages/{id}'],
-  'general.LanguagesController_toggleActive': [
-    'POST',
-    '/api/languages/{id}/toggle-active'
-  ],
-  'general.CorpusCategoriesController_create': [
-    'POST',
-    '/api/corpus-categories'
-  ],
-  'general.CorpusCategoriesController_findAll': [
-    'GET',
-    '/api/corpus-categories'
-  ],
-  'general.CorpusCategoriesController_findAllPaginated': [
-    'GET',
-    '/api/corpus-categories/paginated'
-  ],
-  'general.CorpusCategoriesController_findByLanguageId': [
-    'GET',
-    '/api/corpus-categories/language/{languageId}'
-  ],
-  'general.CorpusCategoriesController_findByDifficulty': [
-    'GET',
-    '/api/corpus-categories/difficulty/{difficulty}'
-  ],
+  'general.LanguagesController_toggleActive': ['POST', '/api/languages/{id}/toggle-active'],
+  'general.CorpusCategoriesController_create': ['POST', '/api/corpus-categories'],
+  'general.CorpusCategoriesController_findAll': ['GET', '/api/corpus-categories'],
+  'general.CorpusCategoriesController_findAllPaginated': ['GET', '/api/corpus-categories/paginated'],
+  'general.CorpusCategoriesController_findByLanguageId': ['GET', '/api/corpus-categories/language/{languageId}'],
+  'general.CorpusCategoriesController_findByDifficulty': ['GET', '/api/corpus-categories/difficulty/{difficulty}'],
   'general.CorpusCategoriesController_findByLanguageAndDifficulty': [
     'GET',
     '/api/corpus-categories/language/{languageId}/difficulty/{difficulty}'
   ],
-  'general.CorpusCategoriesController_getDifficultyStats': [
-    'GET',
-    '/api/corpus-categories/stats/difficulty'
-  ],
-  'general.CorpusCategoriesController_getLanguageStats': [
-    'GET',
-    '/api/corpus-categories/stats/language'
-  ],
-  'general.CorpusCategoriesController_findOne': [
-    'GET',
-    '/api/corpus-categories/{id}'
-  ],
-  'general.CorpusCategoriesController_remove': [
-    'DELETE',
-    '/api/corpus-categories/{id}'
-  ],
+  'general.CorpusCategoriesController_getDifficultyStats': ['GET', '/api/corpus-categories/stats/difficulty'],
+  'general.CorpusCategoriesController_getLanguageStats': ['GET', '/api/corpus-categories/stats/language'],
+  'general.CorpusCategoriesController_findOne': ['GET', '/api/corpus-categories/{id}'],
+  'general.CorpusCategoriesController_remove': ['DELETE', '/api/corpus-categories/{id}'],
   'general.WordsController_create': ['POST', '/api/words'],
   'general.WordsController_findAllPaginated': ['GET', '/api/words/paginated'],
-  'general.WordsController_findByLanguageId': [
-    'GET',
-    '/api/words/language/{languageId}'
-  ],
-  'general.WordsController_findByCategoryId': [
-    'GET',
-    '/api/words/category/{categoryId}'
-  ],
-  'general.WordsController_getUserWordsProgress': [
-    'GET',
-    '/api/words/user/progress'
-  ],
+  'general.WordsController_findByLanguageId': ['GET', '/api/words/language/{languageId}'],
+  'general.WordsController_findByCategoryId': ['GET', '/api/words/category/{categoryId}'],
+  'general.WordsController_getUserWordsProgress': ['GET', '/api/words/user/progress'],
   'general.WordsController_findByLanguageAndCategory': [
     'GET',
     '/api/words/language/{languageId}/category/{categoryId}'
   ],
   'general.WordsController_searchWords': ['GET', '/api/words/search'],
-  'general.WordsController_searchWordsPaginated': [
-    'GET',
-    '/api/words/search/paginated'
-  ],
+  'general.WordsController_searchWordsPaginated': ['GET', '/api/words/search/paginated'],
   'general.WordsController_correctWord': ['POST', '/api/words/correct'],
   'general.WordsController_getRanking': ['GET', '/api/words/ranking'],
   'general.WordsController_getRandomWords': ['GET', '/api/words/random'],
-  'general.WordsController_getLanguageStats': [
-    'GET',
-    '/api/words/stats/language'
-  ],
-  'general.WordsController_getCategoryStats': [
-    'GET',
-    '/api/words/stats/category'
-  ],
+  'general.WordsController_getLanguageStats': ['GET', '/api/words/stats/language'],
+  'general.WordsController_getCategoryStats': ['GET', '/api/words/stats/category'],
   'general.WordsController_findOne': ['GET', '/api/words/{id}'],
   'general.WordsController_update': ['POST', '/api/words/{id}'],
   'general.WordsController_remove': ['DELETE', '/api/words/{id}'],
   'general.SentencesController_create': ['POST', '/api/sentences'],
-  'general.SentencesController_findAllPaginated': [
-    'GET',
-    '/api/sentences/paginated'
-  ],
-  'general.SentencesController_findByLanguageId': [
-    'GET',
-    '/api/sentences/language/{languageId}'
-  ],
-  'general.SentencesController_findByCategoryId': [
-    'GET',
-    '/api/sentences/category/{categoryId}'
-  ],
+  'general.SentencesController_findAllPaginated': ['GET', '/api/sentences/paginated'],
+  'general.SentencesController_findByLanguageId': ['GET', '/api/sentences/language/{languageId}'],
+  'general.SentencesController_findByCategoryId': ['GET', '/api/sentences/category/{categoryId}'],
   'general.SentencesController_findByLanguageAndCategory': [
     'GET',
     '/api/sentences/language/{languageId}/category/{categoryId}'
   ],
-  'general.SentencesController_searchSentences': [
-    'GET',
-    '/api/sentences/search'
-  ],
-  'general.SentencesController_searchSentencesPaginated': [
-    'GET',
-    '/api/sentences/search/paginated'
-  ],
-  'general.SentencesController_getRandomSentences': [
-    'GET',
-    '/api/sentences/random'
-  ],
-  'general.SentencesController_getLanguageStats': [
-    'GET',
-    '/api/sentences/stats/language'
-  ],
-  'general.SentencesController_getCategoryStats': [
-    'GET',
-    '/api/sentences/stats/category'
-  ],
+  'general.SentencesController_searchSentences': ['GET', '/api/sentences/search'],
+  'general.SentencesController_searchSentencesPaginated': ['GET', '/api/sentences/search/paginated'],
+  'general.SentencesController_getRandomSentences': ['GET', '/api/sentences/random'],
+  'general.SentencesController_getLanguageStats': ['GET', '/api/sentences/stats/language'],
+  'general.SentencesController_getCategoryStats': ['GET', '/api/sentences/stats/category'],
   'general.SentencesController_findOne': ['GET', '/api/sentences/{id}'],
   'general.SentencesController_update': ['POST', '/api/sentences/{id}'],
   'general.SentencesController_remove': ['DELETE', '/api/sentences/{id}'],
   'general.SpeechController_getText2Speech': ['GET', '/api/speech/audio'],
-  'general.WordErrorReportsController_create': [
-    'POST',
-    '/api/word-error-reports'
-  ],
-  'general.WordErrorReportsController_findAllPaginated': [
-    'GET',
-    '/api/word-error-reports/paginated'
-  ],
-  'general.WordErrorReportsController_findMyReports': [
-    'GET',
-    '/api/word-error-reports/my-reports'
-  ],
-  'general.WordErrorReportsController_getReportStats': [
-    'GET',
-    '/api/word-error-reports/stats'
-  ],
-  'general.WordErrorReportsController_searchMyReports': [
-    'GET',
-    '/api/word-error-reports/search'
-  ],
-  'general.WordErrorReportsController_searchMyReportsPaginated': [
-    'GET',
-    '/api/word-error-reports/search/paginated'
-  ],
-  'general.WordErrorReportsController_searchAllReports': [
-    'GET',
-    '/api/word-error-reports/admin/search'
-  ],
+  'general.WordErrorReportsController_create': ['POST', '/api/word-error-reports'],
+  'general.WordErrorReportsController_findAllPaginated': ['GET', '/api/word-error-reports/paginated'],
+  'general.WordErrorReportsController_findMyReports': ['GET', '/api/word-error-reports/my-reports'],
+  'general.WordErrorReportsController_getReportStats': ['GET', '/api/word-error-reports/stats'],
+  'general.WordErrorReportsController_searchMyReports': ['GET', '/api/word-error-reports/search'],
+  'general.WordErrorReportsController_searchMyReportsPaginated': ['GET', '/api/word-error-reports/search/paginated'],
+  'general.WordErrorReportsController_searchAllReports': ['GET', '/api/word-error-reports/admin/search'],
   'general.WordErrorReportsController_searchAllReportsPaginated': [
     'GET',
     '/api/word-error-reports/admin/search/paginated'
   ],
-  'general.WordErrorReportsController_findByStatus': [
-    'GET',
-    '/api/word-error-reports/status/{status}'
-  ],
-  'general.WordErrorReportsController_findOne': [
-    'GET',
-    '/api/word-error-reports/{id}'
-  ],
-  'general.WordErrorReportsController_remove': [
-    'DELETE',
-    '/api/word-error-reports/{id}'
-  ],
-  'general.WordErrorRecordsController_recordWordError': [
-    'POST',
-    '/api/word-error-records'
-  ],
-  'general.WordErrorRecordsController_getUserErrorRecords': [
-    'GET',
-    '/api/word-error-records'
-  ],
-  'general.WordErrorRecordsController_getCategoriesWithErrors': [
-    'GET',
-    '/api/word-error-records/categories'
-  ],
-  'general.WordErrorRecordsController_getErrorStatistics': [
-    'GET',
-    '/api/word-error-records/statistics'
-  ],
-  'general.WordErrorRecordsController_getUnPracticedErrorRecords': [
-    'GET',
-    '/api/word-error-records/unpracticed'
-  ],
+  'general.WordErrorReportsController_findByStatus': ['GET', '/api/word-error-reports/status/{status}'],
+  'general.WordErrorReportsController_findOne': ['GET', '/api/word-error-reports/{id}'],
+  'general.WordErrorReportsController_remove': ['DELETE', '/api/word-error-reports/{id}'],
+  'general.WordErrorRecordsController_recordWordError': ['POST', '/api/word-error-records'],
+  'general.WordErrorRecordsController_getUserErrorRecords': ['GET', '/api/word-error-records'],
+  'general.WordErrorRecordsController_getCategoriesWithErrors': ['GET', '/api/word-error-records/categories'],
+  'general.WordErrorRecordsController_getErrorStatistics': ['GET', '/api/word-error-records/statistics'],
+  'general.WordErrorRecordsController_getUnPracticedErrorRecords': ['GET', '/api/word-error-records/unpracticed'],
   'general.WordErrorRecordsController_getErrorRecordsByCategory': [
     'GET',
     '/api/word-error-records/category/{categoryId}'
   ],
-  'general.WordErrorRecordsController_findOne': [
-    'GET',
-    '/api/word-error-records/{wordId}'
-  ],
-  'general.WordErrorRecordsController_create': [
-    'POST',
-    '/api/word-error-records/{wordId}'
-  ],
-  'general.WordErrorRecordsController_remove': [
-    'DELETE',
-    '/api/word-error-records/{wordId}'
-  ],
-  'general.WordErrorRecordsController_markAsPracticed': [
-    'POST',
-    '/api/word-error-records/practice/{wordId}'
-  ],
-  'general.WordErrorRecordsController_removeBatch': [
-    'DELETE',
-    '/api/word-error-records/batch'
-  ],
-  'general.UserSettingsController_getUserSettings': [
-    'GET',
-    '/api/user-settings'
-  ],
-  'general.UserSettingsController_resetUserSettings': [
-    'DELETE',
-    '/api/user-settings'
-  ],
-  'general.UserSettingsController_updateUserSettings': [
-    'POST',
-    '/api/user-settings/update'
-  ],
-  'general.UserSettingsController_getDefaultSettings': [
-    'GET',
-    '/api/user-settings/defaults'
-  ],
-  'general.CustomPackagesController_create': [
-    'POST',
-    '/api/custom-packages/create-package'
-  ],
-  'general.CustomPackagesController_findMyPackages': [
-    'GET',
-    '/api/custom-packages/get-my-packages'
-  ],
-  'general.CustomPackagesController_findPublicPackages': [
-    'GET',
-    '/api/custom-packages/get-public-packages'
-  ],
-  'general.CustomPackagesController_findOne': [
-    'GET',
-    '/api/custom-packages/get-package-detail'
-  ],
-  'general.CustomPackagesController_remove': [
-    'DELETE',
-    '/api/custom-packages/delete-package'
-  ],
-  'general.CustomPackagesController_findWordsByPackage': [
-    'GET',
-    '/api/custom-packages/get-package-words'
-  ],
-  'general.CustomPackagesController_addWord': [
-    'POST',
-    '/api/custom-packages/add-word-to-package'
-  ],
-  'general.CustomPackagesController_removeWord': [
-    'DELETE',
-    '/api/custom-packages/delete-package-word'
-  ],
-  'general.CustomPackagesController_importWords': [
-    'POST',
-    '/api/custom-packages/import-words-to-package'
-  ]
+  'general.WordErrorRecordsController_findOne': ['GET', '/api/word-error-records/{wordId}'],
+  'general.WordErrorRecordsController_create': ['POST', '/api/word-error-records/{wordId}'],
+  'general.WordErrorRecordsController_remove': ['DELETE', '/api/word-error-records/{wordId}'],
+  'general.WordErrorRecordsController_markAsPracticed': ['POST', '/api/word-error-records/practice/{wordId}'],
+  'general.WordErrorRecordsController_removeBatch': ['DELETE', '/api/word-error-records/batch'],
+  'general.UserSettingsController_getUserSettings': ['GET', '/api/user-settings'],
+  'general.UserSettingsController_resetUserSettings': ['DELETE', '/api/user-settings'],
+  'general.UserSettingsController_updateUserSettings': ['POST', '/api/user-settings/update'],
+  'general.UserSettingsController_getDefaultSettings': ['GET', '/api/user-settings/defaults'],
+  'general.CustomPackagesController_create': ['POST', '/api/custom-packages/create-package'],
+  'general.CustomPackagesController_findMyPackages': ['GET', '/api/custom-packages/get-my-packages'],
+  'general.CustomPackagesController_findPublicPackages': ['GET', '/api/custom-packages/get-public-packages'],
+  'general.CustomPackagesController_findOne': ['GET', '/api/custom-packages/get-package-detail'],
+  'general.CustomPackagesController_remove': ['DELETE', '/api/custom-packages/delete-package'],
+  'general.CustomPackagesController_findWordsByPackage': ['GET', '/api/custom-packages/get-package-words'],
+  'general.CustomPackagesController_addWord': ['POST', '/api/custom-packages/add-word-to-package'],
+  'general.CustomPackagesController_removeWord': ['DELETE', '/api/custom-packages/delete-package-word'],
+  'general.CustomPackagesController_importWords': ['POST', '/api/custom-packages/import-words-to-package']
 };
