@@ -2,10 +2,12 @@
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Apis from '@/request';
+import { useUserStore } from '@/store/user.store';
 
 const AuthCallbackContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setUser, setToken } = useUserStore();
 
   const handleAuthCallback = async () => {
     try {
@@ -17,15 +19,13 @@ const AuthCallbackContent = () => {
         return;
       }
 
-      // 保存token到localStorage
-      localStorage.setItem('token', token);
-
       // 使用token获取用户信息
       const userResponse = await Apis.general.UserController_findMe();
 
       if (userResponse) {
-        // 保存用户信息到localStorage
-        localStorage.setItem('userInfo', JSON.stringify(userResponse.data));
+        // 更新用户状态
+        setUser(userResponse.data);
+        setToken(token);
 
         // 重定向到首页
         router.push('/');
@@ -33,15 +33,16 @@ const AuthCallbackContent = () => {
         throw new Error('获取用户信息失败');
       }
     } catch {
-      // 清除可能存在的无效token
-      localStorage.removeItem('token');
-      localStorage.removeItem('userInfo');
+      // 清除可能存在的无效状态
+      setUser(null);
+      setToken(null);
       router.push('/');
     }
   };
 
   useEffect(() => {
     handleAuthCallback();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, searchParams]);
 
   return (

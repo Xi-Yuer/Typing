@@ -114,7 +114,7 @@ const AppLayout: React.FC<LayoutProps> = ({ children }) => {
             color: 'white',
             fontWeight: 'bold'
           }}>
-          {collapsed ? 'T' : 'Typing Admin'}
+          {collapsed ? '咔' : '咔西咔西'}
         </div>
         <Menu
           theme='dark'

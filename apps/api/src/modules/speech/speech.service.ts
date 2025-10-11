@@ -51,7 +51,7 @@ export class SpeechService {
 
   /**
    * 文本转语音服务
-   * 先调用有道翻译API获取翻译结果和语音URL，然后获取音频数据
+   * 先调用有道翻译API获取翻译结果和语音URL，如果失败则使用兜底方案
    * @param id 单词ID
    * @param word 输入文本
    * @param voice 语音类型（可选）
@@ -106,7 +106,9 @@ export class SpeechService {
         )
       );
       this.wordsService.update(id, {
-        meaningShort: response.data.translation?.join(',') || ''
+        meaningShort: Array.isArray(response.data.translation)
+          ? response.data.translation.join(',')
+          : response.data.translation || ''
       });
       const data = response.data;
 
@@ -114,10 +116,51 @@ export class SpeechService {
       if (data.errorCode && data.errorCode !== '0') {
         throw new Error(`Youdao API error: ${data.errorCode}`);
       }
-      // 返回处理后的数据
-      return data;
+
+      // 转换为符合YouDaoResponseType接口的格式
+      return {
+        audioUrl: data.tSpeakUrl || data.speakUrl || '',
+        voice: 'default',
+        language: 'en',
+        translation: Array.isArray(data.translation)
+          ? data.translation.join(',')
+          : data.translation || '',
+        originalText: word,
+        tSpeakUrl: data.tSpeakUrl,
+        speakUrl: data.speakUrl
+      };
     } catch (error) {
-      throw new Error(`Youdao API error: ${error}`);
+      // 有道API调用失败，使用兜底方案
+      console.warn(`Youdao API failed, using fallback: ${error}`);
+      return this.getFallbackSpeech(word, voice);
+    }
+  }
+
+  /**
+   * 兜底方案：使用有道词典语音API
+   * @param word 输入文本
+   * @returns 兜底响应数据
+   */
+  private async getFallbackSpeech(
+    word: string,
+    voice: string
+  ): Promise<YouDaoResponseType> {
+    try {
+      // 使用有道词典的语音API作为兜底
+      const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(word)}&type=${voice}`;
+
+      // 返回符合YouDaoResponseType接口的响应格式
+      return {
+        audioUrl: audioUrl,
+        voice: 'default',
+        language: 'en',
+        translation: word, // 兜底情况下直接返回原词
+        originalText: word,
+        tSpeakUrl: audioUrl,
+        speakUrl: audioUrl
+      };
+    } catch (error) {
+      throw new Error(`Fallback speech API error: ${error}`);
     }
   }
 }

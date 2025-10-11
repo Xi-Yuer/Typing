@@ -11,6 +11,7 @@ import { GameMode } from '@/components/GameModeModal/types';
 interface GameModeContextType {
   currentMode: GameMode;
   isModalOpen: boolean;
+  isInitialized: boolean;
   changeMode: (mode: GameMode) => void;
   openModeModal: () => void;
   closeModeModal: () => void;
@@ -34,6 +35,7 @@ export const GameModeProvider: React.FC<GameModeProviderProps> = ({
 }) => {
   const [currentMode, setCurrentMode] = useState<GameMode>('dictation');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   /**
    * 切换游戏模式
@@ -86,12 +88,14 @@ export const GameModeProvider: React.FC<GameModeProviderProps> = ({
       ) {
         setCurrentMode(savedMode);
       }
+      setIsInitialized(true);
     }
   }, []);
 
   const value: GameModeContextType = {
     currentMode,
     isModalOpen,
+    isInitialized,
     changeMode,
     openModeModal,
     closeModeModal,

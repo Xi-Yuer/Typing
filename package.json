@@ -27,6 +27,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=23.0.0",
+    "pnpm": ">=10.7.0",
+    "typescript": ">=5.9.2"
+  },
+  "enginesStrict": true,
   "packageManager": "pnpm@10.7.0",
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

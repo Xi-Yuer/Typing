@@ -1,4 +1,4 @@
-# Typing Admin 管理后台
+# 咔西咔西 Admin 管理后台
 
 这是一个基于 React + TypeScript + Ant Design 构建的现代化管理后台系统，用于管理 Typing 应用的各项功能。
 

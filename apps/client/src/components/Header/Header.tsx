@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useStars } from '@/hooks/useStarts';
 import Link from 'next/link';
 import { message } from 'antd';
@@ -9,38 +9,19 @@ import Navigation from './Navigation';
 import GitHubStarButton from './GitHubStarButton';
 import UserSection from './UserSection';
 import type { DisplayHeaderProps } from './types';
-import { useUserStore } from '@/store/user.store';
+import { useUserStore, useHydrateUserStore } from '@/store/user.store';
 import { LoginDto, RegisterDto } from '@/request/globals';
+import logo from '@/app/favicon.ico';
 
 const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
-  const stars = useStars();
+  const { stars } = useStars();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { user, setUser, setToken } = useUserStore();
   const [messageApi, messageContext] = message.useMessage();
-  // 初始化时检查localStorage中的用户信息
-  useEffect(() => {
-    // 检查是否在浏览器环境中
-    if (typeof window === 'undefined') return;
+  useHydrateUserStore();
 
-    try {
-      const token = localStorage.getItem('token');
-      const userInfo = localStorage.getItem('userInfo');
-
-      if (token && userInfo) {
-        const parsedUser = JSON.parse(userInfo);
-        setUser(parsedUser);
-        setToken(token);
-        setIsLoggedIn(true);
-      }
-    } catch {
-      // 如果解析失败，清除无效数据
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userInfo');
-      }
-    }
-  }, [setUser, setToken]);
+  // 根据用户状态确定是否已登录
+  const isLoggedIn = !!user;
 
   const handleLogin = async (
     data: LoginDto | RegisterDto,
@@ -74,16 +55,9 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
         throw new Error(authData.message || '登录数据不完整');
       }
 
-      // 保存token到localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('token', accessToken);
-        localStorage.setItem('userInfo', JSON.stringify(user));
-      }
-
       // 更新状态
       setUser(user);
       setToken(accessToken);
-      setIsLoggedIn(true);
 
       // 显示成功消息
       messageApi.success(isLogin ? '登录成功' : '注册成功');
@@ -110,16 +84,9 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
   };
 
   const handleLogout = () => {
-    // 清除localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userInfo');
-    }
-
     // 清除状态
     setUser(null);
     setToken(null);
-    setIsLoggedIn(false);
 
     messageApi.success('已退出登录');
   };
@@ -139,10 +106,12 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
         <Link
           href='/'
           className='flex items-center space-x-2 text-white transition-colors duration-200'>
-          <div className='w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-white text-black'>
-            T
+          <div className='w-10 h-10 rounded-lg p-2 flex items-center justify-center font-bold text-sm bg-white text-black'>
+            <img src={logo.src} alt='logo' className='w-full h-full' />
           </div>
-          <span className='font-semibold text-lg hidden sm:block'>Typing</span>
+          <span className='font-semibold text-lg hidden sm:block'>
+            咔西咔西
+          </span>
         </Link>
 
         <div className='flex items-center space-x-8'>

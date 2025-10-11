@@ -7,14 +7,20 @@ export const alovaInstance = createAlova({
   requestAdapter: fetchAdapter(),
   cacheFor: null,
   beforeRequest: method => {
-    method.config.headers['Authorization'] =
-      `Bearer ${localStorage.getItem('token')}`;
+    // 确保在浏览器环境中访问 localStorage
+    if (typeof window !== 'undefined') {
+      method.config.headers['Authorization'] =
+        `Bearer ${localStorage.getItem('token')}`;
+    }
   },
   responded: async res => {
     // 其他情况返回 JSON
     const data = await res.json();
     if (data.code === 401) {
-      localStorage.clear();
+      // 确保在浏览器环境中访问 localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+      }
     }
     return data;
   }
