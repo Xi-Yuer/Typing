@@ -4,8 +4,8 @@ CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY '$
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 
 -- 为容器网络创建 root 用户
-CREATE USER IF NOT EXISTS 'root'@'typing-app.typing_typing-network' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
-GRANT ALL PRIVILEGES ON *.* TO 'root'@'typing-app.typing_typing-network' WITH GRANT OPTION;
+CREATE USER IF NOT EXISTS 'root'@'typing-app' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'typing-app' WITH GRANT OPTION;
 
 FLUSH PRIVILEGES;
 
