@@ -1,6 +1,12 @@
 
-CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY '2214380963Wx!!';
+-- 确保 root 用户可以从任意主机连接（密码通过环境变量设置）
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
+-- 为容器网络创建 root 用户
+CREATE USER IF NOT EXISTS 'root'@'typing-app.typing_typing-network' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_PASSWORD}';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'typing-app.typing_typing-network' WITH GRANT OPTION;
+
 FLUSH PRIVILEGES;
 
 SET NAMES utf8mb4;
