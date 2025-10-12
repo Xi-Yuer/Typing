@@ -54,10 +54,23 @@ RUN chmod -R 755 /usr/share/nginx/html && \
     chmod 644 /usr/share/nginx/html/mobile.html
 
 # 创建必要的nginx目录
-RUN mkdir -p /var/log/nginx /var/lib/nginx/logs /var/lib/nginx/modules /var/lib/nginx/run /var/lib/nginx/tmp
+RUN mkdir -p /var/log/nginx /var/lib/nginx/logs /var/lib/nginx/modules /var/lib/nginx/run /var/lib/nginx/tmp /etc/nginx/ssl
+
+# 从 secrets 创建 SSL 证书文件（如果提供）
+RUN --mount=type=secret,id=ssl_cert \
+    if [ -f /run/secrets/ssl_cert ]; then \
+        cp /run/secrets/ssl_cert /etc/nginx/ssl/keycikeyci.com.crt && \
+        chmod 644 /etc/nginx/ssl/keycikeyci.com.crt; \
+    fi
+
+RUN --mount=type=secret,id=ssl_key \
+    if [ -f /run/secrets/ssl_key ]; then \
+        cp /run/secrets/ssl_key /etc/nginx/ssl/keycikeyci.com.key && \
+        chmod 600 /etc/nginx/ssl/keycikeyci.com.key; \
+    fi
 
 # 暴露端口
-EXPOSE 80 8080
+EXPOSE 80 8080 443 8443
 
 # 使用自定义启动脚本
 CMD ["sh", "/nginx-init.sh"]
