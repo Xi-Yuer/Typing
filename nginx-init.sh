@@ -40,10 +40,10 @@ fi
 
 # 检查SSL证书文件
 echo "检查SSL证书文件..."
-if [ ! -f "/etc/nginx/ssl/keycikeyci.com.crt" ] || [ ! -f "/etc/nginx/ssl/keycikeyci.com.key" ]; then
+if [ ! -f "/etc/nginx/ssl/keycikeyci.com-chain.crt" ] || [ ! -f "/etc/nginx/ssl/keycikeyci.com.key" ]; then
     echo "错误: SSL证书文件不存在！"
     echo "请确保在 ssl/ 目录下放置以下文件："
-    echo "  - keycikeyci.com.crt (SSL证书文件)"
+    echo "  - keycikeyci.com-chain.crt (SSL证书链文件)"
     echo "  - keycikeyci.com.key (SSL私钥文件)"
     echo ""
     echo "获取证书的方法："
@@ -63,19 +63,18 @@ else
     if chmod 600 /etc/nginx/ssl/keycikeyci.com.key 2>/dev/null; then
         echo "私钥权限设置成功"
     else
-        echo "警告: 无法设置私钥权限，尝试使用644权限"
-        chmod 644 /etc/nginx/ssl/keycikeyci.com.key 2>/dev/null || echo "警告: 无法设置私钥权限"
+        echo "私钥权限设置跳过（只读挂载，权限由宿主机控制）"
     fi
     
     if chmod 644 /etc/nginx/ssl/keycikeyci.com.crt 2>/dev/null; then
         echo "证书权限设置成功"
     else
-        echo "警告: 无法设置证书权限"
+        echo "证书权限设置跳过（只读挂载，权限由宿主机控制）"
     fi
     
     # 验证文件权限
     echo "SSL证书文件权限:"
-    ls -la /etc/nginx/ssl/keycikeyci.com.*
+    ls -la /etc/nginx/ssl/keycikeyci.com*
     echo "SSL证书配置完成"
 fi
 
