@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Nginx 初始化脚本 - 解决权限问题
 set -e
