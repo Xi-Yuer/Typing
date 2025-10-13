@@ -33,7 +33,7 @@ RUN cd apps/admin && pnpm run build
 FROM nginx:alpine
 
 # 安装必要的工具
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash openssl
 
 # 复制nginx配置
 COPY nginx.conf /etc/nginx/nginx.conf
