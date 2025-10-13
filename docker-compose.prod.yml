@@ -52,8 +52,8 @@ services:
       - '8080:8080'
       - '8443:8443'
     volumes:
-      # 挂载SSL证书文件
-      - ./ssl:/etc/nginx/ssl:ro
+      # 挂载SSL证书文件（开发环境可写，生产环境建议只读）
+      - ./ssl:/etc/nginx/ssl
     depends_on:
       - app
     networks:
