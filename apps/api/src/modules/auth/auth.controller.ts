@@ -7,6 +7,7 @@ import {
   Req,
   Res
 } from '@nestjs/common';
+import { SkipResponseWrapper } from '../../common/interceptors/response.interceptor';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiTags,
@@ -27,10 +28,7 @@ import { AuthResponseDto } from './dto/auth-response.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { ApiSuccessResponse } from '@/common/decorators/api-response.decorator';
-import {
-  ThrottleLogin,
-  ThrottleRegister
-} from '@/common/decorators/throttle.decorator';
+import { ThrottleLoose } from '@/common/decorators/throttle.decorator';
 
 @ApiTags('认证')
 @ApiExtraModels(AuthResponseDto, UserResponseDto, User)
@@ -42,7 +40,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
-  @ThrottleRegister()
+  @ThrottleLoose()
   @ApiOperation({ summary: '用户注册' })
   @ApiResponse({ status: 201, description: '注册成功', type: AuthResponseDto })
   @ApiResponse({ status: 409, description: '用户已存在' })
@@ -53,7 +51,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @ThrottleLogin()
+  @ThrottleLoose()
   @UseGuards(AuthGuard('local'))
   @ApiOperation({ summary: '用户登录' })
   @ApiBody({ type: LoginDto })
@@ -68,6 +66,7 @@ export class AuthController {
 
   @Get('github')
   @UseGuards(AuthGuard('github'))
+  @SkipResponseWrapper()
   @ApiOperation({ summary: 'GitHub OAuth 登录' })
   @ApiResponse({ status: 302, description: '重定向到GitHub授权页面' })
   async githubAuth() {
@@ -76,6 +75,7 @@ export class AuthController {
 
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))
+  @SkipResponseWrapper()
   @ApiOperation({ summary: 'GitHub OAuth 回调' })
   @ApiResponse({ status: 302, description: '登录成功或绑定成功，重定向到前端' })
   async githubCallback(@Req() req: any, @Res() res: Response) {
@@ -104,6 +104,7 @@ export class AuthController {
 
   @Get('qq')
   @UseGuards(AuthGuard('qq'))
+  @SkipResponseWrapper()
   @ApiOperation({ summary: 'QQ OAuth 登录' })
   @ApiResponse({ status: 302, description: '重定向到QQ授权页面' })
   async qqAuth() {
@@ -112,6 +113,7 @@ export class AuthController {
 
   @Get('qq/callback')
   @UseGuards(AuthGuard('qq'))
+  @SkipResponseWrapper()
   @ApiOperation({ summary: 'QQ OAuth 回调' })
   @ApiResponse({ status: 302, description: '登录成功或绑定成功，重定向到前端' })
   async qqCallback(@Req() req: any, @Res() res: Response) {
@@ -177,6 +179,7 @@ export class AuthController {
 
   @Get('bind/github')
   @UseGuards(AuthGuard('jwt'))
+  @SkipResponseWrapper()
   @ApiBearerAuth()
   @ApiOperation({ summary: '绑定GitHub账户 - 重定向到GitHub授权页面' })
   @ApiResponse({ status: 302, description: '重定向到GitHub授权页面' })
@@ -253,6 +256,7 @@ export class AuthController {
 
   @Get('bind/qq')
   @UseGuards(AuthGuard('jwt'))
+  @SkipResponseWrapper()
   @ApiBearerAuth()
   @ApiOperation({ summary: '绑定QQ账户 - 重定向到QQ授权页面' })
   @ApiResponse({ status: 302, description: '重定向到QQ授权页面' })
