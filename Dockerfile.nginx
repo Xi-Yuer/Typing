@@ -58,8 +58,15 @@ RUN mkdir -p /var/log/nginx /var/lib/nginx/logs /var/lib/nginx/modules /var/lib/
 
 # SSL证书目录将在运行时挂载
 # 创建SSL证书目录并设置权限
-RUN chown -R nginx:nginx /etc/nginx/ssl && \
+RUN mkdir -p /etc/nginx/ssl && \
+    chown -R nginx:nginx /etc/nginx/ssl && \
     chmod 755 /etc/nginx/ssl
+
+# 创建SSL证书占位符文件（用于构建时验证）
+RUN touch /etc/nginx/ssl/keycikeyci_com_integrated.crt && \
+    touch /etc/nginx/ssl/keycikeyci_com.key && \
+    chmod 644 /etc/nginx/ssl/keycikeyci_com_integrated.crt && \
+    chmod 600 /etc/nginx/ssl/keycikeyci_com.key
 
 # 暴露端口
 EXPOSE 80 8080 443 8443

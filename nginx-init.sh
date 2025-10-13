@@ -38,13 +38,62 @@ else
     echo "警告: mobile.html文件不存在"
 fi
 
-# 检查SSL证书文件
+# SSL证书文件检测和配置
 echo "检查SSL证书文件..."
-if [ ! -f "/etc/nginx/ssl/keycikeyci.com-chain.crt" ] || [ ! -f "/etc/nginx/ssl/keycikeyci.com.key" ]; then
+
+# 定义证书文件优先级（根据实际文件名调整）
+CERT_FILES=(
+    "/etc/nginx/ssl/keycikeyci_com_integrated.crt"
+    "/etc/nginx/ssl/keycikeyci_com_integrated.pem"
+    "/etc/nginx/ssl/keycikeyci.com-chain.crt"
+    "/etc/nginx/ssl/keycikeyci.com-fullchain.pem"
+    "/etc/nginx/ssl/keycikeyci.com.crt"
+    "/etc/nginx/ssl/keycikeyci.com.pem"
+)
+
+KEY_FILES=(
+    "/etc/nginx/ssl/keycikeyci_com.key"
+    "/etc/nginx/ssl/keycikeyci.com.key"
+    "/etc/nginx/ssl/keycikeyci.com-private.key"
+)
+
+# 查找可用的证书文件
+CERT_FILE=""
+for cert in "${CERT_FILES[@]}"; do
+    if [ -f "$cert" ]; then
+        CERT_FILE="$cert"
+        echo "找到证书文件: $cert"
+        break
+    fi
+done
+
+# 查找可用的私钥文件
+KEY_FILE=""
+for key in "${KEY_FILES[@]}"; do
+    if [ -f "$key" ]; then
+        KEY_FILE="$key"
+        echo "找到私钥文件: $key"
+        break
+    fi
+done
+
+# 检查是否找到了必要的文件
+if [ -z "$CERT_FILE" ] || [ -z "$KEY_FILE" ]; then
     echo "错误: SSL证书文件不存在！"
-    echo "请确保在 ssl/ 目录下放置以下文件："
-    echo "  - keycikeyci.com-chain.crt (SSL证书链文件)"
-    echo "  - keycikeyci.com.key (SSL私钥文件)"
+    echo ""
+    echo "请确保在 ssl/ 目录下放置以下文件之一："
+    echo "证书文件（按优先级）："
+    echo "  - keycikeyci_com_integrated.crt (当前使用 - 集成证书)"
+    echo "  - keycikeyci_com_integrated.pem (PEM格式集成证书)"
+    echo "  - keycikeyci.com-chain.crt (完整证书链)"
+    echo "  - keycikeyci.com-fullchain.pem (Let's Encrypt标准格式)"
+    echo "  - keycikeyci.com.crt (域名证书)"
+    echo "  - keycikeyci.com.pem (PEM格式证书)"
+    echo ""
+    echo "私钥文件："
+    echo "  - keycikeyci_com.key (当前使用)"
+    echo "  - keycikeyci.com.key (标准格式)"
+    echo "  - keycikeyci.com-private.key (备用格式)"
     echo ""
     echo "获取证书的方法："
     echo "1. 使用 Let's Encrypt: certbot certonly --standalone -d keycikeyci.com"
@@ -53,30 +102,39 @@ if [ ! -f "/etc/nginx/ssl/keycikeyci.com-chain.crt" ] || [ ! -f "/etc/nginx/ssl/
     echo ""
     echo "nginx启动失败，请先配置SSL证书文件"
     exit 1
-else
-    echo "SSL证书文件存在，使用生产证书"
-    # 检查当前用户权限
-    echo "当前用户: $(whoami)"
-    echo "当前用户ID: $(id -u)"
-    
-    # 尝试设置正确的权限，如果失败则使用备用方案
-    if chmod 600 /etc/nginx/ssl/keycikeyci.com.key 2>/dev/null; then
-        echo "私钥权限设置成功"
-    else
-        echo "私钥权限设置跳过（只读挂载，权限由宿主机控制）"
-    fi
-    
-    if chmod 644 /etc/nginx/ssl/keycikeyci.com.crt 2>/dev/null; then
-        echo "证书权限设置成功"
-    else
-        echo "证书权限设置跳过（只读挂载，权限由宿主机控制）"
-    fi
-    
-    # 验证文件权限
-    echo "SSL证书文件权限:"
-    ls -la /etc/nginx/ssl/keycikeyci.com*
-    echo "SSL证书配置完成"
 fi
+
+echo "SSL证书配置成功："
+echo "  证书文件: $CERT_FILE"
+echo "  私钥文件: $KEY_FILE"
+
+# 检查当前用户权限
+echo "当前用户: $(whoami)"
+echo "当前用户ID: $(id -u)"
+
+# 尝试设置正确的权限，如果失败则使用备用方案
+if chmod 600 "$KEY_FILE" 2>/dev/null; then
+    echo "私钥权限设置成功"
+else
+    echo "私钥权限设置跳过（只读挂载，权限由宿主机控制）"
+fi
+
+if chmod 644 "$CERT_FILE" 2>/dev/null; then
+    echo "证书权限设置成功"
+else
+    echo "证书权限设置跳过（只读挂载，权限由宿主机控制）"
+fi
+
+# 验证文件权限
+echo "SSL证书文件权限:"
+ls -la "$CERT_FILE" "$KEY_FILE"
+echo "SSL证书配置完成"
+
+# 动态更新nginx配置中的证书路径
+echo "更新nginx配置中的证书路径..."
+sed -i "s|ssl_certificate /etc/nginx/ssl/keycikeyci.com-chain.crt;|ssl_certificate $CERT_FILE;|g" /etc/nginx/nginx.conf
+sed -i "s|ssl_certificate_key /etc/nginx/ssl/keycikeyci.com.key;|ssl_certificate_key $KEY_FILE;|g" /etc/nginx/nginx.conf
+echo "nginx配置已更新"
 
 # 测试nginx配置
 echo "测试nginx配置..."
