@@ -55,15 +55,63 @@ if [ ! -f "/etc/nginx/ssl/keycikeyci.com.crt" ] || [ ! -f "/etc/nginx/ssl/keycik
     exit 1
 else
     echo "SSL证书文件存在，使用生产证书"
-    # 设置正确的权限
-    chmod 600 /etc/nginx/ssl/keycikeyci.com.key 2>/dev/null || echo "警告: 无法设置私钥权限"
-    chmod 644 /etc/nginx/ssl/keycikeyci.com.crt 2>/dev/null || echo "警告: 无法设置证书权限"
+    # 检查当前用户权限
+    echo "当前用户: $(whoami)"
+    echo "当前用户ID: $(id -u)"
+    
+    # 尝试设置正确的权限，如果失败则使用备用方案
+    if chmod 600 /etc/nginx/ssl/keycikeyci.com.key 2>/dev/null; then
+        echo "私钥权限设置成功"
+    else
+        echo "警告: 无法设置私钥权限，尝试使用644权限"
+        chmod 644 /etc/nginx/ssl/keycikeyci.com.key 2>/dev/null || echo "警告: 无法设置私钥权限"
+    fi
+    
+    if chmod 644 /etc/nginx/ssl/keycikeyci.com.crt 2>/dev/null; then
+        echo "证书权限设置成功"
+    else
+        echo "警告: 无法设置证书权限"
+    fi
+    
+    # 验证文件权限
+    echo "SSL证书文件权限:"
+    ls -la /etc/nginx/ssl/keycikeyci.com.*
     echo "SSL证书配置完成"
 fi
 
 # 测试nginx配置
 echo "测试nginx配置..."
 nginx -t
+
+# 等待上游服务启动
+echo "等待上游服务启动..."
+wait_for_service() {
+    local host=$1
+    local port=$2
+    local service_name=$3
+    local max_attempts=30
+    local attempt=1
+    
+    echo "检查 $service_name ($host:$port) 是否可用..."
+    
+    while [ $attempt -le $max_attempts ]; do
+        if nc -z $host $port 2>/dev/null; then
+            echo "$service_name 已就绪"
+            return 0
+        fi
+        
+        echo "等待 $service_name 启动... ($attempt/$max_attempts)"
+        sleep 2
+        attempt=$((attempt + 1))
+    done
+    
+    echo "警告: $service_name 在 $max_attempts 次尝试后仍未就绪，继续启动nginx"
+    return 1
+}
+
+# 检查上游服务
+wait_for_service "app" "3000" "前端服务" || true
+wait_for_service "app" "3001" "后端服务" || true
 
 echo "=== 权限设置完成，启动nginx ==="
 
