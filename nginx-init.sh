@@ -41,25 +41,24 @@ fi
 # 检查SSL证书文件
 echo "检查SSL证书文件..."
 if [ ! -f "/etc/nginx/ssl/keycikeyci.com.crt" ] || [ ! -f "/etc/nginx/ssl/keycikeyci.com.key" ]; then
-    echo "警告: SSL证书文件不存在，将创建自签名证书用于开发环境"
-    echo "生产环境请确保将正确的SSL证书文件放置在 ssl/ 目录下"
-    
-    # 创建自签名证书（仅用于开发环境）
-    if [ ! -f "/etc/nginx/ssl/keycikeyci.com.crt" ]; then
-        echo "创建自签名证书..."
-        openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-            -keyout /etc/nginx/ssl/keycikeyci.com.key \
-            -out /etc/nginx/ssl/keycikeyci.com.crt \
-            -subj "/C=CN/ST=State/L=City/O=Organization/CN=keycikeyci.com"
-        chmod 600 /etc/nginx/ssl/keycikeyci.com.key
-        chmod 644 /etc/nginx/ssl/keycikeyci.com.crt
-        echo "自签名证书创建完成"
-    fi
+    echo "错误: SSL证书文件不存在！"
+    echo "请确保在 ssl/ 目录下放置以下文件："
+    echo "  - keycikeyci.com.crt (SSL证书文件)"
+    echo "  - keycikeyci.com.key (SSL私钥文件)"
+    echo ""
+    echo "获取证书的方法："
+    echo "1. 使用 Let's Encrypt: certbot certonly --standalone -d keycikeyci.com"
+    echo "2. 从证书颁发机构获取证书文件"
+    echo "3. 将证书文件复制到项目根目录的 ssl/ 文件夹中"
+    echo ""
+    echo "nginx启动失败，请先配置SSL证书文件"
+    exit 1
 else
     echo "SSL证书文件存在，使用生产证书"
     # 设置正确的权限
     chmod 600 /etc/nginx/ssl/keycikeyci.com.key 2>/dev/null || echo "警告: 无法设置私钥权限"
     chmod 644 /etc/nginx/ssl/keycikeyci.com.crt 2>/dev/null || echo "警告: 无法设置证书权限"
+    echo "SSL证书配置完成"
 fi
 
 # 测试nginx配置
