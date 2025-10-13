@@ -112,9 +112,6 @@ jobs:
           push: true
           tags: ${{ steps.nginx-meta.outputs.tags }}
           labels: ${{ steps.nginx-meta.outputs.labels }}
-          build-args: |
-            SSL_CERT=${{ secrets.SSL_CERT }}
-            SSL_KEY=${{ secrets.SSL_KEY }}
 
       # 输出镜像信息
       - name: Output image info

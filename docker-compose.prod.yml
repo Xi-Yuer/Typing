@@ -51,6 +51,9 @@ services:
       - '443:443'
       - '8080:8080'
       - '8443:8443'
+    volumes:
+      # 挂载SSL证书文件
+      - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - app
     networks:

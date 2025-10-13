@@ -141,3 +141,9 @@ dist
 cache
 course-db
 .rollup.cache
+
+# SSL certificates (keep private keys out of version control)
+ssl/*.key
+ssl/*.pem
+ssl/*.crt
+!ssl/README.md
