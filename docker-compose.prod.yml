@@ -97,7 +97,7 @@ services:
       NEXT_PUBLIC_BASE_URL: /
       VITE_API_URL: ${VITE_API_URL:-/}
       FRONTEND_URL: ${SERVER_URL:-http://localhost}
-      NEXT_PUBLIC_GITHUB_SSO_URL: ${SERVER_URL:-http://localhost}/api/auth/github
+      NEXT_PUBLIC_GITHUB_SSO_URL: ${SERVER_URL:-http://localhost}/api/auth/github/callback
       
       # 功能开关
       ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}
@@ -108,12 +108,12 @@ services:
       # GitHub OAuth (可选)
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
-      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-/api/auth/github/callback}
+      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-${SERVER_URL:-https://keycikeyci.com}/api/auth/github/callback}
       
       # QQ OAuth (可选)
       QQ_CLIENT_ID: ${QQ_CLIENT_ID:-}
       QQ_CLIENT_SECRET: ${QQ_CLIENT_SECRET:-}
-      QQ_CALLBACK_URL: ${QQ_CALLBACK_URL:-/api/auth/qq/callback}
+      QQ_CALLBACK_URL: ${QQ_CALLBACK_URL:-${SERVER_URL:-https://keycikeyci.com}/api/auth/qq/callback}
       
       # 语音服务 (可选)
       YOUDAO_APP_KEY: ${YOUDAO_APP_KEY:-}
