@@ -121,8 +121,10 @@ echo "SSL证书配置完成"
 
 # 动态更新nginx配置中的证书路径
 echo "更新nginx配置中的证书路径..."
-sed -i "s|ssl_certificate /etc/nginx/ssl/keycikeyci.com-chain.crt;|ssl_certificate $CERT_FILE;|g" /etc/nginx/nginx.conf
-sed -i "s|ssl_certificate_key /etc/nginx/ssl/keycikeyci.com.key;|ssl_certificate_key $KEY_FILE;|g" /etc/nginx/nginx.conf
+# 更新所有可能的证书路径格式
+sed -i "s|ssl_certificate /etc/nginx/ssl/.*\.crt;|ssl_certificate $CERT_FILE;|g" /etc/nginx/nginx.conf
+sed -i "s|ssl_certificate /etc/nginx/ssl/.*\.pem;|ssl_certificate $CERT_FILE;|g" /etc/nginx/nginx.conf
+sed -i "s|ssl_certificate_key /etc/nginx/ssl/.*\.key;|ssl_certificate_key $KEY_FILE;|g" /etc/nginx/nginx.conf
 echo "nginx配置已更新"
 
 # 测试nginx配置
