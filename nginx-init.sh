@@ -42,24 +42,13 @@ fi
 echo "检查SSL证书文件..."
 
 # 定义证书文件优先级（根据实际文件名调整）
-CERT_FILES=(
-    "/etc/nginx/ssl/keycikeyci_com_integrated.crt"
-    "/etc/nginx/ssl/keycikeyci_com_integrated.pem"
-    "/etc/nginx/ssl/keycikeyci.com-chain.crt"
-    "/etc/nginx/ssl/keycikeyci.com-fullchain.pem"
-    "/etc/nginx/ssl/keycikeyci.com.crt"
-    "/etc/nginx/ssl/keycikeyci.com.pem"
-)
+CERT_FILES="/etc/nginx/ssl/keycikeyci_com_integrated.crt /etc/nginx/ssl/keycikeyci_com_integrated.pem /etc/nginx/ssl/keycikeyci.com-chain.crt /etc/nginx/ssl/keycikeyci.com-fullchain.pem /etc/nginx/ssl/keycikeyci.com.crt /etc/nginx/ssl/keycikeyci.com.pem"
 
-KEY_FILES=(
-    "/etc/nginx/ssl/keycikeyci_com.key"
-    "/etc/nginx/ssl/keycikeyci.com.key"
-    "/etc/nginx/ssl/keycikeyci.com-private.key"
-)
+KEY_FILES="/etc/nginx/ssl/keycikeyci_com.key /etc/nginx/ssl/keycikeyci.com.key /etc/nginx/ssl/keycikeyci.com-private.key"
 
 # 查找可用的证书文件
 CERT_FILE=""
-for cert in "${CERT_FILES[@]}"; do
+for cert in $CERT_FILES; do
     if [ -f "$cert" ]; then
         CERT_FILE="$cert"
         echo "找到证书文件: $cert"
@@ -69,7 +58,7 @@ done
 
 # 查找可用的私钥文件
 KEY_FILE=""
-for key in "${KEY_FILES[@]}"; do
+for key in $KEY_FILES; do
     if [ -f "$key" ]; then
         KEY_FILE="$key"
         echo "找到私钥文件: $key"

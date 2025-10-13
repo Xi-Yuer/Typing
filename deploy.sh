@@ -47,6 +47,12 @@ check_env_file() {
     fi
 }
 
+# 拉取最新代码
+pull_code() {
+    print_message $BLUE "拉取最新代码..."
+    git pull origin main
+}
+
 # 启动服务
 start_services() {
     local compose_file="docker-compose.prod.yml"
@@ -57,7 +63,7 @@ start_services() {
     check_dependencies
     check_env_file
     check_prod_config
-    
+    pull_code
     # 设置nginx初始化脚本权限
     if [ -f "nginx-init.sh" ]; then
         chmod +x nginx-init.sh
@@ -66,7 +72,7 @@ start_services() {
     
     # 停止服务
     stop_services
-
+    pull_code
     # 启动服务
     print_message $BLUE "启动所有服务..."
     docker-compose -f $compose_file up -d
