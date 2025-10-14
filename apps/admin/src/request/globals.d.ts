@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * 咔西咔西 API - version 1.0
+ * 拼写鸭 API - version 1.0
  *
- * 咔西咔西
+ * 拼写鸭
  *
  * OpenAPI version: 3.0.0
  *

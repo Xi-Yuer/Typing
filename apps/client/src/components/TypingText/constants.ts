@@ -17,7 +17,8 @@ export const KEYBOARD_SHORTCUTS = {
     HOME: 'Home',
     END: 'End',
     ESCAPE: 'Escape',
-    BACKSPACE: 'Backspace'
+    BACKSPACE: 'Backspace',
+    TAB: 'Tab'
   },
   WORD_NAVIGATION: {
     PREV: 'ArrowLeft',

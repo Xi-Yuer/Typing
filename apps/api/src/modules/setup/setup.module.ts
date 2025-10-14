@@ -12,8 +12,8 @@ export class SetupModule {
   static forRoot(app: INestApplication): void {
     {
       const config = new DocumentBuilder()
-        .setTitle('咔西咔西 API')
-        .setDescription('咔西咔西')
+        .setTitle('拼写鸭 API')
+        .setDescription('拼写鸭')
         .setVersion('1.0')
         .addBearerAuth({
           type: 'http',

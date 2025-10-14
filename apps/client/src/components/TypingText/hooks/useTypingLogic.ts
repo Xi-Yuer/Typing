@@ -86,7 +86,7 @@ export const useTypingLogic = ({
       const value = e.target.value;
 
       // 避免用户输入过长
-      if (value.length > 15) {
+      if (value.length > 25) {
         return;
       }
       setInputValue(value);

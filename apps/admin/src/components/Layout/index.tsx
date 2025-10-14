@@ -114,7 +114,7 @@ const AppLayout: React.FC<LayoutProps> = ({ children }) => {
             color: 'white',
             fontWeight: 'bold'
           }}>
-          {collapsed ? '咔' : '咔西咔西'}
+          {collapsed ? '咔' : '拼写鸭'}
         </div>
         <Menu
           theme='dark'

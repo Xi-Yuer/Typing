@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
         <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
           {/* 网站信息 */}
           <div className='space-y-4'>
-            <h3 className='text-lg font-semibold text-white'>咔西咔西</h3>
+            <h3 className='text-lg font-semibold text-white'>拼写鸭</h3>
             <p className='text-slate-400 text-sm'>
               高效英语学习平台，让语言学习变得简单有趣
             </p>
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
           <div className='flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0'>
             {/* 版权信息 */}
             <div className='text-slate-400 text-sm'>
-              © 2025 咔西咔西. All rights reserved.
+              © 2025 拼写鸭. All rights reserved.
             </div>
 
             {/* 备案信息 */}

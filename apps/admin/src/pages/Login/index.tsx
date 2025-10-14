@@ -42,7 +42,7 @@ const Login: React.FC = () => {
       <Card style={{ width: 400, padding: '40px 20px' }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <Title level={2} style={{ margin: 0 }}>
-            咔西咔西 Admin
+            拼写鸭 Admin
           </Title>
           <p style={{ color: '#666', marginTop: 8 }}>管理后台登录</p>
         </div>

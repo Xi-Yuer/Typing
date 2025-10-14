@@ -152,7 +152,7 @@ export const useUserShortcuts = ({
 
   // 下一个单词快捷键
   useHotkeys(
-    'arrowright, down, arrowdown',
+    'arrowright, down, arrowdown, tab',
     useCallback(
       event => {
         event.preventDefault();
