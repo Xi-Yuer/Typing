@@ -41,7 +41,9 @@ export default function PackageCard({
   }, []);
 
   return (
-    <div className='bg-white/10 !h-[150px] overflow-hidden backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
+    <div
+      className='bg-white/10 !h-[150px] overflow-hidden backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'
+      onClick={() => openModeModal()}>
       {/* 右上角难度标签 */}
       <div
         className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${
@@ -59,9 +61,7 @@ export default function PackageCard({
         {pkg.description}
       </p>
 
-      <span
-        className='flex items-center text-purple-400'
-        onClick={() => openModeModal()}>
+      <span className='flex items-center text-purple-400'>
         <span className='text-sm'>开始练习</span>
         <svg
           className='w-4 h-4 ml-2'

@@ -36,7 +36,6 @@ export interface LoginModalProps {
     data: LoginDto | RegisterDto,
     isLogin: boolean
   ) => Promise<AuthResponseDto> | void;
-  loading?: boolean;
 }
 
 // 导航组件属性接口

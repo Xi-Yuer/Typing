@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal } from 'antd';
 import { UserOutlined, LockOutlined, GithubOutlined } from '@ant-design/icons';
 import type { LoginErrors, LoginModalProps } from './types';
@@ -16,6 +16,7 @@ interface RegisterErrors {
 
 const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
   const [isRegisterMode, setIsRegisterMode] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState<LoginDto>({
     email: '',
     password: ''
@@ -46,6 +47,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
     setLoginErrors({ email: '', password: '' });
     setRegisterErrors({});
     setIsRegisterMode(false);
+    setLoading(false);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -120,28 +122,35 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
 
     if (isRegisterMode) {
       if (validateRegisterForm()) {
-        const userData: RegisterDto = {
-          name: registerData.name,
-          email: registerData.email,
-          password: registerData.password
-        };
-        await onLogin(userData, false);
-        handleClose();
+        setLoading(true);
+        try {
+          const userData: RegisterDto = {
+            name: registerData.name,
+            email: registerData.email,
+            password: registerData.password
+          };
+          await onLogin(userData, false);
+          handleClose();
+        } catch (error) {
+          console.error('注册失败:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     } else {
       if (validateLoginForm()) {
-        await onLogin(loginData, true);
-        handleClose();
+        setLoading(true);
+        try {
+          await onLogin(loginData, true);
+          handleClose();
+        } catch (error) {
+          console.error('登录失败:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     }
   };
-
-  useEffect(() => {
-    console.log(
-      'process.env.NEXT_PUBLIC_GITHUB_SSO_URL',
-      process.env.NEXT_PUBLIC_GITHUB_SSO_URL
-    );
-  }, []);
 
   return (
     <Modal
@@ -194,13 +203,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     type='text'
                     placeholder='用户名'
                     autoComplete='off'
+                    disabled={loading}
                     value={registerData.name}
                     onChange={e => handleInputChange('name', e.target.value)}
                     className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       registerErrors.email
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
-                    }`}
+                    } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
                   <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
@@ -220,13 +230,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     type='email'
                     placeholder='邮箱'
                     autoComplete='off'
+                    disabled={loading}
                     value={registerData.email}
                     onChange={e => handleInputChange('email', e.target.value)}
                     className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       registerErrors.email
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
-                    }`}
+                    } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
                   <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
@@ -246,6 +257,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     type='password'
                     placeholder='密码'
                     autoComplete='off'
+                    disabled={loading}
                     value={registerData.password}
                     onChange={e =>
                       handleInputChange('password', e.target.value)
@@ -254,7 +266,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                       registerErrors.password
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
-                    }`}
+                    } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
                   <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
@@ -285,13 +297,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     type='email'
                     placeholder='邮箱'
                     autoComplete='off'
+                    disabled={loading}
                     value={loginData.email}
                     onChange={e => handleInputChange('email', e.target.value)}
                     className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       loginErrors.email
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
-                    }`}
+                    } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
                   <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
@@ -311,6 +324,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     type='password'
                     placeholder='密码'
                     autoComplete='off'
+                    disabled={loading}
                     value={loginData.password}
                     onChange={e =>
                       handleInputChange('password', e.target.value)
@@ -319,7 +333,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                       loginErrors.password
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
-                    }`}
+                    } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
                   <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
@@ -334,11 +348,30 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
 
           <button
             type='submit'
-            className='w-full h-12 mt-6 bg-gradient-to-r from-[#8b5cf6] via-[#a855f7] to-[#c084fc] text-white font-semibold rounded-2xl hover:shadow-2xl hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group'>
-            <div className='absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
-            <span className='relative z-10 text-lg'>
-              {isRegisterMode ? '注册' : '登录'}
-            </span>
+            disabled={loading}
+            className={`w-full h-12 mt-6 bg-gradient-to-r from-[#8b5cf6] via-[#a855f7] to-[#c084fc] text-white font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group ${
+              loading
+                ? 'opacity-70 cursor-not-allowed'
+                : 'hover:shadow-2xl hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98]'
+            }`}>
+            <div
+              className={`absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transition-opacity duration-300 ${
+                loading ? 'opacity-0' : 'opacity-0 group-hover:opacity-100'
+              }`}></div>
+            <div className='relative z-10 flex items-center justify-center gap-2'>
+              {loading && (
+                <div className='w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin'></div>
+              )}
+              <span className='text-lg'>
+                {loading
+                  ? isRegisterMode
+                    ? '注册中...'
+                    : '登录中...'
+                  : isRegisterMode
+                    ? '注册'
+                    : '登录'}
+              </span>
+            </div>
           </button>
         </form>
 
@@ -353,6 +386,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
         <Link
           href={process.env.NEXT_PUBLIC_GITHUB_SSO_URL as string}
           prefetch={false}
+          onClick={() => {
+            if (loading) {
+              return;
+            } else {
+              setLoading(true);
+            }
+          }}
           className='w-full h-12 bg-gradient-to-r from-[#24292e] to-[#1a1e22] hover:from-[#1a1e22] hover:to-[#0d1117] !text-white font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:ring-offset-2 focus:ring-offset-transparent flex items-center justify-center gap-3 hover:shadow-xl hover:shadow-gray-900/30 hover:scale-[1.02] active:scale-[0.98] relative z-10 group overflow-hidden'>
           <div className='absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
           <GithubOutlined className='text-xl relative z-10' />
@@ -363,12 +403,18 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
           <p className='text-white/60 text-sm'>
             {isRegisterMode ? '已有账户？' : '还没有账户？'}
             <span
-              className='text-purple-400 cursor-pointer hover:text-purple-300 ml-2 font-medium transition-all duration-200 hover:underline underline-offset-2'
+              className={`ml-2 font-medium transition-all duration-200 hover:underline underline-offset-2 ${
+                loading
+                  ? 'text-purple-400/50 cursor-not-allowed'
+                  : 'text-purple-400 cursor-pointer hover:text-purple-300'
+              }`}
               onClick={() => {
-                setIsRegisterMode(!isRegisterMode);
-                // 清除错误信息
-                setLoginErrors({ email: '', password: '' });
-                setRegisterErrors({});
+                if (!loading) {
+                  setIsRegisterMode(!isRegisterMode);
+                  // 清除错误信息
+                  setLoginErrors({ email: '', password: '' });
+                  setRegisterErrors({});
+                }
               }}>
               {isRegisterMode ? '登录' : '注册'}
             </span>

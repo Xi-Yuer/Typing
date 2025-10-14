@@ -38,6 +38,10 @@ export default function Mistake() {
         return (
           <div
             key={category.id}
+            onClick={() => {
+              setCurrentCategory(category);
+              openModeModal();
+            }}
             className='bg-white/10 !h-[150px] overflow-hidden backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
             {/* 右上角难度标签 */}
             <div
@@ -55,12 +59,7 @@ export default function Mistake() {
             <p className='text-gray-300 text-sm mb-4 line-clamp-2'>
               {category.description}
             </p>
-            <span
-              className='flex items-center text-purple-400'
-              onClick={() => {
-                setCurrentCategory(category);
-                openModeModal();
-              }}>
+            <span className='flex items-center text-purple-400'>
               <span className='text-sm'>开始练习</span>
               <svg
                 className='w-4 h-4 ml-2'
