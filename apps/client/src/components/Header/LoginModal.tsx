@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import { UserOutlined, LockOutlined, GithubOutlined } from '@ant-design/icons';
 import type { LoginErrors, LoginModalProps } from './types';
@@ -135,6 +135,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
       }
     }
   };
+
+  useEffect(() => {
+    console.log(
+      'process.env.NEXT_PUBLIC_GITHUB_SSO_URL',
+      process.env.NEXT_PUBLIC_GITHUB_SSO_URL
+    );
+  }, []);
 
   return (
     <Modal

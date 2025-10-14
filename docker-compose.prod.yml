@@ -96,8 +96,8 @@ services:
       # 前端配置
       NEXT_PUBLIC_BASE_URL: /
       VITE_API_URL: ${VITE_API_URL:-/}
-      FRONTEND_URL: ${SERVER_URL:-http://localhost}
-      NEXT_PUBLIC_GITHUB_SSO_URL: ${SERVER_URL:-http://localhost}/api/auth/github/callback
+      FRONTEND_URL: ${SERVER_URL:-https://keycikeyci.com}
+      NEXT_PUBLIC_GITHUB_SSO_URL: ${SERVER_URL:-https://keycikeyci.com}/api/auth/github/callback
       
       # 功能开关
       ENABLE_REGISTRATION: ${ENABLE_REGISTRATION:-true}
