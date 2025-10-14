@@ -9,8 +9,22 @@ export const alovaInstance = createAlova({
   beforeRequest: method => {
     // 确保在浏览器环境中访问 localStorage
     if (typeof window !== 'undefined') {
-      method.config.headers['Authorization'] =
-        `Bearer ${localStorage.getItem('token')}`;
+      // 从Zustand store的localStorage中获取token
+      const userStorage = localStorage.getItem('user-storage');
+      let token = null;
+
+      if (userStorage) {
+        try {
+          const parsed = JSON.parse(userStorage);
+          token = parsed?.state?.token;
+        } catch (error) {
+          console.warn('Failed to parse user storage:', error);
+        }
+      }
+
+      if (token) {
+        method.config.headers['Authorization'] = `Bearer ${token}`;
+      }
     }
   },
   responded: async res => {
@@ -19,7 +33,8 @@ export const alovaInstance = createAlova({
     if (data.code === 401) {
       // 确保在浏览器环境中访问 localStorage
       if (typeof window !== 'undefined') {
-        localStorage.clear();
+        // 清理Zustand store
+        localStorage.removeItem('user-storage');
       }
     }
     return data;

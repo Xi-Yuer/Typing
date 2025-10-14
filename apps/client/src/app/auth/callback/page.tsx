@@ -19,13 +19,15 @@ const AuthCallbackContent = () => {
         return;
       }
 
+      // 先设置token到store，这样后续的API请求就能携带token
+      setToken(token);
+
       // 使用token获取用户信息
       const userResponse = await Apis.general.UserController_findMe();
 
       if (userResponse) {
         // 更新用户状态
         setUser(userResponse.data);
-        setToken(token);
 
         // 重定向到首页
         router.push('/');

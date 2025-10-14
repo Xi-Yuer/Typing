@@ -95,10 +95,6 @@ start_services() {
     print_message $GREEN "后端 API: https://keycikeyci.com/api"
     print_message $GREEN "API 文档: https://keycikeyci.com/api/doc"
     print_message $YELLOW "\n提示: 使用 './deploy.sh logs' 查看日志"
-    print_message $YELLOW "\n重要: 请确保以下环境变量已正确设置:"
-    print_message $YELLOW "  - GITHUB_CLIENT_ID"
-    print_message $YELLOW "  - GITHUB_CLIENT_SECRET"
-    print_message $YELLOW "  - GITHUB_CALLBACK_URL=https://keycikeyci.com/api/auth/github/callback"
 }
 
 # 检查生产环境配置
