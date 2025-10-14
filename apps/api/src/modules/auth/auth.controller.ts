@@ -81,18 +81,14 @@ export class AuthController {
   async githubCallback(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
     const frontendUrl =
-      this.configService.get('FRONTEND_URL') || 'http://localhost';
+      this.configService.get('FRONTEND_URL') || 'https://keycikeyci.com';
 
     try {
-      // 正常登录流程
-      const result = await this.authService.githubLogin({
-        id: user.id.toString(),
-        username: user.name,
-        email: user.email
-      });
+      // 用户已经在GitHub策略中处理过了，直接生成token
+      const accessToken = await this.authService.generateToken(user);
 
       // 重定向到前端，携带token
-      res.redirect(`${frontendUrl}/auth/callback?token=${result.accessToken}`);
+      res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}`);
     } catch (error) {
       // 处理错误，重定向到错误页面
       const errorMessage = error.message || '操作失败';

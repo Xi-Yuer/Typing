@@ -108,7 +108,7 @@ services:
       # GitHub OAuth (可选)
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
-      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-${SERVER_URL:-https://keycikeyci.com}/api/auth/github/callback}
+      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-https://keycikeyci.com/api/auth/github/callback}
       
       # QQ OAuth (可选)
       QQ_CLIENT_ID: ${QQ_CLIENT_ID:-}

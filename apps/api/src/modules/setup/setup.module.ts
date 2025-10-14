@@ -64,11 +64,28 @@ export class SetupModule {
     }
 
     {
-      // 跨域
+      // 跨域配置
       app.enableCors({
-        origin: true,
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true
+        origin: [
+          'https://keycikeyci.com',
+          'https://www.keycikeyci.com',
+          'https://admin.keycikeyci.com',
+          'http://localhost:3000',
+          'http://localhost:8080'
+        ],
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: [
+          'Origin',
+          'X-Requested-With',
+          'Content-Type',
+          'Accept',
+          'Authorization',
+          'Cache-Control',
+          'Pragma'
+        ],
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204
       });
     }
   }

@@ -90,11 +90,15 @@ start_services() {
     sleep 10
     
     print_message $GREEN "\n🎉 部署完成！"
-    print_message $GREEN "前端应用: http://localhost/"
-    print_message $GREEN "Admin 后台: http://localhost:8080"
-    print_message $GREEN "后端 API: http://localhost/api"
-    print_message $GREEN "API 文档: http://localhost/api/doc"
+    print_message $GREEN "前端应用: https://keycikeyci.com/"
+    print_message $GREEN "Admin 后台: https://admin.keycikeyci.com:8443"
+    print_message $GREEN "后端 API: https://keycikeyci.com/api"
+    print_message $GREEN "API 文档: https://keycikeyci.com/api/doc"
     print_message $YELLOW "\n提示: 使用 './deploy.sh logs' 查看日志"
+    print_message $YELLOW "\n重要: 请确保以下环境变量已正确设置:"
+    print_message $YELLOW "  - GITHUB_CLIENT_ID"
+    print_message $YELLOW "  - GITHUB_CLIENT_SECRET"
+    print_message $YELLOW "  - GITHUB_CALLBACK_URL=https://keycikeyci.com/api/auth/github/callback"
 }
 
 # 检查生产环境配置
@@ -174,14 +178,14 @@ show_status() {
 clean_environment() {
     local compose_file="docker-compose.prod.yml"
     
-    print_message $YELLOW "警告: 这将删除所有容器、网络和数据卷！"
+    print_message $YELLOW "警告: 这将删除所有容器和网络，但保留数据卷！"
     read -p "确定要继续吗？(y/N): " -n 1 -r
     echo
     
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         print_message $BLUE "清理环境..."
-        docker-compose -f $compose_file down -v --remove-orphans
-        print_message $GREEN "✓ 环境已清理"
+        docker-compose -f $compose_file down --remove-orphans
+        print_message $GREEN "✓ 环境已清理（数据卷已保留）"
     else
         print_message $YELLOW "操作已取消"
     fi
@@ -200,7 +204,7 @@ show_help() {
     echo "  restart  - 重启所有服务"
     echo "  logs     - 查看服务日志"
     echo "  status   - 查看服务状态"
-    echo "  clean    - 清理环境 (删除所有数据)"
+    echo "  clean    - 清理环境 (保留数据卷)"
     echo "  pull     - 拉取最新的预构建镜像"
     echo "  help     - 显示此帮助信息"
     echo ""
