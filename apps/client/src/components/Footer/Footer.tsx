@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
                 rel='noopener noreferrer'
                 className='flex items-center space-x-2'>
                 <span>备案号：</span>
-                <span className='text-slate-300'>蜀ICP备2025000000号</span>
+                <span className='text-slate-300'>蜀ICP备 号</span>
               </a>
               <a
                 href='https://beian.miit.gov.cn/'
@@ -91,9 +91,7 @@ const Footer: React.FC = () => {
                 rel='noopener noreferrer'
                 className='flex items-center space-x-2'>
                 <span>公安备案：</span>
-                <span className='text-slate-300'>
-                  川公网安备51010000000000号
-                </span>
+                <span className='text-slate-300'>川公网安备 号</span>
               </a>
             </div>
           </div>

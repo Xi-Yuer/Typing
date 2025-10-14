@@ -7,9 +7,7 @@ export const alovaInstance = createAlova({
   requestAdapter: fetchAdapter(),
   cacheFor: null,
   beforeRequest: method => {
-    // 确保在浏览器环境中访问 localStorage
     if (typeof window !== 'undefined') {
-      // 从Zustand store的localStorage中获取token
       const userStorage = localStorage.getItem('user-storage');
       let token = null;
 
@@ -28,16 +26,7 @@ export const alovaInstance = createAlova({
     }
   },
   responded: async res => {
-    // 其他情况返回 JSON
-    const data = await res.json();
-    if (data.code === 401) {
-      // 确保在浏览器环境中访问 localStorage
-      if (typeof window !== 'undefined') {
-        // 清理Zustand store
-        localStorage.removeItem('user-storage');
-      }
-    }
-    return data;
+    return await res.json();
   }
 });
 
