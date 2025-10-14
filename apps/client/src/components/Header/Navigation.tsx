@@ -13,7 +13,7 @@ const defaultNavItems: NavItem[] = [
     href: '/list'
   },
   {
-    name: '主页',
+    name: '我的',
     href: '/dashboard/main'
   }
 ];

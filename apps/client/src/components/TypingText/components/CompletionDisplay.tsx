@@ -24,6 +24,23 @@ export const CompletionDisplay: React.FC<CompletionDisplayProps> = ({
       <div className={'text-3xl text-gray-300 mt-4'}>
         {word?.meaningShort || word?.meaning || ''}
       </div>
+
+      {/* 例句显示 */}
+      {word?.example && (
+        <div className='mt-6 max-w-xl mx-auto'>
+          <div className='text-base text-gray-400 italic leading-relaxed'>
+            例句：
+            {word.example.split('|').map((sentence, index) => (
+              <span key={index}>
+                "{sentence.trim()}"
+                {index < word.example.split('|').length - 1 && (
+                  <span className='text-gray-600 mx-3'>|</span>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

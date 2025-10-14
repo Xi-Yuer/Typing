@@ -25,6 +25,7 @@ import {
   ApiSuccessResponse
 } from '@/common/decorators/api-response.decorator';
 import { NoCache } from '@/common/decorators/no-cache.decorator';
+import { OptionalAuth } from '@/common/decorators/optional-auth.decorator';
 
 @ApiTags('自定义学习包')
 @Controller('custom-packages')
@@ -63,6 +64,7 @@ export class CustomPackagesController {
   @ApiPaginationResponse(CustomPackage, {
     description: '获取公开的自定义学习包列表成功'
   })
+  @OptionalAuth()
   @NoCache()
   async findPublicPackages() {
     return await this.customPackagesService.findPublic();
@@ -73,6 +75,7 @@ export class CustomPackagesController {
   @ApiSuccessResponse(CustomPackage, {
     description: '获取自定义学习包详情成功'
   })
+  @OptionalAuth()
   @NoCache()
   async findOne(@Query('id') id: string, @Request() req: any) {
     return await this.customPackagesService.findOne(id, req.user.id);
@@ -110,6 +113,7 @@ export class CustomPackagesController {
   @ApiPaginationResponse(CustomWord, {
     description: '获取学习包中的单词列表成功'
   })
+  @OptionalAuth()
   async findWordsByPackage(
     @Query() queryDto: QueryCustomWordDto,
     @Request() req: any
