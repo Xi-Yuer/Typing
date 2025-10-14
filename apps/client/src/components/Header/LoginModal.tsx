@@ -352,6 +352,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
         {/* GitHub登录按钮 */}
         <Link
           href={process.env.NEXT_PUBLIC_GITHUB_SSO_URL as string}
+          prefetch={false}
           className='w-full h-12 bg-gradient-to-r from-[#24292e] to-[#1a1e22] hover:from-[#1a1e22] hover:to-[#0d1117] !text-white font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500/50 focus:ring-offset-2 focus:ring-offset-transparent flex items-center justify-center gap-3 hover:shadow-xl hover:shadow-gray-900/30 hover:scale-[1.02] active:scale-[0.98] relative z-10 group overflow-hidden'>
           <div className='absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300'></div>
           <GithubOutlined className='text-xl relative z-10' />
