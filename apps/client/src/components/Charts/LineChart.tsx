@@ -111,17 +111,17 @@ export const LineChart: React.FC<LineChartProps> = ({
             colorStops: [
               {
                 offset: 0,
-                color: '#7d26cd'
+                color: '#fa8c16'
               },
               {
                 offset: 1,
-                color: '#8b5cf6'
+                color: '#ffa940'
               }
             ]
           }
         },
         itemStyle: {
-          color: '#7d26cd',
+          color: '#fa8c16',
           borderColor: '#ffffff',
           borderWidth: 2
         },
@@ -146,7 +146,7 @@ export const LineChart: React.FC<LineChartProps> = ({
         },
         emphasis: {
           itemStyle: {
-            color: '#8b5cf6',
+            color: '#ffa940',
             shadowBlur: 10,
             shadowColor: 'rgba(125, 38, 205, 0.5)'
           }

@@ -111,20 +111,20 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
               relative p-4 rounded-lg border cursor-pointer transition-all duration-300 backdrop-blur-sm
               ${
                 currentMode === mode.key
-                  ? 'border-purple-500/50 bg-purple-500/10 shadow-lg shadow-purple-500/20'
-                  : 'border-white/10 bg-white/5 hover:border-purple-400/30 hover:bg-white/10'
+                  ? 'border-orange-500/50 bg-orange-500/10'
+                  : 'border-white/10 bg-white/5 hover:border-orange-400/30 hover:bg-white/10'
               }
               ${mode.disabled ? '!cursor-not-allowed opacity-50' : ''}
             `}>
             {/* 选中状态指示器 */}
             {currentMode === mode.key && (
-              <div className='absolute top-3 right-3 w-3 h-3 bg-purple-500 rounded-full shadow-lg shadow-purple-500/50'></div>
+              <div className='absolute top-3 right-3 w-3 h-3 bg-orange-500 rounded-full shadow-lg shadow-orange-500/50'></div>
             )}
 
             {/* 模式标题 */}
             <h3
               className={`text-base font-medium mb-2 transition-colors duration-300 ${
-                currentMode === mode.key ? 'text-purple-300' : 'text-white'
+                currentMode === mode.key ? 'text-orange-300' : 'text-white'
               }`}>
               {mode.title}
               {mode.disabled && (
@@ -136,7 +136,7 @@ const GameModeModal: React.FC<GameModeModalProps> = ({
             <p
               className={`text-sm leading-relaxed transition-colors duration-300 ${
                 currentMode === mode.key
-                  ? 'text-purple-200/80'
+                  ? 'text-orange-200/80'
                   : 'text-gray-400'
               }`}>
               {mode.description}

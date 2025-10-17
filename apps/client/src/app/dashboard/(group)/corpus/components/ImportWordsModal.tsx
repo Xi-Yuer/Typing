@@ -319,7 +319,7 @@ export default function ImportWordsModal({
     <Modal
       title={
         <div className='flex items-center space-x-3'>
-          <div className='w-8 h-8 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 flex items-center justify-center'>
+          <div className='w-8 h-8 rounded-full bg-gradient-to-r from-blue-500/20 to-orange-500/20 flex items-center justify-center'>
             <Database className='w-4 h-4 text-blue-400' />
           </div>
           <span className='text-white font-semibold text-lg'>数据导入向导</span>

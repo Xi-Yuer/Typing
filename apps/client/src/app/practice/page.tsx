@@ -245,7 +245,7 @@ function PracticePageContent() {
         {/* 进度指示器 */}
         <div className='fixed top-0 left-0 w-full h-1 bg-gray-700'>
           <div
-            className='bg-purple-500 h-1 rounded-full transition-all duration-300'
+            className='bg-orange-500 h-1 rounded-full transition-all duration-300'
             style={{
               width: `${((globalWordIndex + currentWordIndex + 1) / total) * 100}%`
             }}
@@ -268,7 +268,7 @@ function PracticePageContent() {
                 type='text'
                 icon={<IconFont type='icon-game-mode' size={24} />}
                 onClick={openModeModal}
-                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+                className='text-gray-400 hover:text-orange-300 border-none shadow-none'
               />
             </Tooltip>
             {/* 返回按钮 */}
@@ -277,7 +277,7 @@ function PracticePageContent() {
                 type='text'
                 icon={<IconFont type='icon-back' size={22} />}
                 onClick={() => router.back()}
-                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+                className='text-gray-400 hover:text-orange-300 border-none shadow-none'
               />
             </Tooltip>
             {/* 刷新按钮 */}
@@ -286,7 +286,7 @@ function PracticePageContent() {
                 type='text'
                 icon={<IconFont type='icon-refresh' size={22} />}
                 onClick={() => router.refresh()}
-                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+                className='text-gray-400 hover:text-orange-300 border-none shadow-none'
               />
             </Tooltip>
             {/* 错误上报按钮 */}
@@ -310,7 +310,7 @@ function PracticePageContent() {
                   )
                 }
                 onClick={toggleFullscreen}
-                className='text-gray-400 hover:text-purple-300 border-none shadow-none'
+                className='text-gray-400 hover:text-orange-300 border-none shadow-none'
               />
             </Tooltip>
           </div>

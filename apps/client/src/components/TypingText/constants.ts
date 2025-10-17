@@ -41,7 +41,7 @@ export const STYLES = {
   HINT_TIMEOUT: 1500,
   COLORS: {
     ERROR: 'text-red-500',
-    NORMAL: 'text-purple-500',
+    NORMAL: 'text-orange-600',
     HINT: 'text-gray-400 opacity-50'
   },
   BORDER: {

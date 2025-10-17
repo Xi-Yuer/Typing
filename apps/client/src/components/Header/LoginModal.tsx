@@ -182,7 +182,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
         <div className='absolute inset-0 bg-gradient-to-br from-slate-800/20 via-blue-900/10 to-indigo-900/20 backdrop-blur-sm pointer-events-none'></div>
 
         <div className='text-center mb-8 relative z-10'>
-          <h2 className='text-3xl font-bold bg-gradient-to-r from-white via-purple-100 to-white bg-clip-text text-transparent mb-3'>
+          <h2 className='text-3xl font-bold bg-gradient-to-r from-white via-orange-100 to-white bg-clip-text text-transparent mb-3'>
             {isRegisterMode ? '创建账户' : '欢迎回来'}
           </h2>
           <p className='text-white/60 text-lg'>
@@ -206,13 +206,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     disabled={loading}
                     value={registerData.name}
                     onChange={e => handleInputChange('name', e.target.value)}
-                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
+                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       registerErrors.email
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
                     } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
-                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
+                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-orange-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
                 {registerErrors.name && (
                   <p className='text-red-300 text-sm mt-2 ml-2 animate-pulse'>
@@ -233,13 +233,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     disabled={loading}
                     value={registerData.email}
                     onChange={e => handleInputChange('email', e.target.value)}
-                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
+                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       registerErrors.email
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
                     } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
-                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
+                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-orange-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
                 {registerErrors.email && (
                   <p className='text-red-300 text-sm mt-2 ml-2 animate-pulse'>
@@ -262,13 +262,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     onChange={e =>
                       handleInputChange('password', e.target.value)
                     }
-                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
+                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       registerErrors.password
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
                     } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
-                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
+                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-orange-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
                 {registerErrors.password && (
                   <p className='text-red-300 text-sm mt-2 ml-2 animate-pulse'>
@@ -300,13 +300,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     disabled={loading}
                     value={loginData.email}
                     onChange={e => handleInputChange('email', e.target.value)}
-                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
+                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       loginErrors.email
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
                     } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
-                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
+                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-orange-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
                 {loginErrors.email && (
                   <p className='text-red-300 text-sm mt-2 ml-2 animate-pulse'>
@@ -329,13 +329,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
                     onChange={e =>
                       handleInputChange('password', e.target.value)
                     }
-                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
+                    className={`w-full h-12 pl-12 pr-4 bg-white/5 border rounded-2xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:border-orange-400/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/8 ${
                       loginErrors.password
                         ? 'border-red-400/60 bg-red-500/10'
                         : 'border-white/10'
                     } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
-                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
+                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-orange-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none'></div>
                 </div>
                 {loginErrors.password && (
                   <p className='text-red-300 text-sm mt-2 ml-2 animate-pulse'>
@@ -349,10 +349,10 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
           <button
             type='submit'
             disabled={loading}
-            className={`w-full h-12 mt-6 bg-gradient-to-r from-[#8b5cf6] via-[#a855f7] to-[#c084fc] text-white font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group ${
+            className={`w-full h-12 mt-6 bg-gradient-to-r from-orange-600 via-orange-700 to-orange-600 text-white font-semibold rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-400/50 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group ${
               loading
                 ? 'opacity-70 cursor-not-allowed'
-                : 'hover:shadow-2xl hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98]'
+                : 'hover:shadow-2xl hover:shadow-orange-500/40 hover:scale-[1.02] active:scale-[0.98]'
             }`}>
             <div
               className={`absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transition-opacity duration-300 ${
@@ -405,8 +405,8 @@ const LoginModal = ({ isOpen, onClose, onLogin }: LoginModalProps) => {
             <span
               className={`ml-2 font-medium transition-all duration-200 hover:underline underline-offset-2 ${
                 loading
-                  ? 'text-purple-400/50 cursor-not-allowed'
-                  : 'text-purple-400 cursor-pointer hover:text-purple-300'
+                  ? 'text-orange-400/50 cursor-not-allowed'
+                  : 'text-orange-400 cursor-pointer hover:text-orange-300'
               }`}
               onClick={() => {
                 if (!loading) {

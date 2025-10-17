@@ -6,7 +6,7 @@
 }
 .active-link {
   position: relative;
-  color: inherit;
+  color: rgb(255, 94, 0);
   font-weight: 400;
   &::after {
     content: '';

@@ -133,7 +133,7 @@ export default function ShortcutSettings({
       </Row>
 
       <Divider
-        className='border-purple-500 my-6'
+        className='border-orange-500 my-6'
         style={{ borderColor: '#732cc550' }}
       />
 

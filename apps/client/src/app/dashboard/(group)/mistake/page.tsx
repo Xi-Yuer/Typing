@@ -59,7 +59,7 @@ export default function Mistake() {
             <p className='text-gray-300 text-sm mb-4 line-clamp-2'>
               {category.description}
             </p>
-            <span className='flex items-center text-purple-400'>
+            <span className='flex items-center text-orange-400'>
               <span className='text-sm'>开始练习</span>
               <svg
                 className='w-4 h-4 ml-2'
@@ -78,7 +78,7 @@ export default function Mistake() {
         );
       })}
       {categories?.length === 0 && (
-        <div className='text-purple-400 text-lg w-full h-full flex items-center justify-center absolute top-0 left-0'>
+        <div className='text-orange-400 text-lg w-full h-full flex items-center justify-center absolute top-0 left-0'>
           {error ? error : '暂无错词记录'}
         </div>
       )}

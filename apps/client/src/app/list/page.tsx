@@ -95,7 +95,7 @@ export default function Page() {
         <div className='max-w-6xl mx-auto'>
           {loading ? (
             <div className='flex justify-center items-center h-64'>
-              <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500'></div>
+              <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500'></div>
             </div>
           ) : (
             <div className='space-y-12'>
@@ -110,7 +110,7 @@ export default function Page() {
                       key={language.id}
                       className={`p-4 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 text-center ${
                         selectedLanguageId === language.id
-                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25'
+                          ? 'bg-orange-600 text-white shadow-lg shadow-orange-500/25'
                           : 'bg-white/10 text-gray-300 hover:bg-white/20'
                       }`}
                       onClick={() => handleLanguageSelect(language)}>
@@ -139,7 +139,7 @@ export default function Page() {
                             setCurrent(category);
                             openModeModal();
                           }}
-                          className='bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer border border-white/10 relative'>
+                          className='bg-orange-500/5 backdrop-blur-sm rounded-lg p-6 hover:bg-orange-500/8 transition-all duration-300 hover:scale-[1.02] cursor-pointer border border-orange-500/10 hover:border-orange-400/20 relative'>
                           {/* 右上角难度标签 */}
                           <div
                             className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${
@@ -156,7 +156,7 @@ export default function Page() {
                           <p className='text-gray-300 text-sm mb-4'>
                             {category.description}
                           </p>
-                          <span className='flex items-center text-purple-400'>
+                          <span className='flex items-center text-orange-400'>
                             <span className='text-sm'>开始练习</span>
                             <svg
                               className='w-4 h-4 ml-2'

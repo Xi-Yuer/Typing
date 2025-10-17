@@ -79,7 +79,7 @@ const Sidebar = () => {
               onClick={() => setActiveItem(item.id)}
               className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
                 activeItem === item.id
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-orange-600 text-white'
                   : 'text-white hover:bg-slate-800'
               }`}>
               <IconFont type={item.icon} size={24} />
@@ -94,7 +94,7 @@ const Sidebar = () => {
           href='/dashboard/about'
           className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-white hover:bg-slate-800 transition-colors duration-200 ${
             activeItem === 'about'
-              ? 'bg-purple-600 text-white'
+              ? 'bg-orange-600 text-white'
               : 'text-white hover:bg-slate-800'
           }`}
           onClick={() => setActiveItem('about')}>

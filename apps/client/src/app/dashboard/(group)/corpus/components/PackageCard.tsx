@@ -61,7 +61,7 @@ export default function PackageCard({
         {pkg.description}
       </p>
 
-      <span className='flex items-center text-purple-400'>
+      <span className='flex items-center text-orange-400'>
         <span className='text-sm'>开始练习</span>
         <svg
           className='w-4 h-4 ml-2'

@@ -23,7 +23,7 @@ export default function ActionButtons({
           onClick={onSave}
           loading={isLoading}
           size='large'
-          className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-0 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 h-12 px-8 text-lg font-medium'>
+          className='bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 border-0 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300 h-12 px-8 text-lg font-medium'>
           保存设置
         </Button>
       </Col>

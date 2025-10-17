@@ -12,7 +12,7 @@ export function Welcome() {
           '游戏化闯关，快速掌握核心词汇',
           '告别枯燥死记硬背，高效提升的乐趣！'
         ]}
-        mainClassName='px-2 text-4xl sm:px-2 md:px-3 bg-[#4c29f5] text-white font-bold overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg'
+        mainClassName='px-2 text-4xl sm:px-2 md:px-3 bg-orange-600 text-white font-bold overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg'
         staggerFrom={'last'}
         initial={{ y: '100%' }}
         animate={{ y: 0 }}

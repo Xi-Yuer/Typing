@@ -5,6 +5,7 @@ import { GameModeProvider } from '@/contexts/GameModeContext';
 import Footer from '@/components/Footer/Footer';
 import '@ant-design/v5-patch-for-react-19';
 import '@/assets/styles/global.css';
+import { getAntdTheme } from '@typing/theme';
 
 const freaoka = localFont({
   src: '../assets/font/freaoka.ttf',
@@ -24,69 +25,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`bg-slate-950 overflow-x-hidden ${freaoka.className}`}>
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#7d26cd',
-              colorText: '#fff',
-              colorBgContainer: '#8c21f120',
-              colorBgElevated: '#1e273a',
-              colorError: '#7d26cd',
-              colorErrorText: '#7d26cd',
-              colorSuccess: '#7d26cd',
-              colorBorderSecondary: '8c21f120'
-            },
-            components: {
-              Button: {
-                colorBorder: '#4b5563',
-                primaryShadow: 'none'
-              },
-              Input: {
-                colorBorder: '#4b5563',
-                activeBorderColor: '#4b5563',
-                activeShadow: 'none'
-              },
-              Segmented: {
-                colorBorder: '#4b5563',
-                colorBorderSecondary: '#4b5563',
-                colorBgContainer: '#141414',
-                itemSelectedBg: '#7d26cd',
-                itemSelectedColor: '#fff',
-                itemColor: '#fff'
-              },
-              Select: {
-                colorBorder: 'transparent',
-                activeBorderColor: 'transparent',
-                activeOutlineColor: 'transparent',
-                colorBgContainer: '#1e293b',
-                colorBgElevated: '#1e293b',
-                colorText: '#e2e8f0',
-                colorTextPlaceholder: '#94a3b8',
-                colorTextQuaternary: '#94a3b8',
-                colorBgTextActive: '#7d26cd',
-                colorBgTextHover: '#334155',
-                optionSelectedBg: '#7d26cd',
-                optionActiveBg: '#334155'
-              },
-              Message: {
-                colorInfo: '#7d26cd',
-                colorInfoText: '#7d26cd',
-                colorSuccess: '#7d26cd',
-                colorSuccessText: '#7d26cd',
-                colorError: '#7d26cd',
-                colorErrorText: '#7d26cd',
-                colorWarning: '#7d26cd',
-                colorWarningText: '#7d26cd'
-              },
-              Slider: {
-                railBg: '#8c21f150',
-                railHoverBg: '#8c21f150',
-                dotBorderColor: '#8c21f1',
-                handleColor: '#8c21f1',
-                trackBg: '#8c21f1'
-              }
-            }
-          }}>
+        <ConfigProvider theme={getAntdTheme()}>
           <div className='min-h-screen flex flex-col'>
             <GameModeProvider>{children}</GameModeProvider>
             <Footer />

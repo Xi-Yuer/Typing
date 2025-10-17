@@ -57,7 +57,7 @@ export const INITAIL_WORD = {
   meaning: '不断前行，不断成长',
   meaningShort: '不断前行，不断成长',
   example: "I'm keep walking, keep growing",
-  audioUrl: `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent('Keep walking, keep growing')}&type=2`,
+  audioUrl: `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent('Keep walking, keep growing')}&type=1`,
   imageUrl: '',
   createdAt: '2025-08-15T11:57:54.994Z',
   updatedAt: '2025-08-22T08:23:21.063Z',

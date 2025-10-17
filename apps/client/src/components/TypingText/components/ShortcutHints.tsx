@@ -101,7 +101,7 @@ export const ShortcutHints: React.FC<ShortcutHintsProps> = ({
     return (
       <div
         key={index}
-        className='flex items-center space-x-1 cursor-pointer hover:bg-fuchsia-500/20 rounded-md py-4 px-2 transition-all duration-300'
+        className='flex items-center space-x-1 cursor-pointer hover:bg-orange-500/20 rounded-md py-4 px-2 transition-all duration-300'
         onClick={() => {
           shortcut.onClick?.();
           focusInput?.();
@@ -109,9 +109,9 @@ export const ShortcutHints: React.FC<ShortcutHintsProps> = ({
         {keys.map((key, keyIndex) => (
           <div key={keyIndex}>
             {keyIndex > 0 && (
-              <span className='text-xs text-fuchsia-300'>+</span>
+              <span className='text-xs text-orange-500'>+&nbsp;</span>
             )}
-            <kbd className='px-2 py-1 bg-fuchsia-500/20 border border-fuchsia-400/30 rounded text-xs font-mono text-fuchsia-300'>
+            <kbd className='px-2 py-1 bg-orange-600/20 border border-orange-400/30 rounded text-xs font-mono text-white'>
               {key}
             </kbd>
           </div>

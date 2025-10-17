@@ -113,11 +113,11 @@ export const BarChart: React.FC<BarChartProps> = ({
             colorStops: [
               {
                 offset: 0,
-                color: '#7d26cd'
+                color: '#fa8c16'
               },
               {
                 offset: 1,
-                color: '#8b5cf6'
+                color: '#ffa940'
               }
             ]
           }
@@ -133,11 +133,11 @@ export const BarChart: React.FC<BarChartProps> = ({
               colorStops: [
                 {
                   offset: 0,
-                  color: '#8b5cf6'
+                  color: '#ffa940'
                 },
                 {
                   offset: 1,
-                  color: '#a855f7'
+                  color: '#ffb366'
                 }
               ]
             },

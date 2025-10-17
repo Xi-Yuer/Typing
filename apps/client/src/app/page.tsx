@@ -138,7 +138,7 @@ export default function Page() {
             </div>
           )}
           {showTyping && (
-            <div className='text-purple-400 absolute bottom-20 cursor-pointer rotate-90'>
+            <div className='text-orange-400 absolute bottom-20 cursor-pointer rotate-90'>
               <DoubleRightOutlined className='text-3xl animate-pulse' />
             </div>
           )}

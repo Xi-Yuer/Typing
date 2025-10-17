@@ -35,7 +35,7 @@ const GitHubStarButton = ({
   return (
     <Link
       target='_blank'
-      className='flex items-center py-1 sm:py-1.5 lg:py-1.5 px-2 sm:px-3 lg:px-3.5 xl:px-4 rounded-4xl backdrop-blur-2xl text-white gap-1 sm:gap-2 lg:gap-2.5 border border-white/10 bg-gradient-to-r from-[#7c3aed] to-[#bb5dee] whitespace-nowrap'
+      className='flex items-center py-1 sm:py-1.5 lg:py-1.5 px-2 sm:px-3 lg:px-3.5 xl:px-4 rounded-4xl backdrop-blur-2xl text-white gap-1 sm:gap-2 lg:gap-2.5 border border-white/10 bg-gradient-to-r from-orange-600 to-orange-700 whitespace-nowrap'
       style={{
         animationDuration: '6s'
       }}

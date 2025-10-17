@@ -63,9 +63,9 @@ export default function AudioSettings({
             }
             name='voiceType'>
             <Select
-              className='bg-slate-800/50 border-slate-600 hover:border-purple-500 transition-colors'
+              className='bg-slate-800/50 border-slate-600 hover:border-orange-500 transition-colors'
               placeholder='选择发音音色'
-              suffixIcon={<SoundOutlined className='text-purple-400' />}
+              suffixIcon={<SoundOutlined className='text-orange-400' />}
               size='large'
               onChange={value => {
                 playWordAudio(INITAIL_WORD, {
@@ -94,7 +94,7 @@ export default function AudioSettings({
           <Form.Item
             label={
               <Space>
-                <AudioOutlined className='text-purple-400' />
+                <AudioOutlined className='text-orange-400' />
                 <span className='text-gray-200 font-medium'>发音音量</span>
               </Space>
             }
@@ -146,7 +146,7 @@ export default function AudioSettings({
           <Form.Item
             label={
               <Space>
-                <KeyOutlined className='text-purple-400' />
+                <KeyOutlined className='text-orange-400' />
                 <span className='text-gray-200 font-medium'>键盘音效音量</span>
               </Space>
             }

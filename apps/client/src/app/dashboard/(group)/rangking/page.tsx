@@ -50,7 +50,7 @@ export default function Rangking() {
 
     return (
       <div
-        className={`flex items-center justify-between p-4 rounded-lg ${isFirst ? 'text-yellow-400' : isSecond ? 'text-gray-400' : isThird ? 'text-[#c18240]' : 'text-purple-400'}`}>
+        className={`flex items-center justify-between p-4 rounded-lg ${isFirst ? 'text-yellow-400' : isSecond ? 'text-gray-400' : isThird ? 'text-[#c18240]' : 'text-orange-400'}`}>
         <div className='flex items-center space-x-4'>
           {/* 排名图标 */}
           <div>{getRankIcon(item.rank)}</div>
@@ -102,7 +102,7 @@ export default function Rangking() {
       {/* 加载状态 */}
       {loading && (
         <div className='flex justify-center items-center py-12'>
-          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500'></div>
+          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500'></div>
           <span className='ml-2 text-gray-300'>加载中...</span>
         </div>
       )}

@@ -73,7 +73,7 @@ const Footer: React.FC = () => {
                   href='https://keycikeyci.com'
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='text-purple-400 hover:text-purple-300 transition-colors'>
+                  className='text-orange-400 hover:text-orange-300 transition-colors'>
                   keycikeyci.com
                 </a>
               </div>

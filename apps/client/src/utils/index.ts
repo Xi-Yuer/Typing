@@ -43,18 +43,18 @@ export const getWordsClassNames = (word: WordState): string => {
     return 'text-red-500 border-b-red-500 animate-pulse';
   }
 
-  // 当前激活的单词显示紫色，移除focusing条件确保始终显示
+  // 当前激活的单词显示橙色，移除focusing条件确保始终显示
   if (word.isActive) {
-    return 'text-fuchsia-500 border-b-fuchsia-500';
+    return 'text-orange-500 border-b-orange-600';
   }
 
-  // 已完成的单词：如果正确完成则保持紫色，否则显示灰色
+  // 已完成的单词：如果正确完成则保持橙色，否则显示灰色
   if (word.completed) {
     // 检查是否输入正确（用户输入长度等于单词长度且没有错误）
     const isCorrectlyCompleted =
       word.userInput.length === word.text.length && !word.incorrect;
     if (isCorrectlyCompleted) {
-      return 'text-fuchsia-500 border-b-fuchsia-500';
+      return 'text-orange-500 border-b-orange-600';
     } else {
       return 'text-gray-300 border-b-gray-300';
     }
@@ -124,39 +124,39 @@ export const getDifficultyStyle = (difficulty: string | number) => {
   switch (difficultyStr) {
     case '1':
       return {
-        bg: 'bg-green-500/20',
-        text: 'text-green-400',
-        border: 'border-green-500/30',
+        bg: 'bg-orange-500/30',
+        text: 'text-orange-300',
+        border: 'border-orange-400/50',
         label: '简单'
       };
     case '2':
       return {
-        bg: 'bg-blue-500/20',
-        text: 'text-blue-400',
-        border: 'border-blue-500/30',
+        bg: 'bg-orange-400/30',
+        text: 'text-orange-200',
+        border: 'border-orange-300/50',
         label: '普通'
       };
     case '3':
     case 'medium':
     case '中等':
       return {
-        bg: 'bg-yellow-500/20',
-        text: 'text-yellow-400',
-        border: 'border-yellow-500/30',
+        bg: 'bg-orange-600/30',
+        text: 'text-orange-300',
+        border: 'border-orange-500/50',
         label: '中等'
       };
     case '4':
       return {
-        bg: 'bg-orange-500/20',
+        bg: 'bg-orange-700/30',
         text: 'text-orange-400',
-        border: 'border-orange-500/30',
+        border: 'border-orange-600/50',
         label: '困难'
       };
     case '5':
       return {
-        bg: 'bg-red-500/20',
-        text: 'text-red-400',
-        border: 'border-red-500/30',
+        bg: 'bg-orange-800/30',
+        text: 'text-orange-500',
+        border: 'border-orange-700/50',
         label: '极难'
       };
     default:

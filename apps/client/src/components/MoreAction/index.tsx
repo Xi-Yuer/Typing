@@ -23,9 +23,9 @@ export default function MoreAction() {
 
         {/* Features Grid */}
         <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16'>
-          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
-            <div className='w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4'>
-              <Gamepad2 className='w-6 h-6 text-blue-400' />
+          <div className='bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-orange-500/20 hover:shadow-md hover:border-orange-400/30 transition-all'>
+            <div className='w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <Gamepad2 className='w-6 h-6 text-orange-400' />
             </div>
             <h3 className='text-lg font-semibold text-white mb-2'>
               游戏化学习
@@ -35,9 +35,9 @@ export default function MoreAction() {
             </p>
           </div>
 
-          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
-            <div className='w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4'>
-              <Puzzle className='w-6 h-6 text-green-400' />
+          <div className='bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-orange-500/20 hover:shadow-md hover:border-orange-400/30 transition-all'>
+            <div className='w-12 h-12 bg-orange-400/20 rounded-lg flex items-center justify-center mb-4'>
+              <Puzzle className='w-6 h-6 text-orange-300' />
             </div>
             <h3 className='text-lg font-semibold text-white mb-2'>长句拆解</h3>
             <p className='text-gray-300 text-sm'>
@@ -45,9 +45,9 @@ export default function MoreAction() {
             </p>
           </div>
 
-          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
-            <div className='w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4'>
-              <RotateCcw className='w-6 h-6 text-purple-400' />
+          <div className='bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-orange-500/20 hover:shadow-md hover:border-orange-400/30 transition-all'>
+            <div className='w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4'>
+              <RotateCcw className='w-6 h-6 text-orange-400' />
             </div>
             <h3 className='text-lg font-semibold text-white mb-2'>科学重复</h3>
             <p className='text-gray-300 text-sm'>
@@ -55,7 +55,7 @@ export default function MoreAction() {
             </p>
           </div>
 
-          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
+          <div className='bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-orange-500/20 hover:shadow-md hover:border-orange-400/30 transition-all'>
             <div className='w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center mb-4'>
               <Mic className='w-6 h-6 text-orange-400' />
             </div>
@@ -65,9 +65,9 @@ export default function MoreAction() {
             </p>
           </div>
 
-          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
-            <div className='w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center mb-4'>
-              <BookOpen className='w-6 h-6 text-red-400' />
+          <div className='bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-orange-500/20 hover:shadow-md hover:border-orange-400/30 transition-all'>
+            <div className='w-12 h-12 bg-orange-600/20 rounded-lg flex items-center justify-center mb-4'>
+              <BookOpen className='w-6 h-6 text-orange-500' />
             </div>
             <h3 className='text-lg font-semibold text-white mb-2'>
               多场景学习
@@ -77,9 +77,9 @@ export default function MoreAction() {
             </p>
           </div>
 
-          <div className='bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-700 hover:shadow-md transition-shadow'>
-            <div className='w-12 h-12 bg-indigo-500/20 rounded-lg flex items-center justify-center mb-4'>
-              <Zap className='w-6 h-6 text-indigo-400' />
+          <div className='bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-orange-500/20 hover:shadow-md hover:border-orange-400/30 transition-all'>
+            <div className='w-12 h-12 bg-orange-700/20 rounded-lg flex items-center justify-center mb-4'>
+              <Zap className='w-6 h-6 text-orange-600' />
             </div>
             <h3 className='text-lg font-semibold text-white mb-2'>快捷操作</h3>
             <p className='text-gray-300 text-sm'>
@@ -89,7 +89,7 @@ export default function MoreAction() {
         </div>
 
         {/* Quick Start */}
-        <div className='bg-slate-800 rounded-2xl p-8'>
+        <div className='bg-slate-800/80 backdrop-blur-sm rounded-2xl p-8 border border-orange-500/20'>
           <h2 className='text-2xl font-bold text-white mb-6 text-center'>
             快速开始
           </h2>
@@ -100,25 +100,25 @@ export default function MoreAction() {
               </h3>
               <div className='space-y-3'>
                 <div className='flex items-start space-x-3'>
-                  <Dot className='w-6 h-6 text-blue-400' />
+                  <Dot className='w-6 h-6 text-orange-400' />
                   <p className='text-gray-300 text-sm'>
                     选择学习目标（中小学/四六级/考研雅思/商务英语）
                   </p>
                 </div>
                 <div className='flex items-start space-x-3'>
-                  <Dot className='w-6 h-6 text-blue-400' />
+                  <Dot className='w-6 h-6 text-orange-400' />
                   <p className='text-gray-300 text-sm'>
                     通过游戏化关卡挑战掌握核心词汇
                   </p>
                 </div>
                 <div className='flex items-start space-x-3'>
-                  <Dot className='w-6 h-6 text-blue-400' />
+                  <Dot className='w-6 h-6 text-orange-400' />
                   <p className='text-gray-300 text-sm'>
                     利用长句拆解功能理解复杂语法
                   </p>
                 </div>
                 <div className='flex items-start space-x-3'>
-                  <Dot className='w-6 h-6 text-blue-400' />
+                  <Dot className='w-6 h-6 text-orange-400' />
                   <p className='text-gray-300 text-sm'>
                     重复练习强化记忆，持续提升
                   </p>
