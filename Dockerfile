@@ -18,6 +18,7 @@ COPY apps/client/package.json ./apps/client/
 COPY apps/admin/package.json ./apps/admin/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
+COPY packages/theme/package.json ./packages/theme/
 
 # 安装依赖（包括开发依赖，用于构建）
 RUN --mount=type=cache,target=/app/.pnpm-store \
@@ -68,6 +69,7 @@ COPY apps/api/package.json ./apps/api/
 COPY apps/client/package.json ./apps/client/
 COPY packages/common/package.json ./packages/common/
 COPY packages/utils/package.json ./packages/utils/
+COPY packages/theme/package.json ./packages/theme/
 
 # 安装生产依赖（仅运行时需要的依赖）
 RUN --mount=type=cache,target=/app/.pnpm-store \
@@ -79,6 +81,7 @@ COPY --from=builder /app/apps/client/.next ./apps/client/.next
 COPY --from=builder /app/apps/client/public ./apps/client/public
 COPY --from=builder /app/packages/common/dist ./packages/common/dist
 COPY --from=builder /app/packages/utils/dist ./packages/utils/dist
+COPY --from=builder /app/packages/theme/dist ./packages/theme/dist
 
 # 复制必要的配置文件
 COPY apps/api/nest-cli.json ./apps/api/

@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "rollup -c -w",
+    "lint": "echo 'No linting configured for theme package'"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.5",

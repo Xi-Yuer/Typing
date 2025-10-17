@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "packages:build": "pnpm --filter common build && pnpm --filter utils build",
-    "packages:dev": "pnpm --parallel --filter common --filter utils run dev",
+    "packages:build": "pnpm --filter common build && pnpm --filter utils build && pnpm --filter theme build",
+    "packages:dev": "pnpm --parallel --filter common --filter utils --filter theme run dev",
     "api:dev": "pnpm --filter api start:dev",
     "api:build": "pnpm --filter api build",
     "api:start": "pnpm --filter api start",
@@ -22,7 +22,7 @@
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "lint:apps": "pnpm --filter api lint && pnpm --filter client lint",
-    "lint:packages": "pnpm --filter common lint && pnpm --filter utils lint"
+    "lint:packages": "pnpm --filter common lint && pnpm --filter utils lint && pnpm --filter theme lint"
   },
   "keywords": [],
   "author": "",
