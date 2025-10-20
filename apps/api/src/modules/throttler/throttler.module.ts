@@ -6,9 +6,22 @@ import { Redis } from 'ioredis';
   imports: [
     NestThrottlerModule.forRootAsync({
       useFactory: () => {
-        const redis = new Redis(
-          process.env.REDIS_URL || 'redis://localhost:6379'
-        );
+        const host = process.env.REDIS_HOST || 'localhost';
+        const port = process.env.REDIS_PORT || '6379';
+        let redisUrl = process.env.REDIS_URL || `redis://${host}:${port}`;
+        const password = process.env.REDIS_PASSWORD;
+        if (password) {
+          const hasAuth = /^redis(s)?:\/\/[^@]+@/.test(redisUrl);
+          if (!hasAuth) {
+            const scheme = redisUrl.startsWith('rediss://')
+              ? 'rediss://'
+              : 'redis://';
+            const rest = redisUrl.replace(/^redis(s)?:\/\//, '');
+            redisUrl = `${scheme}:${password}@${rest}`;
+          }
+        }
+
+        const redis = new Redis(redisUrl);
 
         return {
           throttlers: [

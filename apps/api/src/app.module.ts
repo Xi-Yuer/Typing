@@ -39,8 +39,25 @@ import { CustomThrottlerGuard } from './common/guards/throttle.guard';
     CustomPackagesModule,
     CacheModule.registerAsync({
       useFactory: () => {
+        const host = process.env.REDIS_HOST || 'localhost';
+        const port = process.env.REDIS_PORT || '6379';
+        let redisUrl = process.env.REDIS_URL || `redis://${host}:${port}`;
+
+        // 如果提供了密码但 URL 中未包含鉴权信息，则注入密码
+        const password = process.env.REDIS_PASSWORD;
+        if (password) {
+          const hasAuth = /^redis(s)?:\/\/[^@]+@/.test(redisUrl);
+          if (!hasAuth) {
+            const scheme = redisUrl.startsWith('rediss://')
+              ? 'rediss://'
+              : 'redis://';
+            const rest = redisUrl.replace(/^redis(s)?:\/\//, '');
+            redisUrl = `${scheme}:${password}@${rest}`;
+          }
+        }
+
         return {
-          stores: [createKeyv(process.env.REDIS_URL)],
+          stores: [createKeyv(redisUrl)],
           ttl: 12 * 60 * 1000 // 12分钟
         };
       },

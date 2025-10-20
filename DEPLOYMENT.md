@@ -27,6 +27,7 @@ cd Typing
 **2.1 准备外部 MySQL 和 Redis 服务**
 
 确保您有可访问的 MySQL 和 Redis 服务器：
+
 - MySQL 服务器：版本 8.0+，端口 3306
 - Redis 服务器：版本 6.0+，端口 6379
 
@@ -343,10 +344,10 @@ redis-cli -h 192.168.1.101 -p 6379 FLUSHALL
    ```bash
    # 检查外部 MySQL 连接
    nc -z 192.168.1.100 3306
-   
+
    # 检查外部 Redis 连接
    nc -z 192.168.1.101 6379
-   
+
    # 检查环境变量配置
    cat .env | grep -E "(DB_HOST|REDIS_HOST)"
    ```
@@ -356,7 +357,7 @@ redis-cli -h 192.168.1.101 -p 6379 FLUSHALL
    ```bash
    # 检查 MySQL 服务状态
    mysql -h 192.168.1.100 -u typing_user -p -e "SELECT 1;"
-   
+
    # 检查用户权限
    mysql -h 192.168.1.100 -u root -p -e "SHOW GRANTS FOR 'typing_user'@'%';"
    ```
@@ -366,7 +367,7 @@ redis-cli -h 192.168.1.101 -p 6379 FLUSHALL
    ```bash
    # 检查 Redis 服务状态
    redis-cli -h 192.168.1.101 -p 6379 ping
-   
+
    # 检查 Redis 配置
    redis-cli -h 192.168.1.101 -p 6379 info server
    ```

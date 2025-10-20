@@ -8,7 +8,10 @@ import { RedisService } from './redis.service';
   imports: [
     RedisModule.forRoot({
       type: 'single',
-      url: process.env.REDIS_URL
+      url: process.env.REDIS_URL,
+      options: {
+        password: process.env.REDIS_PASSWORD
+      }
     })
   ],
   controllers: [],
