@@ -36,15 +36,50 @@ check_dependencies() {
     print_message $GREEN "✓ 依赖检查通过"
 }
 
-# 检查环境变量文件
-check_env_file() {
+# 检查外部服务连接
+check_external_services() {
+    print_message $BLUE "检查外部服务连接..."
+    
+    # 检查 .env 文件是否存在
     if [ ! -f ".env" ]; then
-        print_message $YELLOW "警告: .env 文件不存在，将使用默认配置"
-        print_message $YELLOW "建议复制 .env.example 到 .env 并根据需要修改配置"
-        print_message $BLUE "执行: cp .env.example .env"
-    else
-        print_message $GREEN "✓ 找到环境配置文件"
+        print_message $YELLOW "警告: .env 文件不存在，请复制 env.example 到 .env 并配置外部服务"
+        print_message $BLUE "执行: cp env.example .env"
+        print_message $BLUE "然后编辑 .env 文件，设置 DB_HOST 和 REDIS_HOST"
+        return 1
     fi
+    
+    # 读取环境变量
+    source .env
+    
+    # 检查 MySQL 连接
+    if [ -n "$DB_HOST" ]; then
+        print_message $BLUE "检查 MySQL 连接 ($DB_HOST:$DB_PORT)..."
+        if nc -z "$DB_HOST" "${DB_PORT:-3306}" 2>/dev/null; then
+            print_message $GREEN "✓ MySQL 连接正常"
+        else
+            print_message $RED "✗ MySQL 连接失败，请检查 $DB_HOST:$DB_PORT 是否可访问"
+            return 1
+        fi
+    else
+        print_message $RED "错误: DB_HOST 未设置"
+        return 1
+    fi
+    
+    # 检查 Redis 连接
+    if [ -n "$REDIS_HOST" ]; then
+        print_message $BLUE "检查 Redis 连接 ($REDIS_HOST:$REDIS_PORT)..."
+        if nc -z "$REDIS_HOST" "${REDIS_PORT:-6379}" 2>/dev/null; then
+            print_message $GREEN "✓ Redis 连接正常"
+        else
+            print_message $RED "✗ Redis 连接失败，请检查 $REDIS_HOST:$REDIS_PORT 是否可访问"
+            return 1
+        fi
+    else
+        print_message $RED "错误: REDIS_HOST 未设置"
+        return 1
+    fi
+    
+    print_message $GREEN "✓ 外部服务检查通过"
 }
 
 # 拉取最新代码
@@ -61,7 +96,7 @@ start_services() {
     
     # 检查依赖
     check_dependencies
-    check_env_file
+    check_external_services
     check_prod_config
     pull_code
     # 设置nginx初始化脚本权限
@@ -156,6 +191,7 @@ show_logs() {
     local compose_file="docker-compose.prod.yml"
     
     print_message $BLUE "显示服务日志 (按 Ctrl+C 退出)..."
+    print_message $YELLOW "注意: MySQL 和 Redis 现在使用外部服务，不会显示容器日志"
     docker-compose -f $compose_file logs -f
 }
 
@@ -203,6 +239,11 @@ show_help() {
     echo "  clean    - 清理环境 (保留数据卷)"
     echo "  pull     - 拉取最新的预构建镜像"
     echo "  help     - 显示此帮助信息"
+    echo ""
+    echo "前置要求:"
+    echo "  1. 确保外部 MySQL 和 Redis 服务已启动并可访问"
+    echo "  2. 复制 env.example 到 .env 并配置外部服务地址"
+    echo "  3. 确保 Docker 和 Docker Compose 已安装"
     echo ""
     echo "示例:"
     echo "  ./deploy.sh start           # 启动应用"

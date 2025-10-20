@@ -36,9 +36,9 @@ ENV VITE_API_URL=/
 ENV FRONTEND_URL=${SERVER_URL}
 ENV NEXT_PUBLIC_GITHUB_SSO_URL=${SERVER_URL}/api/auth/github/callback
 ENV NEXT_PUBLIC_QQ_SSO_URL=${SERVER_URL}/api/auth/qq/callback
-ENV DB_HOST=mysql
+ENV DB_HOST=localhost
 ENV DB_PORT=3306
-ENV REDIS_HOST=redis
+ENV REDIS_HOST=localhost
 ENV REDIS_PORT=6379
 
 # 构建项目
@@ -92,18 +92,18 @@ COPY apps/client/alova.config.ts ./apps/client/
 RUN echo '#!/bin/sh' > /app/start.sh && \
     echo 'set -e' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
-    echo '# 等待数据库和 Redis 启动' >> /app/start.sh && \
-    echo 'echo "等待数据库连接..."' >> /app/start.sh && \
+    echo '# 等待外部数据库和 Redis 启动' >> /app/start.sh && \
+    echo 'echo "等待外部数据库连接..."' >> /app/start.sh && \
     echo 'while ! nc -z ${DB_HOST:-localhost} ${DB_PORT:-3306}; do' >> /app/start.sh && \
     echo '  sleep 1' >> /app/start.sh && \
     echo 'done' >> /app/start.sh && \
-    echo 'echo "数据库连接成功"' >> /app/start.sh && \
+    echo 'echo "外部数据库连接成功"' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
-    echo 'echo "等待 Redis 连接..."' >> /app/start.sh && \
+    echo 'echo "等待外部 Redis 连接..."' >> /app/start.sh && \
     echo 'while ! nc -z ${REDIS_HOST:-localhost} ${REDIS_PORT:-6379}; do' >> /app/start.sh && \
     echo '  sleep 1' >> /app/start.sh && \
     echo 'done' >> /app/start.sh && \
-    echo 'echo "Redis 连接成功"' >> /app/start.sh && \
+    echo 'echo "外部 Redis 连接成功"' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
     echo '# 启动后端服务' >> /app/start.sh && \
     echo 'echo "启动后端服务..."' >> /app/start.sh && \
@@ -142,12 +142,12 @@ ENV FRONTEND_PORT=3000
 ENV NEXT_PUBLIC_BASE_URL=/
 ENV VITE_API_URL=/
 ENV FRONTEND_URL=${SERVER_URL}
-ENV DB_HOST=mysql
+ENV DB_HOST=localhost
 ENV DB_NAME=typing_db
 ENV DB_USER=typing_user
 ENV DB_PASSWORD=typing_password
 ENV DB_PORT=3306
-ENV REDIS_HOST=redis
+ENV REDIS_HOST=localhost
 ENV REDIS_PORT=6379
 
 # 启动应用

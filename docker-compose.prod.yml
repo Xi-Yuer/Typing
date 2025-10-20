@@ -1,47 +1,4 @@
 services:
-  # MySQL 数据库
-  mysql:
-    image: mysql:8.0
-    container_name: typing-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - '3306:3306'
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - mysql_files:/var/lib/mysql-files
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-      - ./my.cnf:/etc/mysql/my.cnf:ro
-    networks:
-      - typing-network
-    healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
-      timeout: 20s
-      retries: 10
-      interval: 10s
-      start_period: 40s
-
-  # Redis 缓存
-  redis:
-    image: redis:7-alpine
-    container_name: typing-redis
-    restart: unless-stopped
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
-      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - typing-network
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      timeout: 3s
-      retries: 5
-      interval: 10s
-      start_period: 30s
 
   # Nginx 反向代理（包含admin静态资源）
   nginx:
@@ -76,18 +33,19 @@ services:
       BACKEND_PORT: 3001
       FRONTEND_PORT: 3000
       
-      # 数据库配置
-      DB_HOST: mysql
-      DB_PORT: 3306
+      # 数据库配置 (外部 MySQL)
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT:-3306}
       DB_NAME: ${DB_NAME:-typing_db}
       DB_USER: ${DB_USER:-typing_user}
       DB_PASSWORD: ${DB_PASSWORD}
       DATABASE_URL: ${DATABASE_URL}
       
-      # Redis 配置
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_URL: redis://redis:6379
+      # Redis 配置 (外部 Redis)
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      REDIS_URL: ${REDIS_URL}
       
       # JWT 配置
       JWT_SECRET: ${JWT_SECRET}
@@ -118,11 +76,8 @@ services:
       # 语音服务 (可选)
       YOUDAO_APP_KEY: ${YOUDAO_APP_KEY:-}
       YOUDAO_APP_SECRET: ${YOUDAO_APP_SECRET:-}
-    depends_on:
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+    # 注意：应用现在依赖外部 MySQL 和 Redis 服务
+    # 请确保外部服务已启动并可访问
     networks:
       - typing-network
     healthcheck:
@@ -132,13 +87,7 @@ services:
       interval: 30s
       start_period: 60s
 
-volumes:
-  mysql_data:
-    driver: local
-  mysql_files:
-    driver: local
-  redis_data:
-    driver: local
+# 注意：MySQL 和 Redis 现在使用外部服务，不再需要 Docker volumes
 
 networks:
   typing-network:

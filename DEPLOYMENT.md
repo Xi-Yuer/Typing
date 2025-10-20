@@ -1,13 +1,15 @@
 # 打字练习应用 Docker 部署指南
 
-本指南将帮助您使用 Docker 一键部署前后端项目，包含 MySQL 数据库和 Redis 缓存。
+本指南将帮助您使用 Docker 部署前后端项目，使用外部 MySQL 数据库和 Redis 缓存。
 
 ## 📋 前置要求
 
 - Docker (版本 20.10+)
 - Docker Compose (版本 2.0+)
-- 至少 4GB 可用内存
-- 至少 10GB 可用磁盘空间
+- 外部 MySQL 服务器 (版本 8.0+)
+- 外部 Redis 服务器 (版本 6.0+)
+- 至少 2GB 可用内存
+- 至少 5GB 可用磁盘空间
 
 ## 🚀 快速开始
 
@@ -20,31 +22,82 @@ git clone <your-repository-url>
 cd Typing
 ```
 
-#### 2. 配置环境变量（可选）
+#### 2. 配置外部服务
+
+**2.1 准备外部 MySQL 和 Redis 服务**
+
+确保您有可访问的 MySQL 和 Redis 服务器：
+- MySQL 服务器：版本 8.0+，端口 3306
+- Redis 服务器：版本 6.0+，端口 6379
+
+**2.2 配置环境变量**
 
 复制环境变量模板文件：
 
 ```bash
-cp .env.example .env
+cp env.example .env
 ```
 
-编辑 `.env` 文件，根据需要修改配置：
+编辑 `.env` 文件，配置外部服务地址：
 
 ```bash
-# 重要：请修改以下安全相关配置
-JWT_SECRET=your_super_secret_jwt_key_here
+# ===================
+# 数据库配置 (外部 MySQL)
+# ===================
+DB_HOST=192.168.1.100          # MySQL 服务器 IP 地址
+DB_PORT=3306                   # MySQL 端口
+DB_NAME=typing_db             # 数据库名称
+DB_USER=typing_user            # 数据库用户名
+DB_PASSWORD=your_mysql_password_here  # 数据库密码
 
-# 如果需要 GitHub 登录功能
+# ===================
+# Redis 配置 (外部 Redis)
+# ===================
+REDIS_HOST=192.168.1.101       # Redis 服务器 IP 地址
+REDIS_PORT=6379                # Redis 端口
+REDIS_PASSWORD=                # Redis 密码（如果设置了）
+
+# ===================
+# JWT 配置
+# ===================
+JWT_SECRET=your_super_secret_jwt_key_here_change_this_in_production
+
+# ===================
+# 其他可选配置
+# ===================
+# GitHub OAuth (可选)
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
 
-# 如果需要 QQ 登录功能
+# QQ OAuth (可选)
 QQ_CLIENT_ID=your_qq_client_id
 QQ_CLIENT_SECRET=your_qq_client_secret
 
-# 如果需要语音功能
+# 语音服务 (可选)
 YOUDAO_APP_KEY=your_youdao_app_key
 YOUDAO_APP_SECRET=your_youdao_app_secret
+```
+
+**2.3 初始化数据库**
+
+在外部 MySQL 服务器上创建数据库和用户：
+
+```sql
+-- 创建数据库
+CREATE DATABASE typing_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 创建用户
+CREATE USER 'typing_user'@'%' IDENTIFIED BY 'your_mysql_password_here';
+
+-- 授权
+GRANT ALL PRIVILEGES ON typing_db.* TO 'typing_user'@'%';
+FLUSH PRIVILEGES;
+```
+
+然后导入初始化数据：
+
+```bash
+mysql -h 192.168.1.100 -u typing_user -p typing_db < init.sql
 ```
 
 #### 3. 一键部署
@@ -106,10 +159,12 @@ docker-compose -f docker-compose.yml up -d
          │
          ▼
 ┌─────────────────┐    ┌─────────────────┐
-│  MySQL 数据库   │◄──►│   Redis 缓存    │
+│ 外部 MySQL 数据库│◄──►│  外部 Redis 缓存 │
 │   端口: 3306    │    │   端口: 6379    │
 └─────────────────┘    └─────────────────┘
 ```
+
+**注意**: MySQL 和 Redis 现在使用外部服务，不再运行在 Docker 容器中。
 
 ### 部署模式
 
@@ -129,8 +184,9 @@ docker-compose -f docker-compose.yml up -d
 
 - 用户通过 `http://localhost` 访问前端应用（通过Nginx代理）
 - 前端通过 `/api` 路径访问后端 API（通过Nginx代理到后端服务）
-- 后端通过内部网络访问数据库和 Redis
-- 所有服务在同一个 Docker 网络 `typing-network` 中
+- 后端通过外部网络访问 MySQL 和 Redis 服务
+- 应用容器在 Docker 网络 `typing-network` 中运行
+- **重要**: 确保应用容器能够访问外部 MySQL 和 Redis 服务
 
 ### CI/CD 流程
 
@@ -206,52 +262,33 @@ docker-compose -f docker-compose.yml up -d
 
 ### 数据库操作
 
-#### 开发模式
+#### 外部 MySQL 操作
 
 ```bash
-# 连接到 MySQL 数据库
-docker-compose exec mysql mysql -u typing_user -p typing_db
+# 连接到外部 MySQL 数据库
+mysql -h 192.168.1.100 -u typing_user -p typing_db
 
 # 备份数据库
-docker-compose exec mysql mysqldump -u typing_user -p typing_db > backup.sql
+mysqldump -h 192.168.1.100 -u typing_user -p typing_db > backup.sql
 
 # 恢复数据库
-docker-compose exec -T mysql mysql -u typing_user -p typing_db < backup.sql
+mysql -h 192.168.1.100 -u typing_user -p typing_db < backup.sql
+
+# 查看数据库状态
+mysql -h 192.168.1.100 -u typing_user -p -e "SHOW PROCESSLIST;"
 ```
 
-#### 生产模式
+#### 外部 Redis 操作
 
 ```bash
-# 连接到 MySQL 数据库
-docker-compose -f docker-compose.yml exec mysql mysql -u typing_user -p typing_db
-
-# 备份数据库
-docker-compose -f docker-compose.yml exec mysql mysqldump -u typing_user -p typing_db > backup.sql
-
-# 恢复数据库
-docker-compose -f docker-compose.yml exec -T mysql mysql -u typing_user -p typing_db < backup.sql
-```
-
-### Redis 操作
-
-#### 开发模式
-
-```bash
-# 连接到 Redis
-docker-compose exec redis redis-cli
+# 连接到外部 Redis
+redis-cli -h 192.168.1.101 -p 6379
 
 # 查看 Redis 信息
-docker-compose exec redis redis-cli info
-```
+redis-cli -h 192.168.1.101 -p 6379 info
 
-#### 生产模式
-
-```bash
-# 连接到 Redis
-docker-compose -f docker-compose.yml exec redis redis-cli
-
-# 查看 Redis 信息
-docker-compose -f docker-compose.yml exec redis redis-cli info
+# 清空 Redis 缓存
+redis-cli -h 192.168.1.101 -p 6379 FLUSHALL
 ```
 
 ## 🔧 配置说明
@@ -263,22 +300,22 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
   - 后端 API：`http://localhost/api/`
 - **FRONTEND_PORT (3000)**: 前端应用内部端口
 - **BACKEND_PORT (3001)**: 后端 API 内部端口
-- **3306**: MySQL 数据库端口
-- **6379**: Redis 缓存端口
+- **3306**: 外部 MySQL 数据库端口
+- **6379**: 外部 Redis 缓存端口
 
-### 数据持久化
+### 外部服务配置
 
-- MySQL 数据存储在 Docker 卷 `mysql_data` 中
-- Redis 数据存储在 Docker 卷 `redis_data` 中
-- 数据在容器重启后会保持
+- **MySQL**: 使用外部 MySQL 服务器，通过 `DB_HOST` 和 `DB_PORT` 配置
+- **Redis**: 使用外部 Redis 服务器，通过 `REDIS_HOST` 和 `REDIS_PORT` 配置
+- **网络要求**: 确保应用容器能够访问外部服务
+- **防火墙**: 确保外部服务的端口在防火墙中开放
 
 ### 健康检查
 
-所有服务都配置了健康检查：
+应用服务配置了健康检查：
 
-- MySQL: 检查数据库连接
-- Redis: 检查 Redis 连接
-- App: 检查应用端口
+- **App**: 检查应用端口是否正常
+- **外部服务**: 应用启动时会检查外部 MySQL 和 Redis 连接
 
 ## 🐛 故障排除
 
@@ -301,27 +338,50 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
    docker stats
    ```
 
-3. **数据库连接失败**
+3. **外部服务连接失败**
 
    ```bash
-   # 检查数据库服务状态
-   docker-compose logs mysql
-
-   # 手动测试数据库连接
-   docker-compose exec app nc -z mysql 3306
+   # 检查外部 MySQL 连接
+   nc -z 192.168.1.100 3306
+   
+   # 检查外部 Redis 连接
+   nc -z 192.168.1.101 6379
+   
+   # 检查环境变量配置
+   cat .env | grep -E "(DB_HOST|REDIS_HOST)"
    ```
 
-4. **前端无法访问后端**
+4. **数据库连接失败**
+
+   ```bash
+   # 检查 MySQL 服务状态
+   mysql -h 192.168.1.100 -u typing_user -p -e "SELECT 1;"
+   
+   # 检查用户权限
+   mysql -h 192.168.1.100 -u root -p -e "SHOW GRANTS FOR 'typing_user'@'%';"
+   ```
+
+5. **Redis 连接失败**
+
+   ```bash
+   # 检查 Redis 服务状态
+   redis-cli -h 192.168.1.101 -p 6379 ping
+   
+   # 检查 Redis 配置
+   redis-cli -h 192.168.1.101 -p 6379 info server
+   ```
+
+6. **前端无法访问后端**
    - 检查 `NEXT_PUBLIC_BASE_URL` 环境变量配置
    - 确认后端服务正常运行
    - 检查网络连接
 
-5. **镜像拉取失败（生产模式）**
+7. **镜像拉取失败（生产模式）**
    - 检查 GitHub Container Registry 权限
    - 确保镜像地址正确
    - 验证 GitHub Actions 构建状态
 
-6. **GitHub Actions 构建失败**
+8. **GitHub Actions 构建失败**
    - 检查 GitHub Secrets 配置
    - 验证 Dockerfile 语法
    - 查看 Actions 日志
@@ -331,45 +391,55 @@ docker-compose -f docker-compose.yml exec redis redis-cli info
 如果遇到严重问题，可以完全重置环境：
 
 ```bash
-# 停止并删除所有容器、网络、卷
-docker-compose down -v --remove-orphans
+# 停止并删除所有容器、网络
+docker-compose -f docker-compose.prod.yml down --remove-orphans
 
 # 删除相关镜像
-docker rmi typing-app
+docker rmi ghcr.io/xi-yuer/typing:latest
 
-# 重新构建和启动
-docker-compose up -d --build
+# 重新拉取镜像并启动
+docker-compose -f docker-compose.prod.yml pull
+docker-compose -f docker-compose.prod.yml up -d
 ```
+
+**注意**: 外部 MySQL 和 Redis 数据不会受到影响。
 
 ## 🔒 安全建议
 
-1. **修改默认密码**: 更改 `docker-compose.yml` 中的数据库密码
+1. **修改默认密码**: 更改 `.env` 文件中的数据库密码
 2. **JWT 密钥**: 使用强随机字符串作为 JWT_SECRET
 3. **防火墙**: 在生产环境中配置适当的防火墙规则
 4. **HTTPS**: 在生产环境中使用 HTTPS
-5. **定期备份**: 定期备份数据库数据
+5. **定期备份**: 定期备份外部 MySQL 数据库
+6. **网络安全**: 确保外部服务只允许必要的 IP 访问
+7. **密码安全**: 使用强密码并定期更换
 
 ## 📈 性能优化
 
 1. **资源限制**: 根据需要调整容器资源限制
-2. **缓存配置**: 优化 Redis 缓存策略
-3. **数据库优化**: 根据数据量调整 MySQL 配置
+2. **缓存配置**: 优化外部 Redis 缓存策略
+3. **数据库优化**: 根据数据量调整外部 MySQL 配置
 4. **监控**: 添加监控和日志收集
+5. **网络优化**: 确保应用容器与外部服务之间的网络延迟最小
+6. **连接池**: 配置合适的数据库连接池大小
 
 ## 🆘 获取帮助
 
 如果遇到问题，请：
 
-1. 查看服务日志：`docker-compose logs -f`
-2. 检查服务状态：`docker-compose ps`
-3. 查看本文档的故障排除部分
-4. 提交 Issue 到项目仓库
+1. 查看服务日志：`docker-compose -f docker-compose.prod.yml logs -f`
+2. 检查服务状态：`docker-compose -f docker-compose.prod.yml ps`
+3. 检查外部服务连接：`./deploy.sh status`
+4. 查看本文档的故障排除部分
+5. 提交 Issue 到项目仓库
 
 ---
 
-**注意**: 这是一个开发/测试环境的配置。在生产环境中部署时，请确保：
+**注意**: 这是一个生产环境的配置。在部署时，请确保：
 
+- 外部 MySQL 和 Redis 服务正常运行
 - 使用强密码和安全配置
 - 配置适当的备份策略
 - 设置监控和日志收集
 - 使用 HTTPS 和其他安全措施
+- 确保网络连接稳定
