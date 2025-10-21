@@ -79,15 +79,14 @@ void mainImage(out vec4 C, in vec2 U) {
 
   vec3 c = max(cos(d * pi2) - s * sqrt(d) - k, 0.0);
   
-  // 橙色渐变：基于距离的橙色强度
-  float orangeFactor = 1.0 - smoothstep(0.0, 200.0, d);
-  vec3 orangeTint = vec3(1.0, 0.6, 0.1); // 橙色色调
+  // 纯橙色 - 增加亮度
+  vec3 orangeColor = vec3(1.0, 0.5, 0.0);
   
-  // 应用橙色渐变
-  c = c * mix(vec3(0.8, 0.4, 0.1), orangeTint, orangeFactor);
+  // 使用原始强度但应用橙色，增加亮度倍数
+  float intensity = max(c.r, max(c.g, c.b));
+  if (intensity < 0.15) discard;
   
-  if (max(c.r, max(c.g, c.b)) < 0.15) discard;
-  C = vec4(c * 0.4 + c.brg * 0.6 + c * c, uOpacity);
+  C = vec4(orangeColor * intensity * 1.5, uOpacity);
 }
 
 void main() {
