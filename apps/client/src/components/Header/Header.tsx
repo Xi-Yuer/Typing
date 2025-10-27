@@ -113,8 +113,8 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
         <Link
           href='/'
           className='flex items-center space-x-2 text-white transition-colors duration-200 flex-shrink-0'>
-          <div className='w-8 h-8 sm:w-10 sm:h-10 rounded-lg p-1.5 sm:p-2 flex items-center justify-center font-bold text-sm bg-orange-500 text-black'>
-            <img src={logo.src} alt='logo' className='w-full h-full' />
+          <div className='w-8 h-8 sm:w-10 sm:h-10 rounded-lg p-1.5 sm:p-2 flex items-center justify-center font-bold bg-orange-500 text-white text-xl'>
+            T
           </div>
           <span className='font-semibold text-base sm:text-lg hidden lg:block'>
             Typing
