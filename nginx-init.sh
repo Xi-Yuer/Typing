@@ -40,6 +40,10 @@ fi
 
 # SSL证书文件检测和配置
 echo "检查SSL证书文件..."
+echo ""
+echo "SSL目录 (/etc/nginx/ssl/) 中的文件列表:"
+ls -la /etc/nginx/ssl/ || echo "警告: 无法列出 ssl 目录"
+echo ""
 
 # 定义证书文件优先级（根据实际文件名调整）
 CERT_FILES="/etc/nginx/ssl/keycikeyci_com_integrated.crt /etc/nginx/ssl/keycikeyci_com_integrated.pem /etc/nginx/ssl/keycikeyci.com-chain.crt /etc/nginx/ssl/keycikeyci.com-fullchain.pem /etc/nginx/ssl/keycikeyci.com.crt /etc/nginx/ssl/keycikeyci.com.pem"
@@ -47,22 +51,30 @@ CERT_FILES="/etc/nginx/ssl/keycikeyci_com_integrated.crt /etc/nginx/ssl/keycikey
 KEY_FILES="/etc/nginx/ssl/keycikeyci_com.key /etc/nginx/ssl/keycikeyci.com.key /etc/nginx/ssl/keycikeyci.com-private.key"
 
 # 查找可用的证书文件
+echo "开始搜索证书文件..."
 CERT_FILE=""
 for cert in $CERT_FILES; do
+    echo "  检查: $cert"
     if [ -f "$cert" ]; then
         CERT_FILE="$cert"
-        echo "找到证书文件: $cert"
+        echo "  ✓ 找到证书文件: $cert"
         break
+    else
+        echo "  ✗ 文件不存在"
     fi
 done
 
 # 查找可用的私钥文件
+echo "开始搜索私钥文件..."
 KEY_FILE=""
 for key in $KEY_FILES; do
+    echo "  检查: $key"
     if [ -f "$key" ]; then
         KEY_FILE="$key"
-        echo "找到私钥文件: $key"
+        echo "  ✓ 找到私钥文件: $key"
         break
+    else
+        echo "  ✗ 文件不存在"
     fi
 done
 
