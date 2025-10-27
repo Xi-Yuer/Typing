@@ -12,8 +12,8 @@ export class SetupModule {
   static forRoot(app: INestApplication): void {
     {
       const config = new DocumentBuilder()
-        .setTitle('拼写鸭 API')
-        .setDescription('拼写鸭')
+        .setTitle('Typing API')
+        .setDescription('Typing')
         .setVersion('1.0')
         .addBearerAuth({
           type: 'http',
@@ -67,9 +67,9 @@ export class SetupModule {
       // 跨域配置
       app.enableCors({
         origin: [
-          'https://keycikeyci.com',
-          'https://www.keycikeyci.com',
-          'https://admin.keycikeyci.com',
+          'https://typing.xiyuer.club',
+          'https://www.typing.xiyuer.club',
+          'https://admin.typing.xiyuer.club',
           'http://localhost:3000',
           'http://localhost:8080'
         ],

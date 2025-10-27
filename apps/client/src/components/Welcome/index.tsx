@@ -4,10 +4,10 @@ import RotatingText from '@/blocks/RotatingText/RotatingText';
 export function Welcome() {
   return (
     <div className='h-screen relative z-50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-white'>
-      <h2 className='text-4xl inline-block mx-4'>欢迎加入 拼写鸭 </h2>
+      <h2 className='text-4xl inline-block mx-4'>欢迎加入 Typing </h2>
       <RotatingText
         texts={[
-          '拼写鸭',
+          'Typing',
           '让你上瘾的英语学习App',
           '游戏化闯关，快速掌握核心词汇',
           '告别枯燥死记硬背，高效提升的乐趣！'

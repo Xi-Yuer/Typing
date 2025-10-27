@@ -117,7 +117,7 @@ const DisplayHeader = ({ activeItem }: DisplayHeaderProps) => {
             <img src={logo.src} alt='logo' className='w-full h-full' />
           </div>
           <span className='font-semibold text-base sm:text-lg hidden lg:block'>
-            拼写鸭
+            Typing
           </span>
         </Link>
 

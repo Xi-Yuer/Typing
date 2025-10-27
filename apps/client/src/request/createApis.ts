@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * 拼写鸭 API - version 1.0
+ * Typing API - version 1.0
  *
- * 拼写鸭
+ * Typing
  *
  * OpenAPI version: 3.0.0
  *

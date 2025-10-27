@@ -125,10 +125,10 @@ start_services() {
     sleep 10
     
     print_message $GREEN "\n🎉 部署完成！"
-    print_message $GREEN "前端应用: https://keycikeyci.com/"
-    print_message $GREEN "Admin 后台: https://admin.keycikeyci.com:8443"
-    print_message $GREEN "后端 API: https://keycikeyci.com/api"
-    print_message $GREEN "API 文档: https://keycikeyci.com/api/doc"
+    print_message $GREEN "前端应用: https://typing.xiyuer.club/"
+    print_message $GREEN "Admin 后台: https://admin.typing.xiyuer.club:8443"
+    print_message $GREEN "后端 API: https://typing.xiyuer.club/api"
+    print_message $GREEN "API 文档: https://typing.xiyuer.club/api/doc"
     print_message $YELLOW "\n提示: 使用 './deploy.sh logs' 查看日志"
 }
 

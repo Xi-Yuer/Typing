@@ -81,7 +81,7 @@ export class AuthController {
   async githubCallback(@Req() req: any, @Res() res: Response) {
     const user = req.user as User;
     const frontendUrl =
-      this.configService.get('FRONTEND_URL') || 'https://keycikeyci.com';
+      this.configService.get('FRONTEND_URL') || 'https://typing.xiyuer.club';
 
     try {
       // 用户已经在GitHub策略中处理过了，直接生成token

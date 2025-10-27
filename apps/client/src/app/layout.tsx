@@ -13,7 +13,7 @@ const freaoka = localFont({
 });
 
 export const metadata: Metadata = {
-  title: '拼写鸭',
+  title: 'Typing',
   description: '高效英语学习平台，让语言学习变得简单有趣'
 };
 

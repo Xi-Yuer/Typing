@@ -28,7 +28,7 @@ RUN --mount=type=cache,target=/app/.pnpm-store \
 COPY . .
 
 # 声明构建参数
-ARG SERVER_URL=https://keycikeyci.com
+ARG SERVER_URL=https://typing.xiyuer.club
 
 # 设置构建时环境变量
 ENV NEXT_PUBLIC_BASE_URL=/
@@ -133,7 +133,7 @@ RUN pnpm config set store-dir /app/.pnpm-store --global
 EXPOSE 3001 3000
 
 # 声明构建参数
-ARG SERVER_URL=https://keycikeyci.com
+ARG SERVER_URL=https://typing.xiyuer.club
 
 # 设置环境变量
 ENV NODE_ENV=production
