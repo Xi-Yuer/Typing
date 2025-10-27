@@ -83,9 +83,7 @@ const Footer: React.FC = () => {
                 rel='noopener noreferrer'
                 className='flex items-center space-x-2'>
                 <span>备案号：</span>
-                <span className='text-slate-300'>
-                  蜀ICP备 蜀ICP备2022015920号-1号
-                </span>
+                <span className='text-slate-300'>蜀ICP备2022015920号-1号</span>
               </a>
             </div>
           </div>
