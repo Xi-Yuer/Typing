@@ -9,11 +9,11 @@ const defaultNavItems: NavItem[] = [
     href: '/'
   },
   {
-    name: '广场',
+    name: '词库',
     href: '/list'
   },
   {
-    name: '我的',
+    name: '个人中心',
     href: '/dashboard/main'
   }
 ];

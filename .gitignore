@@ -141,6 +141,7 @@ dist
 cache
 course-db
 .rollup.cache
+.md
 
 # SSL certificates (should not be committed to git)
 ssl/*.crt

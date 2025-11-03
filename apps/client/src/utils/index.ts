@@ -40,7 +40,7 @@ export const getWordWidth = (word: string): number => {
 export const getWordsClassNames = (word: WordState): string => {
   // 错误状态优先显示，确保错误时始终显示红色
   if (word.incorrect) {
-    return 'text-red-500 border-b-red-500 animate-pulse';
+    return 'text-red-600 border-b-red-600 animate-pulse';
   }
 
   // 当前激活的单词显示橙色，移除focusing条件确保始终显示

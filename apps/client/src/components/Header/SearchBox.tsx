@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Popover } from 'antd';
+import { useClickAway } from 'ahooks';
 import Apis from '@/request';
 import { throttle } from '@/utils';
 
@@ -21,6 +22,7 @@ const SearchBox = ({
   const [isSearching, setIsSearching] = useState(false);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchBoxRef = useRef<HTMLDivElement>(null);
 
   // 搜索单词
   const searchWords = useCallback(async (keyword: string) => {
@@ -81,6 +83,21 @@ const SearchBox = ({
       setShowSearchResults(false);
     }
   }, [searchQuery]);
+
+  // 使用 useClickAway 处理点击外部关闭 Popover
+  useClickAway(
+    () => {
+      if (showSearchResults) {
+        setShowSearchResults(false);
+      }
+    },
+    [
+      searchBoxRef,
+      () => document.querySelector('.ant-popover-content'),
+      () => document.querySelector('.ant-popover')
+    ],
+    'mousedown'
+  );
 
   // 处理回车键搜索
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -258,13 +275,22 @@ const SearchBox = ({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div ref={searchBoxRef} className={`relative ${className}`}>
       <Popover
         content={<SearchResultsContent />}
-        open={showSearchResults}
-        onOpenChange={setShowSearchResults}
+        open={
+          showSearchResults &&
+          (!!searchQuery.trim() || searchResults.length > 0)
+        }
+        onOpenChange={open => {
+          // 只有在有搜索查询或结果时才允许打开
+          if (open && !searchQuery.trim() && searchResults.length === 0) {
+            return;
+          }
+          setShowSearchResults(open);
+        }}
         placement='bottomLeft'
-        trigger='click'
+        trigger={[]}
         classNames={{ root: 'search-results-popover' }}
         styles={{
           body: {

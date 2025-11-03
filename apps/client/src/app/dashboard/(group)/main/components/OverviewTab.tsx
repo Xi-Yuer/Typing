@@ -43,8 +43,8 @@ export default function OverviewTab({
           <div className='space-y-4'>
             <div className='bg-orange-500/5 backdrop-blur-sm rounded-xl p-6 border border-orange-500/10 hover:border-orange-400/20 hover:bg-orange-500/8 transition-all duration-300'>
               <div className='flex items-center space-x-3 mb-3'>
-                <AlertTriangle className='w-6 h-6 text-orange-400/40' />
-                <h3 className='text-lg font-semibold text-orange-300/80'>
+                <AlertTriangle className='w-6 h-6 text-orange-400' />
+                <h3 className='text-lg font-semibold text-orange-400'>
                   最需要关注的领域
                 </h3>
               </div>
@@ -61,7 +61,7 @@ export default function OverviewTab({
                     {topCategory?.categoryName || ''}
                   </span>
                 </div>
-                <div className='text-xs text-orange-400/60'>
+                <div className='text-xs text-orange-400'>
                   建议重点练习这些领域
                 </div>
               </div>
@@ -71,8 +71,8 @@ export default function OverviewTab({
           <div className='space-y-4'>
             <div className='bg-orange-400/5 backdrop-blur-sm rounded-xl p-6 border border-orange-400/10 hover:border-orange-300/20 hover:bg-orange-400/8 transition-all duration-300'>
               <div className='flex items-center space-x-3 mb-3'>
-                <Target className='w-6 h-6 text-orange-300/40' />
-                <h3 className='text-lg font-semibold text-orange-200/80'>
+                <Target className='w-6 h-6 text-orange-300' />
+                <h3 className='text-lg font-semibold text-orange-400'>
                   学习分布
                 </h3>
               </div>
@@ -89,7 +89,7 @@ export default function OverviewTab({
                     {totalCategories} 个
                   </span>
                 </div>
-                <div className='text-xs text-orange-300/60'>
+                <div className='text-xs text-orange-400'>
                   学习范围广泛，需要均衡发展
                 </div>
               </div>

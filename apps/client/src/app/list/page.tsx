@@ -139,7 +139,7 @@ export default function Page() {
                             setCurrent(category);
                             openModeModal();
                           }}
-                          className='bg-orange-500/5 backdrop-blur-sm rounded-lg p-6 hover:bg-orange-500/8 transition-all duration-300 hover:scale-[1.02] cursor-pointer border border-orange-500/10 hover:border-orange-400/20 relative'>
+                          className='bg-orange-500/5 backdrop-blur-sm rounded-lg p-6 hover:bg-orange-500/10 transition-all duration-300 hover:scale-[1.02] cursor-pointer border border-orange-500/20 hover:border-orange-400/20 relative'>
                           {/* 右上角难度标签 */}
                           <div
                             className={`absolute top-3 right-3 px-2 py-1 rounded text-xs font-medium ${

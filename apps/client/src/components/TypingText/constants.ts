@@ -40,7 +40,7 @@ export const STYLES = {
   WORD_TEXT_SIZE: 'text-5xl',
   HINT_TIMEOUT: 1500,
   COLORS: {
-    ERROR: 'text-red-500',
+    ERROR: 'text-red-600',
     NORMAL: 'text-orange-600',
     HINT: 'text-gray-400 opacity-50'
   },

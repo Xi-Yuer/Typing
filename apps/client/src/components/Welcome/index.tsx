@@ -4,7 +4,9 @@ import RotatingText from '@/blocks/RotatingText/RotatingText';
 export function Welcome() {
   return (
     <div className='h-screen relative z-50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-white'>
-      <h2 className='text-4xl inline-block mx-4'>欢迎加入 Typing </h2>
+      <h2 className='text-4xl inline-block mx-4'>
+        欢迎加入 <span className='text-orange-600 font-bold'>Typing</span>
+      </h2>
       <RotatingText
         texts={[
           'Typing',
