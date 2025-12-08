@@ -20,9 +20,9 @@ export const ThrottleLimit = (limit: number, ttl: number) => {
 };
 
 /**
- * 严格速率限制 - 1分钟内20次请求（用于敏感操作）
+ * 严格速率限制 - 1分钟内200次请求（用于敏感操作）
  */
-export const ThrottleStrict = () => ThrottleLimit(20, 60000);
+export const ThrottleStrict = () => ThrottleLimit(200, 60000);
 
 /**
  * 登录速率限制 - 1分钟内5次登录尝试
