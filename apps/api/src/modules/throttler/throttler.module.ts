@@ -28,7 +28,7 @@ import { Redis } from 'ioredis';
             {
               name: 'default',
               ttl: 60000, // 1分钟
-              limit: 100 // 100次请求 - 全局默认限制
+              limit: 500 // 500次请求 - 全局默认限制
             }
           ],
           storage: {
