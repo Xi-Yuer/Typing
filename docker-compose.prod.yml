@@ -89,7 +89,7 @@ services:
 
   # 门店管理系统后端
   tomato:
-    image: ghcr.io/xi-yuer/tomato:latest
+    image: ghcr.io/xi-yuer/tomato/server:latest
     container_name: tomato
     ports:
       - "8888:8888"
