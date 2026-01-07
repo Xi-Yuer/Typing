@@ -140,10 +140,10 @@ services:
     environment:
       MINIO_ROOT_USER: "minioadmin" # 设置管理员用户名
       MINIO_ROOT_PASSWORD: "minioadmin" # 设置管理员密码（生产环境请使用强密码）
+      CI: "true" # 允许使用容器内目录
     volumes:
       - minio-data:/data
       - minio-config:/root/.minio
-    CI: "true" # 允许使用容器内目录
     command: server /data --console-address ":9001"
     networks:
       - typing-network
@@ -158,3 +158,6 @@ networks:
 
 volumes:
   minio-data:
+    driver: local
+  minio-config:
+    driver: local
