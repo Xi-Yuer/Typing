@@ -113,7 +113,7 @@ services:
       - MINIO_ROOT_USER=minioadmin         
       - MINIO_ROOT_PASSWORD=minioadmin      
       - JWT_SECRET=${JWT_SECRET}
-      - MINIO_EXTERNAL_URL=${SERVER_URL:-https://typing.xiyuer.club} # 正式环境域名
+      - MINIO_EXTERNAL_URL=${SERVER_URL:-https://typing.xiyuer.club}/minio # 正式环境域名，包含 /minio 路径前缀，用于生成预签名 URL
       - ATTENDANCE_CENTER_LAT=30.64242   #打卡中心纬度
       - ATTENDANCE_CENTER_LON=104.04311  #打卡中心经度
       - ATTENDANCE_ALLOWED_RADIUS=100    #打卡中心范围
