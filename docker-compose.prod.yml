@@ -107,8 +107,8 @@ services:
       - MINIO_ENDPOINT=minio
       - MINIO_PORT=9000
       - MINIO_USE_SSL=false
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
       - MINIO_BUCKET_NAME=potato
       - MINIO_ROOT_USER=minioadmin         
       - MINIO_ROOT_PASSWORD=minioadmin      
@@ -157,4 +157,6 @@ networks:
 
 volumes:
   minio-data:
+    driver: local
+  minio-config:
     driver: local
