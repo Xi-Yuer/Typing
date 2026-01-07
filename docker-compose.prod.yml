@@ -123,16 +123,19 @@ services:
     depends_on:
       - minio
 
-  # 文件服务MinIO
+    # 文件服务MinIO
   minio:
     image: minio/minio:latest
     container_name: minio
     ports:
-      - "9000:9000"
+      - "9000:9000"   # API 和控制台共用端口
+    command: server /data
     environment:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_BUCKET_NAME=tomato-manager
+    volumes:
+      - minio-data:/data
     networks:
       - typing-network
     healthcheck:
@@ -141,7 +144,10 @@ services:
       retries: 5
       interval: 30s
       start_period: 60s
-
 networks:
   typing-network:
     driver: bridge
+
+volumes:
+  minio-data:
+    driver: local
