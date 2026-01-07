@@ -140,8 +140,6 @@ services:
     env_file:
       - .env
     environment:
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
       - MINIO_BUCKET_NAME=potato
       - MINIO_ROOT_USER=minioadmin         
       - MINIO_ROOT_PASSWORD=minioadmin  
