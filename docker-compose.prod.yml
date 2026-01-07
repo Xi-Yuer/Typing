@@ -15,7 +15,6 @@ services:
     depends_on:
       - app
       - potato
-      - minio
     networks:
       - typing-network
 
@@ -104,19 +103,10 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
-      - MINIO_ENDPOINT=minio
-      - MINIO_PORT=9000
-      - MINIO_USE_SSL=false
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin}
-      - MINIO_BUCKET_NAME=potato
-      - MINIO_ROOT_USER=minioadmin         
-      - MINIO_ROOT_PASSWORD=minioadmin      
       - JWT_SECRET=${JWT_SECRET}
-      - MINIO_EXTERNAL_URL=${SERVER_URL:-https://typing.xiyuer.club}/minio # 正式环境域名，包含 /minio 路径前缀，用于生成预签名 URL
-      - ATTENDANCE_CENTER_LAT=30.64242   #打卡中心纬度
-      - ATTENDANCE_CENTER_LON=104.04311  #打卡中心经度
-      - ATTENDANCE_ALLOWED_RADIUS=100    #打卡中心范围
+      - ATTENDANCE_CENTER_LAT=30.64242 #打卡中心纬度
+      - ATTENDANCE_CENTER_LON=104.04311 #打卡中心经度
+      - ATTENDANCE_ALLOWED_RADIUS=100 #打卡中心范围
     env_file:
       - .env
     networks:
@@ -127,36 +117,7 @@ services:
       retries: 5
       interval: 30s
       start_period: 60s
-    depends_on:
-      - minio
 
-    # 文件服务MinIO
-  minio:
-    image: quay.io/minio/minio:latest
-    container_name: minio
-    restart: unless-stopped
-    ports:
-      - "9000:9000" # MinIO 服务端口
-      - "9001:9001" # MinIO 控制面板端口
-    environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
-      - CI=true
-    volumes:
-      - minio-data:/data
-    command: server /data --console-address ":9001"
-    networks:
-      - typing-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-      start_period: 30s
 networks:
   typing-network:
     driver: bridge
-
-volumes:
-  minio-data:
-    driver: local
