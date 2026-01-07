@@ -15,6 +15,8 @@ services:
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - app
+      - tomato
+      - minio
     networks:
       - typing-network
 
