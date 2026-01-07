@@ -137,17 +137,15 @@ services:
     ports:
       - "9000:9000" # MinIO 服务端口
       - "9001:9001" # MinIO 控制面板端口
-    env_file:
-      - .env
     environment:
-      - MINIO_BUCKET_NAME=potato
-      - MINIO_ROOT_USER=minioadmin         
-      - MINIO_ROOT_PASSWORD=minioadmin  
+      MINIO_ROOT_USER: "minioadmin" # 设置管理员用户名
+      MINIO_ROOT_PASSWORD: "minioadmin" # 设置管理员密码（生产环境请使用强密码）
     volumes:
       - minio-data:/data
+      - minio-config:/root/.minio
+    command: server /data --console-address ":9001"
     networks:
       - typing-network
-    command: server /data --console-address ":9001"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 30s
