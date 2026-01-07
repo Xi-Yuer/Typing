@@ -14,7 +14,7 @@ services:
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - app
-      - tomato
+      - potato
       - minio
     networks:
       - typing-network
@@ -89,9 +89,9 @@ services:
       start_period: 60s
 
   # 门店管理系统后端
-  tomato:
-    image: ghcr.io/xi-yuer/tomato/server:latest
-    container_name: tomato
+  potato:
+    image: ghcr.io/xi-yuer/potato/server:latest
+    container_name: potato
     ports:
       - '8888:8888'
     environment:
@@ -100,7 +100,7 @@ services:
       - PORT=8888
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT:-3306}
-      - DB_NAME=${DB_NAME:-tomato_manager}
+      - DB_NAME=${DB_NAME:-potato_manager}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
@@ -109,7 +109,7 @@ services:
       - MINIO_USE_SSL=false
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-      - MINIO_BUCKET_NAME=tomato-manager
+      - MINIO_BUCKET_NAME=potato-manager
       - JWT_SECRET=${JWT_SECRET}
       - MINIO_EXTERNAL_URL=${SERVER_URL:-https://typing.xiyuer.club} # 正式环境域名
       - ATTENDANCE_CENTER_LAT=30.64242   #打卡中心纬度
@@ -130,27 +130,27 @@ services:
 
     # 文件服务MinIO
   minio:
-    image: minio/minio:latest
+    image: quay.io/minio/minio:latest
     container_name: minio
     ports:
-      - '9000:9000' # API 和控制台共用端口
-    command: server /data
+      - "9000:9000" # MinIO 服务端口
+      - "9001:9001" # MinIO 控制面板端口
     env_file:
       - .env
     environment:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
-      - MINIO_BUCKET_NAME=tomato-manager
+      - MINIO_BUCKET_NAME=potato-manager
     volumes:
       - minio-data:/data
     networks:
       - typing-network
+    command: server /data --console-address ":9001"
     healthcheck:
-      test: ['CMD', 'nc', '-z', 'localhost', '9000']
-      timeout: 10s
-      retries: 5
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 30s
-      start_period: 60s
+      timeout: 20s
+      retries: 3
 networks:
   typing-network:
     driver: bridge
