@@ -104,9 +104,6 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
-      - ATTENDANCE_CENTER_LAT=30.64242 #打卡中心纬度
-      - ATTENDANCE_CENTER_LON=104.04311 #打卡中心经度
-      - ATTENDANCE_ALLOWED_RADIUS=100 #打卡中心范围
     env_file:
       - .env
     networks:
