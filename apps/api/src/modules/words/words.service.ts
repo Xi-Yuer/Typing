@@ -25,7 +25,7 @@ export class WordsService {
     private readonly wordRepository: Repository<Word>,
     private readonly redisService: RedisService,
     private readonly userService: UserService
-  ) {}
+  ) { }
 
   /**
    * 创建单词
@@ -425,6 +425,19 @@ export class WordsService {
   }
 
   /**
+   * 邮箱脱敏函数
+   */
+  private maskEmail(email: string): string {
+    const [localPart, domain] = email.split('@');
+    if (localPart.length <= 2) {
+      return `${localPart[0]}***@${domain}`;
+    }
+    const maskedLocal =
+      localPart[0] + '***' + localPart[localPart.length - 1];
+    return `${maskedLocal}@${domain}`;
+  }
+
+  /**
    * 获取单词排行榜
    */
   async getRanking(
@@ -458,7 +471,7 @@ export class WordsService {
         rankings.push({
           userId: user.id,
           userName: user.name,
-          userEmail: user.email,
+          userEmail: this.maskEmail(user.email),
           score: score,
           rank: Math.floor(i / 2) + 1
         });
