@@ -17,13 +17,13 @@ import { UserSettingsModule } from './modules/user-settings/user-settings.module
 import { CustomPackagesModule } from './modules/custom-packages/custom-packages.module';
 import { CustomCacheInterceptor } from './common/interceptors/cache.interceptor';
 import { RedisCacheModule } from './modules/redis/redis.module';
-import { ThrottlerModule } from './modules/throttler/throttler.module';
-import { CustomThrottlerGuard } from './common/guards/throttle.guard';
+// import { ThrottlerModule } from './modules/throttler/throttler.module';
+// import { CustomThrottlerGuard } from './common/guards/throttle.guard';
 
 @Module({
   imports: [
     RedisCacheModule,
-    ThrottlerModule,
+    // ThrottlerModule,
     ConfigModule,
     DatabaseModule,
     UserModule,
@@ -69,10 +69,6 @@ import { CustomThrottlerGuard } from './common/guards/throttle.guard';
     {
       provide: APP_INTERCEPTOR,
       useClass: CustomCacheInterceptor
-    },
-    {
-      provide: APP_GUARD,
-      useClass: CustomThrottlerGuard
     }
   ]
 })
